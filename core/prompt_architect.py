@@ -168,6 +168,16 @@ def generate_v9_spec(skill_id, model_tag='cloud_pro', prompt_strategy='standard'
        - 若題目涉及讀取座標 (Read Coordinate)，規格書必須要求繪圖程式碼設定 `xticks` 與 `yticks`，確保至少每隔 1 或 2 個單位就有一個數字顯示。
        - 範例要求：`"Ensure x-axis and y-axis have integer labels visible (e.g., -5, -4, ... 4, 5)."`
 
+
+    18. [CRITICAL RULE: Grade & Semantic Alignment] (課綱對齊鎖定)
+    1. **年級嚴格檢核 (Grade-Level Strictness)**：
+       - 你的首要任務是分析 `skill_id` 中的年級標籤 (e.g., `jh_數學2上` = Grade 8, `jh_數學1下` = Grade 7)。
+       - **嚴禁降級 (No Regression)**：若題目屬於「國二 (Math 2)」，嚴禁生成「國一 (Math 1)」的基礎題型（如單純的數線距離、整數加減）。
+       - **範例**：若 ID 為 `jh_數學2上_ComprehensiveApplications` (乘法公式應用)，內容**必須**包含平方公式 $(a+b)^2$ 或多項式運算，絕不能只出「數線找距離」。
+
+    2. **語意消歧義 (Semantic Disambiguation)**：
+       - 當 Skill Name 為「綜合應用」、「進階題」這類模糊名詞時，**必須**強制參考該單元的 RAG 例題關鍵字。
+       - 若 RAG 為空，則根據 `skill_id` 的前綴推斷主題（例如：看到 `2上` 預設為乘法公式或畢氏定理）。
     """
 
     user_prompt = f"### SKILL: {skill.skill_ch_name} ({skill.skill_id})\n### STRATEGY: {tier_scope}\n### EXECUTE:"

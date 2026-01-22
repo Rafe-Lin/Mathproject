@@ -1,36 +1,19 @@
-<!--
-=============================================================================
-模組名稱 (Module Name): templates/admin_skills.html
-功能說明 (Description): 後台技能管理
-後端呼叫 (Backend Call): core/routes/admin.py -> admin_skills
-版本資訊 (Version): V2.0
-更新日期 (Date): 2026-01-13
-維護團隊 (Maintainer): Math AI Project Team
-=============================================================================
--->
-<!DOCTYPE html>
+python -m venv venv<!DOCTYPE html>
 <html lang="zh-TW">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>技能管理 - Math Master Admin</title>
+    <title>技能管理 - 自適應性教學系統 Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* --- Master Styles (V2.0 Standard) --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Global Styles */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f5f7fa;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
             padding-bottom: 50px;
         }
 
@@ -43,7 +26,6 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
         }
 
         .navbar .logo {
@@ -60,17 +42,13 @@
             margin-left: 10px;
         }
 
-        .navbar a:hover {
-            background: #34495e;
-        }
-
-        /* Container & Header */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
 
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
@@ -80,150 +58,112 @@
 
         .header h1 {
             color: #2c3e50;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin: 0;
             font-size: 2rem;
             font-weight: 600;
-            margin: 0;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
         }
 
         .btn-add {
-            background: #27ae60;
-            color: white;
-            padding: 12px 25px !important;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-
-        /* !important to override inline if any */
-        .btn-add:hover {
-            background: #229954;
-        }
-
-        .btn-edit {
             background: #3498db;
             color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-edit:hover {
+        .btn-add:hover {
             background: #2980b9;
         }
 
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #c0392b;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .btn-prereq {
-            background: #9b59b6;
-            color: white;
-        }
-
-        .btn-toggle {
-            background: #34495e;
-            color: white;
-        }
-
-        .btn-prompt {
-            background: #8e44ad;
-            color: white;
-        }
-
-        /* Purple for Prompt */
-
-        /* Cards & Tables */
-        .card,
-        .skills-table {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
             overflow: hidden;
-            margin-bottom: 20px;
         }
 
         .card-header {
-            background: #34495e;
+            background: #f8f9fa;
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
             font-weight: 600;
-            color: white;
+            color: #2c3e50;
         }
 
         .card-body {
             padding: 20px;
         }
 
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        /* Table Styles */
+        .skills-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1000px;
-        }
-
-        thead {
-            background: #34495e;
-            color: white;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         th,
         td {
             padding: 15px;
             text-align: left;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid #eee;
         }
 
         th {
+            background-color: #f8f9fa;
+            color: #7f8c8d;
             font-weight: 600;
-            white-space: nowrap;
-            font-size: 0.9em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
         }
 
-        tbody tr:hover {
-            background: #f8f9fa;
+        tr:hover {
+            background-color: #f8f9fa;
         }
-
-        /* Filter Section (Matches admin_prerequisites) */
-        .filter-bar {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        /* --- Page Specific Styles --- */
 
         /* Status Badge */
         .status-badge {
@@ -243,13 +183,55 @@
             color: #c0392b;
         }
 
-        /* Action Group */
+        /* Action Buttons */
         .btn-group {
             display: flex;
             gap: 5px;
         }
 
-        /* Modal */
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-prereq {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .btn-toggle {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -266,7 +248,7 @@
             background-color: white;
             margin: 50px auto;
             padding: 30px;
-            border-radius: 8px;
+            border-radius: 10px;
             width: 90%;
             max-width: 600px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -280,13 +262,10 @@
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
-            background: transparent;
-            color: #2c3e50;
         }
 
         .modal-header h2 {
             margin: 0;
-            font-size: 1.5em;
             color: #2c3e50;
         }
 
@@ -301,40 +280,32 @@
             color: #2c3e50;
         }
 
-        /* Form Controls */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .form-control,
-        .form-select,
-        textarea,
-        .form-group input,
-        .form-group select {
+        textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 100px;
             font-family: inherit;
+            resize: vertical;
         }
 
-        /* Filter override for pixel perfection */
-        .filter-select {
-            padding: 6px 10px !important;
-            font-size: 0.9rem !important;
+        .gemini-prompt-textarea {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            min-height: 150px;
+            background-color: #f8f9fa;
         }
 
-        .filter-sidebar-label {
-            font-size: 0.85rem !important;
-            margin-bottom: 6px !important;
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
         }
 
         .form-actions {
@@ -344,121 +315,15 @@
             margin-top: 25px;
         }
 
-        /* Special Textareas */
-        .gemini-prompt-textarea {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            min-height: 150px;
-            background-color: #f8f9fa;
-        }
-
-        /* Prompt Maintenance */
-        transition: box-shadow 0.2s;
-        }
-
-        .prompt-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-color: #bdc3c7;
-        }
-
-        .tag-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .tag-cloud {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .tag-local {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .tag-edge {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .prompt-meta {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            margin-top: 8px;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .prompt-actions {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .prompt-preview {
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.85rem;
-            color: #333;
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
-            padding: 8px;
-            height: 150px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-            user-select: text;
-            cursor: text;
-            margin-bottom: 8px;
-        }
-
-        .prompt-preview::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .prompt-preview::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .prompt-preview::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid transparent;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-
-        .alert-error,
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-
-        /* Button Overrides for consistency */
         .btn-submit {
             background: #27ae60;
             color: white;
             padding: 10px 25px;
-            border-radius: 6px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 1em;
+            transition: background 0.2s;
         }
 
         .btn-submit:hover {
@@ -469,8 +334,41 @@
             background: #95a5a6;
             color: white;
             padding: 10px 25px;
-            border-radius: 6px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-size: 1em;
+            transition: background 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #95a5a6;
+        }
+
+        /* Ghost Skills Modal List */
+        .ghost-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .ghost-list li {
+            background: #f1f2f6;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-family: 'Courier New', Consolas, monospace;
         }
     </style>
 </head>
@@ -507,7 +405,93 @@
         </div>
 
         <!-- 多層篩選器 -->
-        {% include '_filter_sidebar.html' %}
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-filter"></i> 課程篩選器
+            </div>
+            <div class="card-body">
+                <form id="filter-form" action="{{ url_for('core.admin_skills') }}" method="get"
+                    style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                    <!-- 課綱 -->
+                    <div class="form-group" style="flex: 1; min-width: 150px;">
+                        <label for="f_curriculum">課綱</label>
+                        <select id="f_curriculum" name="f_curriculum" class="form-select"
+                            style="width: 100%; padding: 8px;">
+                            <option value="">-- 請選擇 --</option>
+                            {% for c in filters.curriculums %}
+                            <option value="{{ c }}" {% if selected_filters.f_curriculum==c %}selected{% endif %}>{{
+                                curriculum_map.get(c, c) }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- 年級 -->
+                    <div class="form-group" style="flex: 1; min-width: 150px;">
+                        <label for="f_grade">年級</label>
+                        <select id="f_grade" name="f_grade" class="form-select" {% if not selected_filters.f_curriculum
+                            %}disabled{% endif %} style="width: 100%; padding: 8px;">
+                            <option value="">-- 請選擇 --</option>
+                            {% if filters.grades %}
+                            {% for g in filters.grades %}
+                            <option value="{{ g }}" {% if selected_filters.f_grade==g|string %}selected{% endif %}>{{
+                                grade_map.get(g, g) }}</option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <!-- 冊別 -->
+                    <div class="form-group" style="flex: 1; min-width: 180px;">
+                        <label for="f_volume">冊別</label>
+                        <select id="f_volume" name="f_volume" class="form-select" {% if not selected_filters.f_grade
+                            %}disabled{% endif %} style="width: 100%; padding: 8px;">
+                            <option value="">-- 請選擇 --</option>
+                            {% if filters.volumes %}
+                            {% for v in filters.volumes %}
+                            <option value="{{ v }}" {% if selected_filters.f_volume==v %}selected{% endif %}>{{ v }}
+                            </option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <!-- 章節 -->
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="f_chapter">章</label>
+                        <select id="f_chapter" name="f_chapter" class="form-select" {% if not selected_filters.f_volume
+                            %}disabled{% endif %} style="width: 100%; padding: 8px;">
+                            <option value="">-- 請選擇 --</option>
+                            {% if filters.chapters %}
+                            {% for ch in filters.chapters %}
+                            <option value="{{ ch }}" {% if selected_filters.f_chapter==ch %}selected{% endif %}>{{ ch }}
+                            </option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <!-- 節 -->
+                    <div class="form-group" style="flex: 1; min-width: 200px;">
+                        <label for="f_section">節</label>
+                        <select id="f_section" name="f_section" class="form-select" {% if not selected_filters.f_chapter
+                            %}disabled{% endif %} style="width: 100%; padding: 8px;">
+                            <option value="">-- 請選擇 --</option>
+                            {% if filters.sections %}
+                            {% for s in filters.sections %}
+                            <option value="{{ s }}" {% if selected_filters.f_section==s %}selected{% endif %}>{{ s }}
+                            </option>
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="flex: 0 0 auto;">
+                        <!-- Hidden input to signal if curriculum was changed, as used by JS -->
+                        <input type="hidden" id="curriculum_changed" name="curriculum_changed" value="false">
+                        <!-- The 'Clear' button should also point to the correct skills admin page -->
+                        <a href="{{ url_for('core.admin_skills') }}" class="btn"
+                            style="padding: 8px 20px; background: #7f8c8d; color: white;"><i class="bi bi-x-circle"></i>
+                            清除</a>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -553,11 +537,6 @@
                             <div class="btn-group">
                                 <button class="btn btn-edit" onclick="openEditModal('{{ skill.skill_id }}')">
                                     <i class="bi bi-pencil-fill"></i>
-                                </button>
-                                <button class="btn btn-sm btn-prompt"
-                                    onclick="openPromptModal('{{ skill.skill_id }}', '{{ skill.skill_ch_name }}')"
-                                    title="Prompt 維護">
-                                    <i class="bi bi-robot"></i> Prompt
                                 </button>
                                 <button type="button" class="btn btn-secondary"
                                     onclick="regenerateSkillCode('{{ skill.skill_id }}')" title="重新生成程式碼">
@@ -763,66 +742,7 @@
         </div>
     </div>
 
-    <!-- Prompt Maintenance Modal -->
-    <div id="promptModal" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
-            <div class="modal-header">
-                <h2><i class="bi bi-robot" style="color: #8e44ad;"></i> Prompt 維護: <span id="promptModalTitle"></span>
-                </h2>
-                <span class="close" onclick="closeModal('promptModal')">×</span>
-            </div>
-
-            <div class="card" style="background: #f9f9f9; border: 1px solid #eee; margin-bottom: 20px;">
-                <div class="card-body">
-                    <h5 style="margin-top: 0; color: #2c3e50;"><i class="bi bi-pencil-square"></i> 新增/更新 Prompt</h5>
-                    <form id="promptForm">
-                        <input type="hidden" id="p_skill_id">
-                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                            <div style="flex: 1;">
-                                <label>Model Tag *</label>
-                                <select id="p_model_tag" class="form-select" required>
-                                    <option value="cloud_pro">cloud_pro (Gemini 2.5)</option>
-                                    <option value="local_14b">local_14b (Qwen 14B)</option>
-                                    <option value="edge_7b">edge_7b (Phi-4)</option>
-                                </select>
-                            </div>
-                            <div style="width: 100px;">
-                                <label>啟用</label>
-                                <div style="margin-top: 10px;">
-                                    <input type="checkbox" id="p_is_active" checked> <label
-                                        for="p_is_active">Active</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Coder Spec (User Prompt Template) *</label>
-                            <textarea id="p_user_prompt" class="gemini-prompt-textarea" style="min-height: 120px;"
-                                placeholder="請輸入 JSON 或 Markdown..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>System Instruction (Optional)</label>
-                            <textarea id="p_system_prompt" class="gemini-prompt-textarea" style="min-height: 80px;"
-                                placeholder="系統指令..."></textarea>
-                        </div>
-                        <div style="text-align: right;">
-                            <button type="button" class="btn btn-secondary" onclick="clearPromptForm()">清空</button>
-                            <button type="submit" class="btn btn-submit" style="background: #8e44ad;">儲存 Prompt</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <hr>
-
-            <h5 style="color: #2c3e50;">現有版本</h5>
-            <div id="promptList" class="prompt-grid"></div>
-        </div>
-    </div>
-
     <script>
-        // --- 1. 新增全域變數 (放在 script 開頭) ---
-        let currentPromptsData = [];
-
         // Modal Functions
         function openAddModal() {
             document.getElementById('addModal').style.display = 'block';
@@ -931,7 +851,29 @@
             }
         });
 
+        // --- 連動式篩選器邏輯 (表單提交版本) ---
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('filter-form');
+            const curriculumSelect = document.getElementById('f_curriculum');
+            const gradeSelect = document.getElementById('f_grade');
+            const volumeSelect = document.getElementById('f_volume');
+            const chapterSelect = document.getElementById('f_chapter');
+            const sectionSelect = document.getElementById('f_section');
 
+            if (curriculumSelect) {
+                curriculumSelect.addEventListener('change', function () {
+                    // 當課綱改變時，我們需要重設後面的選項。
+                    document.getElementById('curriculum_changed').value = 'true';
+                    form.submit();
+                });
+            }
+
+            [gradeSelect, volumeSelect, chapterSelect, sectionSelect].forEach(select => {
+                if (select) {
+                    select.addEventListener('change', () => form.submit());
+                }
+            });
+        });
 
         // 全域函式：重新生成技能程式碼 (使用 SweetAlert2)
         function regenerateSkillCode(skillId) {
@@ -1008,158 +950,6 @@
                         });
                 }
             });
-        }
-
-        // --- Prompt Maintenance Functions ---
-        function openPromptModal(skillId, skillName) {
-            document.getElementById('promptModal').style.display = 'block';
-            document.getElementById('promptModalTitle').innerText = skillName;
-            document.getElementById('p_skill_id').value = skillId;
-            clearPromptForm();
-            loadPrompts(skillId);
-        }
-
-        // --- 2. 修改 loadPrompts (把資料存起來) ---
-        function loadPrompts(skillId) {
-            const listDiv = document.getElementById('promptList');
-            listDiv.innerHTML = '<div style="text-align:center;"><div class="spinner-border text-primary" role="status"></div></div>';
-
-            fetch(`/api/skills/${skillId}/prompts`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        // 關鍵修改：把資料存入全域變數，而不是直接塞進 HTML 字串
-                        currentPromptsData = data.data;
-                        renderPromptCards(data.data);
-                    } else {
-                        listDiv.innerHTML = `<p class="text-danger">載入失敗: ${data.message}</p>`;
-                    }
-                })
-                .catch(err => listDiv.innerHTML = `<p class="text-danger">錯誤: ${err}</p>`);
-        }
-
-        // --- 3. 修改 renderPromptCards (移除 title，改用 ID 傳遞) ---
-        function renderPromptCards(prompts) {
-            const listDiv = document.getElementById('promptList');
-            listDiv.innerHTML = '';
-
-            if (prompts.length === 0) {
-                listDiv.innerHTML = '<p class="text-muted" style="grid-column: 1/-1; text-align: center;">尚未設定任何 Prompt</p>';
-                return;
-            }
-
-            // --- [關鍵修改] 自定義排序邏輯 ---
-            // 定義我們想要的順序權重
-            const sortOrder = {
-                'cloud_pro': 1,
-                'local_14b': 2,
-                'edge_7b': 3
-            };
-
-            // 執行排序：有定義的排前面，沒定義的排後面(99)
-            prompts.sort((a, b) => {
-                const orderA = sortOrder[a.model_tag] || 99;
-                const orderB = sortOrder[b.model_tag] || 99;
-                return orderA - orderB;
-            });
-            // -----------------------------
-
-            prompts.forEach(p => {
-                let tagClass = 'tag-cloud';
-                if (p.model_tag.includes('local')) tagClass = 'tag-local';
-                if (p.model_tag.includes('edge')) tagClass = 'tag-edge';
-
-                const card = document.createElement('div');
-                card.className = 'prompt-card';
-
-                // 這裡維持您之前的優化：只傳 ID、沒有 title 屬性
-                card.innerHTML = `
-                    <span class="tag-badge ${tagClass}">${p.model_tag}</span>
-                    ${p.is_active ? '<span class="status-badge status-active">Active</span>' : '<span class="status-badge status-inactive">Inactive</span>'}
-                    
-                    <div class="prompt-actions">
-                        <button class="btn btn-sm btn-edit" onclick="fillPromptForm(${p.id})" title="載入編輯"><i class="bi bi-arrow-up"></i></button>
-                        <button class="btn btn-sm btn-delete" onclick="deletePrompt(${p.id})" title="刪除"><i class="bi bi-x"></i></button>
-                    </div>
-
-                    <div class="prompt-preview">
-                        ${p.user_prompt_template ? p.user_prompt_template.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '(No Content)'}
-                    </div>
-                    
-                    <div class="prompt-meta">
-                        <span>Ver: ${p.version}</span>
-                        <span>${p.updated_at}</span>
-                    </div>
-                `;
-                listDiv.appendChild(card);
-            });
-        }
-
-        // --- 4. 修改 fillPromptForm (從全域變數抓資料) ---
-        function fillPromptForm(promptId) {
-            // 從全域變數中尋找對應的資料
-            const data = currentPromptsData.find(p => p.id === promptId);
-
-            if (data) {
-                document.getElementById('p_model_tag').value = data.model_tag;
-                document.getElementById('p_user_prompt').value = data.user_prompt_template || '';
-                document.getElementById('p_system_prompt').value = data.system_prompt || '';
-                document.getElementById('p_is_active').checked = data.is_active;
-
-                // 滾動到最上方
-                const modalContent = document.querySelector('#promptModal .modal-content');
-                if (modalContent) modalContent.scrollTop = 0;
-            } else {
-                console.error("找不到 Prompt 資料 ID:", promptId);
-            }
-        }
-
-        function clearPromptForm() {
-            document.getElementById('p_user_prompt').value = '';
-            document.getElementById('p_system_prompt').value = '';
-            document.getElementById('p_model_tag').selectedIndex = 0;
-            document.getElementById('p_is_active').checked = true;
-        }
-
-        document.getElementById('promptForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const skillId = document.getElementById('p_skill_id').value;
-            const payload = {
-                model_tag: document.getElementById('p_model_tag').value,
-                user_prompt_template: document.getElementById('p_user_prompt').value,
-                system_prompt: document.getElementById('p_system_prompt').value,
-                is_active: document.getElementById('p_is_active').checked
-            };
-
-            // 使用 SweetAlert2 顯示載入
-            Swal.fire({ title: '儲存中...', didOpen: () => Swal.showLoading() });
-
-            fetch(`/api/skills/${skillId}/prompts/save`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    Swal.close();
-                    if (data.success) {
-                        Swal.fire('成功', 'Prompt 已儲存', 'success');
-                        loadPrompts(skillId);
-                        clearPromptForm();
-                    } else {
-                        Swal.fire('失敗', data.message, 'error');
-                    }
-                });
-        });
-
-        function deletePrompt(promptId) {
-            if (!confirm('確定刪除？')) return;
-            fetch(`/api/prompts/${promptId}`, { method: 'DELETE' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) loadPrompts(document.getElementById('p_skill_id').value);
-                    else alert('刪除失敗');
-                });
         }
     </script>
 

@@ -418,6 +418,16 @@ You are a Senior Python Developer (V14.0 Professional Guard).
 
 8. **網格線輔助 (Grid Lines)**：
    - 對於讀圖題，必須開啟 `ax.grid(True, linestyle=':', alpha=0.6)` 以輔助學生對齊數值。
+
+9. **主題一致性防護 (Topic Integrity)**：
+   - 在生成邏輯之前，檢查 `skill_id` 是否包含特定數學領域（如 `Distributive`、`Polynomial`、`Factorization`）。
+   - **複雜度門檻**：若 ID 屬於國二以上 (2上, 2下, 3上...)，**嚴禁**生成僅涉及小學或國一程度的單步驟算術題。
+   - **強制特徵**：
+     - 乘法公式單元：必須包含平方、變數 $(x, y)$ 或特定數字結構 (如 $99^2$)。
+     - 幾何單元：必須包含圖形繪製或角度/面積計算。
+
+10. **函式完整性 (Function Definition Integrity)**:
+    - CRITICAL: When implementing the `check` function, YOU MUST explicitly write the line `def check(user_answer, correct_answer):`. Do not just start writing the inner logic or comments.
 """
 
 
@@ -713,6 +723,58 @@ def _apply_v10_visual_style(ax):
          if "target_val =" not in code_content and "ans =" in code_content:
              code_content = code_content.replace("str(target_val)", "str(ans)")
              total_fixes += 1
+
+    # =========================================================
+    # 防線 4：[V18.4] 函式定義遺失自癒 (Missing Def Auto-Recovery)
+    # 針對 AI 輸出 def check 內容但遺漏 def check(...) 這一行的情況
+    # =========================================================
+    # 偵測特徵：縮排的 u = clean(...) 或 def clean(s): 但上方沒有 def check
+    # 這裡我們尋找一個常見的 check 內部特徵
+    check_internal_signatures = [
+        r'^\s{4}def clean\(s\):',
+        r'^\s{4}u = clean\(user_answer\)',
+        r'^\s{4}c = clean\(correct_answer\)',
+        r'^\s{4}def _clean\(s\):',
+    ]
+    
+    has_check_def = re.search(r'^def check\(user_answer, correct_answer\):', code_content, re.MULTILINE)
+    has_internal_logic = any(re.search(sig, code_content, re.MULTILINE) for sig in check_internal_signatures)
+    
+    if has_internal_logic and not has_check_def:
+        # 找到第一個類似 check 內部的邏輯行，並在其上方插入 def check
+        # 為了安全起見，我們直接在程式碼最後面尋找孤兒縮排區塊的頂部有點困難，
+        # 但通常這種錯誤發生時，程式碼會從縮排開始。
+        # 策略：如果發現有縮排的 clean 函式且沒有 check，嘗試包裹。
+        # 但更簡單的方式是：如果確定沒有 check 但有 check 的特徵，直接把 def check 補在最前面？不，這可能會亂。
+        # 我們假設 AI 是接著 generate 之後寫的。
+        
+        # 掃描每一行，如果發現一行是縮排的 def clean(s):，且往上找非空行不是 def check，則插入
+        lines = code_content.split('\n')
+        new_lines = []
+        inserted = False
+        for i, line in enumerate(lines):
+            # 檢查是否為 check 內部的關鍵特徵行
+            is_feature = any(re.match(sig, line) for sig in check_internal_signatures)
+            
+            if is_feature and not inserted:
+                # 往回找最近的非空行
+                prev_idx = len(new_lines) - 1
+                while prev_idx >= 0 and not new_lines[prev_idx].strip():
+                    prev_idx -= 1
+                
+                # 如果前一行不是以 def check 開頭
+                if prev_idx < 0 or not new_lines[prev_idx].strip().startswith("def check"):
+                     # 插入 def check
+                     new_lines.append("def check(user_answer, correct_answer):")
+                     total_fixes += 1
+                     print(f"   [Critical-Fix] Auto-injected missing 'def check' definition.")
+                     inserted = True # 避免重複插入
+            
+            new_lines.append(line)
+        
+        if inserted:
+            code_content = "\n".join(new_lines)
+
 
     return code_content, total_fixes
 
