@@ -149,3 +149,22 @@ graph TD
 
 4.  **成果**：
     *   其他學生在練習此單元時，不僅會遇到課本題的變體，也會隨機遇到該名學生上傳題目的變體 (例如：點 Q(-1, 2) 向上移 5 格)。
+
+---
+
+## 7. 即時練習模式 (Instant Practice Mode) - The "Short Loop"
+
+除了上述的「長循環 (Long Loop)」歸檔流程外，系統亦提供學生「即拍即練」的「短循環 (Short Loop)」功能。
+
+### 7.1 功能描述
+學生上傳題目後，不需等待後台審核，系統立即透過 Session 暫存該題資訊，並導向至練習介面。此時 AI 助教 (Chatbot) 已知曉該題 Context，可直接引導學生解題。
+
+### 7.2 流程與差異
+*   **不寫入資料庫**：題目僅存於 `Flask Session` (Key: `instant_upload`)，練習結束即消失，保持資料庫整潔。
+*   **AI 助教介入**：`/chat_ai` 路由會優先讀取 Session 中的 `instant_upload` 資訊作為 Context，實現「針對該題」的教學。
+*   **介面變化**：`index.html` 會自動隱藏一般生成的 LaTeX 題目文字，改為顯示學生上傳的原始圖片。
+
+### 7.3 技術實現
+1.  **API**: `POST /practice/upload_instant` -> 存 Session -> Redirect.
+2.  **Frontend**: Jinja2 判斷 `is_instant_upload` flag -> 切換 `img` vs `mathjax` 顯示模式。
+3.  **Chatbot**: `build_chat_prompt` 函式優先讀取 `session['instant_upload']['question_text']`。
