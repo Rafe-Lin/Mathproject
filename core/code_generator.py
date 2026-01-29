@@ -362,8 +362,8 @@ You are a Senior Python Developer (V14.0 Professional Guard).
          u_str = str(user_answer).strip()
          c_str = str(correct_answer).strip()
          
-         yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right"]
-         no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong"]
+         yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right", "正確", "對"]
+         no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong", "錯誤", "錯", "不正確", "不一定"]
          
          if c_str in yes_group:
              return {"correct": u_str in yes_group, "result": "正確！" if u_str in yes_group else "答案錯誤"}

@@ -41,12 +41,35 @@ def clean_and_parse_json(text):
         return json.loads(text, strict=False)
     except Exception as e:
         try:
-            # 如果失敗，嘗試修復可能被截斷或轉義錯誤的字串
-            import ast
-            return ast.literal_eval(text)
+            # [Step 2] 嘗試修復截斷的 JSON (Unterminated string/brackets)
+            def repair_truncated_json(s):
+                s = s.strip()
+                # 1. 補齊引號 (假設偶數個引號才是閉合，若奇數個則補一個)
+                # 簡單計算 " 的數量 (排除轉義的 \")
+                quote_count = len(re.findall(r'(?<!\\)"', s))
+                if quote_count % 2 != 0:
+                    s += '"'
+                
+                # 2. 補齊括號
+                open_braces = s.count('{')
+                close_braces = s.count('}')
+                s += '}' * (open_braces - close_braces)
+                
+                open_brackets = s.count('[')
+                close_brackets = s.count(']')
+                s += ']' * (open_brackets - close_brackets)
+                return s
+
+            fixed_text = repair_truncated_json(text)
+            return json.loads(fixed_text, strict=False)
         except:
-            print(f"JSON 解析終極失敗: {e}")
-            return {"reply": text, "follow_up_prompts": []}
+            try:
+                # [Step 3] 若正規 JSON 失敗，嘗試 Python eval (針對 True/False/None)
+                import ast
+                return ast.literal_eval(text)
+            except:
+                print(f"JSON 解析終極失敗: {e}")
+                return {"reply": text, "follow_up_prompts": []}
 
 def enforce_strict_mode(text):
     if not text: return ""
@@ -238,7 +261,8 @@ def analyze(image_data_url, context, api_key, prerequisite_skills=None):
 
             # 清理可能的 ```json 標記
             cleaned = re.sub(r'^```json\s*|\s*```$', '', raw_text, flags=re.MULTILINE)
-            data = json.loads(cleaned)
+            # [Fix] Use robust parser
+            data = clean_and_parse_json(cleaned)
             
             # [關鍵] 強制注入嚴格模式清洗 (圖片路徑)
             if 'reply' in data:

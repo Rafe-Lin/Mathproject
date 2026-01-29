@@ -60,7 +60,10 @@ def generate_v9_spec(skill_id, model_tag='cloud_pro', prompt_strategy='standard'
        - 必須支援多種數學格式的等價性 (例如：`1/2` = `0.5`, `3:4` = `0.75`)。
 
     3. **是非題/布林值規範 (Boolean Localization)** [CRITICAL]:
-       - 若題目為判斷題 (e.g., "是否平行?", "是否為函數?"), `correct_answer` **必須** 設定為中文的 **"是"** 或 **"否"**。
+       - [CRITICAL] Boolean Cleanliness:
+       - For True/False questions, correct_answer MUST be ONLY "是" or "否".
+       - NEVER put the explanation (e.g., "因為對角線...") in correct_answer.
+       - Put the detailed explanation in the answer or solution_text field.
        - **嚴禁** 使用 `"1"`, `"0"`, `"True"`, `"False"` 作為正確答案。
        - **Bad**: `correct_answer = "1"`
        - **Good**: `correct_answer = "是"`

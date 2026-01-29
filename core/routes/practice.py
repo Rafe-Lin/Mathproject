@@ -229,6 +229,20 @@ def check_answer():
         }), 400
 
     skill = current['skill']
+    
+    # [Fix] Instant Upload Special Handling
+    if skill == 'instant_upload':
+        # Simple string comparison for instant upload
+        correct_ans = str(current.get('correct_answer', '')).strip()
+        user_ans_clean = user_ans.strip()
+        is_correct = (user_ans_clean == correct_ans)
+        
+        result = {
+            "correct": is_correct,
+            "result": "正確！" if is_correct else f"答案錯誤。正確答案為：{correct_ans}"
+        }
+        return jsonify(result)
+
     mod = get_skill(skill)
     if not mod:
         return jsonify({"correct": False, "result": "模組載入錯誤"})

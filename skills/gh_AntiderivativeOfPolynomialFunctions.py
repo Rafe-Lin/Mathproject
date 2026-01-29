@@ -1,10 +1,10 @@
 # ==============================================================================
 # ID: gh_AntiderivativeOfPolynomialFunctions
 # Model: gemini-2.5-flash | Strategy: V9 Architect (cloud_pro)
-# Duration: 119.27s | RAG: 2 examples
-# Created At: 2026-01-29 13:30:34
+# Duration: 147.98s | RAG: 2 examples
+# Created At: 2026-01-29 19:19:33
 # Fix Status: [Repaired]
-# Fixes: Regex=1, Logic=0
+# Fixes: Regex=2, Logic=0
 #==============================================================================
 
 
@@ -235,6 +235,7 @@ def draw_geometry_composite(polygons, labels, x_limit=(0,10), y_limit=(0,10)):
 
 # --- 4. Answer Checker (V11.6 Smart Formatting Standard) ---
 def check(user_answer, correct_answer):
+    import math, random, re
     if user_answer is None: return {"correct": False, "result": "未提供答案。"}
     
     # 將字典或複雜格式轉為乾淨字串
@@ -263,327 +264,338 @@ def check(user_answer, correct_answer):
     return {"correct": False, "result": r"答案錯誤。正確答案為：{ans}".replace("{ans}", c_raw)}
 
 
-import re
 
 from datetime import datetime
+import re # Required for check function, but good practice to have at top if helpers might use it
 
-# --- Helper Functions (遵循視覺化與輔助函式通用規範) ---
+# --- Helper Functions ---
 
-def _generate_polynomial_term_params(min_coeff, max_coeff, min_exp, max_exp, allow_zero_coeff=False):
-    """
-    功能: 生成多項式項的隨機係數和指數。
-    回傳: (coeff, exp)
-    """
-    coeff = 0
-    while coeff == 0 and not allow_zero_coeff: # 確保係數不為零，除非明確允許
-        coeff = random.randint(min_coeff, max_coeff)
-    
-    # 指數範圍 [min_exp, max_exp]
+# Helper function to generate a polynomial term (coefficient, exponent)
+# Ensures non-zero coefficient for main terms, and non-negative exponent
+def _generate_polynomial_term(min_coeff=-8, max_coeff=8, min_exp=0, max_exp=5, allow_zero_coeff=False):
+    coeff = random.randint(min_coeff, max_coeff)
+    if not allow_zero_coeff:
+        while coeff == 0: # Ensure coefficient is not zero for a displayed term
+            coeff = random.randint(min_coeff, max_coeff)
     exp = random.randint(min_exp, max_exp)
     return coeff, exp
 
-def _format_polynomial_latex(terms, is_derivative=False):
-    """
-    功能: 將 (係數, 指數) 列表轉換為 LaTeX 格式的多項式字串。
-    範例: [(3, 2), (-1, 1), (5, 0)] -> "3x^2 - x + 5"
-    參數:
-        terms (list): 包含 (係數, 指數) 元組的列表。
-        is_derivative (bool): 若為 True，則在格式化時忽略常數項 (exp=0)。
-    回傳: LaTeX 字串。
-    """
-    if not terms:
-        return r"0"
-
-    parts = []
-    # 按照指數降序排序，並過濾掉係數為 0 的項
-    terms_filtered = sorted([t for t in terms if t[0] != 0], key=lambda x: x[1], reverse=True)
-
-    for i, (coeff, exp) in enumerate(terms_filtered):
-        if is_derivative and exp == 0: # 導函數的常數項為 0，因此省略
-            continue
-
+# Helper to format a polynomial term for LaTeX (e.g., "+3x^2" or "-5")
+# is_first_term: if True, doesn't add leading '+' for positive terms.
+def _format_term_latex(coeff, exp, is_first_term=False):
+    if coeff == 0:
+        return ""
+    
+    coeff_abs = abs(coeff)
+    
+    coeff_str = ""
+    if exp == 0: # Constant term
+        coeff_str = str(coeff_abs)
+    elif coeff_abs == 1: # For x^n, not 1x^n
         coeff_str = ""
-        term_str = ""
+    else:
+        coeff_str = str(coeff_abs)
 
-        # 處理係數為 1 或 -1 的情況，以及常數項
-        # 例如：x 而不是 1x, -x 而不是 -1x
-        if abs(coeff) != 1 or exp == 0:
-            coeff_str = str(abs(coeff))
-        
-        if exp == 0: # 常數項
-            term_str = coeff_str
-        elif exp == 1: # x 的一次方項
-            term_str = coeff_str + r"x"
-        else: # x 的 n 次方項 (n > 1)
-            term_str = coeff_str + r"x^{" + str(exp) + r"}"
-
-        # 處理正負號和連接符號
-        if coeff < 0:
-            parts.append(r"- " + term_str)
-        else:
-            if parts: # 如果不是第一個項，則添加 "+"
-                parts.append(r"+ " + term_str)
-            else: # 第一個項直接添加
-                parts.append(term_str)
-
-    if not parts:
-        return r"0" # 如果所有項都為 0，則返回 "0"
+    term_body = ""
+    if exp == 0:
+        term_body = coeff_str
+    elif exp == 1:
+        term_body = f"{coeff_str}x"
+    else:
+        term_body = f"{coeff_str}x^{exp}"
     
-    # 嚴格使用字串拼接方式建構 LaTeX 字串，禁止 f-string
-    return r"".join(parts)
+    if coeff > 0:
+        return term_body if is_first_term else f"+{term_body}"
+    else: # coeff < 0
+        return f"-{term_body}"
 
-def _integrate_polynomial_terms(terms):
-    """
-    功能: 對 (係數, 指數) 列表進行反導函數運算。
-    回傳: 新的 (新係數, 新指數) 列表，分數係數以字串 "numerator/denominator" 表示。
-    """
-    integrated_terms = []
-    for coeff_val, exp in terms:
-        # 如果係數已經是分數字串，先轉換為浮點數或分數元組
-        if isinstance(coeff_val, str) and '/' in coeff_val:
-            current_num, current_den = map(int, coeff_val.split('/'))
-        elif isinstance(coeff_val, float):
-            # 將浮點數轉換為分數 (例如 2.5 -> 5/2)
-            s = str(coeff_val)
-            if '.' in s:
-                decimal_places = len(s.split('.')[1])
-                current_den = 10 ** decimal_places
-                current_num = int(coeff_val * current_den)
-                common_divisor = math.gcd(current_num, current_den)
-                current_num //= common_divisor
-                current_den //= common_divisor
-            else: # 浮點數形式的整數
-                current_num = int(coeff_val)
-                current_den = 1
-        else: # 整數係數
-            current_num = int(coeff_val)
-            current_den = 1
-        
-        # K12 多項式反導函數通常不涉及 log 項 (即 exp != -1)
-        # 根據 _generate_polynomial_term_params 的 exp_range 和常數項處理，exp 始終 >= 0
-        new_exp = exp + 1
-        
-        # 新係數為 (current_num / current_den) / new_exp
-        # 等價於 current_num / (current_den * new_exp)
-        final_num = current_num
-        final_den = current_den * new_exp
-        
-        # 簡化分數
-        common_divisor = math.gcd(final_num, final_den)
-        final_num //= common_divisor
-        final_den //= common_divisor
-
-        # 確保分母為正，符號放在分子
-        if final_den < 0:
-            final_num *= -1
-            final_den *= -1
-
-        if final_den == 1: # 如果分母為 1，則為整數係數
-            integrated_terms.append((final_num, new_exp))
-        else: # 否則為分數係數
-            integrated_terms.append((f"{final_num}/{final_den}", new_exp))
-    return integrated_terms
-
-def _evaluate_integrated_polynomial(integrated_terms, x_val, C_val):
-    """
-    功能: 評估給定 x_val 和積分常數 C_val 的反導函數值。
-    參數:
-        integrated_terms (list): 包含 (係數_字串或浮點數或整數, 指數) 元組的列表。
-        x_val (float/int): x 的值。
-        C_val (float/int): 積分常數 C 的值。
-    回傳: 浮點數值。
-    """
-    result = 0.0
-    for coeff_str_or_num, exp in integrated_terms:
-        coeff = 0.0
-        if isinstance(coeff_str_or_num, str) and '/' in coeff_str_or_num:
-            num, den = map(int, coeff_str_or_num.split('/'))
-            coeff = num / den
-        else: # 它是整數或浮點數
-            coeff = float(coeff_str_or_num)
-        
-        result += coeff * (x_val ** exp)
+# Helper to format the antiderivative term for LaTeX (e.g., "+\frac{1}{2}x^2" or "-3x")
+# Takes original_coeff and original_exp from f(x)
+def _format_antiderivative_term_latex(original_coeff, original_exp, is_first_term=False):
+    if original_coeff == 0:
+        return ""
     
-    result += C_val
-    return result
+    new_exp = original_exp + 1
+    
+    sign_str = "+" if original_coeff > 0 else "-"
+    
+    num = abs(original_coeff)
+    den = new_exp
+    
+    # Simplify fraction
+    common_divisor = math.gcd(num, den)
+    num //= common_divisor
+    den //= common_divisor
+    
+    coeff_str = ""
+    if den == 1:
+        coeff_str = str(num)
+    else:
+        coeff_str = r"\frac{" + str(num) + r"}{" + str(den) + r"}"
 
-# --- Main Functions ---
+    term_body = ""
+    if new_exp == 1:
+        term_body = f"{coeff_str}x"
+    else:
+        term_body = f"{coeff_str}x^{new_exp}"
+    
+    if is_first_term:
+        return term_body if original_coeff > 0 else f"-{term_body}"
+    else:
+        return f"{sign_str}{term_body}"
+
+# Helper to get the numerical value of the antiderivative coefficient
+def _get_antiderivative_coeff_value(coeff, exp):
+    if coeff == 0:
+        return 0.0
+    new_exp = exp + 1
+    return float(coeff) / new_exp
+
 
 def generate(level=1):
-    problem_type = random.choice([1, 2, 3, 4]) # 隨機選擇題型
+    # [隨機分流]: 使用 random.choice 選擇題型變體
+    # Problem type mapping adjusted to strictly mirror RAG examples and architect's spec descriptions.
+    # 'monomial_general_antiderivative': Corresponds to Architect's Spec's *description* of Type 1 (單項式).
+    # 'multi_term_general_antiderivative': Corresponds to RAG Ex 1 (multi-term polynomial, general antiderivative).
+    # 'multi_term_specific_antiderivative': Corresponds to RAG Ex 2 (multi-term polynomial, specific antiderivative with initial condition).
+    problem_type = random.choice([
+        'monomial_general_antiderivative', 
+        'multi_term_general_antiderivative', 
+        'multi_term_specific_antiderivative'
+    ])
     
     question_text = ""
     correct_answer = ""
-    image_base64 = None # 本技能不涉及圖片
+    answer = "" # This will be the solution_text/answer_display
+    image_base64 = None
+    
+    created_at = datetime.now().isoformat()
+    version = "1.0"
 
-    # 係數和指數的通用範圍
-    coeff_range = (-5, 5) # f(x) 的係數範圍
-    exp_range = (1, 4) # f(x) 項的指數範圍，確保是正整數指數
-
-    if problem_type == 1:
-        # Type 1 (Maps to Example 1: 基本反導函數與定點求值)
-        # 給定一個單項多項式函數 f(x)，要求找出其滿足特定初始條件 F(x0)=y0 的反導函數 F(x)，
-        # 並計算在另一個點 k 的函數值 F(k)。
+    if problem_type == 'monomial_general_antiderivative':
+        # Corresponds to Architect's Spec's *description* of Type 1: 基礎多項式單項式的反導函數。
         
-        coeff, exp = _generate_polynomial_term_params(*coeff_range, *exp_range, allow_zero_coeff=False) # 係數不能為零
-        f_terms = [(coeff, exp)]
-        f_x_latex = _format_polynomial_latex(f_terms)
+        coeff, exp = _generate_polynomial_term(min_coeff=-8, max_coeff=8, min_exp=0, max_exp=5, allow_zero_coeff=False)
+        
+        # Build f(x) string
+        f_x_str = _format_term_latex(coeff, exp, is_first_term=True)
+        
+        question_text_template = r"試求函數 $f(x) = {fx_expr}$ 的所有反導函數 $F(x)$。"
+        question_text = question_text_template.replace("{fx_expr}", f_x_str)
 
-        integrated_terms_no_C = _integrate_polynomial_terms(f_terms)
+        # Build F(x) string for display
+        F_x_str = _format_antiderivative_term_latex(coeff, exp, is_first_term=True)
+        answer_template = r"$F(x) = {Fx_expr} + C$"
+        answer = answer_template.replace("{Fx_expr}", F_x_str)
 
-        # 初始條件 (x0, y0)
+        # Correct answer: coefficients of F(x) without C.
+        antideriv_coeffs_dict = {} # {exp: value}
+        if coeff != 0:
+            antideriv_coeffs_dict[exp + 1] = _get_antiderivative_coeff_value(coeff, exp)
+        
+        max_antideriv_exp = max(antideriv_coeffs_dict.keys()) if antideriv_coeffs_dict else 0
+
+        answer_parts = []
+        for e in range(max_antideriv_exp, 0, -1): # From max_antideriv_exp down to 1
+            answer_parts.append(str(antideriv_coeffs_dict.get(e, 0.0)))
+        
+        correct_answer = ",".join(answer_parts)
+
+    elif problem_type == 'multi_term_general_antiderivative':
+        # Corresponds to RAG Ex 1: 求 $x^2 + 5x - 4$ 的所有反導函數。
+        # (Multi-term polynomial, general antiderivative)
+        
+        num_terms = random.randint(2, 3) # 2 or 3 terms
+        f_x_terms = []
+        
+        # Generate terms for f(x), ensuring unique exponents and non-zero coefficients
+        exponents_used = set()
+        for i in range(num_terms):
+            coeff_i, exp_i = _generate_polynomial_term(min_coeff=-8, max_coeff=8, min_exp=0, max_exp=5, allow_zero_coeff=False)
+            while exp_i in exponents_used: # Ensure exponent is unique
+                exp_i = random.randint(0, 5)
+            f_x_terms.append((coeff_i, exp_i))
+            exponents_used.add(exp_i)
+        
+        # Sort terms by exponent in descending order for display
+        f_x_terms.sort(key=lambda x: x[1], reverse=True)
+
+        # Build f(x) string
+        f_x_str_parts = []
+        for i, (coeff, exp) in enumerate(f_x_terms):
+            f_x_str_parts.append(_format_term_latex(coeff, exp, is_first_term=(i==0)))
+        f_x_str = "".join(f_x_str_parts)
+
+        question_text_template = r"試求函數 $f(x) = {fx_expr}$ 的所有反導函數 $F(x)$。"
+        question_text = question_text_template.replace("{fx_expr}", f_x_str)
+
+        # Build F(x) string for display
+        F_x_str_parts = []
+        # Sort terms by their antiderivative exponent for display
+        antideriv_terms_sorted_for_display = sorted(f_x_terms, key=lambda x: x[1]+1, reverse=True)
+
+        for i, (coeff, exp) in enumerate(antideriv_terms_sorted_for_display):
+            F_x_str_parts.append(_format_antiderivative_term_latex(coeff, exp, is_first_term=(i==0)))
+        
+        F_x_str = "".join(F_x_str_parts)
+        answer_template = r"$F(x) = {Fx_expr} + C$"
+        answer = answer_template.replace("{Fx_expr}", F_x_str)
+
+        # Correct answer: coefficients of F(x) without C.
+        antideriv_coeffs_dict = {} # {exp: value}
+        for coeff, exp in f_x_terms:
+            if coeff != 0:
+                antideriv_coeffs_dict[exp + 1] = _get_antiderivative_coeff_value(coeff, exp)
+        
+        max_antideriv_exp = max(antideriv_coeffs_dict.keys()) if antideriv_coeffs_dict else 0
+
+        answer_parts = []
+        for e in range(max_antideriv_exp, 0, -1): # From max_antideriv_exp down to 1
+            answer_parts.append(str(antideriv_coeffs_dict.get(e, 0.0)))
+        
+        correct_answer = ",".join(answer_parts)
+
+    elif problem_type == 'multi_term_specific_antiderivative':
+        # Corresponds to RAG Ex 2: 已知 $F(x)$ 為 $f(x) = 3x^2 - 2x + 1$ 的一個反導函數且 $F(2) = 4$，求 $F(x)$。
+        # (Multi-term polynomial, specific antiderivative with initial condition)
+        
+        num_terms = random.randint(1, 2) # 1 or 2 terms for f'(x)
+        f_prime_x_terms = []
+        
+        # Generate terms for f'(x), ensuring unique exponents and non-zero coefficients
+        exponents_used = set()
+        for i in range(num_terms):
+            coeff_i, exp_i = _generate_polynomial_term(min_coeff=-8, max_coeff=8, min_exp=0, max_exp=4, allow_zero_coeff=False)
+            while exp_i in exponents_used: # Ensure unique exponents
+                exp_i = random.randint(0, 4)
+            f_prime_x_terms.append((coeff_i, exp_i))
+            exponents_used.add(exp_i)
+        
+        # If there's only one term and it's a constant, ensure its coefficient is not zero
+        # (Already handled by _generate_polynomial_term(allow_zero_coeff=False))
+        
+        # Sort terms by exponent in descending order for display
+        f_prime_x_terms.sort(key=lambda x: x[1], reverse=True)
+
+        # Build f'(x) string
+        f_prime_x_str_parts = []
+        for i, (coeff, exp) in enumerate(f_prime_x_terms):
+            f_prime_x_str_parts.append(_format_term_latex(coeff, exp, is_first_term=(i==0)))
+        f_prime_x_str = "".join(f_prime_x_str_parts)
+
+        # Generate initial condition (x0, y0)
         x0 = random.randint(-3, 3)
         y0 = random.randint(-10, 10)
-        
-        # 計算積分常數 C
-        C_val = y0 - _evaluate_integrated_polynomial(integrated_terms_no_C, x0, 0)
 
-        # 評估點 k
-        k_val = random.randint(-3, 3)
-        while k_val == x0: # 確保 k_val 與 x0 不同
-            k_val = random.randint(-3, 3)
-        
-        final_answer = _evaluate_integrated_polynomial(integrated_terms_no_C, k_val, C_val)
-        
-        # 遵循排版與 LaTeX 安全規範
-        question_text_template = r"已知函數 $f(x) = {f_x}$，且 $F(x)$ 是 $f(x)$ 的一個反導函數。若 $F({x0}) = {y0}$，則 $F({k_val})$ 的值為何？"
-        question_text = question_text_template.replace("{f_x}", f_x_latex).replace("{x0}", str(x0)).replace("{y0}", str(y0)).replace("{k_val}", str(k_val))
-        correct_answer = str(round(final_answer, 4)) # 遵循答案數據純淨化規範
+        question_text_template = r"已知函數 $f(x)$ 滿足 $f'(x) = {f_prime_x_expr}$ 且 $f({x0}) = {y0}$，試求 $f(x)$。"
+        question_text = question_text_template.replace("{f_prime_x_expr}", f_prime_x_str).replace("{x0}", str(x0)).replace("{y0}", str(y0))
 
-    elif problem_type == 2:
-        # Type 2 (Maps to Example 2: 多項式反導函數與定點求值)
-        # 給定一個多項式函數 f(x) 包含多個項，要求找出其滿足特定初始條件 F(x0)=y0 的反導函數 F(x)，
-        # 並計算在另一個點 k 的函數值 F(k)。
+        # Calculate general antiderivative F(x) + C
+        antideriv_coeffs_dict = {} # {exp: value} for F(x) excluding C
+        for coeff, exp in f_prime_x_terms:
+            if coeff != 0:
+                antideriv_coeffs_dict[exp + 1] = _get_antiderivative_coeff_value(coeff, exp)
+        
+        # Get max exponent in antiderivative
+        max_antideriv_exp = max(antideriv_coeffs_dict.keys()) if antideriv_coeffs_dict else 0
 
-        num_terms = random.randint(2, 3) # 隨機生成 2 或 3 項
-        f_terms = []
-        for _ in range(num_terms):
-            coeff, exp = _generate_polynomial_term_params(*coeff_range, *exp_range, allow_zero_coeff=False)
-            f_terms.append((coeff, exp))
+        # Calculate F(x0)
+        F_x0_val = 0.0
+        for exp_val, coeff_val in antideriv_coeffs_dict.items():
+            F_x0_val += coeff_val * (x0 ** exp_val)
         
-        # 添加一個常數項 (exp=0)
-        constant_coeff = random.randint(coeff_range[0], coeff_range[1])
-        if constant_coeff != 0:
-            f_terms.append((constant_coeff, 0))
+        # Solve for C: F(x0) + C = y0 => C = y0 - F(x0)
+        C_val = y0 - F_x0_val
 
-        f_x_latex = _format_polynomial_latex(f_terms)
-        integrated_terms_no_C = _integrate_polynomial_terms(f_terms)
+        # Build F(x) string for display (with calculated C)
+        F_x_display_parts = []
+        # Sort f_prime_x_terms by their antiderivative exponent for display
+        antideriv_terms_sorted_for_display = sorted(f_prime_x_terms, key=lambda x: x[1]+1, reverse=True)
 
-        # 初始條件 (x0, y0)
-        x0 = random.randint(-3, 3)
-        y0 = random.randint(-10, 10)
-        
-        # 計算積分常數 C
-        C_val = y0 - _evaluate_integrated_polynomial(integrated_terms_no_C, x0, 0)
+        for i, (coeff, exp) in enumerate(antideriv_terms_sorted_for_display):
+            F_x_display_parts.append(_format_antiderivative_term_latex(coeff, exp, is_first_term=(i==0)))
 
-        # 評估點 k
-        k_val = random.randint(-3, 3)
-        while k_val == x0:
-            k_val = random.randint(-3, 3)
+        # Add C_val to display string
+        C_str_display = ""
+        if C_val != 0:
+            # Format C_val: integer if whole, otherwise up to 4 significant figures.
+            if C_val.is_integer():
+                C_str_display = f"+{int(C_val)}" if C_val > 0 else f"{int(C_val)}"
+            else:
+                C_str_display = f"+{C_val:.4g}" if C_val > 0 else f"{C_val:.4g}"
         
-        final_answer = _evaluate_integrated_polynomial(integrated_terms_no_C, k_val, C_val)
+        F_x_display = "".join(F_x_display_parts) + C_str_display
         
-        question_text_template = r"已知函數 $f(x) = {f_x}$，且 $F(x)$ 是 $f(x)$ 的一個反導函數。若 $F({x0}) = {y0}$，則 $F({k_val})$ 的值為何？"
-        question_text = question_text_template.replace("{f_x}", f_x_latex).replace("{x0}", str(x0)).replace("{y0}", str(y0)).replace("{k_val}", str(k_val))
-        correct_answer = str(round(final_answer, 4))
+        # Ensure F_x_display doesn't start with '+'.
+        if F_x_display.startswith('+'):
+            F_x_display = F_x_display[1:]
 
-    elif problem_type == 3:
-        # Type 3 (Maps to Example 3: 反導函數與積分常數求解)
-        # 給定一個多項式函數 f(x)，要求找出其滿足特定初始條件 F(x0)=y0 的反導函數 F(x)，
-        # 並明確計算積分常數 C 的值。
+        answer_template = r"$f(x) = {Fx_expr}$"
+        answer = answer_template.replace("{Fx_expr}", F_x_display)
 
-        num_terms = random.randint(1, 2) # 隨機生成 1 或 2 項
-        f_terms = []
-        for _ in range(num_terms):
-            coeff, exp = _generate_polynomial_term_params(*coeff_range, *exp_range, allow_zero_coeff=False)
-            f_terms.append((coeff, exp))
+        # Correct answer: coefficients of F(x) including the calculated C.
+        answer_parts = []
+        for e in range(max_antideriv_exp, 0, -1): # From max_antideriv_exp down to 1
+            answer_parts.append(str(antideriv_coeffs_dict.get(e, 0.0)))
+        answer_parts.append(str(C_val)) # Add C as the last element (constant term)
         
-        # 添加一個常數項
-        constant_coeff = random.randint(coeff_range[0], coeff_range[1])
-        if constant_coeff != 0:
-            f_terms.append((constant_coeff, 0))
+        correct_answer = ",".join(answer_parts)
 
-        f_x_latex = _format_polynomial_latex(f_terms)
-        integrated_terms_no_C = _integrate_polynomial_terms(f_terms)
-
-        # 初始條件 (x0, y0)
-        x0 = random.randint(-3, 3)
-        y0 = random.randint(-10, 10)
-        
-        # 計算積分常數 C 的值
-        C_val = y0 - _evaluate_integrated_polynomial(integrated_terms_no_C, x0, 0)
-        
-        question_text_template = r"已知函數 $f(x) = {f_x}$，且 $F(x)$ 是 $f(x)$ 的一個反導函數。若 $F({x0}) = {y0}$，則 $F(x)$ 中的積分常數 $C$ 為何？"
-        question_text = question_text_template.replace("{f_x}", f_x_latex).replace("{x0}", str(x0)).replace("{y0}", str(y0))
-        correct_answer = str(round(C_val, 4))
-
-    elif problem_type == 4:
-        # Type 4 (Maps to Example 4: 二階反導函數與定點求值)
-        # 給定二階導函數 f""(x)，以及一階導函數 f'(x) 和原函數 f(x) 各自的初始條件，
-        # 要求找出原函數 f(x)，並計算在特定點 k 的函數值 f(k)。
-
-        # 生成 f""(x) = ax + b (指數為 1 和 0 的項)
-        coeff_f_double_prime_x, _ = _generate_polynomial_term_params(*coeff_range, 1, 1, allow_zero_coeff=False) # x 項
-        coeff_f_double_prime_const, _ = _generate_polynomial_term_params(*coeff_range, 0, 0, allow_zero_coeff=True) # 常數項
-        
-        f_double_prime_terms = [(coeff_f_double_prime_x, 1)]
-        if coeff_f_double_prime_const != 0:
-            f_double_prime_terms.append((coeff_f_double_prime_const, 0))
-        
-        f_double_prime_latex = _format_polynomial_latex(f_double_prime_terms)
-        
-        # 第一次積分得到 f'(x) = A x^2 + B x + C1
-        f_prime_terms_no_c1 = _integrate_polynomial_terms(f_double_prime_terms)
-
-        # f'(x) 的初始條件
-        x0_prime = random.randint(-2, 2)
-        y0_prime = random.randint(-5, 5)
-        
-        # 計算 C1
-        C1_val = y0_prime - _evaluate_integrated_polynomial(f_prime_terms_no_c1, x0_prime, 0)
-        
-        # 將 C1 作為常數項添加到 f'(x) 的項中，準備第二次積分
-        f_prime_terms_with_c1 = f_prime_terms_no_c1 + [(C1_val, 0)]
-        
-        # 第二次積分得到 f(x) = D x^3 + E x^2 + F x + G + C2
-        f_terms_no_c2 = _integrate_polynomial_terms(f_prime_terms_with_c1)
-
-        # f(x) 的初始條件
-        x0_func = random.randint(-2, 2)
-        y0_func = random.randint(-5, 5)
-        
-        # 計算 C2
-        C2_val = y0_func - _evaluate_integrated_polynomial(f_terms_no_c2, x0_func, 0)
-
-        # 評估點 k
-        k_val = random.randint(-2, 2)
-        # 確保 k_val 與初始條件的 x 值不同
-        invalid_k_values = {x0_prime, x0_func}
-        while k_val in invalid_k_values:
-            k_val = random.randint(-2, 2)
-        
-        final_answer = _evaluate_integrated_polynomial(f_terms_no_c2, k_val, C2_val)
-
-        question_text_template = (
-            r"已知函數 $f""(x) = {f_double_prime_x}$，且 $f'({x0_prime}) = {y0_prime}$ 及 $f({x0_func}) = {y0_func}$。"
-            r"則 $f({k_val})$ 的值為何？"
-        )
-        question_text = question_text_template.replace("{f_double_prime_x}", f_double_prime_latex) \
-                                             .replace("{x0_prime}", str(x0_prime)) \
-                                             .replace("{y0_prime}", str(y0_prime)) \
-                                             .replace("{x0_func}", str(x0_func)) \
-                                             .replace("{y0_func}", str(y0_func)) \
-                                             .replace("{k_val}", str(k_val))
-        correct_answer = str(round(final_answer, 4))
-        
     return {
         "question_text": question_text,
         "correct_answer": correct_answer,
-        "answer": correct_answer, # [Fix] 由 "" 改為 correct_answer，確保前端能顯示答案
+        "answer": answer, # This is the solution_text/answer_display
         "image_base64": image_base64,
-        "created_at": datetime.now().isoformat(),
-        "version": "1" # 初始版本
+        "created_at": created_at,
+        "version": version,
     }
+
+
+
+    import re
+    
+
+    # CRITICAL CODING RULES (V18.8, V18.9): Local Imports - Done.
+    # CRITICAL CODING STANDARDS: Verification & Stability - Deterministic Grading is ensured.
+
+    # 1. Input Sanitization: Custom cleaning for coefficient lists.
+    # This cleaning removes LaTeX symbols, curly braces, common variable/prefix strings, and spaces.
+    # It *retains* numbers, decimals, signs, and commas, which are essential for coefficient lists.
+    def clean_coefficient_string(s):
+        s = str(s).strip()
+        # Remove common LaTeX, variable, and formatting noise
+        s = re.sub(r'[\\$}{kx=y=Ans:\s]', '', s)
+        # Remove 'C' if user might have included it in their raw answer, as correct_answer does not have 'C'.
+        s = re.sub(r'[cC]', '', s) 
+        return s
+
+    cleaned_user_answer_str = clean_coefficient_string(user_answer)
+    cleaned_correct_answer_str = clean_coefficient_string(correct_answer)
+
+    # 2. Numerical Sequence Comparison (adapted from the original check function)
+    user_coeffs_str = cleaned_user_answer_str.split(',')
+    correct_coeffs_str = cleaned_correct_answer_str.split(',')
+
+    try:
+        # Convert to floats, filtering out any empty strings from splitting
+        user_coeffs = [float(c) for c in user_coeffs_str if c.strip()]
+        correct_coeffs = [float(c) for c in correct_coeffs_str if c.strip()]
+    except ValueError:
+        return {"correct": False, "result": "答案格式錯誤，請檢查數字輸入。"}
+
+    # V12.6 邏輯驗證硬化規約: 結構鎖死 - 數值序列比對
+    # Check if the number of coefficients matches
+    if len(user_coeffs) != len(correct_coeffs):
+        return {"correct": False, "result": "答案項數不符。"}
+
+    # Compare each coefficient, considering floating point precision (Universal Check Template principle)
+    tolerance = 1e-6 # Define a small tolerance for floating-point comparisons
+    for u_coeff, c_coeff in zip(user_coeffs, correct_coeffs):
+        if not math.isclose(u_coeff, c_coeff, rel_tol=tolerance, abs_tol=tolerance):
+            return {"correct": False, "result": "答案數值不符。"}
+            
+    return {"correct": True, "result": "正確！"}
+
 
 # [Auto-Injected Patch v11.0] Universal Return, Linebreak & Handwriting Fixer
 def _patch_all_returns(func):
@@ -625,9 +637,12 @@ def _patch_all_returns(func):
                 elif res['result'].lower() in ['incorrect', 'wrong', 'error']:
                     res['result'] = '答案錯誤'
             
-            # 4. 確保欄位完整性
-            if 'answer' not in res and 'correct_answer' in res:
-                res['answer'] = res['correct_answer']
+            # 4. 確保欄位完整性 & 答案同步
+            if 'correct_answer' in res:
+                # 若 answer 不存在或為空字串，強制同步 correct_answer
+                if 'answer' not in res or not res['answer']:
+                     res['answer'] = res['correct_answer']
+            
             if 'answer' in res:
                 res['answer'] = str(res['answer'])
             if 'image_base64' not in res:

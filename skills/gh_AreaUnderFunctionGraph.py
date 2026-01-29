@@ -1,10 +1,10 @@
 # ==============================================================================
 # ID: gh_AreaUnderFunctionGraph
 # Model: gemini-2.5-flash | Strategy: V9 Architect (cloud_pro)
-# Duration: 70.71s | RAG: 3 examples
-# Created At: 2026-01-29 12:38:21
+# Duration: 143.46s | RAG: 3 examples
+# Created At: 2026-01-29 19:15:10
 # Fix Status: [Repaired]
-# Fixes: Regex=1, Logic=0
+# Fixes: Regex=2, Logic=0
 #==============================================================================
 
 
@@ -91,6 +91,12 @@ def get_prime_factorization(n):
 
 def gcd(a, b): return math.gcd(int(a), int(b))
 def lcm(a, b): return abs(int(a) * int(b)) // math.gcd(int(a), int(b))
+
+def op_latex(num):
+    return fmt_num(num, op=True)
+
+def clean_latex_output(s):
+    return str(s).strip()
 
 # --- 3. Fraction Generator & Helpers ---
 def simplify_fraction(n, d):
@@ -229,6 +235,7 @@ def draw_geometry_composite(polygons, labels, x_limit=(0,10), y_limit=(0,10)):
 
 # --- 4. Answer Checker (V11.6 Smart Formatting Standard) ---
 def check(user_answer, correct_answer):
+    import math, random, re
     if user_answer is None: return {"correct": False, "result": "未提供答案。"}
     
     # 將字典或複雜格式轉為乾淨字串
@@ -258,415 +265,418 @@ def check(user_answer, correct_answer):
 
 
 
-import matplotlib.pyplot as plt
-import io
 import base64
-import re
-from datetime import datetime
-from fractions import Fraction
+from io import BytesIO
+import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
-# --- Helper Functions ---
+# Helper function for coordinate generation (V10.2, V13.0, V13.1, V13.5)
+# This function is designed to return both the float value and a tuple
+# representing the integer part, numerator, denominator, and sign for robust LaTeX formatting.
 def _generate_coordinate_value(min_val, max_val, allow_fraction=False):
     """
-    功能: 生成一個浮點數座標值，並提供其分解結構 (整數部、分子、分母、正負號)，符合 V10.2 A 規範。
-    V13.1 禁絕假分數: 若生成分數，必須確保 `num < den` 且 `den > 1`。
-    V13.5 整數優先: 若 `float_val` 為整數，則 `float_val` 將被轉換為 `int` 類型，並確保 `num=0, den=0`。
+    Generates a coordinate value, either integer or a proper fraction.
+    Returns the float value and a tuple for LaTeX formatting.
+    (V10.2, V13.0, V13.1, V13.5)
+    
+    CRITICAL RULE: "座標值僅限整數或 0.5".
+    For this specific problem generation, we will prioritize integers to strictly
+    mirror the RAG examples which implicitly use integer coefficients and bounds.
+    If 'allow_fraction' is True, it will generate X.5 values.
     """
-    float_val = 0.0
-    int_part = 0
-    num = 0
-    den = 0
-    is_neg = False
-
-    if allow_fraction and random.random() < 0.5: # 50% chance for fraction if allowed
-        # Generate a float that can be represented as a simple fraction (e.g., x.5 or x.25)
-        # We ensure the denominator is small (e.g., 2 or 4)
-        denominator = random.choice([2, 4])
-        # Generate numerator such that the float_val is within min_val and max_val
-        # and has a non-zero fractional part if it's a proper fraction.
+    if allow_fraction and random.random() < 0.5: # 50% chance for X.5 if allowed
+        int_part = random.randint(math.floor(min_val), math.floor(max_val))
+        float_val = int_part + random.choice([-0.5, 0.5])
         
-        # Try to generate a number within the range [min_val, max_val]
-        # and then convert it to a fraction.
-        raw_val = random.uniform(min_val, max_val)
-        
-        # Convert to fraction, then check for proper fraction and simplify
-        frac_candidate = Fraction(raw_val).limit_denominator(denominator)
-        
-        if frac_candidate.denominator == 1: # It's an integer, try again or just treat as int
-            float_val = int(frac_candidate)
-        else:
-            float_val = float(frac_candidate)
-            is_neg = float_val < 0
-            abs_frac = abs(frac_candidate)
-            int_part = math.floor(abs_frac)
-            num = abs_frac.numerator - int_part * abs_frac.denominator
-            den = abs_frac.denominator
+        # Ensure the final float_val is strictly within the desired range
+        if not (min_val <= float_val <= max_val):
+            return _generate_coordinate_value(min_val, max_val, allow_fraction=False) # Fallback to integer
             
-            # Ensure num < den (proper fraction part) and den > 1
-            if num == 0: # If it's effectively an integer (e.g. 2/2 -> 1)
-                float_val = int(float_val)
-                int_part = abs(int(float_val))
-                den = 0
-            elif den == 0: # Should not happen with Fraction, but for robustness
-                float_val = int(float_val)
-                int_part = abs(int(float_val))
+        return float_val, (int_part, 1, 2, float_val < 0 and int_part == 0) # (int_part, num, den, is_negative)
+    else:
+        val = random.randint(math.floor(min_val), math.ceil(max_val))
+        return float(val), (int(val), 0, 0, val < 0) # For integers, num and den are 0
 
-    if den == 0: # It's an integer or simplified to an integer
-        float_val = random.randint(min_val, max_val)
-        int_part = abs(int(float_val))
-        num = 0
-        den = 0
-        is_neg = float_val < 0
-        
-    return (float_val, (int_part, num, den, is_neg))
-
-def _format_coordinate(data):
+# Drawing helper function (V13.5, V13.6, CRITICAL RULE: Visual Solvability)
+def _draw_coordinate_plane(points_to_plot, function_data=None, x_range=(-10, 10), y_range=(-10, 10), area_polygon=None):
     """
-    功能: 將 `_generate_coordinate_value` 產生的數據結構格式化為 LaTeX 字串。
-    V10.2 C. LaTeX 模板規範: 嚴格使用 `.replace("{n}", str(num))` 進行代換。
-    V13.0 格式精確要求: 處理整數時，確保輸出為 `str(int(val))` 而非 `str(float(val))`。
+    Draws a coordinate plane with function graph, area highlight, and points.
+    Ensures visual solvability with clear ticks and labels.
+    (V10.2, V13.0, V13.1, V13.5, V13.6, CRITICAL RULE: Visual Solvability)
     """
-    float_val, (int_part, num, den, is_neg) = data
-    
-    sign = "-" if is_neg else ""
-    
-    if num == 0 and den == 0: # Integer
-        return f"{int(float_val)}"
-    elif int_part == 0: # Pure fraction
-        return r"{sign}\frac{{{num}}}{{{den}}}".replace("{sign}", sign).replace("{num}", str(num)).replace("{den}", str(den))
-    else: # Mixed fraction
-        return r"{sign}{int_part}\frac{{{num}}}{{{den}}}".replace("{sign}", sign).replace("{int_part}", str(int_part)).replace("{num}", str(num)).replace("{den}", str(den))
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.set_aspect('equal') # V10.2 Pure Style
 
-def _format_fraction_for_latex(value, signed=False):
-    """
-    功能: 將浮點數值格式化為 LaTeX 格式的分數或整數，用於函數方程式的係數。
-    V5. 排版與 LaTeX 安全: 嚴禁使用 f-string 或 % 格式化，必須使用 `.replace()`。
-    """
-    if value == 0:
-        return "0"
-        
-    sign_str = ""
-    if signed and value > 0:
-        sign_str = "+"
-    elif value < 0:
-        sign_str = "-"
-    
-    abs_value = abs(value)
-    
-    if abs_value.is_integer():
-        return sign_str + str(int(abs_value))
-    
-    frac = Fraction(abs_value).limit_denominator(10)
-    int_part = int(frac) # Integer part
-    num = frac.numerator - int_part * frac.denominator # Numerator of the fractional part
-    den = frac.denominator
+    # Set symmetric integer ticks and labels (CRITICAL RULE: Visual Solvability, Mandatory Axis Ticks)
+    x_min_tick = math.floor(x_range[0])
+    x_max_tick = math.ceil(x_range[1])
+    y_min_tick = math.floor(y_range[0])
+    y_max_tick = math.ceil(y_range[1])
 
-    if den == 1: # Should be integer already, but if Fraction simplified to int
-        return sign_str + str(int(abs_value))
-    elif int_part == 0: # Pure fraction
-        return sign_str + r"\frac{{{num}}}{{{den}}}".replace("{num}", str(num)).replace("{den}", str(den))
-    else: # Mixed fraction
-        return sign_str + r"{int_part}\frac{{{num}}}{{{den}}}".replace("{int_part}", str(int_part)).replace("{num}", str(num)).replace("{den}", str(den))
+    ax.set_xticks(np.arange(x_min_tick, x_max_tick + 1, 1))
+    ax.set_yticks(np.arange(y_min_tick, y_max_tick + 1, 1))
+    ax.grid(True, linestyle='--', alpha=0.6) # Grid Lines
 
-def _draw_coordinate_plane(line_eq=None, region_x_bounds=None, x_intercept=None, y_intercept=None):
-    """
-    功能: 繪製座標平面、函數圖形及指定區域邊界。
-    V17.1 圖表必須可解: ax.set_xticks(range(-plot_limit, plot_limit + 1)) 和 ax.set_yticks(range(-plot_limit, plot_limit + 1)) 必須確保 X 軸與 Y 軸的主要整數刻度可見。
-    V13.0 格線對齊: 座標軸範圍必須是對稱整數，且 xticks 間隔必須固定為 1。
-    V13.5 座標範圍: 座標範圍必須對稱且寬裕 (例如至少 -8 到 8)。
-    V10.2 D. 視覺一致性: ax.set_aspect('equal') 確保網格為正方形。原點 0 標註為 18 號加粗字體。
-    V13.6 Arrow Ban: 嚴禁使用 arrowprops。必須使用 ax.plot(limit, 0, ">k", clip_on=False) 繪製箭頭。
-    V13.5 標籤隔離: ax.text 僅能標註點的名稱 (Label)，嚴禁包含座標值。
-    防洩漏原則: 繪圖函式僅接收「題目已知數據」。嚴禁將「答案數據」傳入繪圖函式。
-    ULTRA VISUAL STANDARDS (V11.6): dpi=300, ax.set_aspect('equal'), white halos for ABCD text.
-    Mandatory Axis Ticks (CRITICAL CODING STANDARDS): Explicit set_xticks, set_yticks.
-    Axis Visibility: spines at zero.
-    Grid Lines: ax.grid(True, linestyle=':', alpha=0.6).
-    """
-    a, b = line_eq
+    ax.set_xlim(x_range[0], x_range[1])
+    ax.set_ylim(y_range[0], y_range[1])
 
-    # Determine plot limits dynamically but ensure a minimum range
-    min_x_val, max_x_val = -8, 8
-    min_y_val, max_y_val = -8, 8
+    # Draw arrows for axes (V13.6 API Hardened Spec)
+    ax.plot(x_range[1], 0, ">k", clip_on=False, markersize=8) # x-axis arrow
+    ax.plot(0, y_range[1], "^k", clip_on=False, markersize=8) # y-axis arrow
 
-    if x_intercept is not None:
-        min_x_val = min(min_x_val, math.floor(x_intercept - 2))
-        max_x_val = max(max_x_val, math.ceil(x_intercept + 2))
-    if y_intercept is not None:
-        min_y_val = min(min_y_val, math.floor(y_intercept - 2))
-        max_y_val = max(max_y_val, math.ceil(y_intercept + 2))
-    if region_x_bounds:
-        c1, c2 = region_x_bounds
-        min_x_val = min(min_x_val, math.floor(c1 - 2))
-        max_x_val = max(max_x_val, math.ceil(c2 + 2))
-        y_at_c1 = a * c1 + b
-        y_at_c2 = a * c2 + b
-        min_y_val = min(min_y_val, math.floor(min(0, y_at_c1, y_at_c2) - 2)) # Include 0 for x-axis
-        max_y_val = max(max_y_val, math.ceil(max(0, y_at_c1, y_at_c2) + 2)) # Include 0 for x-axis
-        
-    # Ensure symmetry and minimum range
-    plot_limit_x = int(max(abs(min_x_val), abs(max_x_val), 8)) + 1
-    plot_limit_y = int(max(abs(min_y_val), abs(max_y_val), 8)) + 1
-    
-    # Take the larger of the two limits to ensure square plot_limit
-    plot_limit = max(plot_limit_x, plot_limit_y)
-    
-    # Adjust plot_limit to be at least 8 in both directions
-    plot_limit = max(plot_limit, 8)
+    ax.plot([x_range[0], x_range[1]], [0, 0], 'k-', lw=1) # x-axis line
+    ax.plot([0, 0], [y_range[0], y_range[1]], 'k-', lw=1) # y-axis line
 
-    fig, ax = plt.subplots(figsize=(8, 8), dpi=300) # ULTRA VISUAL STANDARDS: dpi=300
+    # Label origin (V10.2 Pure Style)
+    ax.text(0, -0.5, '0', color='black', ha='center', va='top', fontsize=18, fontweight='bold')
 
-    # Set up the axes
-    ax.spines['left'].set_position('zero')
-    ax.spines['bottom'].set_position('zero')
-    ax.spines['right'].set_color('none')
-    ax.spines['top'].set_color('none')
-    ax.xaxis.set_ticks_position('bottom')
-    ax.yaxis.set_ticks_position('left')
+    # Plot function if provided
+    if function_data:
+        x_vals_plot = np.linspace(x_range[0], x_range[1], 400) # Use full plot range for function
+        if function_data['type'] == 'linear':
+            m, c = function_data['params']
+            ax.plot(x_vals_plot, m * x_vals_plot + c, 'b-', label=f"$y = {int(m) if m.is_integer() else m}x + {int(c) if c.is_integer() else c}$")
+        elif function_data['type'] == 'abs_value':
+            a, h, k = function_data['params']
+            ax.plot(x_vals_plot, a * np.abs(x_vals_plot - h) + k, 'b-', label=f"$y = {int(a) if a.is_integer() else a}|x - {int(h) if h.is_integer() else h}| + {int(k) if k.is_integer() else k}$")
+        elif function_data['type'] == 'horizontal':
+            c = function_data['params'][0]
+            ax.plot(x_vals_plot, np.full_like(x_vals_plot, c), 'b-', label=f"$y = {int(c) if c.is_integer() else c}$")
+        elif function_data['type'] == 'piecewise_linear':
+            segments = function_data['params']
+            for i in range(len(segments)):
+                x1, y1 = segments[i]['p1']
+                x2, y2 = segments[i]['p2']
+                ax.plot([x1, x2], [y1, y2], 'b-')
 
-    # Draw arrows for axes (V13.6 Arrow Ban)
-    ax.plot(plot_limit, 0, ">k", clip_on=False, transform=ax.get_yaxis_transform()) # X-axis arrow
-    ax.plot(0, plot_limit, "^k", clip_on=False, transform=ax.get_xaxis_transform()) # Y-axis arrow
+    # Highlight area if polygon is provided
+    if area_polygon is not None and len(area_polygon) > 0:
+        ax.fill(area_polygon[:, 0], area_polygon[:, 1], 'skyblue', alpha=0.5)
 
-    # Set axis limits
-    ax.set_xlim(-plot_limit, plot_limit)
-    ax.set_ylim(-plot_limit, plot_limit)
+    # Plot points (V10.2 Anti-Leak Protocol for plotting type)
+    for label, x, y in points_to_plot:
+        ax.plot(x, y, 'ro')
+        # Labeling (V13.0, V13.1, V13.5: ax.text only for point names, not coordinates)
+        ax.text(x, y + 0.5, label, fontsize=12, ha='center', va='bottom',
+                bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', boxstyle='round,pad=0.3')) # V10.2 Pure Style
 
-    # Mandatory Axis Ticks (CRITICAL CODING STANDARDS)
-    ax.set_xticks(range(-plot_limit, plot_limit + 1))
-    ax.set_yticks(range(-plot_limit, plot_limit + 1))
-    ax.tick_params(axis='both', which='major', labelsize=10) # Adjust font size for ticks
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title('Function Graph and Area')
+    plt.legend()
 
-    # Grid Lines (CRITICAL CODING STANDARDS)
-    ax.grid(True, linestyle=':', alpha=0.6)
-
-    # V10.2 D. 視覺一致性: ax.set_aspect('equal')
-    ax.set_aspect('equal')
-
-    # Plot the function line f(x) = ax + b
-    x_vals_line = np.linspace(-plot_limit, plot_limit, 400) # Use linspace for smooth line
-    y_vals_line = a * x_vals_line + b
-    ax.plot(x_vals_line, y_vals_line, color='blue', linewidth=2) # No label, per V13.5
-
-    # Shade the region based on type
-    if region_x_bounds: # Type 2: x=c1, x=c2, x-axis
-        c1, c2 = region_x_bounds
-        
-        # Create a finer x range for accurate filling within [c1, c2]
-        x_fill = np.linspace(c1, c2, 100)
-        y_fill = a * x_fill + b
-        
-        # Fill the region between the function and the x-axis
-        ax.fill_between(x_fill, y_fill, 0, color='lightgray', alpha=0.5, hatch='///', edgecolor='black')
-
-        # Draw vertical lines at c1 and c2
-        ax.plot([c1, c1], [0, a * c1 + b], color='purple', linestyle='--', linewidth=1)
-        ax.plot([c2, c2], [0, a * c2 + b], color='purple', linestyle='--', linewidth=1)
-        
-    elif x_intercept is not None and y_intercept is not None: # Type 1: x-axis, y-axis
-        # This region is a triangle formed by (0,0), (x_intercept, 0), (0, y_intercept)
-        
-        # Vertices of the triangle
-        triangle_x = [0, x_intercept, 0]
-        triangle_y = [0, 0, y_intercept]
-        
-        # Fill the triangle region
-        ax.fill(triangle_x, triangle_y, color='lightgray', alpha=0.5, hatch='///', edgecolor='black')
-        
-        # Draw outlines for the x-axis and y-axis segments of the triangle
-        ax.plot([0, x_intercept], [0, 0], color='purple', linestyle='--', linewidth=1) # x-axis segment
-        ax.plot([0, 0], [0, y_intercept], color='purple', linestyle='--', linewidth=1) # y-axis segment
-
-    # Label the origin '0' (V10.2 D. 視覺一致性)
-    ax.text(0.1, -0.8, '0', fontsize=18, fontweight='bold', ha='left', va='top')
-
-    # Save plot to base64 string
-    img_buffer = io.BytesIO()
-    plt.savefig(img_buffer, format='png', bbox_inches='tight')
-    img_buffer.seek(0)
-    image_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+    # Convert plot to base64 string (ULTRA VISUAL STANDARDS: Resolution dpi=300)
+    buf = BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=300)
     plt.close(fig)
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
 
-    return image_base64
-
-# --- Main generate function ---
+# Main generate function
 def generate(level=1):
     """
-    V3. 頂層函式: 必須直接定義於模組最外層。
-    V4. 題型鏡射: 內部使用 random.choice([1, 2]) 選擇題型。
+    Generates a K12 math problem for "Area Under Function Graph", strictly
+    mirroring the RAG examples for mathematical models.
+    (V11.8 Mirror Enhanced Edition)
     """
-    problem_type = random.choice([1, 2])
-
-    a_options_type1 = [-2.0, -1.5, -1.0, -0.5, 0.5, 1.0, 1.5, 2.0]
-    a_options_type2 = [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0]
-    b_options = [float(i) for i in range(-8, 9) if i != 0] # Exclude 0 for b initially
-
-    a_float = 0.0
-    b_float = 0.0
-    x_intercept_float = None
-    y_intercept_float = None
-    c1_float = None
-    c2_float = None
-    correct_area = 0.0
+    # Mapping problem types to RAG examples:
+    # 'linear_function_x_axis', 'bounded_by_multiple_lines', 'rectangle_area' -> RAG Ex 1 (Trapezoid/Rectangle Area)
+    # 'absolute_value_function_x_axis' -> RAG Ex 2 (Triangle Area)
+    # 'riemann_sum_template_area' -> RAG Ex 3 (Area with Riemann Sum context)
+    problem_type = random.choice([
+        'linear_function_x_axis',
+        'absolute_value_function_x_axis',
+        'bounded_by_multiple_lines',
+        'rectangle_area',
+        'riemann_sum_template_area'
+    ])
 
     question_text = ""
+    correct_answer = ""
+    answer_display = ""
     image_base64 = ""
+    function_data = None
+    area_polygon = None
+    points_to_plot = []
     
-    if problem_type == 1:
-        # Type 1 (Maps to Example 1: Linear Function & Axes)
-        # Description: 計算一次函數 y = ax + b 的圖形與 x 軸、 y 軸所圍成的區域面積。
-        while True:
-            a_float = random.choice(a_options_type1)
-            b_float = random.choice(b_options) # b is never 0 here
-            
-            y_intercept_float = b_float
-            x_intercept_float = -b_float / a_float # a_float is never 0 here
-
-            # Ensure intercepts are within reasonable bounds for plotting
-            if abs(x_intercept_float) <= 10 and abs(y_intercept_float) <= 10:
-                break
-        
-        # Area calculation for a triangle
-        correct_area = 0.5 * abs(x_intercept_float) * abs(y_intercept_float)
-
-        # Format coefficients for LaTeX
-        a_latex = _format_fraction_for_latex(a_float)
-        b_latex = _format_fraction_for_latex(b_float, signed=True)
-        
-        # Build function string safely (Equation Robustness)
-        func_parts = []
-        if a_float == 1.0:
-            func_parts.append("x")
-        elif a_float == -1.0:
-            func_parts.append("-x")
-        elif a_float != 0:
-            func_parts.append(a_latex + "x")
-        
-        if b_float != 0:
-            func_parts.append(b_latex)
-        
-        func_str = "y = " + "".join(func_parts)
-        if func_str == "y = ": # Should not happen with current logic, but safety
-            func_str = "y = 0"
-
-        question_text = r"設函數 ${func_str}$ 的圖形與$x$軸、$y$軸所圍成的區域為$R$。求$R$的面積。".replace("{func_str}", func_str)
-        
-        image_base64 = _draw_coordinate_plane(line_eq=(a_float, b_float), x_intercept=x_intercept_float, y_intercept=y_intercept_float)
-
-    else: # problem_type == 2
-        # Type 2 (Maps to Example 2: Linear Function & Vertical Lines)
-        # Description: 計算一次函數 y = ax + b 的圖形與 x 軸、直線 x=c1 和 x=c2 所圍成的區域面積。
-        while True:
-            a_float = random.choice(a_options_type2)
-            b_float = random.choice(b_options) # b is never 0 here
-            
-            if a_float == 0 and b_float == 0: # Avoid y=0 case, though b_options already prevents b=0
-                b_float = random.choice([float(i) for i in range(-8, 9) if i != 0])
-                
-            c1_float = float(random.randint(-5, 0))
-            c2_float = float(random.randint(int(c1_float) + 2, int(c1_float) + 7))
-            
-            # Calculate y values at c1 and c2
-            y1_at_c1 = a_float * c1_float + b_float
-            y2_at_c2 = a_float * c2_float + b_float
-
-            # Ensure y-values are not extremely large for plotting
-            if abs(y1_at_c1) <= 10 and abs(y2_at_c2) <= 10:
-                break
-        
-        # Area calculation (considering potential x-intercept within [c1, c2])
-        x_intercept_val = -b_float / a_float if a_float != 0 else None
-        
-        if x_intercept_val is not None and c1_float < x_intercept_val < c2_float:
-            # Function crosses x-axis within the interval, split into two triangles/trapezoids
-            # Area is the sum of absolute areas
-            area1 = 0.5 * abs(y1_at_c1) * abs(x_intercept_val - c1_float)
-            area2 = 0.5 * abs(y2_at_c2) * abs(c2_float - x_intercept_val)
-            correct_area = area1 + area2
-        elif a_float == 0: # Horizontal line y = b_float (rectangle)
-            correct_area = abs(b_float) * (c2_float - c1_float)
-        else: # No x-intercept in [c1, c2], or x-intercept is outside; it's a single trapezoid/rectangle/triangle
-            correct_area = 0.5 * (abs(y1_at_c1) + abs(y2_at_c2)) * (c2_float - c1_float)
-        
-        # Format coefficients for LaTeX
-        a_latex = _format_fraction_for_latex(a_float)
-        b_latex = _format_fraction_for_latex(b_float, signed=True)
-        
-        # Build function string safely (Equation Robustness)
-        func_parts = []
-        if a_float == 1.0:
-            func_parts.append("x")
-        elif a_float == -1.0:
-            func_parts.append("-x")
-        elif a_float != 0:
-            func_parts.append(a_latex + "x")
-        
-        if b_float != 0:
-            func_parts.append(b_latex)
-        
-        func_str = "y = " + "".join(func_parts)
-        if func_str == "y = ": # If a_float and b_float are both zero, should be y=0
-            func_str = "y = 0"
-
-        c1_str = _format_fraction_for_latex(c1_float)
-        c2_str = _format_fraction_for_latex(c2_float)
-
-        question_text = r"設函數 ${func_str}$ 的圖形與$x$軸、直線 $x={c1_str}$ 和 $x={c2_str}$ 所圍成的區域為$R$。求$R$的面積。".replace("{func_str}", func_str).replace("{c1_str}", c1_str).replace("{c2_str}", c2_str)
-        
-        image_base64 = _draw_coordinate_plane(line_eq=(a_float, b_float), region_x_bounds=(c1_float, c2_float))
-
-    # V7. 數據與欄位
-    correct_answer_str = str(round(correct_area, 5)) # Round to a few decimal places for comparison
+    # V13.0 Coordinate selection control: symmetric and wide range
+    min_coord_val = -8
+    max_coord_val = 8
     
+    # Initialize x_range and y_range with default values that will be adjusted
+    x_range = (min_coord_val - 2, max_coord_val + 2) 
+    y_range = (min_coord_val - 2, max_coord_val + 2)
+
+    # For all coordinate generations, setting allow_fraction=False to adhere to "座標值僅限整數"
+    # as per RAG examples and strict interpretation of the rule.
+
+    if problem_type == 'linear_function_x_axis':
+        # Maps to Example 1: Area under y=mx+c and x-axis.
+        m_val, _ = _generate_coordinate_value(-2, 2, allow_fraction=False)
+        while m_val == 0: # Ensure slope is not zero
+            m_val, _ = _generate_coordinate_value(-2, 2, allow_fraction=False)
+        
+        c_val, _ = _generate_coordinate_value(-5, 5, allow_fraction=False)
+        
+        x1_val, _ = _generate_coordinate_value(min_coord_val, max_coord_val - 1, allow_fraction=False)
+        x2_val, _ = _generate_coordinate_value(x1_val + 1, max_coord_val, allow_fraction=False)
+
+        y1 = m_val * x1_val + c_val
+        y2 = m_val * x2_val + c_val
+        
+        area = 0.0
+        
+        x_intercept = -c_val / m_val if m_val != 0 else None
+        
+        if x_intercept is not None and x1_val < x_intercept < x2_val:
+            # Two triangles (one above, one below x-axis)
+            area1 = 0.5 * abs(y1) * abs(x_intercept - x1_val)
+            area2 = 0.5 * abs(y2) * abs(x2_val - x_intercept)
+            area = area1 + area2
+
+            # Polygon for visual fill (V13.5: labels only, values in text)
+            area_polygon = np.array([
+                [x1_val, 0], [x1_val, y1], [x_intercept, 0], [x2_val, y2], [x2_val, 0]
+            ])
+        else:
+            # Single trapezoid (or triangle if one y is 0)
+            area = 0.5 * (abs(y1) + abs(y2)) * (x2_val - x1_val)
+            area_polygon = np.array([[x1_val, 0], [x1_val, y1], [x2_val, y2], [x2_val, 0]])
+            
+        function_data = {'type': 'linear', 'params': (m_val, c_val)}
+        
+        question_text_template = r"下圖顯示函數 $y = {m_val_str}x + {c_val_str}$ 的圖形。計算在 $x = {x1_val_str}$ 到 $x = {x2_val_str}$ 之間，函數圖形與 $x$ 軸所圍成的面積。 (取絕對值)"
+        question_text = question_text_template.replace("{m_val_str}", str(int(m_val)) if m_val.is_integer() else str(m_val))\
+                                             .replace("{c_val_str}", str(int(c_val)) if c_val.is_integer() else str(c_val))\
+                                             .replace("{x1_val_str}", str(int(x1_val)) if x1_val.is_integer() else str(x1_val))\
+                                             .replace("{x2_val_str}", str(int(x2_val)) if x2_val.is_integer() else str(x2_val))
+        
+        correct_answer = str(round(area, 2)) # Pure data (CRITICAL RULE: Answer Data Purity)
+        answer_display = f"面積為 {round(area, 2)}"
+        
+        # Points for visualization (V13.6: Strict Labeling)
+        points_to_plot.append(('A', x1_val, y1))
+        points_to_plot.append(('B', x2_val, y2))
+        points_to_plot.append(('C', x1_val, 0))
+        points_to_plot.append(('D', x2_val, 0))
+        if x_intercept is not None and x1_val < x_intercept < x2_val:
+            points_to_plot.append(('X', x_intercept, 0))
+        
+        # Adjust x_range and y_range for plot (V13.5)
+        x_values_for_range = [x1_val, x2_val, x_intercept if x_intercept is not None else x1_val]
+        y_values_for_range = [y1, y2, 0]
+        x_range = (min(x_values_for_range) - 2, max(x_values_for_range) + 2)
+        y_range = (min(y_values_for_range) - 2, max(y_values_for_range) + 2)
+        y_range = (min(y_range[0], -2), max(y_range[1], 2)) # Ensure some y-axis visibility even if all y >= 0
+
+
+    elif problem_type == 'absolute_value_function_x_axis':
+        # Maps to Example 2: Area under y=a|x-h|+k and x-axis (forms a triangle).
+        a_val, _ = _generate_coordinate_value(1, 2, allow_fraction=False)
+        h_val, _ = _generate_coordinate_value(-3, 3, allow_fraction=False)
+        k_val, _ = _generate_coordinate_value(-5, -1, allow_fraction=False) # Must be negative for intersection with x-axis
+        
+        # Find x-intercepts: a|x-h| + k = 0 => |x-h| = -k/a
+        abs_val_term = -k_val / a_val
+        x_int1 = h_val - abs_val_term
+        x_int2 = h_val + abs_val_term
+        
+        base = abs(x_int2 - x_int1)
+        height = abs(k_val)
+        area = 0.5 * base * height
+        
+        function_data = {'type': 'abs_value', 'params': (a_val, h_val, k_val)}
+        
+        question_text_template = r"下圖顯示函數 $y = {a_val_str}|x - {h_val_str}| + {k_val_str}$ 的圖形。計算函數圖形與 $x$ 軸所圍成的面積。"
+        question_text = question_text_template.replace("{a_val_str}", str(int(a_val)) if a_val.is_integer() else str(a_val))\
+                                             .replace("{h_val_str}", str(int(h_val)) if h_val.is_integer() else str(h_val))\
+                                             .replace("{k_val_str}", str(int(k_val)) if k_val.is_integer() else str(k_val))
+        
+        correct_answer = str(round(area, 2)) # Pure data
+        answer_display = f"面積為 {round(area, 2)}"
+        
+        poly_points = [[x_int1, 0], [h_val, k_val], [x_int2, 0]]
+        area_polygon = np.array(poly_points)
+
+        # Points for visualization (V13.6: Strict Labeling)
+        points_to_plot.append(('V', h_val, k_val)) # Vertex
+        points_to_plot.append(('X1', x_int1, 0))
+        points_to_plot.append(('X2', x_int2, 0))
+        
+        # Adjust x_range and y_range for plot (V13.5)
+        x_range = (min(x_int1, x_int2, h_val) - 2, max(x_int1, x_int2, h_val) + 2)
+        y_range = (k_val - 2, max(0.0, k_val + 5)) # Ensure y_range includes vertex y and 0
+
+
+    elif problem_type == 'bounded_by_multiple_lines':
+        # Maps to Example 1 (multiple trapezoids): Area under a piecewise linear function.
+        x0_val, _ = _generate_coordinate_value(-6, -3, allow_fraction=False)
+        x1_val, _ = _generate_coordinate_value(x0_val + 2, x0_val + 5, allow_fraction=False)
+        x2_val, _ = _generate_coordinate_value(x1_val + 2, x1_val + 5, allow_fraction=False)
+        
+        y0_val, _ = _generate_coordinate_value(1, 5, allow_fraction=False)
+        y1_val, _ = _generate_coordinate_value(1, 5, allow_fraction=False)
+        y2_val, _ = _generate_coordinate_value(1, 5, allow_fraction=False)
+
+        area1 = 0.5 * (y0_val + y1_val) * (x1_val - x0_val)
+        area2 = 0.5 * (y1_val + y2_val) * (x2_val - x1_val)
+        area = area1 + area2
+        
+        segments = [
+            {'p1': (x0_val, y0_val), 'p2': (x1_val, y1_val)},
+            {'p1': (x1_val, y1_val), 'p2': (x2_val, y2_val)}
+        ]
+        function_data = {'type': 'piecewise_linear', 'params': segments}
+        
+        poly_points = [[x0_val, 0], [x0_val, y0_val], [x1_val, y1_val], [x2_val, y2_val], [x2_val, 0]]
+        area_polygon = np.array(poly_points)
+        
+        question_text_template = r"下圖顯示一個由直線段組成的函數圖形。計算函數圖形與 $x$ 軸所圍成的面積。"
+        question_text = question_text_template
+        
+        correct_answer = str(round(area, 2)) # Pure data
+        answer_display = f"面積為 {round(area, 2)}"
+
+        # Points for visualization (V13.6: Strict Labeling)
+        points_to_plot.append(('P1', x0_val, y0_val))
+        points_to_plot.append(('P2', x1_val, y1_val))
+        points_to_plot.append(('P3', x2_val, y2_val))
+        points_to_plot.append(('X0', x0_val, 0))
+        points_to_plot.append(('X2', x2_val, 0))
+        
+        # Adjust x_range and y_range for plot (V13.5)
+        x_range = (x0_val - 2, x2_val + 2)
+        y_range = (0, max(y0_val, y1_val, y2_val) + 2)
+
+
+    elif problem_type == 'rectangle_area':
+        # Maps to Example 1 (special case): Area of a rectangle formed by y=c, x-axis, and two vertical lines.
+        c_val, _ = _generate_coordinate_value(1, 7, allow_fraction=False) # Height, must be positive
+        x1_val, _ = _generate_coordinate_value(-6, 0, allow_fraction=False)
+        x2_val, _ = _generate_coordinate_value(x1_val + 2, x1_val + 8, allow_fraction=False) # Ensure width > 0
+        
+        width = x2_val - x1_val
+        height = c_val
+        area = width * height
+        
+        function_data = {'type': 'horizontal', 'params': (c_val,)}
+        
+        question_text_template = r"下圖顯示函數 $y = {c_val_str}$ 的圖形。計算在 $x = {x1_val_str}$ 到 $x = {x2_val_str}$ 之間，函數圖形與 $x$ 軸所圍成的面積。"
+        question_text = question_text_template.replace("{c_val_str}", str(int(c_val)) if c_val.is_integer() else str(c_val))\
+                                             .replace("{x1_val_str}", str(int(x1_val)) if x1_val.is_integer() else str(x1_val))\
+                                             .replace("{x2_val_str}", str(int(x2_val)) if x2_val.is_integer() else str(x2_val))
+        
+        correct_answer = str(round(area, 2)) # Pure data
+        answer_display = f"面積為 {round(area, 2)}"
+        
+        poly_points = [[x1_val, 0], [x1_val, c_val], [x2_val, c_val], [x2_val, 0]]
+        area_polygon = np.array(poly_points)
+
+        # Points for visualization (V13.6: Strict Labeling)
+        points_to_plot.append(('A', x1_val, c_val))
+        points_to_plot.append(('B', x2_val, c_val))
+        points_to_plot.append(('C', x1_val, 0))
+        points_to_plot.append(('D', x2_val, 0))
+        
+        # Adjust x_range and y_range for plot (V13.5)
+        x_range = (x1_val - 2, x2_val + 2)
+        y_range = (0, c_val + 2)
+        
+    elif problem_type == 'riemann_sum_template_area':
+        # Maps to Example 3: Area under f(x)=mx with Riemann Sum context.
+        # Strict mirroring of RAG Ex 3: f(x) = x, x=0 to x=a
+        # Generalize f(x) = mx for variety, but the question context will be strict.
+        m_val, _ = _generate_coordinate_value(1, 3, allow_fraction=False) # m > 0
+        a_val, _ = _generate_coordinate_value(2, 6, allow_fraction=False) # a > 0
+
+        # Area is a triangle: 0.5 * base * height = 0.5 * a_val * (m_val * a_val)
+        area = 0.5 * m_val * (a_val ** 2)
+
+        function_data = {'type': 'linear', 'params': (m_val, 0.0)} # y = mx + 0
+
+        # CONTEXT RETENTION: Use the exact wording from RAG Ex 3.
+        # The problem asks for part (2) area, but includes the Riemann sum setup for context.
+        question_text_template = r"已知 $a={a_val_str}>0$，且 $R$ 為函數 $f(x)={m_val_str}x$ 的圖形與 $x$ 軸、 $x=0$ 及 $x={a_val_str}$ 所圍成的區域，回答下列問題。(1) 將區間 $[0,{a_val_str}]$ 平分成 $n$ 等分，分割點為 $x_k = \frac{{a_val_str}k}{n}$。令 $\Delta x = \frac{{a_val_str}}{n}$，在區間 $[x_{k-1}, x_k]$ 中取 $c_k = x_k$ （右端點），得黎曼和 $R_n$ [　　　　]。 (2) 求 $R$ 的面積。"
+        
+        # Replace placeholders using .replace for LaTeX single curly braces
+        question_text = question_text_template.replace("{a_val_str}", str(int(a_val)) if a_val.is_integer() else str(a_val))\
+                                             .replace("{m_val_str}", str(int(m_val)) if m_val.is_integer() else str(m_val))
+
+        correct_answer = str(round(area, 2))
+        answer_display = f"面積為 {round(area, 2)}"
+
+        poly_points = [[0, 0], [a_val, m_val * a_val], [a_val, 0]]
+        area_polygon = np.array(poly_points)
+
+        # Points for visualization (V13.6: Strict Labeling)
+        points_to_plot.append(('O', 0, 0))
+        points_to_plot.append(('P', a_val, m_val * a_val))
+        points_to_plot.append(('Q', a_val, 0))
+        
+        # Adjust x_range and y_range for plot (V13.5)
+        x_range = (min(0, a_val) - 2, max(0, a_val) + 2)
+        y_range = (0, m_val * a_val + 2)
+
+
+    image_base64 = _draw_coordinate_plane(points_to_plot, function_data, x_range, y_range, area_polygon)
+
     return {
         "question_text": question_text,
-        "correct_answer": correct_answer_str,
-        "answer": correct_answer_str,
+        "correct_answer": correct_answer,
+        "answer": answer_display,
         "image_base64": image_base64,
         "created_at": datetime.now().isoformat(),
-        "version": "1.0"
+        "version": "1"
     }
 
-# --- Check function (CRITICAL CODING STANDARDS: Verification & Stability) ---
+# Check function (V18.8, V18.9 CRITICAL CODING RULES)
 
     """
-    V3. 頂層函式: 必須直接定義於模組最外層。
-    V3. 自動重載: 確保不依賴全域狀態。
-    V1.2 強韌閱卷邏輯 (Robust Check Logic):
-    V13.5 禁絕複雜比對: 嚴禁在 check() 內寫 if/else 字串拆解。
-    V12.6 結構鎖死: 必須實作「數值序列比對」。
-    等價性支援: 支援浮點數比較，允許微小誤差 (abs(user_num - correct_num) < 1e-6)。
-    CRITICAL CODING STANDARDS: Universal Check Template.
-    Function Definition Integrity: Explicit 
+    Checks the user's answer against the correct answer.
+    Includes robust input sanitization and float comparison.
+    (CRITICAL RULE: Robust Check Logic, V18.8, V18.9, Universal Check Template)
     """
     import re, math
-    # 1. 清洗雙方輸入 (移除 LaTeX, 變數名, 空格)
+
     def clean(s):
         s = str(s).strip().replace(" ", "").lower()
-        s = re.sub(r'^[a-z]+=', '', s) # 移除 k=, x=, y=
-        s = s.replace("$", "").replace("\\", "")
-        return s
-    
-    u = clean(user_answer)
-    c = clean(correct_answer)
-    
-    # 2. 嘗試數值比對 (支援分數與小數)
+        # Keep numbers, decimal points, and division symbols. Remove other chars.
+        return re.sub(r'[^\d./-]+', '', s)
+
+    u_str = str(user_answer).strip()
+    c_str = str(correct_answer).strip()
+
+    # [V18.13 Update] 支援中英文是非題互通
+    yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right"]
+    no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong"]
+
+    if c_str in yes_group:
+        return {"correct": u_str in yes_group, "result": "正確！" if u_str in yes_group else "答案錯誤"}
+    if c_str in no_group:
+        return {"correct": u_str in no_group, "result": "正確！" if u_str in no_group else "答案錯誤"}
+
+    # 3. 數值與字串比對
     try:
-        def parse_val(val_str):
-            if "/" in val_str:
-                n, d = map(float, val_str.split("/"))
-                return n/d
-            return float(val_str)
+        # 解析分數與浮點數
+        def parse(v):
+            if "/" in v:
+                parts = v.split("/")
+                if len(parts) == 2 and parts[1] != '0': # Avoid division by zero
+                    return float(parts[0]) / float(parts[1])
+                else:
+                    raise ValueError("Invalid fraction format or division by zero")
+            return float(v)
         
-        if math.isclose(parse_val(u), parse_val(c), rel_tol=1e-5):
+        u_val = parse(clean(u_str))
+        c_val = parse(clean(c_str))
+        if math.isclose(u_val, c_val, rel_tol=1e-5):
             return {"correct": True, "result": "正確！"}
-    except:
-        pass
+    except ValueError: # Catch ValueErrors from float conversion or parse function
+        pass # Fall through to string comparison
         
-    # 3. 降級為字串比對
-    if u == c: return {"correct": True, "result": "正確！"}
+    if u_str == c_str: return {"correct": True, "result": "正確！"}
     return {"correct": False, "result": f"答案錯誤。"}
+
 
 # [Auto-Injected Patch v11.0] Universal Return, Linebreak & Handwriting Fixer
 def _patch_all_returns(func):
@@ -708,9 +718,12 @@ def _patch_all_returns(func):
                 elif res['result'].lower() in ['incorrect', 'wrong', 'error']:
                     res['result'] = '答案錯誤'
             
-            # 4. 確保欄位完整性
-            if 'answer' not in res and 'correct_answer' in res:
-                res['answer'] = res['correct_answer']
+            # 4. 確保欄位完整性 & 答案同步
+            if 'correct_answer' in res:
+                # 若 answer 不存在或為空字串，強制同步 correct_answer
+                if 'answer' not in res or not res['answer']:
+                     res['answer'] = res['correct_answer']
+            
             if 'answer' in res:
                 res['answer'] = str(res['answer'])
             if 'image_base64' not in res:

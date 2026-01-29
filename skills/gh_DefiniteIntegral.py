@@ -1,10 +1,10 @@
 # ==============================================================================
 # ID: gh_DefiniteIntegral
 # Model: gemini-2.5-flash | Strategy: V9 Architect (cloud_pro)
-# Duration: 84.15s | RAG: 2 examples
-# Created At: 2026-01-29 13:11:52
+# Duration: 110.84s | RAG: 2 examples
+# Created At: 2026-01-29 19:17:03
 # Fix Status: [Repaired]
-# Fixes: Regex=1, Logic=0
+# Fixes: Regex=4, Logic=0
 #==============================================================================
 
 
@@ -192,7 +192,7 @@ def draw_coordinate_system(lines=None, points=None, x_range=(-5, 5), y_range=(-5
             ax.text(p[0]+0.2, p[1]+0.2, p.get('label', ''), fontsize=14, fontweight='bold')
 
     ax.set_xlim(x_range); ax.set_ylim(y_range)
-    # 隱藏刻度，僅保留 0
+    # 隱藏刻度,僅保留 0
     ax.set_xticks([0]); ax.set_yticks([0])
     
     buf = io.BytesIO()
@@ -235,6 +235,7 @@ def draw_geometry_composite(polygons, labels, x_limit=(0,10), y_limit=(0,10)):
 
 # --- 4. Answer Checker (V11.6 Smart Formatting Standard) ---
 def check(user_answer, correct_answer):
+    import math, random, re
     if user_answer is None: return {"correct": False, "result": "未提供答案。"}
     
     # 將字典或複雜格式轉為乾淨字串
@@ -246,7 +247,7 @@ def check(user_answer, correct_answer):
         return str(a)
 
     def _clean(s):
-        # 雙向清理：剝除 LaTeX 符號與空格
+        # 雙向清理:剝除 LaTeX 符號與空格
         return str(s).strip().replace(" ", "").replace("，", ",").replace("$", "").replace("\\", "").lower()
     
     u = _clean(user_answer)
@@ -262,278 +263,353 @@ def check(user_answer, correct_answer):
     
     return {"correct": False, "result": r"答案錯誤。正確答案為：{ans}".replace("{ans}", c_raw)}
 
-from datetime import datetime
 
-from fractions import Fraction
+import datetime
+
 import re
 
-# Helper function for integral calculation (Type 1 and Type 2)
-def _calculate_integral_value(func_coeffs, exponents, const_term, a, b):
+
     """
-    Calculates the definite integral F(b) - F(a) for a polynomial-like function.
-    func_coeffs: list of coefficients [A, B]
-    exponents: list of exponents [n, m] (can be negative for Type 2)
-    const_term: C for Type 1, 0 for Type 2
-    a, b: lower and upper limits
+    Checks the user's answer against the correct answer.
+    This function adheres to the Universal Check Template (系統底層鐵律).
     """
+    import re, math
+    def clean(s):
+        s = str(s).strip().replace(" ", "").lower()
+        # Regex to remove LaTeX symbols, whitespace, parentheses, braces, brackets, backslashes,
+        # alphabetic characters (a-zA-Z), equals sign, comma, semicolon, colon, and CJK characters.
+        # This is designed to isolate the numerical part of the answer.
+        return re.sub(r'[\$\s\(\)\{\}\[\]\\a-zA-Z=,;:\u4e00-\u9fff]', '', s) 
+
+    u_str = str(user_answer).strip()
+    c_str = str(correct_answer).strip()
     
-    # Define antiderivative function F(x)
-    def F(x_val):
-        result = Fraction(0)
-        # Handle terms like Ax^n
-        for i in range(len(func_coeffs)):
-            coeff = func_coeffs[i]
-            exp = exponents[i]
-            # Type 2 explicitly states n != 1, so exp is never -1 for the A/x^n term.
-            # For Type 1, exponents are positive integers, so exp+1 is never 0.
-            # Thus, division by zero (exp+1=0) is avoided.
-            result += Fraction(coeff, exp + 1) * (Fraction(x_val)**(exp + 1))
+    yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right"]
+    no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong"]
+    
+    if c_str in yes_group:
+        return {"correct": u_str in yes_group, "result": "正確！" if u_str in yes_group else "答案錯誤"}
+    if c_str in no_group:
+        return {"correct": u_str in no_group, "result": "正確！" if u_str in no_group else "答案錯誤"}
+
+    try:
+        def parse(v):
+           if "/" in v: 
+               parts = v.split("/")
+               if len(parts) == 2 and parts[1] != '0':
+                   return float(parts[0]) / float(parts[1])
+               return float('nan') # Indicate invalid fraction (e.g., division by zero)
+           return float(v)
         
-        # Add constant term integral (Cx)
-        result += Fraction(const_term) * Fraction(x_val)
-        return result
+        u_val = parse(clean(u_str))
+        c_val = parse(clean(c_str))
+        if math.isclose(u_val, c_val, rel_tol=1e-5):
+            return {"correct": True, "result": "正確！"}
+    except (ValueError, ZeroDivisionError):
+        # Catch errors if cleaning results in a non-numeric string or division by zero
+        pass
+        
+    if u_str == c_str: return {"correct": True, "result": "正確！"}
+    return {"correct": False, "result": f"答案錯誤。"}
 
-    return F(b) - F(a)
+def _format_antiderivative_term(coeff_num, coeff_den, exponent):
+    """
+    Formats a single term of an antiderivative into a LaTeX string,
+    handling integer and fractional coefficients, and variable exponents.
+    e.g., (3, 2, 3) -> \frac{3}{2}x^3, (1, 1, 2) -> x^2, (-1, 1, 1) -> -x
+    """
+    if coeff_num == 0:
+        return ""
+    
+    # Simplify the fraction
+    gcd_val = math.gcd(abs(coeff_num), abs(coeff_den))
+    num_s = coeff_num // gcd_val
+    den_s = coeff_den // gcd_val
 
-def generate(level=1):
-    problem_type = random.choice([1, 2, 3]) # Use 3 to represent Type 3a/3b
+    coeff_part = ""
+    # Handle the coefficient part
+    if den_s == 1:
+        if num_s == 1:
+            coeff_part = ""
+        elif num_s == -1:
+            coeff_part = "-"
+        else:
+            coeff_part = str(num_s)
+    else:
+        coeff_part = r"\frac{" + str(num_s) + r"}{" + str(den_s) + r"}"
+    
+    # Handle the variable part
+    variable_part = ""
+    if exponent == 1:
+        variable_part = "x"
+    elif exponent > 1:
+        variable_part = f"x^{{exponent}}"
+
+    return f"{coeff_part}{variable_part}"
+
+def _format_integrand_term(coeff, exponent, is_first_term=False):
+    """
+    Formats a single term of the integrand (ax^n) into a LaTeX-friendly string.
+    Handles coefficients 1, -1, and constants.
+    e.g., (3, 2) -> 3x^2, (-1, 1) -> -x, (1, 3) -> x^3, (5, 0) -> 5
+    """
+    if coeff == 0:
+        return ""
+
+    sign = "+" if coeff > 0 and not is_first_term else ""
+    if coeff < 0:
+        sign = "-"
+
+    abs_coeff = abs(coeff)
+    coeff_str = ""
+    if abs_coeff != 1 or exponent == 0: # For x^0, always show the coefficient.
+        coeff_str = str(abs_coeff)
+
+    if exponent == 0:
+        return f"{sign}{coeff_str}"
+    elif exponent == 1:
+        return f"{sign}{coeff_str}x"
+    else:
+        return f"{sign}{coeff_str}x^{{exponent}}"
+
+def _format_integrand_expression(terms_list):
+    """
+    Combines a list of (coeff, exponent) tuples into a formatted polynomial string for the integrand.
+    Sorts terms by exponent in descending order for standard representation.
+    """
+    terms_list.sort(key=lambda x: x[1], reverse=True)
+
+    formatted_parts = []
+    for i, (coeff, exponent) in enumerate(terms_list):
+        if coeff == 0:
+            continue
+        part = _format_integrand_term(coeff, exponent, is_first_term=(len(formatted_parts) == 0))
+        formatted_parts.append(part)
+    
+    if not formatted_parts:
+        return "0" 
+    
+    result = "".join(formatted_parts)
+    # Remove leading '+' if it's the first term (e.g., "+3x^2" becomes "3x^2")
+    if result.startswith("+"):
+        result = result[1:]
+    
+    return result
+
+def _format_antiderivative_expression(antiderivative_terms_info):
+    """
+    Combines a list of (numerical_coeff_value, exponent, latex_string_for_term) tuples
+    into a formatted polynomial string for the antiderivative.
+    Sorts terms by exponent in descending order and correctly places '+' signs.
+    """
+    antiderivative_terms_info.sort(key=lambda x: x[1], reverse=True) # Sort by exponent
+    
+    formatted_parts = []
+    for i, (numerical_coeff_value, exponent, latex_str) in enumerate(antiderivative_terms_info):
+        if not latex_str: # Skip empty terms (e.g., if coefficient was 0)
+            continue
+        
+        # Add '+' sign if it's not the first term and the term itself doesn't start with a '-'
+        if i > 0 and not latex_str.startswith('-'):
+            formatted_parts.append("+")
+        
+        formatted_parts.append(latex_str)
+    
+    return "".join(formatted_parts)
+
+def generate():
+    """
+    Generates a definite integral problem based on one of three types.
+    """
+    problem_type = random.choice([1, 2, 3])
     
     question_text = ""
     correct_answer = ""
+    answer = ""
     
     if problem_type == 1:
-        # Type 1 (Maps to RAG Example: 基本多項式定積分計算)
-        A = random.randint(-4, 4)
-        while A == 0:
-            A = random.randint(-4, 4)
-        B = random.randint(-4, 4)
-        while B == 0:
-            B = random.randint(-4, 4)
+        # Type 1: Basic Power Rule Integral: int_a^b cx^n dx
+        a = random.randint(-5, 5)
+        b = random.randint(-5, 5)
+        while a >= b: # Ensure a < b
+            a = random.randint(-5, 5)
+            b = random.randint(-5, 5)
         
-        n, m = random.sample(range(1, 5), 2)
-        C = random.randint(-5, 5)
+        c = random.randint(-5, 5)
+        while c == 0: # Ensure c != 0
+            c = random.randint(-5, 5)
         
-        a = random.randint(-2, 1)
-        b = random.randint(a + 1, 4)
-        
-        # Format the integrand expression strictly without f-strings for LaTeX parts
-        integrand_parts = []
-        
-        # Term Ax^n
-        if A != 0:
-            term_str = ""
-            if A == 1:
-                term_str += ""
-            elif A == -1:
-                term_str += "-"
-            else:
-                term_str += str(A)
-            
-            if n == 1:
-                term_str += "x"
-            else:
-                term_str += r"x^{" + str(n) + r"}"
-            integrand_parts.append(term_str)
+        n = random.randint(1, 3) # Exponent 1, 2, or 3
 
-        # Term Bx^m
-        if B != 0:
-            term_str = ""
-            if B > 0:
-                if integrand_parts: term_str += "+"
-                if B == 1: term_str += ""
-                else: term_str += str(B)
-            else: # B < 0
-                if B == -1: term_str += "-"
-                else: term_str += str(B)
-            
-            if m == 1:
-                term_str += "x"
-            else:
-                term_str += r"x^{" + str(m) + r"}"
-            integrand_parts.append(term_str)
+        integrand_str = _format_integrand_expression([(c, n)])
 
-        # Constant term C
-        if C != 0:
-            term_str = ""
-            if C > 0:
-                if integrand_parts: term_str += "+"
-                term_str += str(C)
-            else: # C < 0
-                term_str += str(C)
-            integrand_parts.append(term_str)
+        question_text = r"計算定積分：$\int_{{a}}^{{b}} {integrand} dx$"
+        question_text = question_text.replace("{a}", str(a))
+        question_text = question_text.replace("{b}", str(b))
+        question_text = question_text.replace("{integrand}", integrand_str)
 
-        if not integrand_parts:
-            integrand_expr = "0"
-        else:
-            integrand_expr = "".join(integrand_parts)
-        
         # Calculate correct answer
-        func_coeffs = [A, B]
-        exponents = [n, m]
-        const_term = C
+        antiderivative_b = c * (b**(n + 1)) / (n + 1)
+        antiderivative_a = c * (a**(n + 1)) / (n + 1)
+        result = antiderivative_b - antiderivative_a
+        correct_answer = f"{result:.2f}"
+
+        # Generate answer explanation
+        indefinite_integral_latex = _format_antiderivative_term(c, n + 1, n + 1)
         
-        result_fraction = _calculate_integral_value(func_coeffs, exponents, const_term, a, b)
-        correct_answer = str(result_fraction)
+        F_b_val = antiderivative_b
+        F_a_val = antiderivative_a
+
+        answer_template = r"解：\n根據積分公式，$\int x^k dx = \frac{x^{{{k+1}}}}{k+1} + C$\n因此，$\\int {integrand_str} dx = {indefinite_integral_latex} + C$\n將上下限代入：\n$[{indefinite_integral_latex}]_{{{a}}}^{{{b}}} = ({F_b_val_str}) - ({F_a_val_str})$\n"
         
-        # Construct question text using .replace()
-        question_template = r"計算 $\int_{a}^{b} ({integrand}) dx$。"
-        question_text = question_template.replace("{a}", str(a)).replace("{b}", str(b))
-        question_text = question_text.replace("{integrand}", integrand_expr)
+        # Adjust the subtraction line based on the sign of F_a_val for clarity
+        if F_a_val < 0:
+            answer_template += r"$= {F_b_val_str} + {abs_F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        else:
+            answer_template += r"$= {F_b_val_str} - {F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        
+        answer = answer_template.replace("{integrand_str}", integrand_str) \
+                                .replace("{indefinite_integral_latex}", indefinite_integral_latex) \
+                                .replace("{a}", str(a)) \
+                                .replace("{b}", str(b)) \
+                                .replace("{F_b_val_str}", f"{F_b_val:.2f}") \
+                                .replace("{F_a_val_str}", f"{F_a_val:.2f}") \
+                                .replace("{abs_F_a_val_str}", f"{abs(F_a_val):.2f}") \
+                                .replace("{result_val_str}", f"{result:.2f}")
 
     elif problem_type == 2:
-        # Type 2 (Maps to RAG Example: 含負指數或分母形式的定積分)
-        A = random.randint(-3, 3)
-        while A == 0:
-            A = random.randint(-3, 3)
-        B = random.randint(-3, 3)
-        while B == 0:
-            B = random.randint(-3, 3)
+        # Type 2: Sum/Difference of Polynomial Terms: int_a^b (ax^m + bx^n) dx
+        a_bound = random.randint(-4, 4)
+        b_bound = random.randint(-4, 4)
+        while a_bound >= b_bound:
+            a_bound = random.randint(-4, 4)
+            b_bound = random.randint(-4, 4)
         
-        n = random.randint(2, 4) # Denominator exponent, n != 1 (avoids ln|x|)
-        m = random.randint(1, 3) # Positive exponent
+        a_coeff = random.randint(-4, 4)
+        while a_coeff == 0:
+            a_coeff = random.randint(-4, 4)
         
-        a = random.randint(1, 2) # Ensures interval doesn't include 0
-        b = random.randint(a + 1, 4)
+        b_coeff = random.randint(-4, 4)
+        while b_coeff == 0:
+            b_coeff = random.randint(-4, 4)
         
-        # Format the integrand expression strictly without f-strings for LaTeX parts
-        integrand_parts = []
-        
-        # Term A/x^n (Ax^-n)
-        if A != 0:
-            term_str = r"\frac{" + str(A) + r"}{x^{" + str(n) + r"}}"
-            integrand_parts.append(term_str)
-        
-        # Term Bx^m
-        if B != 0:
-            term_str = ""
-            if B > 0:
-                if integrand_parts: term_str += "+"
-                if B == 1: term_str += ""
-                else: term_str += str(B)
-            else: # B < 0
-                if B == -1: term_str += "-"
-                else: term_str += str(B)
-            
-            if m == 1:
-                term_str += "x"
-            else:
-                term_str += r"x^{" + str(m) + r"}"
-            integrand_parts.append(term_str)
-        
-        if not integrand_parts:
-            integrand_expr = "0"
-        else:
-            integrand_expr = "".join(integrand_parts)
-            
+        m = random.randint(1, 3)
+        n = random.randint(1, 3)
+        while m == n: # Ensure m != n
+            n = random.randint(1, 3)
+
+        integrand_str = _format_integrand_expression([(a_coeff, m), (b_coeff, n)])
+
+        question_text = r"計算定積分：$\int_{{a}}^{{b}} ({integrand}) dx$"
+        question_text = question_text.replace("{a}", str(a_bound))
+        question_text = question_text.replace("{b}", str(b_bound))
+        question_text = question_text.replace("{integrand}", integrand_str)
+
         # Calculate correct answer
-        # Convert A/x^n to Ax^(-n) for calculation
-        func_coeffs = [A, B]
-        exponents = [-n, m] # Note the negative exponent for the first term
-        const_term = 0 # No constant term for Type 2
+        term1_b = a_coeff * (b_bound**(m + 1)) / (m + 1)
+        term1_a = a_coeff * (a_bound**(m + 1)) / (m + 1)
         
-        result_fraction = _calculate_integral_value(func_coeffs, exponents, const_term, a, b)
-        correct_answer = str(result_fraction)
+        term2_b = b_coeff * (b_bound**(n + 1)) / (n + 1)
+        term2_a = b_coeff * (a_bound**(n + 1)) / (n + 1)
         
-        # Construct question text using .replace()
-        question_template = r"計算 $\int_{a}^{b} ({integrand}) dx$。"
-        question_text = question_template.replace("{a}", str(a)).replace("{b}", str(b))
-        question_text = question_text.replace("{integrand}", integrand_expr)
+        result = (term1_b + term2_b) - (term1_a + term2_a)
+        correct_answer = f"{result:.2f}"
 
-    else: # problem_type == 3 (Type 3a or 3b)
-        # Type 3 (Maps to RAG Example: 定積分性質應用)
-        sub_type = random.choice(['3a', '3b'])
+        # Generate answer explanation
+        antiderivative_terms_info = []
+        antiderivative_terms_info.append((a_coeff / (m+1), m+1, _format_antiderivative_term(a_coeff, m + 1, m + 1)))
+        antiderivative_terms_info.append((b_coeff / (n+1), n+1, _format_antiderivative_term(b_coeff, n + 1, n + 1)))
         
-        if sub_type == '3a':
-            # Type 3a (線性性質)
-            P = random.randint(-15, 15)
-            Q = random.randint(-15, 15)
-            k1 = random.randint(-4, 4)
-            while k1 == 0:
-                k1 = random.randint(-4, 4)
-            k2 = random.randint(-4, 4)
-            while k2 == 0:
-                k2 = random.randint(-4, 4)
-            
-            a = random.randint(-3, 0)
-            b = random.randint(a + 1, 3)
-            
-            correct_answer = str(Fraction(k1 * P + k2 * Q))
-            
-            # Format k1*f(x) + k2*g(x) strictly without f-strings for LaTeX parts
-            integrand_parts = []
-            
-            # k1 f(x) term
-            k1_str = ""
-            if k1 == 1:
-                k1_str = "f(x)"
-            elif k1 == -1:
-                k1_str = "-f(x)"
-            else:
-                k1_str = str(k1) + "f(x)"
-            integrand_parts.append(k1_str)
-            
-            # k2 g(x) term
-            k2_str = ""
-            if k2 > 0:
-                k2_str += "+" # Always add + if positive and not the first term
-                if k2 == 1:
-                    k2_str += "g(x)"
-                else:
-                    k2_str += str(k2) + "g(x)"
-            else: # k2 < 0
-                if k2 == -1:
-                    k2_str += "-g(x)"
-                else:
-                    k2_str += str(k2) + "g(x)" # str(k2) will include the negative sign
-            
-            integrand_parts.append(k2_str)
-            integrand_expr = "".join(integrand_parts)
+        final_antiderivative_latex_expression = _format_antiderivative_expression(antiderivative_terms_info)
+        
+        F_b_val = term1_b + term2_b
+        F_a_val = term1_a + term2_a
 
-            question_template = r"已知 $\int_{a}^{b} f(x) dx = {P}$ 且 $\int_{a}^{b} g(x) dx = {Q}$，試求 $\int_{a}^{b} ({integrand}) dx$。"
-            question_text = question_template.replace("{a}", str(a)).replace("{b}", str(b))
-            question_text = question_text.replace("{P}", str(P)).replace("{Q}", str(Q))
-            question_text = question_text.replace("{integrand}", integrand_expr)
+        answer_template = r"解：\n根據積分公式，$\int (f(x) + g(x)) dx = \int f(x) dx + \int g(x) dx$\n因此，$\\int ({integrand_str}) dx = {final_antiderivative_latex_expression} + C$\n將上下限代入：\n$[{final_antiderivative_latex_expression}]_{{{a_bound}}}^{{{b_bound}}} = ({F_b_val_str}) - ({F_a_val_str})$\n"
+        
+        if F_a_val < 0:
+            answer_template += r"$= {F_b_val_str} + {abs_F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        else:
+            answer_template += r"$= {F_b_val_str} - {F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        
+        answer = answer_template.replace("{integrand_str}", integrand_str) \
+                                .replace("{final_antiderivative_latex_expression}", final_antiderivative_latex_expression) \
+                                .replace("{a_bound}", str(a_bound)) \
+                                .replace("{b_bound}", str(b_bound)) \
+                                .replace("{F_b_val_str}", f"{F_b_val:.2f}") \
+                                .replace("{F_a_val_str}", f"{F_a_val:.2f}") \
+                                .replace("{abs_F_a_val_str}", f"{abs(F_a_val):.2f}") \
+                                .replace("{result_val_str}", f"{result:.2f}")
 
-        else: # sub_type == '3b'
-            # Type 3b (區間加成性質)
-            P = random.randint(-15, 15)
-            Q = random.randint(-15, 15)
-            
-            limits_raw = random.sample(range(-5, 5), 3)
-            limits_raw.sort()
-            a, b, c = limits_raw[0], limits_raw[1], limits_raw[2]
-            
-            correct_answer = str(Fraction(P + Q))
-            
-            question_template = r"已知 $\int_{a}^{b} f(x) dx = {P}$ 且 $\int_{b}^{c} f(x) dx = {Q}$，試求 $\int_{a}^{c} f(x) dx$。"
-            question_text = question_template.replace("{a}", str(a)).replace("{b}", str(b))
-            question_text = question_text.replace("{c}", str(c)).replace("{P}", str(P)).replace("{Q}", str(Q))
-            
+    elif problem_type == 3:
+        # Type 3: Polynomial with Constant Term: int_a^b (ax^n + c) dx
+        a_bound = random.randint(-4, 4)
+        b_bound = random.randint(-4, 4)
+        while a_bound >= b_bound:
+            a_bound = random.randint(-4, 4)
+            b_bound = random.randint(-4, 4)
+        
+        a_coeff = random.randint(-4, 4)
+        while a_coeff == 0:
+            a_coeff = random.randint(-4, 4)
+        
+        n = random.randint(1, 3)
+        
+        c_const = random.randint(-5, 5)
+        while c_const == 0:
+            c_const = random.randint(-5, 5)
+
+        integrand_str = _format_integrand_expression([(a_coeff, n), (c_const, 0)])
+
+        question_text = r"計算定積分：$\int_{{a}}^{{b}} ({integrand}) dx$"
+        question_text = question_text.replace("{a}", str(a_bound))
+        question_text = question_text.replace("{b}", str(b_bound))
+        question_text = question_text.replace("{integrand}", integrand_str)
+
+        # Calculate correct answer
+        term_x_b = a_coeff * (b_bound**(n + 1)) / (n + 1)
+        term_x_a = a_coeff * (a_bound**(n + 1)) / (n + 1)
+        
+        term_const_b = c_const * b_bound
+        term_const_a = c_const * a_bound
+        
+        result = (term_x_b + term_const_b) - (term_x_a + term_const_a)
+        correct_answer = f"{result:.2f}"
+
+        # Generate answer explanation
+        antiderivative_terms_info = []
+        antiderivative_terms_info.append((a_coeff / (n+1), n+1, _format_antiderivative_term(a_coeff, n + 1, n + 1)))
+        antiderivative_terms_info.append((float(c_const), 1, _format_antiderivative_term(c_const, 1, 1))) # Constant C integrates to Cx^1
+        
+        final_antiderivative_latex_expression = _format_antiderivative_expression(antiderivative_terms_info)
+        
+        F_b_val = term_x_b + term_const_b
+        F_a_val = term_x_a + term_const_a
+
+        answer_template = r"解：\n根據積分公式，$\int (f(x) + g(x)) dx = \int f(x) dx + \int g(x) dx$\n因此，$\\int ({integrand_str}) dx = {final_antiderivative_latex_expression} + C$\n將上下限代入：\n$[{final_antiderivative_latex_expression}]_{{{a_bound}}}^{{{b_bound}}} = ({F_b_val_str}) - ({F_a_val_str})$\n"
+        
+        if F_a_val < 0:
+            answer_template += r"$= {F_b_val_str} + {abs_F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        else:
+            answer_template += r"$= {F_b_val_str} - {F_a_val_str} = {result_val_str}$\n所以，定積分的值為 ${result_val_str}$。"
+        
+        answer = answer_template.replace("{integrand_str}", integrand_str) \
+                                .replace("{final_antiderivative_latex_expression}", final_antiderivative_latex_expression) \
+                                .replace("{a_bound}", str(a_bound)) \
+                                .replace("{b_bound}", str(b_bound)) \
+                                .replace("{F_b_val_str}", f"{F_b_val:.2f}") \
+                                .replace("{F_a_val_str}", f"{F_a_val:.2f}") \
+                                .replace("{abs_F_a_val_str}", f"{abs(F_a_val):.2f}") \
+                                .replace("{result_val_str}", f"{result:.2f}")
+
     return {
         "question_text": question_text,
         "correct_answer": correct_answer,
+        "answer": answer,
         "image_base64": None,
-        "created_at": datetime.now().isoformat(),
-        "version": "1.0.0"
+        "created_at": datetime.datetime.now(),
+        "version": 1
     }
-
-# Robust Check Logic (from Architect's Specification, section 6)
-
-    cleaned_user_answer = re.sub(r'[\$\\]|x=|y=|k=|Ans:|[{} ]', '', user_answer)
-    cleaned_correct_answer = re.sub(r'[\$\\]|x=|y=|k=|Ans:|[{} ]', '', correct_answer)
-
-    try:
-        user_fraction = Fraction(cleaned_user_answer)
-        correct_fraction = Fraction(cleaned_correct_answer)
-        return user_fraction == correct_fraction
-    except ValueError:
-        try:
-            user_float = float(cleaned_user_answer)
-            correct_float = float(cleaned_correct_answer)
-            return abs(user_float - correct_float) < 1e-9 # Using a small tolerance
-        except ValueError:
-            return False
-
 
 # [Auto-Injected Patch v11.0] Universal Return, Linebreak & Handwriting Fixer
 def _patch_all_returns(func):
@@ -547,19 +623,19 @@ def _patch_all_returns(func):
         if isinstance(res, dict):
             # [V11.3 Standard Patch] - 解決換行與編碼問題
             if 'question_text' in res and isinstance(res['question_text'], str):
-                # 僅針對「文字反斜線+n」進行物理換行替換，不進行全局編碼轉換
+                # 僅針對「文字反斜線+n」進行物理換行替換,不進行全局編碼轉換
                 import re
                 # 解決 r-string 導致的 \n 問題
                 res['question_text'] = re.sub(r'\n', '\n', res['question_text'])
             
             # --- [V11.0] 智能手寫模式偵測 (Auto Handwriting Mode) ---
-            # 判定規則：若答案包含複雜運算符號，強制提示手寫作答
+            # 判定規則:若答案包含複雜運算符號,強制提示手寫作答
             # 包含: ^ / _ , | ( [ { 以及任何 LaTeX 反斜線
             c_ans = str(res.get('correct_answer', ''))
             # [V13.1 修復] 移除 '(' 與 ','，允許座標與數列使用純文字輸入
             triggers = ['^', '/', '|', '[', '{', '\\']
             
-            # [V11.1 Refined] 僅在題目尚未包含提示時注入，避免重複堆疊
+            # [V11.1 Refined] 僅在題目尚未包含提示時注入,避免重複堆疊
             has_prompt = "手寫" in res.get('question_text', '')
             should_inject = (res.get('input_mode') == 'handwriting') or any(t in c_ans for t in triggers)
             
@@ -575,9 +651,12 @@ def _patch_all_returns(func):
                 elif res['result'].lower() in ['incorrect', 'wrong', 'error']:
                     res['result'] = '答案錯誤'
             
-            # 4. 確保欄位完整性
-            if 'answer' not in res and 'correct_answer' in res:
-                res['answer'] = res['correct_answer']
+            # 4. 確保欄位完整性 & 答案同步
+            if 'correct_answer' in res:
+                # 若 answer 不存在或為空字串,強制同步 correct_answer
+                if 'answer' not in res or not res['answer']:
+                     res['answer'] = res['correct_answer']
+            
             if 'answer' in res:
                 res['answer'] = str(res['answer'])
             if 'image_base64' not in res:
