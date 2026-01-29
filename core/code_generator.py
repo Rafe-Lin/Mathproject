@@ -354,31 +354,37 @@ You are a Senior Python Developer (V14.0 Professional Guard).
      ```python
      def check(user_answer, correct_answer):
          import re, math
-         # 1. 清洗雙方輸入 (移除 LaTeX, 變數名, 空格)
          def clean(s):
              s = str(s).strip().replace(" ", "").lower()
-             s = re.sub(r'^[a-z]+=', '', s) # 移除 k=, x=, y=
-             s = s.replace("$", "").replace("\\", "")
-             return s
+             return re.sub(r'[\$\s\(\)\{\}\[\]\\a-zA-Z=,;:\u4e00-\u9fff]', '', s) # 保留數字與小數點
+
+         # [V18.13 Update] 支援中英文是非題互通
+         u_str = str(user_answer).strip()
+         c_str = str(correct_answer).strip()
          
-         u = clean(user_answer)
-         c = clean(correct_answer)
+         yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right"]
+         no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong"]
          
-         # 2. 嘗試數值比對 (支援分數與小數)
+         if c_str in yes_group:
+             return {"correct": u_str in yes_group, "result": "正確！" if u_str in yes_group else "答案錯誤"}
+         if c_str in no_group:
+             return {"correct": u_str in no_group, "result": "正確！" if u_str in no_group else "答案錯誤"}
+
+         # 3. 數值與字串比對
          try:
-             def parse_val(val_str):
-                 if "/" in val_str:
-                     n, d = map(float, val_str.split("/"))
-                     return n/d
-                 return float(val_str)
+             # 解析分數與浮點數
+             def parse(v):
+                if "/" in v: return float(v.split("/")[0]) / float(v.split("/")[1])
+                return float(v)
              
-             if math.isclose(parse_val(u), parse_val(c), rel_tol=1e-5):
+             u_val = parse(clean(u_str))
+             c_val = parse(clean(c_str))
+             if math.isclose(u_val, c_val, rel_tol=1e-5):
                  return {"correct": True, "result": "正確！"}
          except:
              pass
              
-         # 3. 降級為字串比對
-         if u == c: return {"correct": True, "result": "正確！"}
+         if u_str == c_str: return {"correct": True, "result": "正確！"}
          return {"correct": False, "result": f"答案錯誤。"}
      ```
 
@@ -434,6 +440,10 @@ You are a Senior Python Developer (V14.0 Professional Guard).
 
 10. **函式完整性 (Function Definition Integrity)**:
     - CRITICAL: When implementing the `check` function, YOU MUST explicitly write the line `def check(user_answer, correct_answer):`. Do not just start writing the inner logic or comments.
+
+12. **Boolean/Yes-No Standardization**:
+   - For any "Yes/No" or "True/False" question, the `correct_answer` MUST be the Chinese character **"是"** or **"否"**.
+   - DO NOT use "1", "0", "True", "False".
 """
 
 
@@ -683,6 +693,51 @@ def validate_and_fix_code(code_content):
     """
     total_fixes = 0
     
+    # =========================================================
+    # 防線 A: [V18.9] 雙錢號清洗 (Double Dollar Cleanup)
+    # 解決截圖中出現 "$$0.64" 導致的排版錯誤
+    # 強制將所有 "$$" 替換為單個 "$"
+    # =========================================================
+    if "$$" in code_content:
+        code_content = code_content.replace("$$", "$")
+        total_fixes += 1
+        print("   🔧 [Format-Fix] Removed double dollar signs ($$ -> $).")
+
+    # =========================================================
+    # 防線 B: [V18.9] Check 函式環境隔離修復 (Scope Injection)
+    # 解決 "cannot access local variable 'math'" 錯誤
+    # 強制在 def check(...): 的下一行注入 import math, random, re
+    # =========================================================
+    if "def check(" in code_content:
+        # 使用 Regex 尋找 def check(...) 及其換行
+        pattern = r"(def\s+check\s*\(.*?\):\s*\n)"
+        match = re.search(pattern, code_content)
+        if match:
+            # 檢查下一行是否已經有 import
+            next_lines = code_content[match.end():match.end()+50]
+            if "import math" not in next_lines:
+                # 假設標準縮排為 4 空格
+                injection = "    import math, random, re\n"
+                code_content = code_content[:match.end()] + injection + code_content[match.end():]
+                total_fixes += 1
+                print("   🔧 [Scope-Fix] Injected local imports into check().")
+
+    # =========================================================
+    # 防線 C: [V18.9] LaTeX 跳脫字元修復 (Escape Char Fix)
+    # 解決 f"$\angle" 被轉義為響鈴字元的問題
+    # =========================================================
+    latex_keywords = ['angle', 'triangle', 'frac', 'sqrt', 'times', 'div', 'pm', 'approx', 'circ']
+    for kw in latex_keywords:
+        # 尋找單反斜線 + 關鍵字 (排除已經是雙反斜線的情況)
+        # Regex: f" ... \keyword ... "
+        pattern = r'(f["\'].*?)(?<!\\)\\' + kw + r'(.*?["\'])'
+        while re.search(pattern, code_content):
+            code_content = re.sub(pattern, r'\1\\\\' + kw + r'\2', code_content)
+            total_fixes += 1
+    
+    if total_fixes > 0:
+        print(f"   🛡️ [Auto-Heal] Applied {total_fixes} critical fixes.")
+
     # --- [V10.2] 隔離注入：使用 r-string 三引號保護補丁 ---
     if ("matplotlib" in code_content or "Figure" in code_content) and "font.sans-serif" not in code_content:
         font_style_patch = r'''

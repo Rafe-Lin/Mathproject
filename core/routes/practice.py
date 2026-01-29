@@ -12,6 +12,7 @@
 
 from flask import Blueprint, request, jsonify, current_app, render_template, session, url_for
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
 import importlib
 import sys # [修正 2] 導入 sys 以便檢查模組狀態
 import numpy as np
@@ -107,8 +108,30 @@ def next_question():
     requested_level = request.args.get('level', type=int) 
     
     skill_info = get_skill_info(skill_id)
-    if not skill_info:
+    if not skill_info and skill_id != 'instant_upload':
         return jsonify({"error": f"技能 {skill_id} 不存在或未啟用"}), 404
+        
+    # [Feature] Instant Practice Mode (Short Loop)
+    if skill_id == 'instant_upload':
+        current = get_current()
+        if not current or 'is_instant_upload' not in current:
+             return jsonify({"error": "No instant upload session found"}), 404
+        
+        # Return either base64 or URL path. Frontend handles both in the 'image_base64' field logic (simplification)
+        # or we add a specific field. Let's use image_base64 field as a generic image source carrier for now or add image_url.
+        img_src = current.get("image_path") if current.get("image_path") else current.get("image_base64", "")
+        
+        return jsonify({
+            "new_question_text": current.get("question_text", ""), 
+            "context_string": "",
+            "inequality_string": "",
+            "consecutive_correct": 0, 
+            "current_level": 1, 
+            "image_base64": img_src, # Now carries URL or Base64
+            "visual_aids": [],
+            "answer_type": "text",
+            "is_instant_upload": True 
+        })
     
     try:
         # [修正 2] 強制重新載入模組，解決「改了沒反應」的問題
@@ -423,3 +446,67 @@ def get_suggested_prompts(skill_id):
     if skill_info:
         prompts = [p for p in [skill_info.suggested_prompt_1, skill_info.suggested_prompt_2, skill_info.suggested_prompt_3] if p]
     return jsonify(prompts)
+
+
+@practice_bp.route('/practice/upload_instant', methods=['POST'])
+@login_required # Login required for now, or could be open?
+def upload_instant():
+    """
+    Handle instant image upload for immediate practice (Short Loop).
+    Stores result in session, does NOT save to DB.
+    """
+    if 'image' not in request.files:
+        return jsonify({'success': False, 'message': 'No file part'}), 400
+    
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'success': False, 'message': 'No selected file'}), 400
+        
+    try:
+        from core.ai_analyzer import analyze_question_image
+        
+        # 1. Save temp file (optional, or pass stream directly if supported)
+        # static/temp_uploads structure
+        upload_dir = os.path.join(current_app.static_folder, 'temp_uploads')
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        filename = secure_filename(f"instant_{uuid.uuid4().hex}.png") # Force png or keep extension
+        filepath = os.path.join(upload_dir, filename)
+        file.save(filepath)
+        
+        # 2. Analyze with AI
+        # Re-open file to read for AI
+        with open(filepath, 'rb') as f_img:
+             # Mock a FileStorage object structure or adjust analyze_question_image to take path/bytes
+             # actually analyze_question_image takes a FileStorage object usually.
+             # Let's adjust usage to pass the file object or just re-create a mock
+             from werkzeug.datastructures import FileStorage
+             f_mock = FileStorage(stream=f_img, filename=filename)
+             result = analyze_question_image(f_mock)
+             
+        if "error" in result:
+             return jsonify({'success': False, 'message': result['error']}), 500
+             
+        # 3. Store in Session
+        session_data = {
+            'skill': 'instant_upload',
+            'question_text': result.get('question_text', ''),
+            'correct_answer': result.get('correct_answer', ''),
+            'predicted_topic': result.get('predicted_topic', 'Unclassified'),
+            'image_base64': result.get('image_base64', ''), # If AI returns b64, or constructed below
+            'image_path': url_for('static', filename=f'temp_uploads/{filename}'), # Use path for display
+            'is_instant_upload': True
+        }
+        
+        # If AI didn't return base64 (likely), we use the path url for frontend display
+        # But for 'image_base64' field in next_question response, we might want it? 
+        # Actually frontend can handle URL. Let's use image_path mainly.
+        
+        # CRITICAL: set_current for session management
+        set_current('instant_upload', session_data)
+        
+        return jsonify({'success': True, 'redirect_url': url_for('practice.practice', skill_id='instant_upload')})
+
+    except Exception as e:
+        current_app.logger.error(f"Instant upload failed: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500

@@ -59,11 +59,17 @@ def generate_v9_spec(skill_id, model_tag='cloud_pro', prompt_strategy='standard'
          - 所有空白字元
        - 必須支援多種數學格式的等價性 (例如：`1/2` = `0.5`, `3:4` = `0.75`)。
 
-    3. **幾何/圖形題的特殊規範**：
+    3. **是非題/布林值規範 (Boolean Localization)** [CRITICAL]:
+       - 若題目為判斷題 (e.g., "是否平行?", "是否為函數?"), `correct_answer` **必須** 設定為中文的 **"是"** 或 **"否"**。
+       - **嚴禁** 使用 `"1"`, `"0"`, `"True"`, `"False"` 作為正確答案。
+       - **Bad**: `correct_answer = "1"`
+       - **Good**: `correct_answer = "是"`
+
+    4. **幾何/圖形題的特殊規範**：
        - 若題目要求畫圖，必須明確定義是否需要系統自動批改圖片。
        - 若無法自動批改圖片，必須指示 Code Generator 將圖片轉為「僅供參考 (Reference Only)」，並將 `image_base64` 設為模板或空值，避免洩漏答案軌跡。
 
-    3. 程式結構 (Structure Hardening)
+    5. 程式結構 (Structure Hardening)
     - [頂層函式]：嚴禁使用 class 封裝。必須直接定義 generate(level=1) 與 check(user_answer, correct_answer) 於模組最外層。
     - [自動重載]：確保代碼不依賴全域狀態，以便系統執行 importlib.reload。
 
@@ -178,7 +184,61 @@ def generate_v9_spec(skill_id, model_tag='cloud_pro', prompt_strategy='standard'
     2. **語意消歧義 (Semantic Disambiguation)**：
        - 當 Skill Name 為「綜合應用」、「進階題」這類模糊名詞時，**必須**強制參考該單元的 RAG 例題關鍵字。
        - 若 RAG 為空，則根據 `skill_id` 的前綴推斷主題（例如：看到 `2上` 預設為乘法公式或畢氏定理）。
+
+    19. [CRITICAL RULE: Variant Support] (變體支援)
+    - Check the source of the RAG examples. If examples contain both 'Textbook' and 'Student Upload' sources, you MUST implement a random.choice logic in the generate() function to toggle between these different problem structures (Variants).
+    - Ensure the code covers logic for ALL provided examples.
+    - Example:
+      ```python
+      variant = random.choice(['textbook', 'student_upload'])
+      if variant == 'textbook':
+          # Logic for textbook example
+      else:
+          # Logic for student upload example
+      ```
     """
+
+    system_instruction += """
+\n
+### ⚡ CRITICAL CODING RULES (V18.8 Update):
+
+1. **Local Imports in Check Function**:
+   - The `check(user_answer, correct_answer)` function runs in a restricted scope.
+   - **YOU MUST** verify imports inside the function.
+   - **Correct**:
+     ```python
+     def check(u, c):
+         import math, re  # <--- MUST INCLUDE THIS
+         ...
+     ```
+
+2. **LaTeX Safety in f-strings**:
+   - When using f-strings for LaTeX, you **MUST** use double backslashes for commands.
+   - **Bad**: `f"$\angle A$"` (Python interprets `\a` as Bell character).
+   - **Good**: `f"$\\angle A"` or `r"$\angle A"`.
+   - **Best Practice**: Use `.replace()` logic instead of f-strings for complex LaTeX to avoid all escape issues.
+
+3. **File Integrity (No Appending)**:
+   - Always output the **FULL** file content. Do not assume previous content exists. 
+   - Ensure parentheses `()` and braces `{}` are balanced.
+    """
+
+    system_instruction += """
+\n
+### ⚡ CRITICAL CODING RULES (V18.9 Update):
+
+1. **Local Imports in Check Function**:
+   - The `check` function runs in a restricted scope. Global imports are NOT visible.
+   - **YOU MUST** write `import math, random, re` inside `def check(...)`.
+
+2. **No Double Dollar Signs**:
+   - **STRICTLY FORBIDDEN**: Do NOT use `$$` for math expressions.
+   - **Correct**: Use single `$` (e.g., `$x = 5$`).
+   - **Wrong**: `$$x = 5$$`.
+
+3. **LaTeX Safety**:
+   - Use double backslashes in f-strings: `f"$\\angle A"` (Not `f"$\angle A"`).
+"""
 
     user_prompt = f"### SKILL: {skill.skill_ch_name} ({skill.skill_id})\n### STRATEGY: {tier_scope}\n### EXECUTE:"
     

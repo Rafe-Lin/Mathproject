@@ -734,3 +734,19 @@ class QuizAttempt(db.Model):
     
     # 關聯 (方便從 User 反查)
     user = db.relationship('User', backref=db.backref('quiz_attempts', lazy=True))
+
+class StudentUploadedQuestion(db.Model):
+    __tablename__ = 'student_uploaded_questions'
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True) # Changed to Integer to match User.id type, allowed nullable for anonymous uploads if needed, or enforce. Assuming User.id is Int based on line 325
+    # 預測的技能 ID (由 AI 初步判斷，可為 null)
+    predicted_skill_id = db.Column(db.String(64), db.ForeignKey('skills_info.skill_id'), nullable=True)
+    image_path = db.Column(db.String(255))
+    ocr_content = db.Column(db.Text)  # 題目文字 (LaTeX)
+    ai_solution = db.Column(db.Text)  # 詳解
+    predicted_topic = db.Column(db.String(100)) # AI 歸納的主題名稱 (用於模糊比對)
+    status = db.Column(db.String(20), default='pending') # pending, approved, rejected
+    created_at = db.Column(db.DateTime, default=datetime.utcnow) # consistent with other models using utcnow
+    
+    student = db.relationship('User', backref=db.backref('uploaded_questions', lazy=True))
+    skill_info = db.relationship('SkillInfo', backref=db.backref('student_uploads', lazy=True))

@@ -776,7 +776,8 @@ def analyze_question_image(image_file):
         You are an expert math solver.
         1. OCR: Extract the math question text from the image accurately. Use LaTeX for math symbols in the QUESTION TEXT (surrounded by single $).
         2. SOLVE: Solve the problem step-by-step to find the final answer.
-        3. OUTPUT: Return a JSON object with:
+        3. TOPIC: Analyze the core mathematical concept of this problem (e.g., 'Polynomial Division', 'Law of Cosines').
+        4. OUTPUT: Return a JSON object with:
            - "question_text": The extracted question text. (Use LaTeX for math).
            - "correct_answer": The final result/answer in a STUDENT-FRIENDLY PLAIN TEXT format.
              - Do NOT use LaTeX or '$' in the correct_answer.
@@ -785,12 +786,14 @@ def analyze_question_image(image_file):
              - For text, return just the text.
              - Keep it simple so a student can type it easily.
            - "answer_type": "text"
+           - "predicted_topic": "The predicted mathematical concept."
         
         Example JSON:
         {
           "question_text": "Calculate $1 + 1$",
           "correct_answer": "2",
-          "answer_type": "text"
+          "answer_type": "text",
+          "predicted_topic": "Arithmetic"
         }
         
         Do not include any other text.

@@ -37,7 +37,7 @@ from core.data_importer import import_excel_to_db
 
 from config import Config
 # [Fix] 確保 SkillPrerequisites 被引用
-from models import db, SkillInfo, SkillCurriculum, User, TextbookExample, Progress, SkillGenCodePrompt, SkillPrerequisites, init_db
+from models import db, SkillInfo, SkillCurriculum, User, TextbookExample, Progress, SkillGenCodePrompt, SkillPrerequisites, init_db, StudentUploadedQuestion
 
 # ==========================================
 # Background Tasks (背景任務)
@@ -544,6 +544,63 @@ def admin_get_skill_details(skill_id):
             'suggested_prompt_3': skill.suggested_prompt_3
         }
     })
+
+@core_bp.route('/api/promote_question', methods=['POST'])
+@login_required
+def admin_promote_question():
+    if not (current_user.is_admin or current_user.role == 'teacher'):
+        return jsonify({'success': False, 'message': '權限不足'}), 403
+
+    try:
+        data = request.get_json()
+        question_id = data.get('question_id')
+        skill_id = data.get('skill_id')
+
+        # 1. 查找上傳記錄
+        upload_entry = db.session.get(StudentUploadedQuestion, question_id)
+        if not upload_entry:
+            return jsonify({'success': False, 'message': '找不到題目'}), 404
+
+        # 2. 建立新例題
+        new_example = TextbookExample(
+            skill_id=skill_id,
+            source_curriculum="StudentUpload",
+            source_volume="N/A",
+            source_chapter="N/A",
+            source_section="N/A",
+            source_description=f"Student Upload (ID: {upload_entry.student_id})",
+            problem_text=upload_entry.ocr_content,
+            correct_answer=upload_entry.ai_solution, # Using ai_solution as rough draft for correct answer
+            difficulty_level=1
+        )
+        db.session.add(new_example)
+
+        # 3. 更新狀態
+        upload_entry.status = 'approved'
+        upload_entry.predicted_skill_id = skill_id
+
+        db.session.commit()
+
+        # 4. 觸發重生成
+        try:
+            # [STEP 1] Force Architect to re-analyze examples and update SkillInfo.gemini_prompt
+            print(f"Triggering Architect for {skill_id}...")
+            from core.prompt_architect import generate_v9_spec
+            generate_v9_spec(skill_id, model_tag='cloud_pro')
+
+            # [STEP 2] Now call Coder -> Uses NEW Prompt
+            from core.code_generator import auto_generate_skill_code
+            # Run in background ideally, but here synchronous for feedback
+            auto_generate_skill_code(skill_id, queue=None)
+        except Exception as e:
+            print(f"Auto-generate failed: {e}") 
+            # We don't fail the promotion if generation fails, just log it.
+
+        return jsonify({'success': True, 'message': '晉升成功並已觸發重生成'})
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 # ==========================================
 # Examples Management (例題管理)

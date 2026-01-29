@@ -196,6 +196,17 @@
             word-wrap: break-word;
             /* 確保長單字會自動換行 */
             word-break: break-word;
+            word-break: break-word;
+        }
+
+        /* [Feature] Instant Practice Image Display */
+        #instant-question-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto 15px auto;
+            border: 2px solid #3498db;
+            border-radius: 8px;
         }
 
         .input-group {
@@ -2905,6 +2916,46 @@
     </script>
     </script>
     <script>
+        /* [Feature] Instant Upload Handler */
+        function handleInstantUpload() {
+            const fileInput = document.getElementById('question-image-uploader');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Show loading state?
+            // Maybe change button text
+            const btn = document.getElementById('upload-question-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 分析中...';
+            btn.disabled = true;
+
+            fetch('/practice/upload_instant', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert('上傳失敗: ' + data.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('上傳發生錯誤');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+        }
+
+        // Bind to the file input change event
+        document.getElementById('question-image-uploader').addEventListener('change', handleInstantUpload);
         // === 新增：題目上傳功能 ===
         function setupQuestionUpload() {
             const uploadBtn = document.getElementById('upload-question-btn');
@@ -2943,10 +2994,35 @@
 
                         if (data.success && data.question_text) {
                             // 更新題目
-                            questionTextDiv.innerHTML = data.question_text;
+                            // [Feature] Instant Practice Display Logic
+                            if (data.is_instant_upload) {
+                                let htmlContent = '';
+                                // Prefer image_path if available for caching/display, or base64
+                                // The backend next_question returns image_base64 but we stored image_path in session...
+                                // Let's rely on what next_question returns. We might need to adjust next_question to return image_path too.
+                                // For now, assume image_base64 is populated or we modify next_question to return url.
 
-                            // 重置介面
-                            const answerInput = document.getElementById('answer-input');
+                                // Check if data.image_base64 starts with 'http' or '/' (it's a URL) or actual base64
+                                if (data.image_base64 && (data.image_base64.startsWith('/') || data.image_base64.startsWith('http'))) {
+                                    htmlContent += `<img id="instant-question-image" src="${data.image_base64}" alt="Uploaded Question">`;
+                                } else if (data.image_base64) {
+                                    htmlContent += `<img id="instant-question-image" src="data:image/png;base64,${data.image_base64}" alt="Uploaded Question">`;
+                                }
+
+                                if (data.question_text) { // Changed from data.new_question_text to data.question_text to match existing data structure
+                                    htmlContent += `<div class="latex-content">${data.question_text}</div>`;
+                                }
+
+                                questionTextDiv.innerHTML = htmlContent;
+                            } else {
+                                // Normal behavior
+                                questionTextDiv.innerHTML = data.question_text; // Changed from data.new_question_text to data.question_text
+                            }
+
+                            // Render MathJax
+                            if (window.MathJax) {
+                                MathJax.typesetPromise([questionTextDiv]).catch((err) => console.log(err));
+                            }
                             if (answerInput) answerInput.value = '';
 
                             if (resultDisplay) {
