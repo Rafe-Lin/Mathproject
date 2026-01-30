@@ -414,7 +414,7 @@
                         style="padding: 8px 18px; background: {{ '#007bff' if curriculum == c else '#6c757d' }}; color: white; text-decoration: none; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2);">
                         {{ name }}
                     </a>
-                    <a href="{{ url_for('adaptive_practice_page', mode='review', curriculum=c) }}" title="{{ name }}總複習"
+                    <a href="{{ url_for('practice.adaptive_practice_page', mode='review', curriculum=c) }}" title="{{ name }}總複習"
                         style="padding: 8px 10px; background: {{ '#007bff' if curriculum == c else '#6c757d' }}; color: white; text-decoration: none; font-size: 0.9em;">
                         總複習
                     </a>
@@ -458,7 +458,7 @@
         {% if level == 'volumes' %}
         <!-- 顯示冊別 -->
         <div style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; text-align: center;">
-            <a href="{{ url_for('adaptive_selection_page', curriculum=curriculum) }}" class="btn-practice" style="background-color: #e67e22; display: inline-block; padding: 10px 25px; font-size: 1.1em;">
+            <a href="{{ url_for('practice.adaptive_selection_page', curriculum=curriculum) }}" class="btn-practice" style="background-color: #e67e22; display: inline-block; padding: 10px 25px; font-size: 1.1em;">
                 <i class="fa fa-check-square"></i> 自選組合練習
             </a>
         </div>
