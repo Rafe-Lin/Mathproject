@@ -1,0 +1,219 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/adaptive_practice.html
+功能說明 (Description): [Phase 4] 自適應學習模式專用練習頁面
+後端呼叫 (Backend Call): core/routes/practice.py -> practice (當 skill_id 以 'adaptive_' 開頭時)
+版本資訊 (Version): V1.0
+更新日期 (Date): 2026-01-30
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自適應學習模式</title>
+    <script>
+        {% raw %}
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\(', '\)']] },
+            svg: { fontCache: 'global' }
+        };
+        {% endraw %}
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; background: #f5f7fa; }
+        .navbar { background: #2c3e50; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .navbar .logo { font-weight: bold; font-size: 1.3em; }
+        .navbar a { color: #ecf0f1; text-decoration: none; }
+        .container { flex: 1; display: flex; overflow: hidden; padding: 20px; gap: 20px; }
+        .practice-area { flex: 3; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .practice-area h1 { color: #2c3e50; font-size: 1.5em; margin-bottom: 15px; }
+        #question-text { background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; font-size: 1.25em; line-height: 1.6; color: #2c3e50; margin-bottom: 15px; min-height: 150px; }
+        .input-group { display: flex; gap: 10px; }
+        #answer-input { flex: 1; padding: 12px; font-size: 1em; border: 1px solid #ced4da; border-radius: 6px; }
+        #submit-button { padding: 12px 25px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        #result-display { margin-top: 15px; padding: 12px; border-radius: 6px; font-weight: bold; }
+        #result-display.correct { background: #d4edda; color: #155724; }
+        #result-display.incorrect { background: #f8d7da; color: #721c24; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">自適應學習模式 - {{ unit_name }}</div>
+        <a href="{{ url_for('dashboard') }}">返回儀表板</a>
+    </div>
+
+    <div class="container">
+        <div class="practice-area">
+            <h1 id="unit-title">{{ unit_name }}</h1>
+            <div id="question-spinner" class="spinner" style="display: block;"></div>
+            <div id="question-area" style="display: none;">
+                <div id="question-text"></div>
+                <div class="input-group">
+                    <input type="text" id="answer-input" placeholder="請在此輸入答案...">
+                    <button id="submit-button">提交答案</button>
+                </div>
+                <div id="result-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === 全域變數 ===
+        let isProcessing = false;
+        let currentQuestionId = null;
+        let currentSkillId = null; // [V2] 新增：儲存當前題目的技能ID
+        let questionStartTime = null;
+
+        // [V2] 從 Jinja2 模板獲取後端傳來的參數
+        const MODE = "{{ mode }}";
+        const SKILL_IDS = "{{ skill_ids }}";
+        const CURRICULUM = "{{ curriculum }}";
+
+        // === DOM 元素 ===
+        const submitBtn = document.getElementById('submit-button');
+        const answerInput = document.getElementById('answer-input');
+        const resultDisplay = document.getElementById('result-display');
+        const questionText = document.getElementById('question-text');
+        const questionSpinner = document.getElementById('question-spinner');
+        const questionArea = document.getElementById('question-area');
+        document.getElementById('unit-title').textContent = "{{ unit_name }}";
+
+
+        // === 初始化 ===
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            loadNextQuestion();
+        });
+
+        // === 事件監聽 ===
+        function setupEventListeners() {
+            submitBtn.addEventListener('click', checkAnswer);
+            answerInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+
+        // === 核心功能函式 ===
+        async function loadNextQuestion() {
+            if (isProcessing) return;
+            isProcessing = true;
+            showSpinner(true);
+            clearResult();
+
+            try {
+                // [V2] 根據模式組合 API URL
+                let apiUrl = `/get_adaptive_question?mode=${MODE}`;
+                if (SKILL_IDS) {
+                    apiUrl += `&skill_ids=${SKILL_IDS}`;
+                }
+                if (CURRICULUM) {
+                    apiUrl += `&curriculum=${CURRICULUM}`;
+                }
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `伺服器錯誤: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                displayQuestion(data);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                isProcessing = false;
+                showSpinner(false);
+            }
+        }
+
+        async function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            if (!userAnswer || !currentQuestionId) return;
+            if (isProcessing) return;
+
+            isProcessing = true;
+            submitBtn.disabled = true;
+            
+            const timeTaken = (new Date() - questionStartTime) / 1000; // 秒
+
+            try {
+                const response = await fetch('/check_answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        answer: userAnswer,
+                        mode: 'adaptive',
+                        question_id: currentQuestionId,
+                        skill_id: currentSkillId, // [V2] 使用當前題目的 skill_id
+                        time_taken: timeTaken
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.result || '答案檢查失敗');
+                }
+                const result = await response.json();
+                
+                showResult(result.correct, result.result);
+
+                setTimeout(loadNextQuestion, 1500);
+
+            } catch (error) {
+                showError(error.message);
+                isProcessing = false;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // === UI 更新函式 ===
+        function displayQuestion(data) {
+            questionText.innerHTML = data.new_question_text;
+            renderMathContent(questionText);
+            currentQuestionId = data.question_id;
+            currentSkillId = data.skill_id; // [V2] 儲存當前題目的技能ID
+            answerInput.value = '';
+            answerInput.focus();
+            questionStartTime = new Date();
+            submitBtn.disabled = false;
+        }
+        
+        function showResult(isCorrect, message) {
+            resultDisplay.textContent = message;
+            resultDisplay.className = isCorrect ? 'correct' : 'incorrect';
+        }
+
+        function clearResult() {
+            resultDisplay.textContent = '';
+            resultDisplay.className = '';
+        }
+
+        function showError(message) {
+            questionText.innerHTML = `<p style="color: red;">${message}</p>`;
+            submitBtn.disabled = true;
+        }
+        
+        function showSpinner(show) {
+            questionSpinner.style.display = show ? 'block' : 'none';
+            questionArea.style.display = show ? 'none' : 'block';
+        }
+
+        function renderMathContent(element) {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([element]).catch((err) => console.error('MathJax Error:', err));
+            }
+        }
+    </script>
+</body>
+</html>

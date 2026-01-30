@@ -32,6 +32,8 @@ from . import practice_bp
 from models import db, SkillInfo, SkillPrerequisites, SkillCurriculum, Progress, MistakeNotebookEntry
 from core.utils import get_skill_info
 from core.session import get_current, set_current
+from core.adaptive_engine import recommend_question, update_student_ability, apply_error_penalty, get_all_prerequisites
+from core.ai_analyzer import diagnose_error
 
 # ==========================================
 # Helper Functions (輔助函式)
@@ -79,6 +81,47 @@ def update_progress(user_id, skill_id, is_correct):
 # Routes (路由)
 # ==========================================
 
+@practice_bp.route('/adaptive_selection')
+@login_required
+def adaptive_selection_page():
+    """顯示多單元自選組合的頁面。"""
+    curriculum = request.args.get('curriculum', 'general')
+    curriculum_map = {'general': '普通高中', 'vocational': '技術型高中', 'junior_high': '國民中學'}
+    
+    # 查詢該學程下的所有章節
+    chapters = db.session.query(SkillCurriculum.chapter).filter_by(curriculum=curriculum).distinct().order_by(SkillCurriculum.chapter).all()
+    chapter_list = [c[0] for c in chapters]
+
+    return render_template('adaptive_selection.html', 
+                           chapters=chapter_list, 
+                           curriculum=curriculum,
+                           curriculum_name=curriculum_map.get(curriculum, '未知'))
+
+@practice_bp.route('/adaptive_practice')
+@login_required
+def adaptive_practice_page():
+    """自適應練習的主頁面。"""
+    mode = request.args.get('mode', 'single')
+    skill_ids = request.args.get('skill_ids', '')
+    curriculum = request.args.get('curriculum', '')
+    
+    unit_name = "自適應練習"
+    if mode == 'single':
+        # 在單一模式下，skill_ids 就是章節名稱
+        unit_name = f"單元練習：{skill_ids}"
+    elif mode == 'multiple':
+        unit_name = "自選組合練習"
+    elif mode == 'review':
+        curriculum_map = {'general': '普高', 'vocational': '技高', 'junior_high': '國中'}
+        unit_name = f"{curriculum_map.get(curriculum, '')} 總複習"
+
+    return render_template('adaptive_practice.html', 
+                           unit_name=unit_name,
+                           mode=mode,
+                           skill_ids=skill_ids,
+                           curriculum=curriculum)
+
+
 @practice_bp.route('/practice/<skill_id>')
 def practice(skill_id):
     """進入特定技能的練習頁面"""
@@ -100,8 +143,55 @@ def practice(skill_id):
                            skill_ch_name=skill_ch_name,
                            prereq_skills=prereq_skills)
 
+@practice_bp.route('/get_adaptive_question', methods=['GET'])
+@login_required
+def get_adaptive_question():
+    """
+    API: [Phase 3] 獲取下一道自適應推薦題目
+    """
+    skill_id = request.args.get('skill_id')
+    if not skill_id:
+        return jsonify({"error": "缺少 skill_id 參數"}), 400
+
+    try:
+        # 1. 呼叫推薦引擎獲取最佳題目模板
+        question_template = recommend_question(current_user.id, skill_id)
+        if not question_template:
+            return jsonify({"error": "題庫中已無合適的題目可供推薦。"}), 404
+            
+        # 2. 使用 skill.generate() 動態生成具體題目
+        mod = get_skill(question_template.skill_id)
+        if not mod:
+            return jsonify({"error": f"無法載入技能模組 {question_template.skill_id}"}), 500
+
+        data = mod.generate(level=question_template.difficulty_level)
+
+        # 3. 準備 Session 資料 (與 next_question 邏輯類似)
+        session_data = data.copy()
+        for k in ['image', 'fig', 'figure', 'image_base64', 'visuals']:
+            if k in session_data: del session_data[k]
+        
+        set_current(skill_id, session_data)
+
+        # 4. 回傳包含 mode 和 question_id 的 JSON 給前端
+        return jsonify({
+            "question_id": question_template.id, # 重要：回傳 DB 中的題目 ID
+            "skill_id": question_template.skill_id,
+            "mode": "adaptive",
+            "new_question_text": data.get("question_text"),
+            "correct_answer": data.get("correct_answer"),
+            "context_string": data.get("context_string", ""),
+            "image_base64": data.get("image_base64", ""), 
+            "visual_aids": data.get("visual_aids", []),
+            "answer_type": "text" # 假設自適應模式皆為文字輸入
+        })
+    except Exception as e:
+        current_app.logger.error(f"生成自適應題目失敗: {e}")
+        return jsonify({"error": f"生成自適應題目時發生內部錯誤: {str(e)}"}), 500
+
+
 @practice_bp.route('/get_next_question')
-@login_required  # [修正 1] 強制檢查登入，解決 AnonymousUserMixin 報錯
+@login_required
 def next_question():
     """API: 生成下一題"""
     skill_id = request.args.get('skill', 'remainder')
@@ -228,10 +318,10 @@ def check_answer():
             "state_lost": True
         }), 400
 
-    skill = current['skill']
+    skill_id = current['skill']
     
     # [Fix] Instant Upload Special Handling
-    if skill == 'instant_upload':
+    if skill_id == 'instant_upload':
         # Simple string comparison for instant upload
         correct_ans = str(current.get('correct_answer', '')).strip()
         user_ans_clean = user_ans.strip()
@@ -243,7 +333,7 @@ def check_answer():
         }
         return jsonify(result)
 
-    mod = get_skill(skill)
+    mod = get_skill(skill_id)
     if not mod:
         return jsonify({"correct": False, "result": "模組載入錯誤"})
 
@@ -267,8 +357,45 @@ def check_answer():
         
     is_correct = result.get('correct', False)
 
-    # 更新進度
-    update_progress(current_user.id, skill, is_correct)
+    # --- [Phase 2 & 5] 自適應學習模式整合 ---
+    is_adaptive_mode = request.json.get('mode') == 'adaptive'
+    if is_adaptive_mode:
+        try:
+            question_id = request.json.get('question_id')
+            time_taken = request.json.get('time_taken', 60.0) # 預設 60 秒
+            
+            if question_id:
+                # 不論對錯，先更新能力（答對會加分，答錯在此階段不變）
+                update_student_ability(
+                    user_id=current_user.id,
+                    skill_id=skill_id,
+                    question_id=question_id,
+                    is_correct=is_correct,
+                    time_taken_seconds=float(time_taken)
+                )
+
+                # 如果答錯，則啟動錯誤分析與懲罰
+                if not is_correct:
+                    question_text = current.get('question_text', '')
+                    correct_answer = current.get('correct_answer', '')
+                    
+                    # 呼叫 AI 診斷
+                    error_type = diagnose_error(question_text, correct_answer, user_ans)
+                    
+                    # 應用懲罰
+                    if error_type != "unknown":
+                        apply_error_penalty(
+                            user_id=current_user.id,
+                            skill_id=skill_id,
+                            question_id=question_id,
+                            error_type=error_type
+                        )
+
+        except Exception as e:
+            current_app.logger.error(f"自適應引擎處理失敗: {e}")
+    
+    # 更新一般進度
+    update_progress(current_user.id, skill_id, is_correct)
 
     # 若答錯，自動記錄到錯題本
     if not is_correct:
@@ -276,13 +403,13 @@ def check_answer():
             q_text = current.get('question_text')
             existing_entry = db.session.query(MistakeNotebookEntry).filter_by(
                 student_id=current_user.id,
-                skill_id=skill
+                skill_id=skill_id
             ).filter(MistakeNotebookEntry.question_data.contains(q_text)).first()
 
             if not existing_entry and q_text:
                 new_entry = MistakeNotebookEntry(
                     student_id=current_user.id,
-                    skill_id=skill,
+                    skill_id=skill_id,
                     question_data={'type': 'system_question', 'text': q_text},
                     notes='系統練習題自動記錄'
                 )
@@ -293,6 +420,7 @@ def check_answer():
             db.session.rollback()
     
     return jsonify(result)
+
 
 @practice_bp.route('/draw_diagram', methods=['POST'])
 def draw_diagram():

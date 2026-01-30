@@ -186,6 +186,53 @@ def configure_gemini(api_key, model_name):
     gemini_model = genai.GenerativeModel(model_name)
     gemini_chat = gemini_model.start_chat(history=[])  # 動態設定！
 
+def diagnose_error(question_text, correct_answer, student_answer):
+    """
+    [Phase 5] 使用 LLM 診斷學生的錯誤類型。
+
+    Args:
+        question_text (str): 題目內容。
+        correct_answer (str): 正確答案。
+        student_answer (str): 學生的答案。
+
+    Returns:
+        str: "concept", "calculation", 或 "unknown"。
+    """
+    try:
+        model = get_model()
+        prompt = f"""
+        你是一位資深的數學老師，請根據以下資訊判斷學生的錯誤類型。
+
+        - 題目: {question_text}
+        - 正確答案: {correct_answer}
+        - 學生的錯誤答案: {student_answer}
+
+        請判斷這個錯誤主要是「觀念錯誤」（例如：使用了錯誤的公式、混淆了定義）還是「計算錯誤」（例如：加減乘除錯誤、正負號錯誤）。
+
+        請嚴格以 JSON 格式回傳，只需提供錯誤類型，像這樣：
+        {{
+          "error_type": "concept"
+        }}
+        或
+        {{
+          "error_type": "calculation"
+        }}
+        """
+        
+        response = model.generate_content(
+            prompt,
+            generation_config={"max_output_tokens": 100, "temperature": 0.1}
+        )
+        
+        # 使用既有的 robust JSON parser
+        result = clean_and_parse_json(response.text)
+        
+        return result.get("error_type", "unknown")
+
+    except Exception as e:
+        current_app.logger.error(f"診斷錯誤類型失敗: {e}")
+        return "unknown"
+
 def get_model():
     if gemini_model is None:
         raise RuntimeError("Gemini 尚未初始化！")

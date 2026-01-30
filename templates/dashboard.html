@@ -407,19 +407,19 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="margin: 0;">學習儀表板</h2>
             <!-- 新增：普高/技高/國中 切換按鈕 -->
-            <div style="flex-grow: 1; text-align: center;">
-                <a href="{{ url_for('dashboard', view='curriculum', curriculum='junior_high') }}"
-                    style="padding: 8px 24px; margin: 0 10px; background: {{ '#007bff' if curriculum == 'junior_high' else '#6c757d' }}; color: white; text-decoration: none; border-radius: 20px; font-weight: bold;">
-                    國中
-                </a>
-                <a href="{{ url_for('dashboard', view='curriculum', curriculum='general') }}"
-                    style="padding: 8px 24px; margin: 0 10px; background: {{ '#007bff' if curriculum == 'general' else '#6c757d' }}; color: white; text-decoration: none; border-radius: 20px; font-weight: bold;">
-                    普高
-                </a>
-                <a href="{{ url_for('dashboard', view='curriculum', curriculum='vocational') }}"
-                    style="padding: 8px 24px; margin: 0 10px; background: {{ '#007bff' if curriculum == 'vocational' else '#6c757d' }}; color: white; text-decoration: none; border-radius: 20px; font-weight: bold;">
-                    技高
-                </a>
+            <div style="flex-grow: 1; text-align: center; display: flex; justify-content: center; align-items: center; gap: 5px;">
+                {% for c, name in [('junior_high', '國中'), ('general', '普高'), ('vocational', '技高')] %}
+                <div style="display: inline-block; border: 1px solid {{ '#007bff' if curriculum == c else '#6c757d' }}; border-radius: 20px; overflow: hidden;">
+                    <a href="{{ url_for('dashboard', view='curriculum', curriculum=c) }}"
+                        style="padding: 8px 18px; background: {{ '#007bff' if curriculum == c else '#6c757d' }}; color: white; text-decoration: none; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2);">
+                        {{ name }}
+                    </a>
+                    <a href="{{ url_for('adaptive_practice_page', mode='review', curriculum=c) }}" title="{{ name }}總複習"
+                        style="padding: 8px 10px; background: {{ '#007bff' if curriculum == c else '#6c757d' }}; color: white; text-decoration: none; font-size: 0.9em;">
+                        總複習
+                    </a>
+                </div>
+                {% endfor %}
             </div>
             <div>
                 <a href="{{ url_for('dashboard', view='all') }}"
@@ -457,6 +457,11 @@
 
         {% if level == 'volumes' %}
         <!-- 顯示冊別 -->
+        <div style="margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; text-align: center;">
+            <a href="{{ url_for('adaptive_selection_page', curriculum=curriculum) }}" class="btn-practice" style="background-color: #e67e22; display: inline-block; padding: 10px 25px; font-size: 1.1em;">
+                <i class="fa fa-check-square"></i> 自選組合練習
+            </a>
+        </div>
         {% set curriculum_map = {'general': '普通高中', 'vocational': '技術型高中', 'junior_high': '國民中學'} %}
         {% set curriculum_name = curriculum_map.get(curriculum, curriculum) %}
         <p>{{ curriculum_name }} - 請選擇冊別：</p>
@@ -483,12 +488,18 @@
         <p>{{ volume }} - 請選擇章節：</p>
         <div class="level-grid chapters-grid">
             {% for ch in chapters %}
-            <a href="{{ url_for('dashboard', view='curriculum', curriculum=curriculum, volume=volume, chapter=ch) }}"
-                style="text-decoration: none;">
-                <div class="level-card chapter-card">
-                    <h3>{{ ch }}</h3>
-                </div>
-            </a>
+            <div class="chapter-container" style="display: flex; flex-direction: column; gap: 5px;">
+                <a href="{{ url_for('dashboard', view='curriculum', curriculum=curriculum, volume=volume, chapter=ch) }}"
+                    style="text-decoration: none; flex-grow: 1; display: flex;">
+                    <div class="level-card chapter-card" style="width: 100%;">
+                        <h3>{{ ch }}</h3>
+                    </div>
+                </a>
+                <a href="{{ url_for('adaptive_practice_page', mode='single', skill_ids=ch) }}" class="btn-practice"
+                    style="background-color: #28a745; text-decoration: none; padding: 8px; font-size: 0.9em;">
+                    單元練習
+                </a>
+            </div>
             {% endfor %}
         </div>
         {% elif level == 'skills' %}

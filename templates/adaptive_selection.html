@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>自選組合練習 - 自適應性教學系統</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        .navbar { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; }
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h1 { color: #e67e22; }
+        .chapter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .chapter-label { display: block; background: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .chapter-label:hover { border-color: #007bff; background: #e9ecef; }
+        .chapter-label input { margin-right: 10px; }
+        #start-button { display: block; width: 100%; padding: 15px; margin-top: 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: bold; cursor: pointer; }
+        #start-button:disabled { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('dashboard') }}" class="logo">自適應性教學系統</a>
+        <a href="{{ url_for('dashboard') }}">返回儀表板</a>
+    </div>
+    <div class="container">
+        <h1>自選組合練習 ({{ curriculum_name }})</h1>
+        <p>請勾選您想一起練習的多個章節，系統將會從這些章節及其相關基礎知識點中為您推薦題目。</p>
+        
+        <div class="chapter-grid" id="chapter-list">
+            {% for chapter in chapters %}
+            <label class="chapter-label">
+                <input type="checkbox" name="chapter" value="{{ chapter }}">
+                {{ chapter }}
+            </label>
+            {% endfor %}
+        </div>
+
+        <button id="start-button" disabled>請至少選擇一個章節</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[name="chapter"]');
+            const startButton = document.getElementById('start-button');
+
+            function updateButtonState() {
+                const checked = document.querySelectorAll('input[name="chapter"]:checked');
+                if (checked.length > 0) {
+                    startButton.disabled = false;
+                    startButton.textContent = `開始練習 (${checked.length}個章節)`;
+                } else {
+                    startButton.disabled = true;
+                    startButton.textContent = '請至少選擇一個章節';
+                }
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateButtonState);
+            });
+
+            startButton.addEventListener('click', function() {
+                const checkedChapters = Array.from(document.querySelectorAll('input[name="chapter"]:checked'))
+                                             .map(cb => cb.value);
+                
+                if (checkedChapters.length > 0) {
+                    const skillIds = checkedChapters.join(',');
+                    window.location.href = `/adaptive_practice?mode=multiple&skill_ids=${skillIds}`;
+                }
+            });
+
+            updateButtonState();
+        });
+    </script>
+</body>
+</html>
