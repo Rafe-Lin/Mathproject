@@ -2856,34 +2856,26 @@
                     // [Modified] Robust Error Handling Logic
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-                    const rawText = await response.text();
-                    // [Modified] Level 3: Surgical Parser (外科手術級解析)
-                    // .then(response => response.text()) 在上方已經執行
-                    const text = rawText; // rawText is already fetched
-                    let finalData = { reply: "", follow_up_prompts: [] };
+                    let finalData = await response.json();
+                    if (!finalData || typeof finalData !== 'object') {
+                        finalData = { reply: "老師正在思考中，請再問一次看看！", follow_up_prompts: [] };
+                    }
 
-                    try {
-                        // 嘗試正常解析 (包含 LaTeX 反斜線修復)
-                        const sanitized = text.replace(/\\(?![u"\\/bfnrt])/g, "\\\\");
-                        finalData = JSON.parse(sanitized);
-                    } catch (e) {
-                        console.warn("JSON 斷裂，啟動外科手術救援...");
-
-                        // 【救援邏輯】如果 JSON 斷了，用正規表達式強行抓取 reply 內容
-                        const match = text.match(/"reply"\s*:\s*"([\s\S]*?)"/);
-                        if (match) {
-                            // 簡易修復：將 \n 轉為 html br，並處理轉義引號
-                            finalData.reply = match[1].replace(/\\n/g, "<br>").replace(/\\"/g, '"');
-                        } else {
-                            finalData.reply = "老師正在思考中，請再問一次看看！";
-                        }
-
-                        // 嘗試救回 prompts (盡力而為)
-                        // 排除 key 名稱，只抓 value (簡易版)
-                        const pMatches = text.match(/"([^"]{5,50})"/g);
-                        if (pMatches) {
-                            const safeMatches = pMatches.filter(s => !s.includes("reply") && !s.includes("follow_up_prompts"));
-                            finalData.follow_up_prompts = safeMatches.slice(-3).map(s => s.replace(/"/g, ''));
+                    // 防呆：若 reply 被模型包成 JSON 字串，這裡拆出真正的 reply / prompts
+                    if (typeof finalData.reply === 'string') {
+                        const replyStr = finalData.reply.trim();
+                        if (replyStr.startsWith('{') && replyStr.includes('"reply"')) {
+                            try {
+                                const nested = JSON.parse(replyStr);
+                                if (nested && typeof nested.reply === 'string') {
+                                    finalData.reply = nested.reply;
+                                    if (Array.isArray(nested.follow_up_prompts) && (!Array.isArray(finalData.follow_up_prompts) || finalData.follow_up_prompts.length === 0)) {
+                                        finalData.follow_up_prompts = nested.follow_up_prompts;
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('Nested reply JSON parse failed:', e);
+                            }
                         }
                     }
 
@@ -2892,7 +2884,21 @@
                     let rawReply = finalData.reply || "";
                     rawReply = rawReply.replace(/\\\\/g, '\\');
 
-                    const cleanedReply = rawReply.replace(/(思考|選項|建議|回覆|解析|步驟|回答)[：:\d\s]*/g, "");
+                    let cleanedReply = rawReply.replace(/(思考|選項|建議|回覆|解析|步驟|回答)[：:\d\s]*/g, "");
+
+                    // 顯示保險：若 reply 仍是 JSON-ish 字串，提取內層 reply 再顯示
+                    if (typeof cleanedReply === 'string') {
+                        const maybeJson = cleanedReply.trim();
+                        if (maybeJson.startsWith('{') && maybeJson.includes('"reply"')) {
+                            const m = maybeJson.match(/"reply"\s*:\s*"([\s\S]*?)"\s*(,|\})/);
+                            if (m && m[1]) {
+                                cleanedReply = m[1]
+                                    .replace(/\\n/g, '\n')
+                                    .replace(/\\"/g, '"')
+                                    .replace(/\\\\/g, '\\');
+                            }
+                        }
+                    }
 
                     // 移除思考中訊息
                     if (thinkingDiv && thinkingDiv.parentNode) {

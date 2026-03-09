@@ -10,7 +10,7 @@
 =============================================================================
 """
 
-from flask import request, jsonify, render_template, current_app, url_for
+from flask import request, jsonify, render_template, current_app, url_for, session
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
@@ -19,7 +19,14 @@ import traceback
 
 from . import core_bp, practice_bp
 from core.session import get_current
-from core.ai_analyzer import build_chat_prompt, get_chat_response, analyze, diagnose_error
+from core.ai_analyzer import (
+    build_chat_prompt,
+    get_chat_response,
+    analyze,
+    diagnose_error,
+    diversify_follow_up_prompts,
+    build_dynamic_follow_up_prompts_variant
+)
 from core.exam_analyzer import analyze_exam_image, save_analysis_result
 from core.diagnosis_analyzer import perform_weakness_analysis
 from core.rag_engine import rag_search, rag_chat
@@ -62,8 +69,57 @@ def chat_ai():
         context=context,
         prereq_skills=prereq_skills
     )
+
+    current_app.logger.info(
+        "[chat_ai] received question='%s' context_head='%s'",
+        user_question[:120],
+        (full_question_context or '')[:120]
+    )
     
-    result = get_chat_response(full_prompt)
+    result = get_chat_response(
+        full_prompt,
+        user_question=user_question,
+        question_context=full_question_context
+    )
+
+    # 每輪根據學生當前提問重整紅色追問按鈕，避免固定模板重複出現
+    chat_state = session.get('chat_followup_state', {}) if isinstance(session.get('chat_followup_state', {}), dict) else {}
+    last_prompts = chat_state.get('last_prompts', [])
+    turn_index = int(chat_state.get('turn_index', 0))
+    last_context = chat_state.get('last_context', '')
+
+    if last_context != full_question_context:
+        last_prompts = []
+        turn_index = 0
+
+    # 以本輪學生提問為核心產生紅色提示詞，再做跨輪去重，確保每輪都會跟提問變化。
+    per_turn_prompts = build_dynamic_follow_up_prompts_variant(
+        user_question=user_question,
+        question_context=full_question_context,
+        ai_reply=result.get('reply', ''),
+        variant=turn_index
+    )
+    result['follow_up_prompts'] = diversify_follow_up_prompts(
+        per_turn_prompts,
+        last_prompts,
+        user_question=user_question,
+        question_context=full_question_context,
+        ai_reply=result.get('reply', ''),
+        turn_index=turn_index
+    )
+
+    current_app.logger.info(
+        "[chat_ai] generated follow_up_prompts=%s",
+        result.get('follow_up_prompts', [])
+    )
+
+    session['chat_followup_state'] = {
+        'last_prompts': result.get('follow_up_prompts', [])[:3],
+        'turn_index': turn_index + 1,
+        'last_question': user_question[:120],
+        'last_context': full_question_context
+    }
+
     return jsonify(result)
 
 @practice_bp.route('/analyze_handwriting', methods=['POST'])

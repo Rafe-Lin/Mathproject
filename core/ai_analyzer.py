@@ -173,12 +173,207 @@ DEFAULT_CHAT_PROMPT = """
 {
   "reply": "老師的對話內容精準批改或引導內容 (口語化，40字內，不含標題與情緒，必須包含 LaTeX 格式的數學符號，如 \\sqrt{7})",
   "follow_up_prompts": [
-    "問題1 (【觀察】：引導學生觀察圖形或算式特徵)",
-    "問題2 (【聯想】：提示相關公式或策略)",
-    "問題3 (【執行】：具體修正步驟或驗算)"
+    "問題1 (【觀察】：請根據當前題目提出一個具體觀察點)",
+    "問題2 (【聯想】：請連到此題相關觀念或公式)",
+    "問題3 (【執行】：請給可立即操作的檢查或修正步驟)"
   ]
 }
 """
+
+
+def _looks_generic_followup_prompt(text):
+    """Detect placeholder-like prompts that should be regenerated."""
+    if not isinstance(text, str):
+        return True
+    s = text.strip()
+    if not s:
+        return True
+
+    generic_markers = [
+        '...',
+        '這裡的...為什麼',
+        '如果我不...，還有別的方法嗎',
+        '這題的陷阱是不是在',
+        '引導學生觀察圖形或算式特徵',
+        '提示相關公式或策略',
+        '具體修正步驟或驗算',
+        'prompt 1',
+        'prompt 2',
+        'prompt 3'
+    ]
+    lowered = s.lower()
+    return any(marker in s or marker in lowered for marker in generic_markers)
+
+
+def _extract_focus_phrase(user_question, question_context, ai_reply):
+    """Pick a short context phrase so regenerated prompts are anchored to current turn."""
+    candidates = [user_question, question_context, ai_reply]
+    for raw in candidates:
+        if not isinstance(raw, str):
+            continue
+        cleaned = re.sub(r'\s+', ' ', raw).strip()
+        if not cleaned:
+            continue
+        cleaned = cleaned.replace('"', '').replace("'", '')
+        cleaned = cleaned.replace('$', '')
+        return cleaned[:24]
+    return '這一題'
+
+
+def build_dynamic_follow_up_prompts(user_question='', question_context='', ai_reply=''):
+    """Generate deterministic, non-placeholder follow-up prompts."""
+    focus = _extract_focus_phrase(user_question, question_context, ai_reply)
+    return [
+        f"問題1 (【觀察】：先看「{focus}」，哪個條件最容易被忽略？)",
+        f"問題2 (【聯想】：這題和哪個公式或性質最直接相關？為什麼？)",
+        f"問題3 (【執行】：請用 1 步驗算「{focus}」是否成立。)"
+    ]
+
+
+def build_dynamic_follow_up_prompts_variant(user_question='', question_context='', ai_reply='', variant=0):
+    """Generate stylistic variants so repeated turns won't show identical prompts."""
+    focus = _extract_focus_phrase(user_question, question_context, ai_reply)
+    styles = [
+        (
+            "問題1 (【觀察】：先看「{focus}」，哪個條件最容易被忽略？)",
+            "問題2 (【聯想】：這題和哪個公式或性質最直接相關？為什麼？)",
+            "問題3 (【執行】：請用 1 步驗算「{focus}」是否成立。)"
+        ),
+        (
+            "問題1 (【觀察】：在「{focus}」裡，哪個數字或符號最關鍵？)",
+            "問題2 (【聯想】：把這題對應到一個你熟悉的規則，會是哪一個？)",
+            "問題3 (【執行】：先做一個最小步驟，確認「{focus}」方向有沒有反。)"
+        ),
+        (
+            "問題1 (【觀察】：請指出「{focus}」中最容易看錯的地方。)",
+            "問題2 (【聯想】：若套用同類型題目的方法，第一個要用的觀念是什麼？)",
+            "問題3 (【執行】：寫出一行檢查式，驗證「{focus}」是否合理。)"
+        )
+    ]
+    chosen = styles[variant % len(styles)]
+    return [s.format(focus=focus) for s in chosen]
+
+
+def _prompt_fingerprint(text):
+    if not isinstance(text, str):
+        return ''
+    return re.sub(r'[\s\W_]+', '', text, flags=re.UNICODE).lower()
+
+
+def diversify_follow_up_prompts(prompts, last_prompts, user_question='', question_context='', ai_reply='', turn_index=0):
+    """Avoid cross-turn duplication by rewriting prompts when current equals previous turn."""
+    current = normalize_follow_up_prompts(
+        prompts,
+        user_question=user_question,
+        question_context=question_context,
+        ai_reply=ai_reply
+    )
+
+    if not isinstance(last_prompts, list) or len(last_prompts) == 0:
+        return current
+
+    current_fp = [_prompt_fingerprint(p) for p in current]
+    last_fp = [_prompt_fingerprint(p) for p in last_prompts[:3]]
+
+    if current_fp == last_fp:
+        return build_dynamic_follow_up_prompts_variant(
+            user_question=user_question,
+            question_context=question_context,
+            ai_reply=ai_reply,
+            variant=(turn_index + 1)
+        )
+
+    return current
+
+
+def normalize_follow_up_prompts(prompts, user_question='', question_context='', ai_reply=''):
+    """Keep valid prompts; regenerate if placeholders/generic text are returned."""
+    cleaned = []
+    if isinstance(prompts, list):
+        for p in prompts[:3]:
+            if isinstance(p, str):
+                p = p.strip()
+                if p and p.lower() != 'none':
+                    cleaned.append(p)
+
+    must_regen = len(cleaned) < 3 or all(_looks_generic_followup_prompt(p) for p in cleaned)
+    if must_regen:
+        return build_dynamic_follow_up_prompts(user_question, question_context, ai_reply)
+
+    labels = ['【觀察】', '【聯想】', '【執行】']
+    normalized = []
+    for idx, p in enumerate(cleaned[:3]):
+        if labels[idx] in p:
+            normalized.append(p)
+        else:
+            normalized.append(f"問題{idx + 1} ({labels[idx]}：{p})")
+
+    # 去重防呆：若三句提示過度相似，改用系統產生的穩定提示
+    fps = [_prompt_fingerprint(p) for p in normalized]
+    if len(set(fps)) < len(fps):
+        return build_dynamic_follow_up_prompts(user_question, question_context, ai_reply)
+
+    return normalized
+
+
+def _unwrap_nested_reply_payload(reply_text):
+    """If reply is a JSON string payload, extract nested reply/prompts safely."""
+    if not isinstance(reply_text, str):
+        return reply_text, None
+
+    raw = reply_text.strip()
+    if not (raw.startswith('{') and 'reply' in raw):
+        return reply_text, None
+
+    nested = clean_and_parse_json(raw)
+    if not isinstance(nested, dict):
+        return _extract_reply_and_prompts_from_jsonish(raw)
+
+    nested_reply = nested.get('reply')
+    nested_prompts = nested.get('follow_up_prompts')
+    if isinstance(nested_reply, str):
+        # clean_and_parse_json 失敗時可能回傳 {"reply": 原字串}，這裡要避免誤判為成功
+        if _prompt_fingerprint(nested_reply) == _prompt_fingerprint(raw):
+            return _extract_reply_and_prompts_from_jsonish(raw)
+        if not isinstance(nested_prompts, list):
+            nested_prompts = None
+        return nested_reply, nested_prompts
+
+    return _extract_reply_and_prompts_from_jsonish(raw)
+
+
+def _extract_reply_and_prompts_from_jsonish(text):
+    """Best-effort extractor for malformed JSON string payloads in reply."""
+    if not isinstance(text, str):
+        return text, None
+
+    raw = text.strip()
+
+    # 1) 抓 reply 欄位
+    reply = raw
+    match = re.search(r'"reply"\s*:\s*"([\s\S]*?)"\s*(,|\})', raw)
+    if match:
+        escaped = match.group(1)
+        try:
+            reply = json.loads(f'"{escaped}"')
+        except Exception:
+            reply = escaped.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\')
+
+    # 2) 抓 follow_up_prompts 陣列
+    prompts = None
+    prompts_block = re.search(r'"follow_up_prompts"\s*:\s*\[([\s\S]*?)\]', raw)
+    if prompts_block:
+        items = re.findall(r'"((?:\\.|[^"])*)"', prompts_block.group(1))
+        if items:
+            decoded = []
+            for it in items[:3]:
+                try:
+                    decoded.append(json.loads(f'"{it}"'))
+                except Exception:
+                    decoded.append(it.replace('\\n', '\n').replace('\\"', '"').replace('\\\\', '\\'))
+            prompts = decoded
+
+    return reply, prompts
 
 def configure_gemini(api_key, model_name):
     global gemini_model, gemini_chat
@@ -623,7 +818,7 @@ def build_chat_prompt(skill_id, user_question, full_question_context, context, p
     # [SYSTEM OVERRIDE] 強制設定，覆蓋任何資料庫傳來的軟性指令
     # 我們不讀取 skill.gemini_prompt，以免舊的暖男指令汙染
     base_instruction = """
-[SYSTEM OVERRIDE]
+[SYSTEM OVERRIDE]   
 ROLE: Strict Math Professor.
 TONE: Cold, Direct, Concise.
 FORBIDDEN: "同學", "你好", "很棒", "加油", "別擔心", "不過", "試試看".
@@ -675,6 +870,9 @@ LATEX: Use single backslash e.g. $x^2$.
         # Fallback formatting if template keys mismatch
         full_prompt = f"{prompt_template}\n\n[系統補完]\n題目：{enhanced_context}\n學生問題：{user_question}"
 
+    # 關鍵：無論 template 是否有 placeholders，都強制附上本輪學生問題，避免每輪輸入看起來一樣。
+    full_prompt += f"\n\n【本輪學生提問】\n{user_question or '（學生未提供）'}"
+
     # 6. Prepend Title (Optional, specific to requirement)
     if "【學生當前正在練習的題目】" not in full_prompt:
         full_prompt = f"【學生當前正在練習的題目】\n{full_question_context}\n\n" + full_prompt
@@ -701,13 +899,16 @@ LATEX: Use single backslash e.g. $x^2$.
     {
       "reply": "用繁體中文回答學生的問題。如果學生答錯，給予引導；如果答對，給予鼓勵。**請完全口語化，不要使用「思考：」、「步驟：」等標題**。每次回話不超過 40 字。",
       "follow_up_prompts": [
-          "問題1 (【觀察】：老師，這裡的...為什麼...？)",
-          "問題2 (【聯想】：如果我不...，還有別的方法嗎？)",
-          "問題3 (【執行】：這題的陷阱是不是在...？)"
+            "問題1 (【觀察】：根據本題內容提出一個可檢查的觀察點)",
+            "問題2 (【聯想】：連結一個和本題直接相關的公式或策略)",
+            "問題3 (【執行】：給一個可立即操作的驗算或修正步驟)"
       ]
     }
     direct output JSON. No Markdown.
     請確保 `reply` 欄位只包含對學生的直接回應。
+        follow_up_prompts 必須與本輪「學生問題」或「當前題目」直接相關。
+        禁止輸出含有「...」的模板句，禁止照抄示例文字。
+        3 句提示中至少 1 句要包含題目中的數字、符號或關鍵詞。
     
     【重要】：若內容過長，請優先保證 JSON 結構的完整性 (結尾必須有 } )，可適度縮減 reply 內容。
     【重要】：所有數學符號的反斜線必須跳脫，例如 \\sqrt{}, \\frac{}。
@@ -715,7 +916,7 @@ LATEX: Use single backslash e.g. $x^2$.
     
     return full_prompt
 
-def get_chat_response(prompt, image=None):
+def get_chat_response(prompt, image=None, user_question='', question_context=''):
     global gemini_chat
     if gemini_chat is None and gemini_model is not None:
         gemini_chat = gemini_model.start_chat(history=[])
@@ -770,6 +971,11 @@ def get_chat_response(prompt, image=None):
 
         # [強制嚴格模式] 無論來源為何，都必須執行清洗
         reply_text = data.get('reply', '')
+        nested_prompts = None
+
+        # 模型偶爾會把整包 JSON 放進 reply 字串，先拆開避免前端顯示原始 JSON
+        if isinstance(reply_text, str):
+            reply_text, nested_prompts = _unwrap_nested_reply_payload(reply_text)
         
         # 1. 移除 Markdown 粗體語法 (轉為純文字)
         if isinstance(reply_text, str):
@@ -779,8 +985,13 @@ def get_chat_response(prompt, image=None):
         data['reply'] = enforce_strict_mode(reply_text)
         
         # 3. 確保 follow_up_prompts 存在
-        if 'follow_up_prompts' not in data:
-            data['follow_up_prompts'] = []
+        prompt_source = nested_prompts if isinstance(nested_prompts, list) else data.get('follow_up_prompts', [])
+        data['follow_up_prompts'] = normalize_follow_up_prompts(
+            prompt_source,
+            user_question=user_question,
+            question_context=question_context,
+            ai_reply=data.get('reply', '')
+        )
             
         return data
 
