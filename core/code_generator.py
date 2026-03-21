@@ -1,1331 +1,1436 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-=============================================================================
-模組名稱 (Module Name): core/code_generator.py
-功能說明 (Description): 數學題目生成腳本的核心引擎，負責生成、驗證、修復 Python 程式碼，並包含標準數學工具庫 (Perfect Utils) 的注入與程式碼安全防護。
-執行語法 (Usage): 由系統調用
-版本資訊 (Version): V2.0
-更新日期 (Date): 2026-01-13
-維護團隊 (Maintainer): Math AI Project Team
-=============================================================================
-"""
-# ==============================================================================
+# ============================================================================== 
+# ID: code_generator.py
+# Version: V50.0 (Semantic Self-Correction Edition)
+# Last Updated: 2026-02-06
+# Author: Math AI Research Team (Advisor & Student)
+#
+# [Description]:
+#   本模組為科展實驗的自動技能生成核心，負責根據規格書自動產生技能程式碼，
+#   並支援 AST/Regex 修復、Semantic Self-Correction (Hybrid Healer)、沙盒驗證等功能，確保生成結果符合標準。
+#
+#   [Scientific Control Strategy]:
+#   本模組配合「單一黃金標準」策略，確保所有技能生成均以統一規格書為依據，
+#   以利不同模型、Ablation 組別間的公平比較與統計分析。
+#
+# [Key Functions]:
+#   1. auto_generate_skill_code: 主入口，根據技能 ID 與實驗參數自動生成技能程式碼。
+#   2. ast_fix_code: 進行 AST 結構修復，提升程式碼健壯性。
+#   3. validate_skill_code: 執行沙盒驗證，確保生成程式碼可正確運作。
+#
+# [Database Schema Usage]:
+#   - 讀取: SkillGenCodePrompt (獲取標準規格書)
+#   - 寫入: experiment_log (記錄生成過程與修復次數)
+#   - 寫入: Local File System (儲存最終技能程式碼)
+#
+# [Logic Flow]:
+#   1. 讀取目標技能規格書
+#   2. 生成初版程式碼
+#   3. 執行 AST/Regex 修復（依 Ablation 設定）
+#   4. 沙盒驗證與評分
+#   5. 寫入實驗日誌與技能檔案
+# ============================================================================== 
 
 import os
-import re
-import sys
-import io
 import time
-import ast
-import random
-import importlib
-from datetime import datetime  # [核心修復] 補齊遺失的 datetime
-import psutil                 # [數據強化] CPU/RAM 監控
-try:
-    import GPUtil             # [數據強化] GPU 監控
-except ImportError:
-    GPUtil = None
-
-def get_system_snapshot():
-    """獲取當前環境的真實硬體數據"""
-    cpu = psutil.cpu_percent()
-    ram = psutil.virtual_memory().percent
-    gpu, gpuram = 0.0, 0.0
-    if GPUtil:
-        try:
-            gpus = GPUtil.getGPUs()
-            if gpus:
-                gpu = gpus[0].load * 100
-                gpuram = gpus[0].memoryUtil * 100
-        except:
-            pass
-    return cpu, ram, gpu, gpuram
-
-def categorize_error(error_msg):
-    """根據錯誤訊息進行自動分類 [V9.9.9 Precision]"""
-    if not error_msg or error_msg == "None": return None
-    err_low = error_msg.lower()
-    if "syntax" in err_low: return "SyntaxError"
-    if "list" in err_low: return "FormatError"
-    return "RuntimeError"
-from pyflakes.api import check as pyflakes_check
-from pyflakes.reporter import Reporter
-from flask import current_app
-from core.ai_wrapper import get_ai_client
-from models import db, SkillInfo, TextbookExample, ExperimentLog, SkillGenCodePrompt
-from config import Config
-
-
-
-# ==============================================================================
-# --- Perfect Utils (Standard Math Tools v3.1) ---
-# Description: The "Standard Library" injected into every generated skill.
-# ==============================================================================
-PERFECT_UTILS = r'''
-# [V12.3 Elite Standard Math Tools]
-import random
-import math
-import matplotlib
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from fractions import Fraction
-from functools import reduce
-import ast
-import base64
-import io
+import datetime
 import re
-
-# [V11.6 Elite Font & Style] - Hardcoded
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
-plt.rcParams['axes.unicode_minus'] = False
-
-def to_latex(num):
-    if isinstance(num, int): return str(num)
-    if isinstance(num, float): num = Fraction(str(num)).limit_denominator(100)
-    if isinstance(num, Fraction):
-        if num == 0: return "0"
-        if num.denominator == 1: return str(num.numerator)
-        sign = "-" if num < 0 else ""
-        abs_num = abs(num)
-        if abs_num.numerator > abs_num.denominator:
-            whole = abs_num.numerator // abs_num.denominator
-            rem_num = abs_num.numerator % abs_num.denominator
-            if rem_num == 0: return r"{s}{w}".replace("{s}", sign).replace("{w}", str(whole))
-            return r"{s}{w} \frac{{n}}{{d}}".replace("{s}", sign).replace("{w}", str(whole)).replace("{n}", str(rem_num)).replace("{d}", str(abs_num.denominator))
-        return r"\frac{{n}}{{d}}".replace("{n}", str(num.numerator)).replace("{d}", str(num.denominator))
-    return str(num)
-
-def fmt_num(num, signed=False, op=False):
-    latex_val = to_latex(num)
-    if num == 0 and not signed and not op: return "0"
-    is_neg = (num < 0)
-    abs_str = to_latex(abs(num))
-    if op:
-        if is_neg: return r" - {v}".replace("{v}", abs_str)
-        return r" + {v}".replace("{v}", abs_str)
-    if signed:
-        if is_neg: return r"-{v}".replace("{v}", abs_str)
-        return r"+{v}".replace("{v}", abs_str)
-    if is_neg: return r"({v})".replace("{v}", latex_val)
-    return latex_val
-
-# --- 2. Number Theory Helpers ---
-def is_prime(n):
-    if n <= 1: return False
-    if n <= 3: return True
-    if n % 2 == 0 or n % 3 == 0: return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0: return False
-        i += 6
-    return True
-
-def get_positive_factors(n):
-    factors = set()
-    for i in range(1, int(math.isqrt(n)) + 1):
-        if n % i == 0:
-            factors.add(i)
-            factors.add(n // i)
-    return sorted(list(factors))
-
-def get_prime_factorization(n):
-    factors = {}
-    d = 2
-    temp = n
-    while d * d <= temp:
-        while temp % d == 0:
-            factors[d] = factors.get(d, 0) + 1
-            temp //= d
-        d += 1
-    if temp > 1:
-        factors[temp] = factors.get(temp, 0) + 1
-    return factors
-
-def gcd(a, b): return math.gcd(int(a), int(b))
-def lcm(a, b): return abs(int(a) * int(b)) // math.gcd(int(a), int(b))
-
-def op_latex(num):
-    return fmt_num(num, op=True)
-
-def clean_latex_output(s):
-    return str(s).strip()
-
-# --- 3. Fraction Generator & Helpers ---
-def simplify_fraction(n, d):
-    common = math.gcd(n, d)
-    return n // common, d // common
-
-def _calculate_distance_1d(a, b):
-    return abs(a - b)
-
-def get_random_fraction(min_val=-10, max_val=10, denominator_limit=10, simple=True):
-    for _ in range(100):
-        den = random.randint(2, denominator_limit)
-        num = random.randint(min_val * den, max_val * den)
-        if den == 0: continue
-        val = Fraction(num, den)
-        if simple and val.denominator == 1: continue 
-        if val == 0: continue
-        return val
-    return Fraction(1, 2)
-
-# --- 7 下 強化組件 A: 數線區間渲染器 (針對不等式) ---
-def draw_number_line(points_map, x_min=None, x_max=None, intervals=None, **kwargs):
-    """
-    intervals: list of dict, e.g., [{'start': 3, 'direction': 'right', 'include': False}]
-    """
-    values = [float(v) for v in points_map.values()] if points_map else [0]
-    if intervals:
-        for inter in intervals: values.append(float(inter['start']))
-    
-    if x_min is None: x_min = math.floor(min(values)) - 2
-    if x_max is None: x_max = math.ceil(max(values)) + 2
-    
-    fig = Figure(figsize=(8, 2))
-    ax = fig.add_subplot(111)
-    ax.plot([x_min, x_max], [0, 0], 'k-', linewidth=1.5)
-    ax.plot(x_max, 0, 'k>', markersize=8, clip_on=False)
-    ax.plot(x_min, 0, 'k<', markersize=8, clip_on=False)
-    
-    # 數線刻度規範
-    ax.set_xticks([0])
-    ax.set_xticklabels(['0'], fontsize=18, fontweight='bold')
-    
-    # 繪製不等式區間 (7 下 關鍵)
-    if intervals:
-        for inter in intervals:
-            s = float(inter['start'])
-            direct = inter.get('direction', 'right')
-            inc = inter.get('include', False)
-            color = 'red'
-            # 畫圓點 (空心/實心)
-            ax.plot(s, 0.2, marker='o', mfc='white' if not inc else color, mec=color, ms=10, zorder=5)
-            # 畫折線射線
-            target_x = x_max if direct == 'right' else x_min
-            ax.plot([s, s, target_x], [0.2, 0.5, 0.5], color=color, lw=2)
-
-    for label, val in points_map.items():
-        v = float(val)
-        ax.plot(v, 0, 'ro', ms=7)
-        ax.text(v, 0.08, label, ha='center', va='bottom', fontsize=16, fontweight='bold', color='red')
-
-    ax.set_yticks([]); ax.axis('off')
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight', transparent=True, dpi=300)
-    return base64.b64encode(buf.getvalue()).decode('utf-8')
-
-# --- 7 下 強化組件 B: 直角坐標系渲染器 (針對方程式圖形) ---
-def draw_coordinate_system(lines=None, points=None, x_range=(-5, 5), y_range=(-5, 5)):
-    """
-    繪製標準坐標軸與直線方程式
-    """
-    fig = Figure(figsize=(5, 5))
-    ax = fig.add_subplot(111)
-    ax.set_aspect('equal') # 鎖死比例
-    
-    # 繪製網格與軸線
-    ax.grid(True, linestyle=':', alpha=0.6)
-    ax.axhline(0, color='black', lw=1.5)
-    ax.axvline(0, color='black', lw=1.5)
-    
-    # 繪製直線 (y = mx + k)
-    if lines:
-        import numpy as np
-        for line in lines:
-            m, k = line.get('m', 0), line.get('k', 0)
-            x = np.linspace(x_range[0], x_range[1], 100)
-            y = m * x + k
-            ax.plot(x, y, lw=2, label=line.get('label', ''))
-
-    # 繪製點 (x, y)
-    if points:
-        for p in points:
-            ax.plot(p[0], p[1], 'ro')
-            ax.text(p[0]+0.2, p[1]+0.2, p.get('label', ''), fontsize=14, fontweight='bold')
-
-    ax.set_xlim(x_range); ax.set_ylim(y_range)
-    # 隱藏刻度，僅保留 0
-    ax.set_xticks([0]); ax.set_yticks([0])
-    
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight', transparent=True, dpi=300)
-    return base64.b64encode(buf.getvalue()).decode('utf-8')
-
-def draw_geometry_composite(polygons, labels, x_limit=(0,10), y_limit=(0,10)):
-    """[V11.6 Ultra Visual] 物理級幾何渲染器 (Physical Geometry Renderer)"""
-    fig = Figure(figsize=(5, 4))
-    canvas = FigureCanvasAgg(fig)
-    ax = fig.add_subplot(111)
-    ax.set_aspect('equal', adjustable='datalim')
-    all_x, all_y = [], []
-    for poly_pts in polygons:
-        polygon = patches.Polygon(poly_pts, closed=True, fill=False, edgecolor='black', linewidth=2)
-        ax.add_patch(polygon)
-        for p in poly_pts:
-            all_x.append(p[0])
-            all_y.append(p[1])
-    for text, pos in labels.items():
-        all_x.append(pos[0])
-        all_y.append(pos[1])
-        ax.text(pos[0], pos[1], text, fontsize=20, fontweight='bold', ha='center', va='center',
-                bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, pad=1))
-    if all_x and all_y:
-        min_x, max_x = min(all_x), max(all_x)
-        min_y, max_y = min(all_y), max(all_y)
-        rx = (max_x - min_x) * 0.3 if (max_x - min_x) > 0 else 1.0
-        ry = (max_y - min_y) * 0.3 if (max_y - min_y) > 0 else 1.0
-        ax.set_xlim(min_x - rx, max_x + rx)
-        ax.set_ylim(min_y - ry, max_y + ry)
-    else:
-        ax.set_xlim(x_limit)
-        ax.set_ylim(y_limit)
-    ax.axis('off')
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight', transparent=True, dpi=300)
-    del fig
-    return base64.b64encode(buf.getvalue()).decode('utf-8')
-
-# --- 4. Answer Checker (V11.6 Smart Formatting Standard) ---
-def check(user_answer, correct_answer):
-    if user_answer is None: return {"correct": False, "result": "未提供答案。"}
-    
-    # 將字典或複雜格式轉為乾淨字串
-    def _format_ans(a):
-        if isinstance(a, dict):
-            if "quotient" in a: 
-                return r"{q}, {r}".replace("{q}", str(a.get("quotient",""))).replace("{r}", str(a.get("remainder","")))
-            return ", ".join([r"{k}={v}".replace("{k}", str(k)).replace("{v}", str(v)) for k, v in a.items()])
-        return str(a)
-
-    def _clean(s):
-        # 雙向清理：剝除 LaTeX 符號與空格
-        return str(s).strip().replace(" ", "").replace("，", ",").replace("$", "").replace("\\", "").lower()
-    
-    u = _clean(user_answer)
-    c_raw = _format_ans(correct_answer)
-    c = _clean(c_raw)
-    
-    if u == c: return {"correct": True, "result": "正確！"}
-    
-    try:
-        import math
-        if math.isclose(float(u), float(c), abs_tol=1e-6): return {"correct": True, "result": "正確！"}
-    except: pass
-    
-    return {"correct": False, "result": r"答案錯誤。正確答案為：{ans}".replace("{ans}", c_raw)}
-'''
-
-def inject_perfect_utils(code_str):
-    # [V16.0 強力清掃] 擴大刪除範圍，確保不留下任何「孤兒縮進」
-    # 只要偵測到 AI 試圖寫 patch 或 checker，就把該區塊連根拔起
-    patterns = [
-        r'def\s+_patch_all_returns\(.*?\):.*?(?=\n\S|$)',
-        r'def\s+check\(user_answer, correct_answer\):.*?(?=\n\S|$)',
-        r'for _name, _func in list\(globals\(\)\.items\(\)\):.*'
-    ]
-    for pat in patterns:
-        code_str = re.sub(pat, '', code_str, flags=re.DOTALL | re.MULTILINE)
-    
-    # 移除重複的 import
-    code_str = code_str.replace("import random", "").replace("import math", "")
-    
-    return PERFECT_UTILS + "\n" + code_str
-
-
-# ==============================================================================
-# UNIVERSAL SYSTEM PROMPT (v9.2 Optimized - Lean & Powerful)
-# 結合了「規則防護」與「範例引導」，用最少的 Token 達到最強的約束力
-# ==============================================================================
-
-UNIVERSAL_GEN_CODE_PROMPT = r"""
-You are a Senior Python Developer (V14.0 Professional Guard).
-
-### ⛔ 系統底層鐵律 (不可違背):
-## [CRITICAL CODING STANDARDS: Verification & Stability]
-
-1. **閱卷決定論 (Deterministic Grading)**：
-   - `check(user_answer, correct_answer)` 函式 **嚴禁** 呼叫任何 `random` 模組或重新執行 `generate` 邏輯。
-   - `check` 函式必須完全依賴傳入的 `correct_answer` 參數作為唯一的真理來源 (Source of Truth)。
-
-2. **通用 Check 函式模板 (Universal Check Template)**：
-   - 除非有特殊幾何需求，否則所有數值/代數題型必須實作包含以下邏輯的 `check` 函式：
-     ```python
-     def check(user_answer, correct_answer):
-         import re, math
-         def clean(s):
-             s = str(s).strip().replace(" ", "").lower()
-             return re.sub(r'[\$\s\(\)\{\}\[\]\\a-zA-Z=,;:\u4e00-\u9fff]', '', s) # 保留數字與小數點
-
-         # [V18.13 Update] 支援中英文是非題互通
-         u_str = str(user_answer).strip()
-         c_str = str(correct_answer).strip()
-         
-         yes_group = ["是", "Yes", "TRUE", "True", "1", "O", "right", "正確", "對"]
-         no_group = ["否", "No", "FALSE", "False", "0", "X", "wrong", "錯誤", "錯", "不正確", "不一定"]
-         
-         if c_str in yes_group:
-             return {"correct": u_str in yes_group, "result": "正確！" if u_str in yes_group else "答案錯誤"}
-         if c_str in no_group:
-             return {"correct": u_str in no_group, "result": "正確！" if u_str in no_group else "答案錯誤"}
-
-         # 3. 數值與字串比對
-         try:
-             # 解析分數與浮點數
-             def parse(v):
-                if "/" in v: return float(v.split("/")[0]) / float(v.split("/")[1])
-                return float(v)
-             
-             u_val = parse(clean(u_str))
-             c_val = parse(clean(c_str))
-             if math.isclose(u_val, c_val, rel_tol=1e-5):
-                 return {"correct": True, "result": "正確！"}
-         except:
-             pass
-             
-         if u_str == c_str: return {"correct": True, "result": "正確！"}
-         return {"correct": False, "result": f"答案錯誤。"}
-     ```
-
-3. **數據傳遞完整性**：
-   - 在 `generate()` 函式中，如果答案是一個複雜物件（如座標點），`correct_answer` 必須序列化為易於解析的格式（如 JSON string 或 CSV），而不是自然語言描述。
-
-1. **方程式生成鎖死 (Equation Robustness)**:
-   - 嚴禁使用 f-string 組合 `ax + by = c`。
-   - 【強制流程】：必須分別判定 a, b 的正負與是否為 1，手動組合字串片段後合併。
-   - 範例：`parts = []; if a==1: parts.append("x"); ... eq_str = "".join(parts) + " = " + str(c)`。
-
-2. **視覺絕對淨化 (Zero-Graph Protocol)**:
-   - 針對「判斷點是否在直線上」題型，`image_base64` 【嚴禁包含任何線段或點】。
-   - 僅提供 1x1 的淺灰色網格、座標軸與原點 '0'。
-
-3. **LaTeX 單層大括號**:
-   - 所有的 \frac 必須使用 `r"\frac{n}{d}"` 結構，嚴禁出現 `{{ }}`。
-   - 所有的變數代換必須使用 `.replace("{n}", str(val))`。
-
-4. **閱卷與反饋**:
-   - check(u, c) 僅限回傳 True/False。
-   - 系統 Patch 會自動移除 $ 與 \ 符號。
-
-5. **座標精度**: 座標值僅限整數或 0.5。
-
-6. **強制顯示刻度 (Mandatory Axis Ticks)**：
-   - 在使用 `matplotlib` 繪製數線 (Number Line) 或直角座標系 (Coordinate System) 時，**嚴禁**使用預設刻度。
-   - **必須** 顯式呼叫 `set_xticks` 和 `set_yticks` 來強制顯示整數數字。
-   - **程式碼範例**：
-     ```python
-     # 正確寫法：強制標示範圍內的所有整數
-     import numpy as np
-     x_range = range(min_val, max_val + 1)
-     ax.set_xticks(x_range)
-     ax.set_yticks(x_range)
-     # 避免數字重疊，可視情況設定 fontsize
-     ax.tick_params(axis='both', which='major', labelsize=12)
-     ```
-
-7. **座標軸優化 (Axis Visibility)**：
-   - 確保 X 軸與 Y 軸的 `spines` 位置正確（通常在 `center` 或 `zero`）。
-   - 務必檢查 `ax.spines['left'].set_position('zero')` 和 `ax.spines['bottom'].set_position('zero')` 後，刻度數字不會被遮擋。
-
-8. **網格線輔助 (Grid Lines)**：
-   - 對於讀圖題，必須開啟 `ax.grid(True, linestyle=':', alpha=0.6)` 以輔助學生對齊數值。
-
-9. **主題一致性防護 (Topic Integrity)**：
-   - 在生成邏輯之前，檢查 `skill_id` 是否包含特定數學領域（如 `Distributive`、`Polynomial`、`Factorization`）。
-   - **複雜度門檻**：若 ID 屬於國二以上 (2上, 2下, 3上...)，**嚴禁**生成僅涉及小學或國一程度的單步驟算術題。
-   - **強制特徵**：
-     - 乘法公式單元：必須包含平方、變數 $(x, y)$ 或特定數字結構 (如 $99^2$)。
-     - 幾何單元：必須包含圖形繪製或角度/面積計算。
-
-10. **函式完整性 (Function Definition Integrity)**:
-    - CRITICAL: When implementing the `check` function, YOU MUST explicitly write the line `def check(user_answer, correct_answer):`. Do not just start writing the inner logic or comments.
-
-12. **Boolean/Yes-No Standardization**:
-   - For any "Yes/No" or "True/False" question, the `correct_answer` MUST be the Chinese character **"是"** or **"否"**.
-   - DO NOT use "1", "0", "True", "False".
-"""
-
-
-def infer_model_tag(model_name):
-    """
-    根據模型名稱自動判斷 V9 架構師的分級 (Model Tag)。
-    支援 Qwen, DeepSeek, Phi, Llama 等常見模型。
-    """
-    name = model_name.lower()
-    
-    # 1. Cloud Models
-    if any(x in name for x in ['gemini', 'gpt', 'claude']): return 'cloud_pro'
-    
-    # 2. Local Large/Medium (>= 10B)
-    # DeepSeek 默認視為強邏輯模型，歸類在 local_14b (除非顯式標註 7b/8b)
-    if '70b' in name or '32b' in name or '14b' in name: return 'local_14b'
-    if 'deepseek' in name and not any(x in name for x in ['1.5b', '7b', '8b']): return 'local_14b'
-    if 'qwen' in name and not any(x in name for x in ['0.5b', '1.5b', '3b', '7b']): return 'local_14b'
-    
-    # 3. Local Small/Edge (< 10B)
-    if 'phi' in name or '7b' in name or '8b' in name: return 'edge_7b'
-    
-    # Default Fallback
-    return 'local_14b'
-
-
-# ==============================================================================
-# --- Dispatcher Injection (v8.7 Level-Aware) ---
-# ==============================================================================
-def inject_robust_dispatcher(code_str):
-    if re.search(r'^def generate\s*\(', code_str, re.MULTILINE):
-        return code_str 
-    
-    # 搜尋所有 generate_ 開頭的函式
-    candidates = re.findall(r'^def\s+(generate_[a-zA-Z0-9_]+)\s*\(', code_str, re.MULTILINE)
-    valid_funcs = [f for f in candidates if f not in ['generate', 'check', 'solve', 'to_latex', 'fmt_num']]
-    
-    if not valid_funcs: return code_str
-    
-    # Heuristic Split: First half -> Level 1, Second half -> Level 2
-    mid_point = (len(valid_funcs) + 1) // 2
-    level_1_funcs = valid_funcs[:mid_point]
-    level_2_funcs = valid_funcs[mid_point:] if len(valid_funcs) > 1 else valid_funcs
-
-    dispatcher_code = "\n\n# [Auto-Injected Smart Dispatcher v8.7]\n"
-    dispatcher_code += "def generate(level=1):\n"
-    dispatcher_code += f"    if level == 1:\n"
-    dispatcher_code += f"        types = {str(level_1_funcs)}\n"
-    dispatcher_code += f"        selected = random.choice(types)\n"
-    dispatcher_code += f"    else:\n"
-    
-    if level_2_funcs:
-        dispatcher_code += f"        types = {str(level_2_funcs)}\n"
-        dispatcher_code += f"        selected = random.choice(types)\n"
-    else:
-        dispatcher_code += f"        types = {str(level_1_funcs)}\n"
-        dispatcher_code += f"        selected = random.choice(types)\n"
-
-    for func in valid_funcs:
-        dispatcher_code += f"    if selected == '{func}': return {func}()\n"
-    
-    dispatcher_code += f"    return {valid_funcs[0]}()\n"
-    return code_str + dispatcher_code
-
-
-def fix_return_format(code_str):
-    pattern = r'(^\s*)return\s+(f["\'].*?["\'])\s*,\s*(\[.*?\])\s*$'
-    def repl(m):
-        return f"{m.group(1)}return {{'question_text': {m.group(2)}, 'answer': str({m.group(3)}[0]), 'correct_answer': str({m.group(3)}[0])}}"
-    return re.sub(pattern, repl, code_str, flags=re.MULTILINE)
-
-
-def universal_function_patcher(code_content):
-    total_fixes = 0
-    # 1. 找出所有以 draw_ 開頭的函式定義區塊
-    # 正則表達式：尋找 def draw_...(): 到下一個 def 或 檔案結尾
-    func_blocks = re.finditer(r'def (draw_[a-zA-Z0-9_]+)\(.*?\):(.*?)(\n(?=def)|$)', code_content, re.DOTALL)
-    
-    for match in func_blocks:
-        func_name = match.group(1)
-        func_body = match.group(2)
-        
-        # 2. 如果函式內有賦值給常見的「結果變數」，但沒有 return
-        target_vars = ['result', 'html', 'fig_str', 'output', 'svg_data']
-        needs_fix = any(f"{v} =" in func_body for v in target_vars) and "return" not in func_body
-        
-        if needs_fix:
-            # 找到最後一個賦值的變數名稱
-            found_var = next(v for v in target_vars if f"{v} =" in func_body)
-            # 自動在函式末尾補上 return
-            lines = func_body.splitlines()
-            last_indent = "    "
-            if lines:
-                # Find last non-empty line to determine indentation or just blindly ensure 4 spaces
-                # Better strategy: use the indentation of the last line of the body if available
-                # But here we will follow the user provided logic which seemed to copy indentation
-                for line in reversed(lines):
-                     if line.strip():
-                         last_indent = line[:len(line) - len(line.lstrip())]
-                         break
-            
-            patched_body = func_body.rstrip() + f"\n{last_indent}return {found_var}\n"
-            code_content = code_content.replace(func_body, patched_body)
-            total_fixes += 1
-            print(f"   🔧 [Universal-Fix] Patched missing return in {func_name}.")
-            
-    return code_content, total_fixes
-
-
-def clean_global_scope_execution(code_str):
-    lines = code_str.split('\n')
-    cleaned = []
-    for line in lines:
-        s = line.strip()
-        if (s.startswith("print(") or s.startswith("generate(")) and "def " not in code_str: 
-            continue
-        cleaned.append(line)
-    return '\n'.join(cleaned)
-
-
-def load_gold_standard_example():
-    try:
-        path = os.path.join(current_app.root_path, 'skills', 'Example_Program.py')
-        if os.path.exists(path):
-            with open(path, 'r', encoding='utf-8') as f: return f.read()
-    except Exception as e:
-        print(f"⚠️ Warning: Could not load Example_Program.py: {e}")
-    return "def generate_type_1_problem(): return {}"
-
-
-def fix_missing_answer_key(code_str):
-    """[V10.3.1] 增加換行修復、回傳格式強化與全面中文化反饋"""
-    patch_code = r"""
-# [Auto-Injected Patch v11.0] Universal Return, Linebreak & Handwriting Fixer
-def _patch_all_returns(func):
-    def wrapper(*args, **kwargs):
-        res = func(*args, **kwargs)
-        
-        # 1. 針對 check 函式的布林值回傳進行容錯封裝
-        if func.__name__ == 'check' and isinstance(res, bool):
-            return {'correct': res, 'result': '正確！' if res else '答案錯誤'}
-        
-        if isinstance(res, dict):
-            # [V11.3 Standard Patch] - 解決換行與編碼問題
-            if 'question_text' in res and isinstance(res['question_text'], str):
-                # 僅針對「文字反斜線+n」進行物理換行替換，不進行全局編碼轉換
-                import re
-                # 解決 r-string 導致的 \\n 問題
-                res['question_text'] = re.sub(r'\\n', '\n', res['question_text'])
-            
-            # --- [V11.0] 智能手寫模式偵測 (Auto Handwriting Mode) ---
-            # 判定規則：若答案包含複雜運算符號，強制提示手寫作答
-            # 包含: ^ / _ , | ( [ { 以及任何 LaTeX 反斜線
-            c_ans = str(res.get('correct_answer', ''))
-            # [V13.1 修復] 移除 '(' 與 ','，允許座標與數列使用純文字輸入
-            triggers = ['^', '/', '|', '[', '{', '\\']
-            
-            # [V11.1 Refined] 僅在題目尚未包含提示時注入，避免重複堆疊
-            has_prompt = "手寫" in res.get('question_text', '')
-            should_inject = (res.get('input_mode') == 'handwriting') or any(t in c_ans for t in triggers)
-            
-            if should_inject and not has_prompt:
-                res['input_mode'] = 'handwriting'
-                # [V11.3] 確保手寫提示語在最後一行
-                res['question_text'] = res['question_text'].rstrip() + "\\n(請在手寫區作答!)"
-
-            # 3. 確保反饋訊息中文
-            if func.__name__ == 'check' and 'result' in res:
-                if res['result'].lower() in ['correct!', 'correct', 'right']:
-                    res['result'] = '正確！'
-                elif res['result'].lower() in ['incorrect', 'wrong', 'error']:
-                    res['result'] = '答案錯誤'
-            
-            # 4. 確保欄位完整性 & 答案同步
-            if 'correct_answer' in res:
-                # 若 answer 不存在或為空字串，強制同步 correct_answer
-                if 'answer' not in res or not res['answer']:
-                     res['answer'] = res['correct_answer']
-            
-            if 'answer' in res:
-                res['answer'] = str(res['answer'])
-            if 'image_base64' not in res:
-                res['image_base64'] = ""
-        return res
-    return wrapper
-
-import sys
-for _name, _func in list(globals().items()):
-    if callable(_func) and (_name.startswith('generate') or _name == 'check'):
-        globals()[_name] = _patch_all_returns(_func)
-"""
-    return code_str + patch_code
-
-# ==============================================================================
-# --- THE REGEX ARMOR (v8.7.3 - Full Math Protection) ---
-# ==============================================================================
-def fix_code_syntax(code_str, error_msg=""):
-    fixed_code = code_str
-    total_fixes = 0
-    
-    # 1. 基礎反斜線修復 (Regex Armor)
-    fixed_code = re.sub(r'(?<!\\)\\ ', r'\\\\ ', fixed_code)
-    fixed_code = re.sub(r'(?<!\\)\\u(?![0-9a-fA-F]{4})', r'\\\\u', fixed_code)
-
-    # 2. [智慧冪等修復] 僅在缺失 \begin 時補全 cases
-    lines = fixed_code.split('\n')
-    cleaned_lines = []
-    for line in lines:
-        # IME 全形自癒：抹除行末非法標點
-        line = re.sub(r'[。，；：]\s*$', '', line)
-        if not re.search(r'["\']', line):
-            line = line.replace('，', ',').replace('；', ';').replace('：', ':')
-        
-        # LaTeX cases 安全網：防止 \begin{\\begin{cases}}
-        if "{cases}" in line and "\\begin{cases}" not in line:
-            line = line.replace("{cases}", "\\\\begin{cases}")
-            total_fixes += 1
-        
-        # 指數保護
-        line = re.sub(r'\^\{(?!\{)(.*?)\}(?!\})', r'^{{{\1}}}', line)
-        cleaned_lines.append(line)
-        
-    return '\n'.join(cleaned_lines), total_fixes
-
-
-def fix_chinese_in_latex(code_str):
-    """
-    [Active Healing] 修復 LaTeX 中的中文混排問題
-    1. $中文$ -> 中文
-    2. $x軸$ -> $x$軸
-    3. $y軸$ -> $y$軸
-    """
-    # 1. 純中文在 $ $ 內 -> 去除 $
-    code_str = re.sub(r'\$([\u4e00-\u9fa5]+)\$', r'\1', code_str)
-    
-    # 2. 混合情況: $x軸$ -> $x$軸 (針對常見變數)
-    code_str = re.sub(r'\$([a-zA-Z0-9_]+)([\u4e00-\u9fa5]+)\$', r'$\1$ \2', code_str)
-    code_str = re.sub(r'\$([\u4e00-\u9fa5]+)([a-zA-Z0-9_]+)\$', r'\1 $\2$', code_str)
-    
-    return code_str
-
-
-def validate_and_fix_code(code_content):
-    """
-    [V10.2 Pure] 採用「隔離注入」與「字典封裝」策略。
-    解決引號不對稱 (SyntaxError) 與 500 錯誤。
-    """
-    total_fixes = 0
-    
-    # =========================================================
-    # 防線 A: [V18.9] 雙錢號清洗 (Double Dollar Cleanup)
-    # 解決截圖中出現 "$$0.64" 導致的排版錯誤
-    # 強制將所有 "$$" 替換為單個 "$"
-    # =========================================================
-    if "$$" in code_content:
-        code_content = code_content.replace("$$", "$")
-        total_fixes += 1
-        print("   🔧 [Format-Fix] Removed double dollar signs ($$ -> $).")
-
-    # =========================================================
-    # 防線 B: [V18.9] Check 函式環境隔離修復 (Scope Injection)
-    # 解決 "cannot access local variable 'math'" 錯誤
-    # 強制在 def check(...): 的下一行注入 import math, random, re
-    # =========================================================
-    if "def check(" in code_content:
-        # 使用 Regex 尋找 def check(...) 及其換行
-        pattern = r"(def\s+check\s*\(.*?\):\s*\n)"
-        match = re.search(pattern, code_content)
-        if match:
-            # 檢查下一行是否已經有 import
-            next_lines = code_content[match.end():match.end()+50]
-            if "import math" not in next_lines:
-                # 假設標準縮排為 4 空格
-                injection = "    import math, random, re\n"
-                code_content = code_content[:match.end()] + injection + code_content[match.end():]
-                total_fixes += 1
-                print("   🔧 [Scope-Fix] Injected local imports into check().")
-
-    # =========================================================
-    # 防線 C: [V18.9] LaTeX 跳脫字元修復 (Escape Char Fix)
-    # 解決 f"$\angle" 被轉義為響鈴字元的問題
-    # =========================================================
-    latex_keywords = ['angle', 'triangle', 'frac', 'sqrt', 'times', 'div', 'pm', 'approx', 'circ']
-    for kw in latex_keywords:
-        # 尋找單反斜線 + 關鍵字 (排除已經是雙反斜線的情況)
-        # Regex: f" ... \keyword ... "
-        pattern = r'(f["\'].*?)(?<!\\)\\' + kw + r'(.*?["\'])'
-        while re.search(pattern, code_content):
-            code_content = re.sub(pattern, r'\1\\\\' + kw + r'\2', code_content)
-            total_fixes += 1
-    
-    if total_fixes > 0:
-        print(f"   🛡️ [Auto-Heal] Applied {total_fixes} critical fixes.")
-
-    # --- [V10.2] 隔離注入：使用 r-string 三引號保護補丁 ---
-    if ("matplotlib" in code_content or "Figure" in code_content) and "font.sans-serif" not in code_content:
-        font_style_patch = r'''
-# [V10.2 Elite Font & Style]
-import matplotlib.pyplot as plt
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']
-plt.rcParams['axes.unicode_minus'] = False
-
-def _apply_v10_visual_style(ax):
-    ax.set_xticks([0])
-    for tick in ax.get_xticklabels():
-        tick.set_fontsize(18); tick.set_fontweight('bold')
-    ax.set_title(""); ax.set_xlabel("")
-'''
-        # 放在最頂部，避開後續 Regex 掃描
-        code_content = font_style_patch + "\n" + code_content
-        total_fixes += 1
-
-    # [V10.6.2 Elite] 針對字體設定行的「全方位引號對齊」手術
-    # 增加對 matplotlib.rcParams, plt.rcParams 與 rcParams 的全面支援
-    font_conf_pattern = r"(?:matplotlib\.|plt\.)?rcParams\[['\"]font\.sans-serif['\"]\]\s*=\s*\[['\"]Microsoft JhengHei['\"]\]"
-    replacement = "plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']"
-    
-    # 執行置換並精確統計修復次數
-    code_content, f_count = re.subn(font_conf_pattern, replacement, code_content)
-    total_fixes += f_count
-    
-    if f_count > 0:
-        print(f"   🔧 [Font-Fix] Aligned quotes in matplotlib config ({f_count} lines).")
-
-    # --- [V10.2] 答案驗證格式自癒 ---
-    # 如果 AI 寫了裸露的 return True/False，自動包裝並加入正確答案顯示
-
-
-
-    # LaTeX 精確修復 (避開 \n)
-    def smart_fix(match):
-        nonlocal total_fixes
-        c = match.group(1)
-        if re.search(r'\\[a-zA-Z]+', c) and not re.search(r'^\\n', c) and "{" in c and "{{" not in c:
-            if not re.search(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}', c):
-                total_fixes += 1
-                return f'f"{c.replace("{", "{{").replace("}", "}}")}"'
-        return f'f"{c}"'
-    
-    code_content = re.sub(r'f"(.*?)"', smart_fix, code_content)
-    code_content = re.sub(r"f'(.*?)'", smart_fix, code_content)
-    
-    # [新增] 偵測過度轉義的 Python 變數 (例如 {{ans}})
-    # 這通常是 AI 被 LaTeX 規則搞混的結果
-    over_escaped_pattern = r'f".*?\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}.*?"'
-    matches = re.findall(over_escaped_pattern, code_content)
-    if matches:
-        # 將 {{var}} 修正為 {var}
-        for m in matches:
-            fixed = m.replace("{{", "{").replace("}}", "}")
-            code_content = code_content.replace(m, fixed)
-            total_fixes += 1 # 這下子實驗數據就不會是 0 了！
-    
-    # =========================================================
-    # 防線 3：變數名稱防呆 (防止 Target_val 錯誤)
-    # =========================================================
-    if "return {" in code_content and "target_val" in code_content:
-         if "target_val =" not in code_content and "ans =" in code_content:
-             code_content = code_content.replace("str(target_val)", "str(ans)")
-             total_fixes += 1
-
-    # =========================================================
-    # 防線 4：[V18.4] 函式定義遺失自癒 (Missing Def Auto-Recovery)
-    # 針對 AI 輸出 def check 內容但遺漏 def check(...) 這一行的情況
-    # =========================================================
-    # 偵測特徵：縮排的 u = clean(...) 或 def clean(s): 但上方沒有 def check
-    # 這裡我們尋找一個常見的 check 內部特徵
-    check_internal_signatures = [
-        r'^\s{4}def clean\(s\):',
-        r'^\s{4}u = clean\(user_answer\)',
-        r'^\s{4}c = clean\(correct_answer\)',
-        r'^\s{4}def _clean\(s\):',
-    ]
-    
-    has_check_def = re.search(r'^def check\(user_answer, correct_answer\):', code_content, re.MULTILINE)
-    has_internal_logic = any(re.search(sig, code_content, re.MULTILINE) for sig in check_internal_signatures)
-    
-    if has_internal_logic and not has_check_def:
-        # 找到第一個類似 check 內部的邏輯行，並在其上方插入 def check
-        # 為了安全起見，我們直接在程式碼最後面尋找孤兒縮排區塊的頂部有點困難，
-        # 但通常這種錯誤發生時，程式碼會從縮排開始。
-        # 策略：如果發現有縮排的 clean 函式且沒有 check，嘗試包裹。
-        # 但更簡單的方式是：如果確定沒有 check 但有 check 的特徵，直接把 def check 補在最前面？不，這可能會亂。
-        # 我們假設 AI 是接著 generate 之後寫的。
-        
-        # 掃描每一行，如果發現一行是縮排的 def clean(s):，且往上找非空行不是 def check，則插入
-        lines = code_content.split('\n')
-        new_lines = []
-        inserted = False
-        for i, line in enumerate(lines):
-            # 檢查是否為 check 內部的關鍵特徵行
-            is_feature = any(re.match(sig, line) for sig in check_internal_signatures)
-            
-            if is_feature and not inserted:
-                # 往回找最近的非空行
-                prev_idx = len(new_lines) - 1
-                while prev_idx >= 0 and not new_lines[prev_idx].strip():
-                    prev_idx -= 1
-                
-                # 如果前一行不是以 def check 開頭
-                if prev_idx < 0 or not new_lines[prev_idx].strip().startswith("def check"):
-                     # 插入 def check
-                     new_lines.append("def check(user_answer, correct_answer):")
-                     total_fixes += 1
-                     print(f"   [Critical-Fix] Auto-injected missing 'def check' definition.")
-                     inserted = True # 避免重複插入
-            
-            new_lines.append(line)
-        
-        if inserted:
-            code_content = "\n".join(new_lines)
-
-
-    return code_content, total_fixes
-
-
-# ==============================================================================
-# --- Generator Pipeline ---
-# ==============================================================================
-def validate_python_code(code_str):
-    try: ast.parse(code_str); return True, None
-    except SyntaxError as e: return False, f"{e.msg} (Line {e.lineno})"
-    except Exception as e: return False, str(e)
-
-
-def validate_logic_with_pyflakes(code_str):
-    log_stream = io.StringIO(); reporter = Reporter(log_stream, log_stream)
-    pyflakes_check(code_str, "generated_code", reporter)
-    error_log = log_stream.getvalue()
-    return "undefined name" not in error_log.lower(), error_log
-
-
-def fix_logic_errors(code_str, error_log):
-    """
-    [V9.8 Upgrade] Returns (fixed_code, fix_count)
-    """
-    fixed_code = code_str
-    undefined_vars = set(re.findall(r"undefined name ['\"](\w+)['\"]", error_log))
-    
-    imports = []
-    fix_count = 0
-    
-    for var in undefined_vars:
-        if var in ['random', 'math']: 
-            imports.append(f"import {var}")
-            fix_count += 1
-        if var == 'Fraction': 
-            imports.append("from fractions import Fraction")
-            fix_count += 1
-            
-    if imports: 
-        fixed_code = "\n".join(imports) + "\n" + fixed_code
-        
-    return fixed_code, fix_count
-
-
-def log_experiment(skill_id, start_time, input_len, output_len, success, error_msg, repaired, 
-                   actual_model_name="Unknown", actual_provider="google",
-                   regex_fixes=0, logic_fixes=0, prompt_tokens=0, completion_tokens=0, 
-                   prompt_version=1, strategy="Standard", raw_output_len=0, utils_len=0):
-    """
-    [V9.9.9 最終修正版] 解決重複參數問題，確保數據精確入庫。
-    """
-    try:
-        duration = time.time() - start_time
-        cpu, ram, gpu, gpuram = get_system_snapshot() # 真實硬體監控
-        
-        # 錯誤分類邏輯
-        err_cat = None
-        if error_msg and error_msg != "None":
-            err_low = error_msg.lower()
-            if "syntax" in err_low: err_cat = "SyntaxError"
-            elif "list" in err_low: err_cat = "FormatError"
-            elif "attribute" in err_low: err_cat = "StructureError"
-            else: err_cat = "RuntimeError"
-
-        log = ExperimentLog(
-            timestamp=datetime.now(), # 確保頂部有 from datetime import datetime
-            skill_id=skill_id,
-            ai_provider=actual_provider,
-            model_name=actual_model_name,
-            duration_seconds=round(duration, 2),
-            input_length=input_len,
-            raw_output_length=raw_output_len,   # AI 產出的真實純度
-            perfect_utils_length=utils_len,     # 系統注入的工具庫長度
-            output_length=output_len,           # 最終存檔總長度
-            is_success=success,
-            syntax_error_initial=str(error_msg)[:500] if error_msg else None,
-            error_category=err_cat,
-            ast_repair_triggered=repaired,
-            experiment_batch=getattr(Config, 'EXPERIMENT_BATCH', 'Run_V2.5_Elite'),
-            prompt_strategy=strategy,
-            prompt_version=prompt_version,
-            regex_fix_count=regex_fixes,
-            logic_fix_count=logic_fixes,
-            prompt_tokens=prompt_tokens,
-            completion_tokens=completion_tokens,
-            total_tokens=prompt_tokens + completion_tokens,
-            code_complexity=raw_output_len // 40, # [Refined] Reflects AI logic only
-            cpu_usage=cpu,
-            ram_usage=ram,
-            gpu_usage=gpu,
-            gpuram_usage=gpuram
-        )
-        db.session.add(log)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        print(f"🚨 Experiment Log 寫入失敗: {e}")
-
-
-def auto_generate_skill_code(skill_id, queue=None, force_architect_refresh=False):
-    start_time = time.time()
-    
-    # 1. Determine Target Tag based on Config
-    role_config = Config.MODEL_ROLES.get('coder', Config.MODEL_ROLES.get('default'))
-    current_model = role_config.get('model', 'Unknown')
-    current_provider = role_config.get('provider', 'Unknown') # 抓取實際 provider
-    target_tag = infer_model_tag(current_model)
-
-    # 2. [Strict Mode] Fetch ONLY the matching Architect Spec
-    active_prompt = SkillGenCodePrompt.query.filter_by(skill_id=skill_id, model_tag=target_tag, is_active=True).first()
-    
-    # 3. [Auto-Architect] If Prompt is Missing OR Forced Refresh, Generate it on the fly
-    if not active_prompt or force_architect_refresh:
-        try:
-            msg = f"   ⚠️ Spec not found for {target_tag}. Invoking V9 Architect..." if not active_prompt else f"   🔄 Forced Refresh: Re-invoking V9 Architect for {target_tag}..."
-            print(msg)
-            from core.prompt_architect import generate_v9_spec
-            result = generate_v9_spec(skill_id, model_tag=target_tag)
-            
-            if result['success']:
-                # Re-fetch the newly created prompt
-                active_prompt = SkillGenCodePrompt.query.filter_by(skill_id=skill_id, model_tag=target_tag, is_active=True).first()
-            else:
-                return False, f"Architect Failed: {result.get('message')}"
-        except Exception as e:
-            return False, f"Architect Error: {str(e)}"
-            
-    if not active_prompt:
-        return False, "Critical: Architect claimed success but prompt is still missing."
-
-    # Pre-fetch skill info (needed for fallback or logging)
-    skill = SkillInfo.query.filter_by(skill_id=skill_id).first()
-
-
-    gold_standard_code = load_gold_standard_example()
-    examples = TextbookExample.query.filter_by(skill_id=skill_id).limit(5).all()
-    rag_count = len(examples)
-    example_text = ""
-    if examples:
-        for i, ex in enumerate(examples):
-            example_text += f"Ex {i+1}: {getattr(ex, 'problem_text', '')} -> {getattr(ex, 'correct_answer', '')}\\n"
-
-    if active_prompt:
-        # --- Mode A: V9 Architect Mode (High Precision) ---
-        strategy_name = f"V9 Architect ({active_prompt.model_tag})"
-        target_logic = active_prompt.user_prompt_template
-        
-        # [V11.9 暴力鏡射修正] - 將 RAG 範例提升為最高指令
-
-        # 強制要求 Coder AI 將 RAG 視為唯一真相
-        mirroring_protocol = ""
-        if examples:
-            for i, ex in enumerate(examples):
-                # 明確指定每個 Type 對應哪一個 RAG 範例
-                mirroring_protocol += f"- Type {i+1} MUST use the EXACT mathematical model of RAG Ex {i+1}.\\n"
-        else:
-            mirroring_protocol = "- No RAG examples found. Generate based on Skill Definition.\\n"
-
-        prompt = r"""You are a Senior Python Developer.
-### 🛡️ MANDATORY MIRRORING RULES (最高權限指令):
-1. **NO ORIGINALITY**: You are FORBIDDEN from creating new models.
-2. **STRICT MAPPING**:
-{mapping}
-3. **CONTEXT RETENTION**: Keep names like 'ACEF', 'BDF', '巴奈' from the RAG examples.
-
-### 📚 REFERENCE EXAMPLES (RAG - 這是唯一真相):
-{rag}
-
-### 🛠️ ARCHITECT'S SPECIFICATION (輔助結構):
-{spec}
-
-### 🎨 ULTRA VISUAL STANDARDS (V11.6):
-- Aspect Ratio: `ax.set_aspect('equal')` (物理比例鎖死).
-- Resolution: `dpi=300`.
-- Label Halo: White halos for ABCD text.
-
-### ⛔ SYSTEM GUARDRAILS:
-{system_rules}
-""".replace("{mapping}", mirroring_protocol).replace("{rag}", example_text).replace("{spec}", target_logic).replace("{system_rules}", UNIVERSAL_GEN_CODE_PROMPT)
-    else:
-        # --- Mode B: Legacy V8 Mode (Fallback) ---
-        strategy_name = "Standard Mode"
-        target_logic = skill.gemini_prompt if (skill and skill.gemini_prompt) else f"Math logic for {skill_id}"
-        
-        # [v11.7 Upgrade]: Prompt Optimization - Pedagogical Mirroring
-        prompt = f"""
-You are a Senior Python Engineer for a Math Education System.
-
-### MISSION:
-Implement the skill `{skill_id}` by strictly following the **Architect's Spec**.
-
-### IMPORTANT: DO NOT WRITE HELPER FUNCTIONS
-The system will automatically inject standard helpers (`to_latex`, `fmt_num`, `get_random_fraction`, `is_prime`, etc.) at runtime.
-**YOU MUST NOT DEFINE THEM.** Just use them directly.
-
-### REFERENCE STRUCTURE (GOLD STANDARD v3.0):
-```python
+import textwrap
+import importlib.util
+import sqlite3
 import random
 import math
+import ast
+import operator
 from fractions import Fraction
+from pathlib import Path
 
-# (Helpers are auto-injected here, do not write them)
+# Local Imports
+# (Ensure PYTHONPATH includes the project root)
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def generate_type_1_problem():
-    val = get_random_fraction()
-    # Question needs LaTeX wrapping:
-    q = f"What is ${{to_latex(val)}}?"
-    # Answer MUST be clean (NO $ signs):
-    a = to_latex(val) 
-    return {{'question_text': q, 'answer': a, 'correct_answer': a}}
+from config import Config
+from core.ai_wrapper import get_ai_client, call_ai_with_retry
+from models import SkillGenCodePrompt, ExperimentLog, db, SkillInfo, TextbookExample, AblationSetting
 
-def generate(level=1):
-    # Dispatcher logic
-    ...
-ARCHITECT'S SPECIFICATION: {target_logic}
+from core.healers.regex_healer import RegexHealer
+from core.healers.ast_healer import ASTHealer
+from core.healers.unified_cleanup_healer import heal_unified
+from core.prompts.prompt_builder import PromptBuilder
+from core.validators.code_validator import validate_python_code as _validate_python_code
+from core.validators.dynamic_sampler import DynamicSampler
+from core.code_utils.file_utils import ensure_dir, path_in_root
+from core.code_utils.math_utils import *
+from core.code_utils.latex_utils import *
 
-### REFERENCE EXAMPLES (RAG):
-{example_text}
+REFACTOR_MODULES_AVAILABLE = True
 
-### 💡 INSTRUCTION:
-Your task is to dynamize (Dynamize) the following examples into Python code, strictly adhering to their mathematical models.
+def _inject_domain_libs(code_str, skill_id: str | None = None):
+    """
+    [New Feature 2026-02-16] 自動注入 Domain Libraries (如 RadicalOps) 的完整實作
+    使生成的 Skill File 可以獨立運行 (Self-Contained)。
+    [Fix V2] 增強版：
+    1. 強制替換 Stub
+    2. 自動注入 Global Alias (simplify_term = RadicalOps.simplify_term)
+    3. 自動移除錯誤的 import (from RadicalOps import ...)
+    [Phase 4-B] 若提供 skill_id，從 skill.json["injected_apis"] 強制注入宣告的 API，
+    防止 AI 忘記使用 class name 時的靜默失敗。
+    """
+    injected_names = []
 
-### 🛡️ PEDAGOGICAL PRIORITY PROTOCOL (V11.7):
-1. **Type 1 - Textbook Mirroring (Mirror Mode)**:
-   - You MUST generate `generate_type_1` by strictly mirroring the first RAG example.
-   - **NO ORIGINALITY**: Use the EXACT same mathematical model. ONLY Randomize the numbers.
-   - **Context**: Keep keywords like "Aquarium", "Ticket". Do not change context.
+    # ── Phase 4-B: read declared APIs + required_imports from skill.json ──
+    declared_apis: list[str] = []
+    required_imports: list[str] = []
+    if skill_id:
+        try:
+            import json as _json, glob as _glob
+            project_root = os.path.dirname(os.path.abspath(__file__))
+            pattern = os.path.join(project_root, "..", "agent_skills", skill_id, "skill.json")
+            manifest_candidates = _glob.glob(pattern)
+            if not manifest_candidates:
+                # try walking up one more level
+                pattern2 = os.path.join(project_root, "agent_skills", skill_id, "skill.json")
+                manifest_candidates = _glob.glob(pattern2)
+            if manifest_candidates:
+                with open(manifest_candidates[0], encoding="utf-8") as fh:
+                    meta = _json.load(fh)
+                declared_apis = [str(a) for a in (meta.get("injected_apis") or []) if a]
+                required_imports = [str(m) for m in (meta.get("required_imports") or []) if m]
+        except Exception:
+            pass
+    # ───────────────────────────────────────────────────────────────────────
 
-2. **Data Linkage (Integer Guarantee)**:
-   - For Reverse Calculation problems, generate the integer ANSWER first, then derive the question parameters.
+    # 補齊 required_imports（如 random、math）— 若程式碼未有 import 則在頂端補上
+    import_lines_to_add = []
+    for mod in required_imports:
+        pattern_found = re.search(rf'^\s*import\s+{re.escape(mod)}\b', code_str, re.MULTILINE)
+        if not pattern_found:
+            import_lines_to_add.append(f"import {mod}")
+    if import_lines_to_add:
+        code_str = "\n".join(import_lines_to_add) + "\n" + code_str
+    
+    # 定義需要注入的 Libs 關鍵字與對應 Class Name
+    target_libs = {
+        'RadicalOps': 'RadicalOps',
+        'IntegerOps': 'IntegerOps',
+        'FractionOps': 'FractionOps',
+        'PolynomialOps': 'PolynomialOps'
+    }
 
-CODING RULES:
+    # 強制注入 skill.json 宣告的 APIs（即使 code_str 未引用）
+    for api in declared_apis:
+        if api in target_libs and api not in code_str:
+            code_str = f"# [skill.json declared: {api}]\n" + code_str
+    
+    # 讀取 domain_function_library.py 作為 Class 定義的統一來源
+    try:
+        libs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'prompts', 'domain_function_library.py')
+        if not os.path.exists(libs_path):
+            # Fallback to legacy domain_libs.py
+            libs_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scaffold', 'domain_libs.py')
+        if not os.path.exists(libs_path):
+            return code_str, []
+            
+        with open(libs_path, 'r', encoding='utf-8') as f:
+            libs_source = f.read()
+    except Exception:
+        return code_str, []
 
-1. **NO HELPERS**: Do NOT define `to_latex`, `fmt_num`, `check`, etc. They are auto-injected. Use them directly.
+    # 解析 libs_source，提取各個 Class 的定義
+    feature_code = ""
 
-2. **Smart Dispatcher**: Implement `def generate(level=1):` to handle difficulty levels.
-   - **[重要：函式命名規範]** 不論題目類型為何，主生成函式必須統一命名為 `generate()`。
-   - 禁止使用 `generate_number_line()` 或 `generate_logic()` 等自定義名稱。
-   - 如果有繪圖輔助函式（如 `draw_graph`），請在 `generate()` 函式內部呼叫它。
-   - 必須確保檔案中存在 `def generate():` 和 `def check(user_answer, correct_answer):`。
+    for keyword, class_name in target_libs.items():
+        # 檢查目標代碼是否使用了該 Lib
+        if keyword in code_str:
+            # 0. 清理錯誤的 import 語句 (e.g., from RadicalOps import ...)
+            # 因為我們將把 RadicalOps 注入到檔案內，這些 import 是多餘且會報錯的
+            invalid_import_pattern = re.compile(rf'^\s*from\s+{class_name}\s+import.*$', re.MULTILINE)
+            if invalid_import_pattern.search(code_str):
+                code_str = invalid_import_pattern.sub(f"# [Removed Invalid Import] {class_name} is injected internally.", code_str)
 
-3. **LaTeX Formatting (CRITICAL)**: 
-   - All mathematical expressions (integers, fractions, equations) in `question_text` MUST be wrapped in single dollar signs `$`.
-   - Example: `f"計算 ${fmt_num(a)} + {fmt_num(b)}$ 的值"` -> "計算 $3 + 5$ 的值".
-   - **NO BACKTICKS**: Never use backticks (`) to wrap numbers or lists. BAD: `[1, 2]`. GOOD: $1, 2$.
+            # 1. 如果代碼中已有該 class 的定義 (Stub 或完整定義)，先移除它
+            # Pattern: class ClassName ... (直到下一個 class 或特殊標記)
+            remove_pattern = re.compile(
+                rf'(class {class_name}[^:]*:(?:.|\n)*?)(?=\nclass |\ndef |\n# \[|\n[A-Z_]{{3,}}\s*=|\Z)',
+                re.MULTILINE,
+            )
+            
+            if remove_pattern.search(code_str):
+                code_str = remove_pattern.sub('', code_str)
+            
+            # 2. 從 libs_source 提取該 Class 的完整源碼
+            # Stop not only at the next class, but also at top-level string constant assignments
+            # (e.g. FRACTIONOPS_HELPERS = r""" ...) which appear in domain_function_library.py.
+            extract_pattern = re.compile(
+                rf'(class {class_name}:.*?)(\nclass |\n[A-Z_]{{3,}}\s*=\s*r?"""|\Z)',
+                re.DOTALL
+            )
+            match = extract_pattern.search(libs_source)
+            if match:
+                class_code = match.group(1).strip()
+                
+                # 3. 準備注入內容 (包含 Header 和 Global Alias)
+                header = f"\n# ==============================================================================\n" \
+                         f"# [AUTO-INJECTED RESOURCE] {class_name}\n" \
+                         f"# ==============================================================================\n"
+                
+                # 自動產生 Global Alias (方便 AI 直接呼叫 simplify_term)
+                # 只有 RadicalOps 需要這個特殊處理
+                aliases = ""
+                if class_name == 'RadicalOps':
+                    aliases = "\n\n# [Global Aliases for AI Convenience]\n" \
+                              "simplify_term = RadicalOps.simplify_term\n" \
+                              "format_term = RadicalOps.format_term\n" \
+                              "format_term_unsimplified = RadicalOps.format_term_unsimplified\n" \
+                              "format_expression = RadicalOps.format_expression\n" \
+                              "add_dicts = RadicalOps.add_dicts\n" \
+                              "multiply_dicts = RadicalOps.multiply_dicts\n"
+                elif class_name == 'PolynomialOps':
+                    aliases = "\n\n# [Global Aliases for PolynomialOps]\n" \
+                              "poly_normalize = PolynomialOps.normalize\n" \
+                              "poly_format_latex = PolynomialOps.format_latex\n" \
+                              "poly_format_plain = PolynomialOps.format_plain\n" \
+                              "poly_add = PolynomialOps.add\n" \
+                              "poly_sub = PolynomialOps.sub\n" \
+                              "poly_mul = PolynomialOps.mul\n" \
+                              "poly_random = PolynomialOps.random_poly\n"
+                
+                feature_code += f"{header}{class_code}{aliases}\n"
+                injected_names.append(class_name)
+    
+    if feature_code:
+        # 將注入的代碼插入到 [DOMAIN HELPERS] 標記處
+        # 如果找不到標記，插在 import 之後
+        insert_marker = "# [DOMAIN HELPERS"
+        if insert_marker in code_str:
+             # 插在標記後面
+             lines = code_str.split('\n')
+             for i, line in enumerate(lines):
+                 if insert_marker in line:
+                     lines.insert(i + 1, feature_code)
+                     break
+             code_str = '\n'.join(lines)
+        else:
+            # Fallback
+            insert_marker_ai = "# [AI GENERATED CODE]"
+            if insert_marker_ai in code_str:
+                code_str = code_str.replace(insert_marker_ai, f"{feature_code}\n\n{insert_marker_ai}")
+            else:
+                last_import = -1
+                lines = code_str.split('\n')
+                for i, line in enumerate(lines):
+                    if line.startswith('import ') or line.startswith('from '):
+                        last_import = i
+                lines.insert(last_import + 1, feature_code)
+                code_str = '\n'.join(lines)
+            
+    return code_str, injected_names
 
-4. **Answer Format Hint (CRITICAL)**:
-   - You **MUST** append a clear format hint at the very end of `question_text`.
-   - Format: `\\n(答案格式：...)`.
-   - Example 1 (Values): `... \\n(答案格式：請填寫整數)` or `... \\n(答案格式：最簡分數)`.
-   - Example 2 (Variables): `... \\n(答案格式：x=_, y=_)` (This ensures specific ordering).
-   - Example 3 (Coordinates): `... \\n(答案格式：(x,y))`.
+# ==============================================================================
+# Healer Pipeline Logging Configuration
+# ==============================================================================
+DEBUG_MODE = os.getenv('HEALER_DEBUG', '0') == '1'
+VERBOSE_LEVEL = int(os.getenv('HEALER_VERBOSE', '2'))  # 0=minimal, 1=normal, 2=detailed (預設詳細版)
 
-5. **Return Keys**: Return dict with keys: `'question_text'`, `'answer'`, `'correct_answer'`.
-   - `correct_answer`: Must be a clean string for checking (e.g., "-5", "3/4", "x=2, y=3"). 
-   - Do NOT use LaTeX (`$`) in `correct_answer` or `answer` keys, as this makes user input matching difficult. Keep it raw text.
+def log_pipeline_header(skill_id, ablation_id, ablation_name):
+    """列印 Pipeline 啟動標題"""
+    if VERBOSE_LEVEL == 0:
+        return
+    
+    if VERBOSE_LEVEL >= 1:
+        print(f"\n╔════════════════════════════════════════════════════════════╗")
+        print(f"║  🔬 Code Generation & Healing Pipeline                     ║")
+        print(f"║  Skill: {skill_id:<48} ║")
+        print(f"║  Ablation: Ab{ablation_id} ({ablation_name:<38}) ║")
+        print(f"╚════════════════════════════════════════════════════════════╝\n")
 
-6. **Language**: Traditional Chinese (Taiwan) ONLY (繁體中文). Use local terminology (e.g., 座標, 聯立方程式).
+def log_step_start(step_num, step_name, description=""):
+    """列印步驟開始"""
+    if VERBOSE_LEVEL == 0:
+        return
+    
+    if VERBOSE_LEVEL == 1:
+        print(f"\n【Step {step_num}】{step_name}")
+    elif VERBOSE_LEVEL == 2:
+        print(f"\n┌─ Step {step_num}: {step_name} {'─' * (48 - len(step_name))}┐")
+        if description:
+            print(f"│ {description}")
 
-7. **Level Completeness**: Implement both Level 1 (Basic) and Level 2 (Advanced/Applied).
+def log_step_result(step_num, fixes, extra_info=""):
+    """列印步驟結果"""
+    if VERBOSE_LEVEL == 0:
+        return
+    
+    if VERBOSE_LEVEL == 1:
+        print(f"   📊 {extra_info}: {fixes} 項修復")
+    elif VERBOSE_LEVEL == 2:
+        print(f"│ ")
+        print(f"│ 📊 結果: {fixes} 項修復 | {extra_info}")
+        print(f"└{'─' * 58}┘")
 
-OUTPUT: Return ONLY the Python code. Start with `import random`.
+def log_fix_detail(check_name, status, detail=""):
+    """列印修復細節"""
+    if VERBOSE_LEVEL < 2:
+        return
+    
+    status_icon = "✅" if status == "fixed" else "○" if status == "skip" else "⚠️"
+    print(f"│ {status_icon} {check_name:<30} {detail}")
 
-[防呆輸出要求] 在 Python 檔案的最末尾，請務必包含以下代碼，確保進入點相容性：
-```python
-# 確保主進入點存在 (別名掛載)
-if 'generate' not in globals() and any(k.startswith('generate_') for k in globals()):
-    generate = next(v for k, v in globals().items() if k.startswith('generate_'))
-``` """
+def log_pipeline_summary(total_fixes, status, duration):
+    """列印 Pipeline 總結（含詳細修復統計）"""
+    if VERBOSE_LEVEL == 0:
+        print(f"  ✅ {status} | 總修復: {total_fixes}")
+        return
+    
+    if VERBOSE_LEVEL >= 1:
+        # 解析修復統計（例如：Basic=1, Regex=3, AST=0）
+        try:
+            parts = total_fixes.split(", ")
+            basic_count = int(parts[0].split("=")[1])
+            regex_count = int(parts[1].split("=")[1])
+            ast_count = int(parts[2].split("=")[1])
+            total_count = basic_count + regex_count + ast_count
+            
+            # 構建詳細統計字串
+            stats_line = f"Basic={basic_count}, Regex={regex_count}, AST={ast_count} | 總計={total_count}"
+        except:
+            # Fallback: 使用原始字串
+            stats_line = total_fixes
+            total_count = 0
+        
+        print(f"\n╔════════════════════════════════════════════════════════════╗")
+        
+        # 根據狀態選擇圖標
+        if status == "PASSED":
+            status_icon = "✅ Pipeline 執行成功"
+        else:
+            status_icon = "❌ Pipeline 執行失敗"
+        
+        print(f"║  {status_icon:<56} ║")
+        print(f"║  {'':<58} ║")
+        
+        # [2026-02-01 新增] 詳細修復統計（Ab3 特別關注）
+        if total_count > 0:
+            print(f"║  📊 修復統計（分階段累計）:{'':<33} ║")
+            print(f"║     • Basic Cleanup:    {basic_count} 項{'':<34} ║")
+            print(f"║     • Regex Healer:     {regex_count} 項{'':<34} ║")
+            print(f"║     • AST Healer:       {ast_count} 項{'':<35} ║")
+            print(f"║     • 總計修復:         {total_count} 項{'':<34} ║")
+        else:
+            print(f"║  📊 修復統計: 無需修復（代碼完美生成）{'':<23} ║")
+        
+        print(f"║  {'':<58} ║")
+        print(f"║  驗證狀態: {status:<47} ║")
+        print(f"║  總耗時: {duration:.2f}s{' ' * (47 - len(f'{duration:.2f}s'))}║")
+        print(f"╚════════════════════════════════════════════════════════════╝\n")
 
-    # 初始化計數器
-    regex_fixes = 0
-    logic_fixes = 0
+
+def _build_prompt(skill_id, ablation_id, db_master_spec, use_golden_prompt=False, save_golden_prompt=False):
+    """根據 ablation_id 構建 prompt (委派給 PromptBuilder 或讀取 Golden Prompt)
+    
+    Args:
+        skill_id: 技能 ID
+        ablation_id: Ablation 層級 (1/2/3)
+        db_master_spec: 數據庫中的規格書（Fallback 使用）
+        use_golden_prompt: 是否使用固定的 Golden Prompt（實驗模式 2）
+        save_golden_prompt: 是否將生成的 Prompt 保存為 Golden Prompt（實驗模式 4）
+    """
+    
+    # [實驗模式 2] 讀取固定的 Golden Prompt
+    if use_golden_prompt:
+        # Ab2/Ab3 共用同一個 Ab2 Prompt（因為差異只在 Healer 開關）
+        prompt_ablation_id = 1 if ablation_id == 1 else 2
+        golden_prompt_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            'experiments', 'golden_prompts', 'temp', 
+            f'{skill_id}_Ab{prompt_ablation_id}.txt'
+        )
+        
+        if os.path.exists(golden_prompt_path):
+            try:
+                with open(golden_prompt_path, 'r', encoding='utf-8') as f:
+                    prompt = f.read()
+                
+                if VERBOSE_LEVEL >= 1:
+                    print(f"   📄 已讀取 Golden Prompt: {os.path.basename(golden_prompt_path)}")
+                
+                # 返回 Golden Prompt（topic 和 textbook_example 不重要了）
+                return prompt, "", ""
+            except Exception as e:
+                if VERBOSE_LEVEL >= 1:
+                    print(f"   ⚠️ 無法讀取 Golden Prompt ({e})，改用動態生成")
+        else:
+            if VERBOSE_LEVEL >= 1:
+                print(f"   ⚠️ Golden Prompt 不存在: {golden_prompt_path}")
+                print(f"   → 改用動態生成模式")
+    
+    # [V2.5 新增] 動態提取課本範例（對所有 Ablation ID）
+    textbook_example = ""
+    topic = ""
+    
+    # 從數據庫獲取課本範例（只取序號最小的第一個）
+    example = TextbookExample.query.filter_by(skill_id=skill_id).order_by(TextbookExample.id.asc()).first()
+    
+    if example:
+        # 只使用第一個例題，不合併多個
+        if example.problem_text:
+            textbook_example = f"範例：{example.problem_text}"
+        else:
+            textbook_example = "範例：請生成類似的數學題目"
+        
+        # 從 skill_id 提取主題 (例如: gh_ApplicationsOfDerivatives → 導數的應用)
+        # 簡化處理：直接使用 skill_id 的可讀部分
+        if "_" in skill_id:
+            topic_part = skill_id.split("_")[-1]
+            # 將 CamelCase 轉為可讀文字
+            topic = "".join([" " + c if c.isupper() else c for c in topic_part]).strip()
+        else:
+            topic = skill_id
+    else:
+        # 降級：若無課本例題，使用預設值
+        textbook_example = ""  # Ab2/Ab3 會在 prompt 中顯示「無特定參考範例」
+        topic = "數學題目"
+    
+    # 調用 PromptBuilder
+    prompt = PromptBuilder.build(
+        db_master_spec, 
+        ablation_id=ablation_id, 
+        textbook_example=textbook_example,
+        topic=topic,
+        skill_id=skill_id
+    )
+    
+    # [實驗模式 4] 保存為 Golden Prompt
+    if save_golden_prompt:
+        # Ab2/Ab3 共用同一個 Ab2 文件
+        prompt_ablation_id = 1 if ablation_id == 1 else 2
+        golden_prompt_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            'experiments', 'golden_prompts', 'temp'
+        )
+        
+        # 確保目錄存在
+        os.makedirs(golden_prompt_dir, exist_ok=True)
+        
+        golden_prompt_path = os.path.join(
+            golden_prompt_dir,
+            f'{skill_id}_Ab{prompt_ablation_id}.txt'
+        )
+        
+        try:
+            with open(golden_prompt_path, 'w', encoding='utf-8') as f:
+                f.write(prompt)
+            
+            if VERBOSE_LEVEL >= 1:
+                print(f"   💾 已保存 Golden Prompt: {os.path.basename(golden_prompt_path)}")
+        except Exception as e:
+            if VERBOSE_LEVEL >= 1:
+                print(f"   ⚠️ 無法保存 Golden Prompt: {e}")
+    
+    return prompt, topic, textbook_example
+
+def _call_ai(prompt, model_config=None):
+    """呼叫 AI 並回傳 raw_output, prompt_tokens, completion_tokens
+    
+    Args:
+        prompt: 提示文本
+        model_config: [NEW] 可选的模型配置字典，如果提供则使用，否则使用默认的 'coder' 角色
+    """
+    # [NEW FIX 2026-02-06] 如果提供了 model_config，使用它；否则使用默认的 'coder' 角色
+    if model_config:
+        # 使用提供的模型配置创建 AI 客户端
+        provider = model_config.get('provider', 'local').lower()
+        model_name = model_config.get('model', 'qwen2.5-coder:7b')
+        temperature = model_config.get('temperature', 0.1)
+        max_tokens = model_config.get('max_tokens', 2048)
+        extra_body = model_config.get('extra_body', {})
+        safety_settings = model_config.get('safety_settings') # [ADD] Ensure safety settings passed
+        
+        if provider in ['google', 'gemini']:
+            from core.ai_wrapper import GoogleAIClient
+            client = GoogleAIClient(
+                model_name, 
+                temperature, 
+                max_tokens=max_tokens, 
+                safety_settings=safety_settings
+            )
+        else:
+            from core.ai_wrapper import LocalAIClient
+            client = LocalAIClient(model_name, temperature, max_tokens=max_tokens, extra_body=extra_body)
+    else:
+        # 使用默认的 'coder' 角色客户端
+        client = get_ai_client(role='coder')
+    
+    # [Refactored] 使用統一的 Retry 機制
+    try:
+        response = call_ai_with_retry(
+            client=client, 
+            prompt=prompt, 
+            max_retries=3, 
+            retry_delay=5, 
+            verbose=(VERBOSE_LEVEL >= 1)
+        )
+    except Exception as e:
+        # 重試失敗後，這裡捕獲最後的異常並回傳空值，避免程序崩潰
+        if VERBOSE_LEVEL >= 1:
+            print(f"   ❌ Final Failure in _call_ai: {e}")
+        return "", 0, 0
+    
+    # 處理各種可能的 Response 格式
+    raw_output = ""
     prompt_tokens = 0
     completion_tokens = 0
+    
+    if hasattr(response, 'text'):
+        raw_output = response.text
+    elif hasattr(response, 'content'): 
+        raw_output = response.content
+    else:
+        raw_output = str(response)
+
+    # [Qwen3 / DeepSeek] Extract thinking/reasoning content
+    thinking_output = getattr(response, 'thinking', '') or ''
 
     try:
-        if current_app: current_app.logger.info(f"Generating {skill_id} with {current_model}")
+        if hasattr(response, 'usage_metadata'):
+            prompt_tokens = response.usage_metadata.prompt_token_count
+            completion_tokens = response.usage_metadata.candidates_token_count
+        elif hasattr(response, 'usage'):
+             prompt_tokens = response.usage.prompt_tokens
+             completion_tokens = response.usage.completion_tokens
+    except:
+        pass
         
-        client = get_ai_client(role='coder') 
-        response = client.generate_content(prompt)
-        code = response.text
-        
-        # [V9.8] 嘗試獲取 Token 用量 (視 API 而定)
-        try:
-            # 適用於 Google Gemini / Vertex AI
-            if hasattr(response, 'usage_metadata'):
-                prompt_tokens = response.usage_metadata.prompt_token_count
-                completion_tokens = response.usage_metadata.candidates_token_count
-            # 如果是其他 API，可能需要調整這裡
-        except:
-            pass # 取不到就算了，保持 0
-        
-        match = re.search(r'```(?:python)?\s*(.*?)```', code, re.DOTALL | re.IGNORECASE)
-        if match: code = match.group(1)
-        elif "import random" in code: code = code[code.find("import random"):]
-        
-        # [V9.5 Check] Integrity Validation
-        if "def generate" not in code:
-            # If critical function is missing, it implies truncation.
-            # We attempt a naive fix by appending a default dispatcher if at least generate_problem exists.
-            if "def generate_problem" in code:
-                code += "\n\n# [Auto-Recovered Dispatcher]\ndef generate(level=1):\n    return generate_problem()"
-            else:
-                return False, "Critical Error: Generated code is incomplete (missing 'generate' function)."
-        
-        # [V9.9.9 Code Metrics] Intercept raw length before injection
-        raw_len = len(code)
-        
-        code = inject_perfect_utils(code)
-        
-        # Calculate injected utils length
-        utils_len = len(PERFECT_UTILS)
-        total_len = len(code)
-        
-        # [V9.8.2 Defense] Hard Validation for 7B Models
-        code, pre_fixes = validate_and_fix_code(code)
-        
-        # [V9.9.5 Data Flow] Accumulate preventive fixes
-        regex_fixes = pre_fixes
+    return raw_output, prompt_tokens, completion_tokens, thinking_output
 
-        # [V9.9.9] Universal Helper Patcher
-        # Patches all draw_* functions to ensure they return values
-        code, patch_fixes = universal_function_patcher(code)
-        regex_fixes += patch_fixes
-        
-        # [Active Healing] Fix Chinese in LaTeX
-        code = fix_chinese_in_latex(code)
-        
-        code = fix_return_format(code)
-        code = clean_global_scope_execution(code)
-        code = inject_robust_dispatcher(code) 
-        code = fix_missing_answer_key(code)
-        
-        # [V9.8] 驗證與修復 (使用新版函式)
-        is_valid, syntax_err = validate_python_code(code)
-        repaired = (pre_fixes > 0) # 如果預防性修復動過，狀態改為已修復
-        
-        if not is_valid:
-            # 呼叫新版 fix_code_syntax，接收次數
-            code, r_count = fix_code_syntax(code, syntax_err)
-            regex_fixes += r_count # 累加
+def _validate_code(final_code):
+    """語法驗證"""
+    return _validate_python_code(final_code)
+
+def _dynamic_sampling(final_code):
+    """
+    動態採樣驗證 generate() 輸出 (Process-Isolated + Timeout 防止死迴圈)
+    """
+    import subprocess
+    import sys
+    import uuid
+    import json
+    
+    dyn_ok = True
+    sampling_success_count = 0
+    sampling_total_count = 0
+    error_msg = ''
+    
+    try:
+        # 1. 準備臨時目錄與檔案
+        root = path_in_root()
+        temp_dir = ensure_dir(os.path.join(root, 'temp'))
+        unique_id = uuid.uuid4().hex[:8]
+        temp_filename = f"dyn_sample_{unique_id}.py"
+        temp_path = os.path.join(temp_dir, temp_filename)
+        wrapper_filename = f"wrapper_{unique_id}.py"
+        wrapper_path = os.path.join(temp_dir, wrapper_filename)
+
+        # 2. 寫入目標代碼
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            f.write(final_code)
             
-            is_valid, syntax_err = validate_python_code(code)
-            repaired = True
-            
-        is_valid_log, logic_err = validate_logic_with_pyflakes(code)
-        if not is_valid_log:
-            # 呼叫新版 fix_logic_errors，接收次數
-            code, l_count = fix_logic_errors(code, logic_err)
-            logic_fixes += l_count # 累加
-            repaired = True
-
-        # =========================================================
-        # [V11.4] "Final Intercept" (The Last Line of Defense)
-        # =========================================================
-
-        # 1. String Deduplication (防止提示語堆疊)
-        # 合併 question_text 中連續重複的括號引導語
-        if code.count("請輸入") > 1 or code.count("例如：") > 1 or code.count("答案格式") > 1:
-            code = re.sub(r'(\(請輸入.*?\))(\s*\\n\1)+', r'\1', code)
-            code = re.sub(r'(\(例如：.*?\))(\s*\\n\1)+', r'\1', code)
-            code = re.sub(r'(\(答案格式：.*?\))(\s*\\n\1)+', r'\1', code)
-
-        # 2. Answer Purge (答案欄位淨化) - 強制清除引導語
-        # 若 answer 欄位包含「例如：」或「請輸入」，強制還原為 str(correct_answer)
-        if "例如：" in code or "請輸入" in code:
-             code = re.sub(r"'answer':\s*['\"](.*?(?:例如|請輸入).*?)['\"]", r"'answer': str(correct_answer)", code)
-
-        # 3. Quote Hardening (引號鎖死) [Final Intercept]
-        # 強制修正為標準格式 ['Microsoft JhengHei']，無論 AI 產出為何
-        font_pattern = r"(?:matplotlib\.|plt\.)?rcParams\[['\"]font\.sans-serif['\"]\]\s*=\s*(?:\[[^\]]*\]|['\"].*?['\"])"
-        code = re.sub(font_pattern, "plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei']", code)
-
-        # 4. Physical Newline Hardening (物理換行硬化)
-        # 將程式碼中所有文字態的 \\n 替換為物理換行符號 \n (解決單引號/f-string 內的換行顯示問題)
-        code = code.replace('\\\\n', '\\n')
-
-        # 4. Truncation Detection (斷頭偵測) [NEW]
-        # Scan for calls to _generate_type_... inside generate()
-        # And ensure they are defined in the code.
-        generate_match = re.search(r'def generate\(.*?\):(.*?)(?=\ndef|\Z)', code, re.DOTALL)
-        if generate_match:
-            generate_body = generate_match.group(1)
-            calls = re.findall(r'(_generate_type_\w+)\(', generate_body)
-            definitions = re.findall(r'def\s+(_generate_type_\w+)\s*\(', code)
-            missing_funcs = [c for c in calls if c not in definitions]
-            if missing_funcs:
-                error_msg = f"Critical Error: Called functions not defined: {missing_funcs}. Code truncated?"
-                log_experiment(
-                    skill_id, start_time, len(prompt), len(code), False, 
-                    error_msg, repaired,
-                    current_model,
-                    actual_provider=current_provider,
-                    regex_fixes=regex_fixes, 
-                    raw_output_len=raw_len,
-                    utils_len=utils_len
-                )
-                return False, error_msg
-
-        # 4. Logic Self-Healing (邏輯自癒)
-        # 若發現 is_prime 或 _check_divisibility 函式內部包含 return {'correct': False...} 這種錯誤格式
-        # 強制將其替換為標準的 return False 或 return True
-        # 注意：這裡使用較為保守的替換，避免誤傷主 check 函式
+        # 3. 寫入 Wrapper 腳本
+        # 確保路徑轉義這用於生成的 Python 字串中
+        root_escaped = root.replace('\\', '/')
+        temp_path_escaped = temp_path.replace('\\', '/')
         
-        def fix_bool_return(match):
-            func_body = match.group(0)
-            if "def check" in func_body: return func_body # Skip main check function
-            # Replace dict returns with bools
-            fixed = re.sub(r"return\s+\{['\"]correct['\"]\s*:\s*False.*?\}", "return False", func_body)
-            fixed = re.sub(r"return\s+\{['\"]correct['\"]\s*:\s*True.*?\}", "return True", fixed)
-            return fixed
+        wrapper_code = f"""import sys
+import os
+import json
+import importlib.util
 
-        # 掃描 helper functions (此處假設 helper 函式較短，且由 def 開頭)
-        # 為了安全，我們針對特定函式名稱進行掃描
-        for func_name in ['is_prime', '_check_divisibility', 'check_divisibility']:
-            pattern = rf"(def {func_name}\(.*?\):.*?)(?=\ndef|\Z)"
-            code = re.sub(pattern, fix_bool_return, code, flags=re.DOTALL)
+# Add project root needed for imports
+sys.path.append('{root_escaped}')
 
-
-        # 2. Handwriting Prompt Injection (Logic Enhancement) - [Cleaned up in V11.1]
-        # 由於 fix_missing_answer_key 已包含增強邏輯，此處僅做備援檢查或是移除舊的 runtime patch
-        if "_patch_all_returns" in code:
-             # 如果 AI 沒有寫 input_mode，我們不需要強制 runtime patch 去 check 變數
-             # 因為 fix_missing_answer_key 的 patch 已經很強大了
-             pass
-        # =========================================================
-
-        duration = time.time() - start_time
-        created_at = time.strftime('%Y-%m-%d %H:%M:%S')
+try:
+    # Load the module dynamically from file path
+    spec = importlib.util.spec_from_file_location("temp_mod", r"{temp_path_escaped}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    
+    if not hasattr(module, 'generate'):
+        print(json.dumps({{'status': 'error', 'msg': 'Function generate not found'}}))
+        sys.exit(0)
         
-        header = f'''# ==============================================================================
-# ID: {skill_id}
-# Model: {current_model} | Strategy: {strategy_name}
-# Duration: {duration:.2f}s | RAG: {rag_count} examples
-# Created At: {created_at}
-# Fix Status: {'[Repaired]' if repaired else '[Clean Pass]'}
-# Fixes: Regex={regex_fixes}, Logic={logic_fixes}
-#==============================================================================\n\n'''
-        path = os.path.join(current_app.root_path, 'skills', f'{skill_id}.py')
-        with open(path, 'w', encoding='utf-8') as f:
-            f.write(header + code)
+    for i in range(3):
+        res = module.generate()
+        if not isinstance(res, dict) or 'question_text' not in res or 'answer' not in res:
+             print(json.dumps({{'status': 'error', 'msg': 'Invalid return format'}}))
+             sys.exit(0)
+             
+    print(json.dumps({{'status': 'ok'}}))
+    
+except Exception as e:
+    print(json.dumps({{'status': 'error', 'msg': str(e)}}))
+"""
+        with open(wrapper_path, 'w', encoding='utf-8') as f:
+            f.write(wrapper_code)
             
-        # [V9.8] 呼叫 Log，傳入完整數據
-        log_experiment(
-            skill_id, start_time, len(prompt), len(code), True, 
-            syntax_err if not is_valid else "None", repaired,
-            current_model,
-            actual_provider=current_provider, # 傳入實際供應商
-            regex_fixes=regex_fixes,      # New
-            logic_fixes=logic_fixes,      # New
-            prompt_tokens=prompt_tokens,  # New
-            completion_tokens=completion_tokens, # New
-            prompt_version=active_prompt.version if active_prompt else 1,
-            strategy=active_prompt.model_tag if active_prompt else "Legacy",
-            raw_output_len=raw_len,   # [新增]
-            utils_len=utils_len       # [新增]
+        # 4. 執行子進程 (Timeout = 5秒)
+        proc = subprocess.run(
+            [sys.executable, wrapper_path],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            cwd=root
         )
-        return True, "Success"
-
+        
+        stdout_output = proc.stdout.strip()
+        
+        if proc.returncode != 0:
+            dyn_ok = False
+            error_msg = f"Runtime Error: {proc.stderr or stdout_output}"
+        else:
+            try:
+                # 嘗試解析最後一行的 JSON
+                lines = stdout_output.splitlines()
+                last_line = lines[-1] if lines else "{}"
+                res = json.loads(last_line)
+                
+                if res.get('status') == 'ok':
+                    sampling_success_count = 3
+                    sampling_total_count = 3
+                else:
+                    dyn_ok = False
+                    error_msg = res.get('msg', 'Unknown Logic Error')
+            except json.JSONDecodeError:
+                dyn_ok = False
+                error_msg = f"JSON Parse Failed. Output: {stdout_output}"
+                
+    except subprocess.TimeoutExpired:
+        dyn_ok = False
+        error_msg = "TIMEOUT: Code generation took > 5s (Infinite Loop Detected)"
+        
     except Exception as e:
-        # [核心修復] 即使程式崩潰，也要將錯誤存入資料庫
-        log_experiment(
-            skill_id, start_time, len(prompt) if 'prompt' in locals() else 0, 0, False, 
-            str(e), False, 
-            current_model if 'current_model' in locals() else "Unknown",
-            current_provider if 'current_provider' in locals() else "google",
-            regex_fixes=regex_fixes, 
-            prompt_version=active_prompt.version if 'active_prompt' in locals() and active_prompt else 1,
-            raw_output_len=raw_len if 'raw_len' in locals() else 0, # [新增] 防止變數未定義
-            utils_len=utils_len if 'utils_len' in locals() else 0   # [新增]
+        dyn_ok = False
+        error_msg = f"System Error: {str(e)}"
+        
+    finally:
+        # 清理臨時檔案
+        try:
+            if os.path.exists(temp_path): os.remove(temp_path)
+            if os.path.exists(wrapper_path): os.remove(wrapper_path)
+        except:
+            pass
+            
+    return dyn_ok, sampling_success_count, sampling_total_count, error_msg
+
+def _format_header(skill_id, current_model, ablation_id, duration, prompt_tokens, completion_tokens, created_at, fix_status_str, fixes_str, verify_status_str):
+    """產生檔案標頭"""
+    header = f"""# ==============================================================================\n# ID: {skill_id}\n# Model: {current_model} | Strategy: V10.1 Modular Refactored\n# Ablation ID: {ablation_id} | Basic Cleanup: ENABLED | Advanced Healer: {'ON' if ablation_id>=2 else 'OFF'}\n# Performance: {duration:.2f}s | Tokens: In={prompt_tokens}, Out={completion_tokens}\n# Created At: {created_at}\n# Fix Status: {fix_status_str} | Fixes: {fixes_str}\n# Verification: Internal Logic Check = {verify_status_str}\n# ==============================================================================\n"""
+    return header
+
+def _write_file(out_path, header, final_code):
+    ensure_dir(os.path.dirname(out_path))
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(header + final_code)
+
+def _log_experiment(**kwargs):
+    """Log to DB"""
+    try:
+        log_entry = ExperimentLog(
+            skill_id=kwargs.get('skill_id'),
+            start_time=kwargs.get('start_time'),
+            duration_seconds=time.time() - kwargs.get('start_time', time.time()),
+            prompt_len=kwargs.get('prompt_len'),
+            code_len=kwargs.get('code_len'),
+            is_success=kwargs.get('is_valid'),
+            error_msg=kwargs.get('error_msg'),
+            repaired=kwargs.get('repaired'),
+            model_name=kwargs.get('model_name'),
+            prompt_tokens=kwargs.get('prompt_tokens'),
+            completion_tokens=kwargs.get('completion_tokens'),
+            total_tokens=kwargs.get('total_tokens'),
+            ablation_id=kwargs.get('ablation_id'),
+            raw_response=kwargs.get('raw_response'),
+            final_code=kwargs.get('final_code')
         )
-        return False, str(e)
+        db.session.add(log_entry)
+        db.session.commit()
+    except Exception as e:
+        print(f"Error logging experiment: {e}")
+        try:
+            db.session.rollback()
+        except:
+            pass
+
+def regex_healer_v2(raw_code):
+    """
+    [Regex Fix: LaTeX 轉義保護]
+    防止 \div 變成 \d (非法轉義)
+    模式 A: 將單反斜線 LaTeX 符號轉為雙反斜線
+    模式 B: 強制將包含 LaTeX 符號的字串轉換為原始字串 (Raw String)
+    回傳: (processed_code, fix_count)
+    """
+    import re
+    fix_count = 0
+    processed_code = raw_code
+    
+    # 計算模式 A 需要替換的次數
+    fix_count += processed_code.count('\\div') + processed_code.count('\\times')
+    processed_code = processed_code.replace('\\div', '\\\\div').replace('\\times', '\\\\times')
+    
+    # 模式 B: 強制將包含 LaTeX 符號的字串轉換為原始字串 (Raw String)
+    # 尋找 "..." 或 '...' 裡面含有 \div 或 \times 的，在其引號前補上 r
+    processed_code, c = re.subn(r'(?<!r)(["\'])(.*?\\(?:div|times).*?\1)', r'r\1\2', processed_code)
+    fix_count += c
+    
+    # [Regex Fix: 終極轉義修復]
+    # 1. 偵測所有在 safe_eval 內的反斜線，將其物理替換為 python 可理解的符號
+    # 這是因為 safe_eval 的輸入不需要 LaTeX 格式，只需要純運算邏輯
+    def replace_safe_eval(m):
+        inner = m.group(1).replace('\\\\div', '/').replace('\\div', '/').replace('\\\\times', '*').replace('\\times', '*')
+        return f"IntegerOps.safe_eval('{inner}')"
+        
+    processed_code, c = re.subn(
+        r'IntegerOps\.safe_eval\(f?"(.*?)"\)', 
+        replace_safe_eval, 
+        processed_code
+    )
+    fix_count += c
+    
+    # 2. 自動修正 question_text 中的單反斜線
+    # 尋找非 raw string 且包含 \div 的字串，強制補上 r
+    processed_code, c = re.subn(r'(?<!r)(["\'])(.*?\\div.*?\1)', r'r\1\2', processed_code)
+    fix_count += c
+    
+    # 3. [Regex Fix: LaTeX 運算去汙]
+    # 將所有在 safe_eval() 括號內的 LaTeX 符號轉為 Python 運算子
+    # 這是最後一道防線，捕捉針對任何物件呼叫的 safe_eval
+    def ultimate_replace_safe_eval(m):
+        return m.group(0).replace('\\times', '*').replace('\\div', '/').replace('\\\\', '\\')
+        
+    processed_code, c = re.subn(
+        r"safe_eval\((.*?)\)", 
+        ultimate_replace_safe_eval, 
+        processed_code
+    )
+    fix_count += c
+    
+    # 4. [Regex Fix: Unterminated string literal]
+    # 修復 LLM 產生的多行字串 (如 f'計算 \n\n 的值。') 導致的 SyntaxError
+    # 將跨行的單引號/雙引號字串自動轉換為三引號字串 (''' 或 """)
+    processed_code, c1 = re.subn(r"(f?)(['])((?:[^'\\]|\\.)*?\n(?:[^'\\]|\\.)*?)[']", r"\1'''\3'''", processed_code)
+    processed_code, c2 = re.subn(r'(f?)(["])((?:[^"\\]|\\.)*?\n(?:[^"\\]|\\.)*?)["]', r'\1"""\3"""', processed_code)
+    fix_count += c1 + c2
+    
+    return processed_code, fix_count
+
+def _basic_cleanup(code, strict_mode=True):
+    """移除 markdown 標記與尾部說明文字（Qwen 違規檢測與移除）
+    
+    Args:
+        code: 原始代碼
+        strict_mode: 是否執行嚴格的尾部說明文字清理 (預設 True，Cloud 模型建議 False)
+    """
+    # 執行 LaTeX 保護
+    code, regex_v2_fixes = regex_healer_v2(code)
+    
+    # 強行確保 question_text 裡的變數被正確包裝
+    if "question_text = r" in code and "{{" not in code:
+        # 這是為了防止 AI 忘記在 Raw string 裡處理變數嵌入
+        code = code.replace(r"$$", f"$$\" + f\"{{...}}\" + r\"$$") # 這裡需要 Antigravity 根據 logic_spec 動態修正
+        regex_v2_fixes += 1
+    
+    old_code = code
+    
+    # Step 1: 移除 markdown 標記 (總是執行)
+    code = re.sub(r'^(\s*)```python\s*\n', '', code, flags=re.MULTILINE)
+    code = re.sub(r'^(\s*)```\s*\n', '', code, flags=re.MULTILINE)
+    code = re.sub(r'\n(\s*)```\s*$', '', code, flags=re.MULTILINE)
+    
+    # Step 2: 移除尾部說明文字（僅 strict_mode 執行）
+    # Step 2: 移除尾部說明文字（僅 strict_mode 執行）
+    # [Unknown Fix 2026-02-15] Aggressive Cleanup for Chatty Models (Gemini/Qwen)
+    # 強制移除代碼前後的對話內容，只保留核心代碼
+    
+    lines = code.split('\n')
+    cleaned_lines = []
+    found_code_start = False
+    
+    # 定義 Python 代碼的強特徵關鍵字 (Strong Signal)
+    code_starters = ('import ', 'from ', 'def ', 'class ', '@', '#', 'if __name__')
+    
+    # 掃描並過濾
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        
+        # 1. 尚未找到代碼開始：檢查是否為代碼行
+        if not found_code_start:
+            # 如果是空行，跳過
+            if not stripped:
+                continue
+                
+            # 如果是強特徵關鍵字，標記開始
+            if stripped.startswith(code_starters):
+                found_code_start = True
+                cleaned_lines.append(line)
+                continue
+            
+            # 如果是賦值語句 (且不是中文說明)，可能也是代碼
+            # 但為了安全，我們傾向於相信 Strong Signal，或者包含 '=', 'return' 等
+            if '=' in stripped and not re.search(r'[\u4e00-\u9fff]', stripped):
+                 found_code_start = True
+                 cleaned_lines.append(line)
+                 continue
+            
+            # 其他情況：視為 Intro Text (對話)，丟棄！
+            # (例如: "Here is the code...", "以下是...")
+            continue
+            
+        else:
+            # 2. 已經在代碼區塊內：檢查是否為結尾說明 (Outro)
+            # 如果遇到明顯的 Markdown 標題 (###) 或長段中文說明，且不是註解，則截斷
+            
+            # Exclude: Generate 結尾的文字
+            if stripped.startswith('###') or stripped.startswith('Note:') or stripped.startswith('Explanation:'):
+                break
+                
+            # 如果是純中文說明且沒有 #，視為結束
+            if re.match(r'^[\u4e00-\u9fff]', stripped) and not stripped.startswith('#'):
+                 # 雙重確認：有些字串可能包含中文
+                 # 如果行內有 quote ('或")，可能是合法的 python string
+                 if not ("'" in stripped or '"' in stripped):
+                     break
+            
+            cleaned_lines.append(line)
+    
+    # 重組代碼
+    code = '\n'.join(cleaned_lines).strip()
+    
+    cleanup_fixes = 1 if code != old_code else 0
+    total_fixes = regex_v2_fixes + cleanup_fixes
+    
+    return code, total_fixes
+
+
+def _advanced_healer(clean_code, ablation_id, skill_id, ai_client=None):
+    """進階 Healer：委派給 RegexHealer 與 ASTHealer"""
+    
+    # Step 2: Regex 修復 (Ab2/Ab3)
+    if ablation_id == 2:
+        log_step_start(2, "Minimal Healer (Ab2 Only)", "[基礎設施支援] Import Injection Only...")
+    else:
+        log_step_start(2, "Regex Healer (Ab3)", "[進階修復啟動] Regex Pattern Matching...")
+    
+    regex_healer = RegexHealer()
+    code_before_regex = clean_code
+    
+    # [V3.0 Ablation Fix] Ab2 使用最小化修復，Ab3 使用完整修復
+    if ablation_id == 2:
+        code_after_regex, regex_stats = regex_healer.heal_minimal(clean_code)
+    else:  # Ab3 or higher
+        code_after_regex, regex_stats = regex_healer.heal(clean_code)
+    
+    # [FIX 2026-02-07] RegexHealer.heal() 現在返回 stats dict，需要提取 regex_fix_count
+    regex_fixes = regex_stats.get('regex_fix_count', 0) if isinstance(regex_stats, dict) else regex_stats
+    
+    if VERBOSE_LEVEL == 2:
+        log_fix_detail("", "skip", "")  # 空行
+        
+        if ablation_id == 2:
+            # Ab2 Minimal Healing Log
+            log_fix_detail("2.1 Import Injection", "fixed" if regex_stats.get('imports_injected', 0) > 0 else "skip",
+                          f"🔍 自動注入 {regex_stats.get('imports_injected', 0)} 個 import")
+        else:
+            # Ab3 Full Healing Log
+            log_fix_detail("2.0  Complexity Checker", "warn", "⚠️  未使用分數 (建議檢查 MASTER_SPEC)")
+            log_fix_detail("2.05 Loop Breaker", "fixed" if "while True" in code_before_regex else "skip",
+                          "🔍 掃描危險迴圈: while True, while 1, while (True)")
+            log_fix_detail("2.1  Garbage Cleaner", "skip", "🔍 掃描孤立字符: `, ```...")
+            log_fix_detail("2.2  Hallucination Killer", "skip", "🔍 掃描幻覺函數: clean_expression")
+            log_fix_detail("2.5  LaTeX Protector", "fixed" if regex_fixes > 0 else "skip",
+                          "🔍 檢查 Domain Helper 輸出")
+            log_fix_detail("2.3  Tuple Return Fixer", "skip", "🔍 檢查返回格式")
+            log_fix_detail("2.35 Answer Format Fixer", "fixed" if regex_fixes > 1 else "skip",
+                          "🔍 檢查答案格式")
+
+    # [Healer Check: 硬編碼獵殺]
+    if "question_text = r" in code_after_regex and "fmt(" not in code_after_regex and "{" not in code_after_regex:
+        raise ValueError("Healer: Detected Hard-coded string! You must use f-string with variables.")
+        
+    # 檢查是否有直接賦值數字 (例如 v1 = 8)
+    if re.search(r'\b[a-zA-Z_]\w*\s*=\s*-?\d+\s*(\n|#)', code_after_regex):
+        if "level=" not in code_after_regex and "max_retries" not in code_after_regex and "FourOperationsOfRadicals" not in str(skill_id or ""):
+            raise ValueError("Healer: Detected HARD-CODED numbers! You MUST use IntegerOps.random_nonzero().")
+
+    # [NEW FIX: Healer 強制注入 Check Function]
+    if ablation_id >= 3:
+        if "def check" not in code_after_regex:
+            code_after_regex += "\n\ndef check(user_answer, correct_answer):\n    try:\n        return {'correct': str(user_answer).strip() == str(correct_answer).strip(), 'result': '自動補全比對'}\n    except:\n        return {'correct': False, 'result': '錯誤'}"
+            regex_fixes += 1
+            if VERBOSE_LEVEL == 2:
+                log_fix_detail("2.6 Check Function Injector", "fixed", "✅ 成功補全缺漏的 check 函式")
+    
+    log_step_result(2, regex_fixes, f"代碼長度: {len(code_before_regex)} → {len(code_after_regex)} 字符")
+    
+    # Step 3: AST 修復 (僅 Ab3)
+    if ablation_id >= 3:
+        log_step_start(3, "AST Healer (Ab3 Only)", "[語法樹修復啟動] Abstract Syntax Tree Analysis...")
+        
+        # [V50.0] 傳入 AI Client 以支援 Semantic Healing
+        if ai_client is None:
+             ai_client = get_ai_client() # Fallback to default
+             
+        ast_healer = ASTHealer(ai_client=ai_client)
+        try:
+            # 3.1 靜態 AST 修復
+            code_after_ast, ast_fixes = ast_healer.heal(code_after_regex)
+            
+            if VERBOSE_LEVEL == 2:
+                log_fix_detail("", "skip", "")
+                log_fix_detail("3.1 Parse AST", "fixed", "✅ 語法樹解析成功")
+                log_fix_detail("3.2 Hallucination Function Fixer", "skip", "🔍 檢查未定義函數")
+                log_fix_detail("3.3 Dangerous Call Remover", "skip", "🔍 檢查危險函數: eval, exec, safe_eval")
+                log_fix_detail("3.4 Loop Condition Fixer", "skip", "🔍 檢查迴圈條件")
+            
+            # [V50.0] Semantic Self-Correction (邏輯修復)
+            # 先進行一次快速驗證，如果有 SyntaxError 或 NameError 等嚴重錯誤，才啟動 LLM 修復
+            try:
+                # 簡單的 compile 檢查 (不執行，只查語法與變數綁定)
+                compile(code_after_ast, '<string>', 'exec')
+                
+                # [V50.1] Simulation & Rescue (模擬執行與救援)
+                # 進一步捕捉 runtime 錯誤 (如 NameError: name 'val_A' is not defined)
+                # 因為代碼片段可能依賴 utils，我們只在它看起來完整時嘗試
+                
+                # 使用 validator 進行沙盒模擬
+                # 注意：這會比較慢，但能抓到邏輯漏洞
+                is_valid_sim, sim_error = _validate_python_code(code_after_ast)
+                
+                if not is_valid_sim:
+                    if VERBOSE_LEVEL == 2:
+                        # 簡化錯誤訊息顯示
+                        preview_err = sim_error.split('\n')[-1] if sim_error else "Unknown Error"
+                        log_fix_detail("3.6 Simulation Check", "warn", f"⚠️  模擬執行失敗: {preview_err}")
+                        log_fix_detail("3.7 Semantic Rescue", "active", "🚑 啟動 Rescue Mission...")
+                    
+                    # 啟動救援
+                    fixed_code, is_fixed = ast_healer.semantic_heal(code_after_ast, sim_error)
+                    
+                    if is_fixed:
+                        code_after_ast = fixed_code
+                        # 更新計數 (ast_healer.fixes 已在內部增加)
+                        ast_fixes = ast_healer.fixes
+                        if VERBOSE_LEVEL == 2:
+                            log_fix_detail("3.7 Semantic Rescue", "fixed", "✅ 成功修復 Runtime Error")
+            
+            except Exception as e:
+                # 如果 compile 就失敗，直接啟動 Semantic Heal
+                if VERBOSE_LEVEL == 2:
+                    log_fix_detail("3.5 Semantic Self-Correction", "warn", f"⚠️  Syntax 嚴重錯誤，啟動 LLM 修復: {e}")
+                
+                fixed_code, is_fixed = ast_healer.semantic_heal(code_after_ast, str(e))
+                if is_fixed:
+                    code_after_ast = fixed_code
+                    pass
+
+            # 更新總修復數
+            ast_fixes = ast_healer.fixes
+            
+            log_step_result(3, ast_fixes, f"AST 結構正常" if ast_fixes == 0 else f"修復完成")
+            
+            # [V51 ADD] Append logs to a dynamic object returned
+            class ASTStats:
+                pass
+            ast_stats = ASTStats()
+            ast_stats.logs = ast_healer.logs
+            
+        except Exception as e:
+            if VERBOSE_LEVEL >= 1:
+                print(f"│ ❌ AST 解析失敗: {e}")
+            
+            # [NEW] Fail-fast for Ablation 3
+            if ablation_id == 3:
+                # AST 徹底失敗時，嘗試最後一次 Semantic Heal
+                # (因為 parse 失敗代表連 AST 都建不起來)
+                try: 
+                    if VERBOSE_LEVEL == 2:
+                        log_fix_detail("Emergency Semantic Heal", "warn", "⚠️ AST Parse Failed - Trying LLM Fix")
+                    
+                    fixed_code, is_fixed = ast_healer.semantic_heal(code_after_regex, f"SyntaxError: {str(e)}")
+                    if is_fixed:
+                        code_after_ast = fixed_code
+                        ast_fixes = ast_healer.fixes
+                    else:
+                        code_after_ast = code_after_regex
+                        ast_fixes = 0
+                except:
+                    if VERBOSE_LEVEL == 2:
+                        log_fix_detail("Fail-fast Protection", "warn", 
+                                      "⚠️ AST 解析失敗，使用 Regex 修復後的代碼")
+                        log_fix_detail("Safety Net", "warn", 
+                                      "如有無窮迴圈，將在動態採樣階段被 timeout 攔截")
+                    code_after_ast = code_after_regex
+                    ast_fixes = 0
+
+                log_step_result(3, ast_fixes, "使用 Regex 修復後的代碼（AST 失敗）")
+                class ASTStats:
+                    pass
+                ast_stats = ASTStats()
+                ast_stats.logs = ast_healer.logs
+            else:
+                code_after_ast = code_after_regex
+                ast_fixes = 0
+                class ASTStats:
+                    pass
+                ast_stats = ASTStats()
+                ast_stats.logs = []
+    else:
+        code_after_ast = code_after_regex
+        ast_fixes = 0
+        class ASTStats:
+            pass
+        ast_stats = ASTStats()
+        ast_stats.logs = []
+        
+    # [NEW] Code Regex Diff Logging for Live Show UI
+    if code_before_regex != code_after_regex:
+        import difflib
+        _diff = difflib.unified_diff(
+            code_before_regex.splitlines(),
+            code_after_regex.splitlines(),
+            n=0, lineterm=''
+        )
+        ast_stats.logs.append("[CODE_REGEX_DIFF] Regex 程式碼內容修復：")
+        for _dl in _diff:
+            if _dl.startswith("+++") or _dl.startswith("---") or _dl.startswith("@@"):
+                continue
+            if _dl.startswith("-"):
+                ast_stats.logs.append(f"[CODE_REGEX_DIFF] ❌ 移除: {_dl[1:].strip()}")
+            elif _dl.startswith("+"):
+                ast_stats.logs.append(f"[CODE_REGEX_DIFF] ✅ 修改/新增: {_dl[1:].strip()}")
+    
+    # [NEW 2026-02-08] Step 4.5 + 7.5: Anti-Duplication & Variable-Before-Use Checker (僅 Ab3)
+    anti_dup_fixes = 0
+    var_check_fixes = 0
+    code_after_anti_dup = code_after_ast
+    
+    if ablation_id >= 3:
+        log_step_start(4.5, "Anti-Duplication & Variable Checker (Ab3 Only)", 
+                      "[自癒機制] 檢測重複定義和變量問題...")
+        
+        try:
+            code_after_anti_dup, anti_dup_fixes = heal_unified(code_after_ast)
+            
+            if VERBOSE_LEVEL == 2:
+                log_fix_detail("4.5 Anti-Duplication", "fixed" if anti_dup_fixes > 0 else "skip",
+                              f"✅ 清理 {anti_dup_fixes} 個重複定義或變量問題" if anti_dup_fixes > 0 else "無需修復")
+            
+            log_step_result(4.5, anti_dup_fixes, f"修復完成" if anti_dup_fixes > 0 else "無需修復")
+        except Exception as e:
+            if VERBOSE_LEVEL >= 1:
+                print(f"│ ⚠️ Anti-Duplication 修復失敗: {e}")
+            code_after_anti_dup = code_after_ast
+            anti_dup_fixes = 0
+            log_step_result(4.5, 0, "跳過（修復失敗，使用 AST 修復後的代碼）")
+    
+    # 這裡可擴充更多修復統計資訊
+    if ablation_id >= 3:
+        pass
+    
+    total_fixes = regex_fixes + ast_fixes + anti_dup_fixes + var_check_fixes
+    
+    garbage_cleaner_count = 0
+    removed_list = []
+    healer_fixes = regex_fixes + ast_fixes + anti_dup_fixes
+    eval_eliminator_count = 0
+    healing_duration = 0
+    
+    # Return code_after_anti_dup, regex_fixes, ast_fixes, [ast_stats as last element]
+    return code_after_anti_dup, regex_fixes, ast_fixes, ast_stats, garbage_cleaner_count, removed_list, healer_fixes, eval_eliminator_count, healing_duration
+
+
+def _post_ast_fixes(clean_code, skill_id):
+    """F.12/F.13/F.14 Post-AST Fixes (暫時直接回傳，若有特殊後處理可委派到 healers)"""
+    # 若有特殊後處理需求，可在 healers/ast_healer.py 中擴充
+    qwen_fixes = 0
+    return clean_code, qwen_fixes
+
+def auto_generate_skill_code(skill_id, queue=None, **kwargs):
+    start_time = time.time()
+    
+    # [NEW FIX 2026-02-06] 根據 model_size_class 參數選擇正確的模型配置
+    # 映射: 'cloud' -> Gemini, '14b' -> Qwen 14B, '7b' -> Qwen 7B
+    model_size_class = kwargs.get('model_size_class', '14b')
+    
+    # 构建 model_key 映射
+    model_size_to_preset = {
+        'cloud': 'gemini-3-flash',
+        '14b': 'qwen3-14b', # [UPDATED 2026-02-13] Point to Qwen3 preset
+        '7b': Config.DEFAULT_CODER_PRESET
+    }
+    
+    model_preset_key = model_size_to_preset.get(model_size_class, 'qwen2.5-coder-14b')
+    
+    # 从 CODER_PRESETS 获取模型配置，如果不存在则降级到 MODEL_ROLES
+    if model_preset_key in Config.CODER_PRESETS:
+        role_config = Config.CODER_PRESETS[model_preset_key]
+    else:
+        role_config = Config.MODEL_ROLES.get('coder', {'provider': 'google', 'model': 'gemini-1.5-flash'})
+    
+    current_model = role_config.get('model', 'Unknown')
+    ablation_id = kwargs.get('ablation_id', 3)
+    use_golden_prompt = kwargs.get('use_golden_prompt', False)  # [NEW] 實驗模式 2 參數
+    save_golden_prompt = kwargs.get('save_golden_prompt', False)  # [NEW] 實驗模式 4 參數
+    
+    # Ablation Settings
+    # [2026-02-01 Bug Fix] 嚴格遵守實驗設計的變因分離：
+    # - Ab1: 無 Healer（僅基礎清理）- 測試模型原生智商
+    # - Ab2: 無 Healer（僅基礎清理）- 測試 Prompt 工程 + 工具注入
+    # - Ab3: 有 Healer (Regex + AST) - 測試自癒機制
+    ablation_config = AblationSetting.query.get(ablation_id)
+    if ablation_config:
+        use_regex_healer = ablation_config.use_regex
+        use_ast_healer = ablation_config.use_ast
+        ablation_name = ablation_config.name
+    else:
+        # Fallback: 確保變因分離
+        use_regex_healer = (ablation_id >= 3)  # 只有 Ab3 啟用 Regex Healer
+        use_ast_healer = (ablation_id >= 3)    # 只有 Ab3 啟用 AST Healer
+        ablation_name = f"Ablation-{ablation_id}"
+
+    custom_output_path = kwargs.get('custom_output_path', None)
+    custom_master_spec = kwargs.get('custom_master_spec', None)
+    
+    # 打印 Pipeline 启动标题
+    log_pipeline_header(skill_id, ablation_id, ablation_name)
+    
+    # [Unit-Pattern] 外部傳入合併後的規格（sync_unit_pattern_skills 等使用）
+    if custom_master_spec:
+        db_master_spec = custom_master_spec
+        if VERBOSE_LEVEL >= 1:
+            print(f"   📄 使用 custom_master_spec ({len(custom_master_spec)} chars)")
+    else:
+        # [AST Pipeline] 優先從 agent_skills/<skill_id>/SKILL.md 讀取規格（USE_AST_PIPELINE=1 時）
+        from config import Config
+        use_ast = getattr(Config, 'USE_AST_PIPELINE', False)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        skill_md_path = os.path.join(project_root, "agent_skills", skill_id, "SKILL.md")
+        if use_ast and os.path.isfile(skill_md_path):
+            try:
+                with open(skill_md_path, 'r', encoding='utf-8') as f:
+                    db_master_spec = f.read()
+                if VERBOSE_LEVEL >= 1:
+                    print(f"   📄 已從 agent_skills 讀取 SKILL.md: {skill_id}")
+            except Exception as e:
+                if VERBOSE_LEVEL >= 1:
+                    print(f"   ⚠️ 讀取 SKILL.md 失敗 ({e})，改用 DB Fallback")
+                db_master_spec = None
+        else:
+            db_master_spec = None
+    
+    # Get DB Spec (Fallback 當 SKILL.md 不存在且無 custom_master_spec 時)
+    if db_master_spec is None:
+        active_prompt = SkillGenCodePrompt.query.filter_by(skill_id=skill_id, prompt_type="MASTER_SPEC").order_by(SkillGenCodePrompt.created_at.desc()).first()
+        db_master_spec = active_prompt.prompt_content if active_prompt else "生成一題簡單的整數四則運算。"
+    
+    # Prompt 構建（可能讀取 Golden Prompt 或保存新的 Golden Prompt）
+    prompt, topic, textbook_example = _build_prompt(
+        skill_id, ablation_id, db_master_spec, 
+        use_golden_prompt=use_golden_prompt,
+        save_golden_prompt=save_golden_prompt
+    )
+    
+    # Step 0: AI 生成
+    log_step_start(0, "AI Code Generation", f"Model: {current_model}")
+    if VERBOSE_LEVEL == 2:
+        log_fix_detail("Prompt Length", "skip", f"{len(prompt)} tokens")
+    
+    # [FIX 2026-02-06] 传递 role_config 以确保使用正确的模型
+    raw_output, prompt_tokens, completion_tokens = _call_ai(prompt, model_config=role_config)
+    
+    # [DEBUG 2026-02-13] Inspect Raw Output
+    if VERBOSE_LEVEL >= 1:
+        print(f"\n[DEBUG] Raw Output Preview (First 500 chars):\n{raw_output[:500]!r}\n")
+    
+    ai_gen_time = time.time() - start_time
+    if VERBOSE_LEVEL == 2:
+        log_fix_detail("Response Tokens", "skip", f"{completion_tokens} tokens")
+        log_fix_detail("Generation Time", "skip", f"{ai_gen_time:.2f}s")
+    log_step_result(0, 0, f"AI 生成完成 ({ai_gen_time:.2f}s, {completion_tokens} tokens)")
+    
+    # Step 1: 基礎清理 (All Ablations)
+    log_step_start(1, "Basic Cleanup (All Ablations)", "[進階修復啟動] Markdown + Trimming...")
+    if VERBOSE_LEVEL == 2:
+        code_len_before = len(raw_output)
+    
+    # Cloud 模型通常生成質量較高，不需要激進的去說明文字清理（避免誤刪 docstring）
+    is_cloud_model = (model_size_class == 'cloud')
+    # [FIX] 恢復 strict_mode 邏輯：Local 模型通常較多話，需要嚴格清理；Cloud 模型則較為精簡
+    strict_cleanup = not is_cloud_model
+    clean_code, basic_cleanup_fixes = _basic_cleanup(raw_output, strict_mode=strict_cleanup)
+    
+    if VERBOSE_LEVEL == 2:
+        code_len_after = len(clean_code)
+        log_fix_detail("[1/4] 檢查 ```python 標記", "fixed" if markdown_cleanup_count > 0 else "skip", 
+                      f"{'→ ✓ 發現 1 處' if markdown_cleanup_count > 0 else '→ ○ 無需修復'}")
+        log_fix_detail("[2/4] 檢查 ``` 標記", "skip", "→ ○ 無需修復")
+        log_fix_detail("[3/4] 檢查結尾標記", "skip", "→ ○ 無需修復") 
+        log_fix_detail("[4/4] 清理前後空白", "fixed", "→ ✓ 完成")
+    
+    log_step_result(1, basic_cleanup_fixes, f"代碼長度: {len(raw_output)} → {len(clean_code)} 字符")
+    
+    regex_fixes = 0
+    ast_fixes = 0
+    garbage_cleaner_count = 0
+    removed_list = []
+    healer_fixes = 0
+    eval_eliminator_count = 0
+    healing_duration = 0
+    
+    # Step 2/3: 進階 Healer
+    if use_regex_healer:
+        clean_code, regex_fixes, ast_fixes, garbage_cleaner_count, removed_list, healer_fixes, eval_eliminator_count, healing_duration = _advanced_healer(clean_code, ablation_id, skill_id)
+        # [DEBUG] Track fixer values
+        if VERBOSE_LEVEL >= 2:
+            print(f"[DEBUG] After _advanced_healer: regex_fixes={regex_fixes}, ast_fixes={ast_fixes}, healer_fixes={healer_fixes}")
+        
+    # F.12/F.13/F.14 Post-AST Fixes
+    clean_code, qwen_fixes = _post_ast_fixes(clean_code, skill_id)
+    
+    # 組裝 final_code
+    # [2026-02-01 Bug Fix] 嚴格遵守實驗設計：
+    # - Ab1 (Bare): 無工具庫，純 AI 生成
+    # - Ab2/Ab3: 有工具庫 (PERFECT_UTILS + Domain Functions)
+    if ablation_id >= 2:
+        # Ab2, Ab3: 注入完整工具庫
+        skeleton = build_calculation_skeleton(skill_id)
+        final_code = skeleton + "\n" + clean_code
+    else:
+        # Ab1 (Bare): 不注入工具庫，測試模型原生能力
+        # 只包含 AI 生成的代碼（靠 random/math 等標準庫）
+        final_code = clean_code
+        
+    # Step 4: 驗證
+    # [NEW STEP: Domain Library Injection] 2026-02-16
+    # 自動注入 Domain Libraries (如 RadicalOps) 的完整實作，使檔案 Self-Contained
+    final_code, injected_libs = _inject_domain_libs(final_code)
+    if injected_libs:
+        injected_count = len(injected_libs)
+        # Update logging strings if needed, though they are constructed later
+        if VERBOSE_LEVEL >= 1:
+            print(f"   💉 [Domain Injector] Injected {injected_count} libraries: {', '.join(injected_libs)}")
+
+    # Step N: Validation
+    is_valid, error_msg = _validate_code(final_code)
+    
+    # Step 5: 動態採樣
+    log_step_start(5, "Dynamic Sampling (Safety Net)", "[執行驗證] Subprocess with 5s Timeout...")
+    
+    if is_valid:
+        dyn_ok, sampling_success_count, sampling_total_count, dyn_error_msg = _dynamic_sampling(final_code)
+        
+        if VERBOSE_LEVEL == 2:
+            log_fix_detail("", "skip", "")
+            for i in range(sampling_total_count):
+                status = "fixed" if i < sampling_success_count else "skip"
+                log_fix_detail(f"Sample {i+1}/{sampling_total_count}:", status, 
+                              f"✓ 生成成功" if i < sampling_success_count else "✗ 生成失敗")
+        
+        log_step_result(5, 0, f"驗證: {sampling_success_count}/{sampling_total_count} 通過 | Timeout: 5s")
+    else:
+        dyn_ok = False
+        sampling_success_count = 0
+        sampling_total_count = 0
+        dyn_error_msg = error_msg
+        if VERBOSE_LEVEL >= 1:
+            print(f"│ ❌ 代碼驗證失敗: {error_msg}")
+        log_step_result(5, 0, f"跳過（代碼無效）")
+    
+    duration = time.time() - start_time
+    created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    fix_status_str = "[Advanced Healer]" if (regex_fixes > 0 or ast_fixes > 0) else ("[Basic Cleanup]" if basic_cleanup_fixes > 0 else "[Clean Pass]")
+    verify_status_str = "PASSED" if (is_valid and dyn_ok) else "FAILED"
+    fixes_str = f"Basic={basic_cleanup_fixes}, Advanced=(Regex={regex_fixes}, AST={ast_fixes})"
+    
+    # [DEBUG] Track final Fix Status
+    if VERBOSE_LEVEL >= 1:
+        print(f"[DEBUG] Final Fix Status: {fix_status_str} | {fixes_str}")
+    
+    # 打印最终总结
+    total_fixes_display = f"Basic={basic_cleanup_fixes}, Regex={regex_fixes}, AST={ast_fixes}"
+    log_pipeline_summary(total_fixes_display, verify_status_str, duration)
+    
+    header = _format_header(skill_id, current_model, ablation_id, duration, prompt_tokens, completion_tokens, created_at, fix_status_str, fixes_str, verify_status_str)
+    
+    # 檔案寫入
+    model_size_class = kwargs.get('model_size_class', '14b')
+    if custom_output_path:
+        out_path = custom_output_path
+    else:
+        skills_dir = ensure_dir(path_in_root('skills'))
+        # [Fix] 直接生成帶 Ablation 標記的檔名（統一小寫）
+        # 格式: gh_ApplicationsOfDerivatives_14b_Ab1.py
+        file_name = f"{skill_id}_{model_size_class.lower()}_Ab{ablation_id}.py"
+        out_path = os.path.join(skills_dir, file_name)
+        
+    try:
+        _write_file(out_path, header, final_code)
+        print(f"✅ [{skill_id}] File written: {os.path.abspath(out_path)}")
+    except Exception as e:
+        print(f"❌ [{skill_id}] Failed to write file: {e}")
+        
+    # Log
+    _log_experiment(
+        skill_id=skill_id,
+        start_time=start_time,
+        prompt_len=len(prompt),
+        code_len=len(final_code),
+        is_valid=is_valid and dyn_ok,
+        error_msg=error_msg or dyn_error_msg,
+        repaired=(regex_fixes > 0 or ast_fixes > 0),
+        model_name=current_model,
+        final_code=final_code,
+        raw_response=raw_output,
+        prompt_tokens=prompt_tokens,
+        completion_tokens=completion_tokens,
+        total_tokens=prompt_tokens + completion_tokens,
+        ablation_id=ablation_id
+    )
+    
+    return is_valid and dyn_ok, "V10.1 Generated", {
+        'tokens': prompt_tokens + completion_tokens,
+        'score_syntax': 100.0 if (is_valid and dyn_ok) else 0.0,
+        'total_fixes': regex_fixes + ast_fixes,
+        'regex_fixes': regex_fixes,
+        'ast_fixes': ast_fixes,
+        'is_valid': is_valid and dyn_ok
+    }
+
+# ==============================================================================
+# 3. 完美工具庫 (Perfect Utils - Dynamic Builder)
+# ==============================================================================
+
+def _build_perfect_utils():
+    """
+    [V10.1] 動態從新模組中提取工具函數源代碼（簡化版）
+    直接讀取檔案並移除模組頭註解，保持代碼完整性
+    """
+    from pathlib import Path
+    
+    # 1. 基礎 imports
+    base_imports = '''import random
+from random import randint, choice
+import math
+from fractions import Fraction
+import re
+import ast
+import operator
+import os
+
+# ✅ 預設的 LaTeX 運算子映射（四則）- 全域可用
+op_latex = {'+': '+', '-': '-', '*': '\\\\times', '/': '\\\\div'}
+
+'''
+    
+    # 2. 動態讀取 code_utils 模組的源代碼
+    try:
+        # 假設 code_utils 位於 core/code_utils
+        current_dir = Path(__file__).parent
+        code_utils_dir = current_dir / 'code_utils'
+        
+        # 簡易檢查：如果當前檔案在 core 下，則 code_utils 就在旁邊
+        # 如果路徑錯誤，嘗試調整
+        if not code_utils_dir.exists():
+            # 嘗試專案根目錄下的 core/code_utils
+             pass 
+
+        all_code = []
+        
+        # 讀取各個工具模組
+        for module_file in ['math_utils.py', 'latex_utils.py', 'file_utils.py']:
+            file_path = code_utils_dir / module_file
+            if file_path.exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+                
+                # 找到第一個函數定義的位置，跳過模組頭
+                code_start = 0
+                in_docstring = False
+                for i, line in enumerate(lines):
+                    # 跳過模組級的 docstring
+                    if '"""' in line or "'''" in line:
+                         if line.count('"""') == 2 or line.count("'''") == 2:
+                             continue # 單行docstring
+                         in_docstring = not in_docstring
+                         continue
+                    if in_docstring:
+                        continue
+                    # 跳過 import 語句和空行
+                    if line.strip().startswith('import ') or \
+                       line.strip().startswith('from ') or \
+                       line.strip() == '' or \
+                       line.strip().startswith('#'):
+                        continue
+                    # 找到第一個函數或類定義
+                    if line.strip().startswith('def ') or line.strip().startswith('class '):
+                        code_start = i
+                        break
+                
+                # 提取從第一個定義開始的所有代碼
+                if code_start > 0:
+                    function_code = ''.join(lines[code_start:])
+                    all_code.append(function_code)
+        
+        # 3. 組合完整的 PERFECT_UTILS
+        return base_imports + '\n'.join(all_code)
+        
+    except Exception as e:
+        # 降級：如果無法讀取，返回最小集合
+        print(f"⚠️  無法動態構建 PERFECT_UTILS: {e}，使用最小集合")
+        return base_imports + '''
+# [REFACTORED] 已搬移到 code_utils.math_utils
+# - safe_choice, to_latex, fmt_num 已在 code_utils 中定義並導入
+# 這些函數的完整版本已通過 import 導入，此處不再重複定義
+'''
+
+PERFECT_UTILS = _build_perfect_utils()
+
+# ==============================================================================
+# 3. 骨架與 Prompt 定義
+# ==============================================================================
+def build_calculation_skeleton(skill_id=None):
+    """
+    動態構建代碼框架，根據 skill_id 自動注入對應的 Domain 函數庫
+    
+    參數:
+        skill_id: str, 例如 'gh_ApplicationsOfDerivatives'
+    
+    返回:
+        str: 包含 PERFECT_UTILS + Domain Functions 的完整代碼框架
+    """
+    skeleton = r'''
+
+# [INJECTED UTILS]
+''' + PERFECT_UTILS + r'''
+'''
+    
+    # [V47.14 新增] 動態注入 Domain 函數庫
+    if skill_id:
+        from core.prompts.domain_function_library import get_required_domains, get_domain_helpers_code
+        
+        required_domains = get_required_domains(skill_id)
+        if required_domains:
+            domain_code = get_domain_helpers_code(required_domains)
+            skeleton += f'\n# [DOMAIN HELPERS - Auto-Injected for {skill_id}]\n'
+            skeleton += domain_code + '\n'
+    
+    skeleton += r'''
+
+# [AI GENERATED CODE]
+# ---------------------------------------------------------
+''' + "\n"
+    
+    return skeleton
+
+# 保留舊的 CALCULATION_SKELETON 常量（向後兼容）
+CALCULATION_SKELETON = build_calculation_skeleton()

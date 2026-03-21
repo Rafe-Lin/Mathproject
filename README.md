@@ -26,6 +26,7 @@
     *   [模組二：題庫程式化](docs/後臺系統分析/(模組二)sync_skills_files.md)
     *   [模組三：教學引導](docs/後臺系統分析/(模組三)enrich_skills.md)
     *   [模組四：知識圖譜](docs/後臺系統分析/(模組四)auto_build_prerequisites.md)
+    *   [單元-題型-技能檔架構](docs/UNIT_PATTERN_ARCHITECTURE.md)（一題型一 skill 檔、單元出題）
 
 **🏆 競賽組別**：育秀盃 AI 應用類——AI 賦能永續未來
 

@@ -95,6 +95,39 @@ class GoogleAIClient:
                 def __init__(self, text): self.text = f"Error: {text}"
             return MockResponse(error_msg)
 
+def call_ai_with_retry(client, prompt, max_retries=3, retry_delay=5, verbose=False):
+    """
+    呼叫 AI 客戶端的 generate_content，失敗時重試。
+    
+    Args:
+        client: LocalAIClient 或 GoogleAIClient 實例
+        prompt: 提示字串
+        max_retries: 最大重試次數
+        retry_delay: 重試間隔（秒）
+        verbose: 是否輸出重試訊息
+    
+    Returns:
+        response 物件（具 .text 或 .content 屬性）
+    """
+    import time
+    last_err = None
+    for attempt in range(max_retries + 1):
+        try:
+            response = client.generate_content(prompt)
+            # 客戶端可能回傳 MockResponse 包裹錯誤訊息（未拋例外時）
+            text = getattr(response, 'text', '') or ''
+            if text and ('Error:' in text or 'PERMISSION_DENIED' in text or 'Google AI Error' in text):
+                raise RuntimeError(text)
+            return response
+        except Exception as e:
+            last_err = e
+            if verbose:
+                logger.warning(f"   [Retry {attempt + 1}/{max_retries + 1}] AI 呼叫失敗: {e}")
+            if attempt < max_retries:
+                time.sleep(retry_delay)
+    raise last_err
+
+
 def get_ai_client(role='default'):
     """
     [Factory Method] AI 客戶端工廠

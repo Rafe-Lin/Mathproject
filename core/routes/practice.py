@@ -242,13 +242,49 @@ def get_adaptive_question():
 @practice_bp.route('/get_next_question')
 @login_required
 def next_question():
-    """API: 生成下一題"""
-    skill_id = request.args.get('skill', 'remainder')
-    requested_level = request.args.get('level', type=int) 
+    """API: 生成下一題
     
+    支援 mode 參數：
+    - 未帶 mode 或 mode≠unit：沿用舊行為，skill 指定單一 skill_id 出題
+    - mode=unit：以單元出題，依 (curriculum, volume, chapter) 選擇 pattern skill 後出題。
+      需傳 chapter，可選 volume、curriculum；缺省時 curriculum 用 session，volume 可用空字串由 selector 推斷。
+    """
+    mode = request.args.get('mode', '')
+    skill_id = request.args.get('skill', 'remainder')
+    requested_level = request.args.get('level', type=int)
+
+    # [單元出題] mode=unit：依單元選 pattern skill
+    if mode == 'unit':
+        chapter = request.args.get('chapter', '').strip()
+        volume = request.args.get('volume', '').strip()
+        curriculum = request.args.get('curriculum') or session.get('current_curriculum', 'junior_high')
+        if not chapter:
+            return jsonify({"error": "單元模式需傳 chapter 參數"}), 400
+        if not volume:
+            vols = db.session.query(SkillCurriculum.volume).filter(
+                SkillCurriculum.curriculum == curriculum,
+                SkillCurriculum.chapter == chapter
+            ).distinct().all()
+            vols = [v[0] for v in vols if v[0]]
+            if len(vols) != 1:
+                return jsonify({"error": "單元模式需傳 volume 參數（該 chapter 對應多個或無 volume）"}), 400
+            volume = vols[0]
+        try:
+            from core.unit_selector import select_pattern_skill_for_unit
+            skill_id = select_pattern_skill_for_unit(curriculum, volume, chapter)
+        except Exception as e:
+            current_app.logger.error(f"單元 selector 失敗: {e}")
+            return jsonify({"error": f"無法取得該單元的題型: {str(e)}"}), 500
+        if not skill_id:
+            return jsonify({"error": "該單元下無可用的題型技能"}), 404
+
     skill_info = get_skill_info(skill_id)
+    # [單元模式] 允許 pattern skill 僅有檔案、尚無 DB 註冊時仍可出題
     if not skill_info and skill_id != 'instant_upload':
-        return jsonify({"error": f"技能 {skill_id} 不存在或未啟用"}), 404
+        if mode == 'unit':
+            skill_info = {"input_type": "text", "skill_id": skill_id}
+        else:
+            return jsonify({"error": f"技能 {skill_id} 不存在或未啟用"}), 404
         
     # [Feature] Instant Practice Mode (Short Loop)
     if skill_id == 'instant_upload':

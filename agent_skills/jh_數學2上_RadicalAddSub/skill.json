@@ -1,0 +1,10 @@
+{
+  "skill_id": "jh_數學2上_RadicalAddSub",
+  "display_name": "根式加減",
+  "family": "radical",
+  "level_range": [1, 3],
+  "injected_apis": ["RadicalOps"],
+  "required_imports": ["random", "math"],
+  "pattern_id": "p1_add_sub",
+  "schema_version": "1.0"
+}

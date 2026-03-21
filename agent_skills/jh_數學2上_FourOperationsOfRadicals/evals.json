@@ -1,0 +1,341 @@
+{
+    "schema_version": "2.0",
+    "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+    "architecture": "edge_ai_orchestrator",
+    "description": "Pattern-based regression test suite for radical four operations. Each eval specifies a pattern_id and difficulty to validate the RadicalSolver engine independently of the LLM.",
+    "evals": [
+        {
+            "eval_id": "radicals_P0_easy_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P0 化簡單一根式 (easy) - 直接因式分解",
+            "pattern_id": "p0_simplify",
+            "difficulty": "easy",
+            "timeout_seconds": 120,
+            "generation_kwargs": {
+                "pattern_id": "p0_simplify",
+                "difficulty": "easy"
+            },
+            "regression_checks": {
+                "answer_must_contain_radical": true,
+                "answer_must_be_simplified": true,
+                "no_float_in_answer": true
+            }
+        },
+        {
+            "eval_id": "radicals_P0_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P0 化簡單一根式 (mid) - 兩步因式分解",
+            "pattern_id": "p0_simplify",
+            "difficulty": "mid",
+            "timeout_seconds": 120,
+            "generation_kwargs": {
+                "pattern_id": "p0_simplify",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "answer_must_contain_radical": true,
+                "answer_must_be_simplified": true,
+                "no_float_in_answer": true
+            }
+        },
+        {
+            "eval_id": "radicals_P1_easy_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P1 同類根式加減 (easy) - 2項合併",
+            "pattern_id": "p1_add_sub",
+            "difficulty": "easy",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p1_add_sub",
+                "difficulty": "easy"
+            },
+            "regression_checks": {
+                "answer_must_not_be_zero": true,
+                "terms_must_combine": true,
+                "no_float_in_answer": true
+            }
+        },
+        {
+            "eval_id": "radicals_P1_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P1 同類根式加減 (mid) - 3項化簡合併",
+            "pattern_id": "p1_add_sub",
+            "difficulty": "mid",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p1_add_sub",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "answer_must_not_be_zero": true,
+                "terms_must_combine": true,
+                "no_float_in_answer": true
+            }
+        },
+        {
+            "eval_id": "radicals_P1_hard_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P1 同類根式加減 (hard) - 4項多根號合併",
+            "pattern_id": "p1_add_sub",
+            "difficulty": "hard",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p1_add_sub",
+                "difficulty": "hard"
+            },
+            "regression_checks": {
+                "answer_must_not_be_zero": true,
+                "no_float_in_answer": true,
+                "solution_steps_min_count": 3
+            }
+        },
+        {
+            "eval_id": "radicals_P2a_easy_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P2a 兩根式直接相乘 (easy) - 無括號乘法",
+            "pattern_id": "p2a_mult_direct",
+            "difficulty": "easy",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p2a_mult_direct",
+                "difficulty": "easy"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P2b_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P2b 根式×括號分配律 (mid) - 展開化簡",
+            "pattern_id": "p2b_mult_distrib",
+            "difficulty": "mid",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p2b_mult_distrib",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "solution_steps_min_count": 2,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P2c_hard_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P2c 多項×多項雙括號展開 (hard)",
+            "pattern_id": "p2c_mult_binomial",
+            "difficulty": "hard",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "pattern_id": "p2c_mult_binomial",
+                "difficulty": "hard"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "solution_steps_min_count": 3,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P3a_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P3a 表達式÷單一根式 (mid) - 逐項有理化",
+            "pattern_id": "p3a_div_expr",
+            "difficulty": "mid",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p3a_div_expr",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "division_must_be_exact": true,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P3b_easy_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P3b a/√b 分母有理化 (easy)",
+            "pattern_id": "p3b_div_simple",
+            "difficulty": "easy",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p3b_div_simple",
+                "difficulty": "easy"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "denominator_must_be_rational": true,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P4_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P4 分數×含根式分數 (mid)",
+            "pattern_id": "p4_frac_mult",
+            "difficulty": "mid",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p4_frac_mult",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "answer_fraction_must_be_reduced": true,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P5a_mid_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P5a 1/(b√q±c) 共軛有理化 (mid)",
+            "pattern_id": "p5a_conjugate_int",
+            "difficulty": "mid",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p5a_conjugate_int",
+                "difficulty": "mid"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "denominator_must_be_rational": true,
+                "conjugate_denom_nonzero": true,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P5b_hard_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P5b √p/(b√q±c) 共軛有理化 (hard)",
+            "pattern_id": "p5b_conjugate_rad",
+            "difficulty": "hard",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "pattern_id": "p5b_conjugate_rad",
+                "difficulty": "hard"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "denominator_must_be_rational": true,
+                "conjugate_denom_nonzero": true,
+                "solution_steps_min_count": 3,
+                "answer_must_be_simplified": true
+            }
+        },
+        {
+            "eval_id": "radicals_P6_hard_ab2",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab2",
+            "description": "P6 複合多步驟題型 (hard) - 加減+有理化混合",
+            "pattern_id": "p6_combo",
+            "difficulty": "hard",
+            "timeout_seconds": 360,
+            "generation_kwargs": {
+                "pattern_id": "p6_combo",
+                "difficulty": "hard"
+            },
+            "regression_checks": {
+                "no_float_in_answer": true,
+                "solution_steps_min_count": 4,
+                "answer_must_be_simplified": true,
+                "intermediate_fraction_present": true
+            }
+        },
+        {
+            "eval_id": "radicals_P1_easy_ab1",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab1",
+            "description": "P1 根式加減 (easy) - Ab1 基準線",
+            "pattern_id": "p1_add_sub",
+            "difficulty": "easy",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p1_add_sub",
+                "difficulty": "easy"
+            }
+        },
+        {
+            "eval_id": "radicals_P2a_easy_ab1",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab1",
+            "description": "P2a 直接乘法 (easy) - Ab1 基準線",
+            "pattern_id": "p2a_mult_direct",
+            "difficulty": "easy",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p2a_mult_direct",
+                "difficulty": "easy"
+            }
+        },
+        {
+            "eval_id": "radicals_P5a_mid_ab1",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab1",
+            "description": "P5a 共軛有理化 (mid) - Ab1 基準線",
+            "pattern_id": "p5a_conjugate_int",
+            "difficulty": "mid",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "pattern_id": "p5a_conjugate_int",
+                "difficulty": "mid"
+            }
+        },
+        {
+            "eval_id": "radicals_P6_hard_ab1",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab1",
+            "description": "P6 複合題型 (hard) - Ab1 基準線",
+            "pattern_id": "p6_combo",
+            "difficulty": "hard",
+            "timeout_seconds": 360,
+            "generation_kwargs": {
+                "pattern_id": "p6_combo",
+                "difficulty": "hard"
+            }
+        },
+        {
+            "eval_id": "radicals_P1_mid_ab3",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab3",
+            "description": "P1 根式加減 (mid) - Ab3 壓力測試",
+            "pattern_id": "p1_add_sub",
+            "difficulty": "mid",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "pattern_id": "p1_add_sub",
+                "difficulty": "mid"
+            }
+        },
+        {
+            "eval_id": "radicals_P5b_hard_ab3",
+            "skill_name": "jh_數學2上_FourOperationsOfRadicals",
+            "ablation_target": "Ab3",
+            "description": "P5b 共軛有理化根式分子 (hard) - Ab3 壓力測試",
+            "pattern_id": "p5b_conjugate_rad",
+            "difficulty": "hard",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "pattern_id": "p5b_conjugate_rad",
+                "difficulty": "hard"
+            }
+        }
+    ]
+}

@@ -421,23 +421,21 @@ def create_app():
         # 啟用 WAL (Write-Ahead Logging) 模式以提高併發性並減少鎖定
         try:
             with db.engine.connect() as conn:
-                # 啟用 WAL 模式，允許讀取和寫入並行
                 conn.execute(text("PRAGMA journal_mode=WAL"))
-                # 設定同步等級為 NORMAL，在 WAL 模式下是安全且高效的選擇
                 conn.execute(text("PRAGMA synchronous=NORMAL"))
         except Exception as e:
             app.logger.error(f"Failed to set WAL mode for SQLite: {e}")
 
-        configure_gemini(
-            api_key=app.config['GEMINI_API_KEY'],
-            model_name=app.config['GEMINI_MODEL_NAME']
-        )
-
-        # 初始化 Naive RAG 引擎 (ChromaDB + Embedding)
-        try:
-            init_rag(app)
-        except Exception as e:
-            app.logger.error(f"RAG 初始化失敗: {e}")
+        # SEED_DB_ONLY=1 時跳過 Gemini/RAG 初始化（供 seed script 等使用）
+        if os.environ.get('SEED_DB_ONLY') != '1':
+            configure_gemini(
+                api_key=app.config['GEMINI_API_KEY'],
+                model_name=app.config['GEMINI_MODEL_NAME']
+            )
+            try:
+                init_rag(app)
+            except Exception as e:
+                app.logger.error(f"RAG 初始化失敗: {e}")
 
     return app
 

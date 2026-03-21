@@ -1,0 +1,94 @@
+{
+    "evals": [
+        {
+            "eval_id": "polynomial_L1_ab1",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab1",
+            "description": "多項式加減法 (Level 1) - Ab1",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "level": 1
+            }
+        },
+        {
+            "eval_id": "polynomial_L1_ab2",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab2",
+            "description": "多項式加減法 (Level 1) - Ab2",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "level": 1
+            }
+        },
+        {
+            "eval_id": "polynomial_L1_ab3",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab3",
+            "description": "多項式加減法 (Level 1) - Ab3",
+            "timeout_seconds": 180,
+            "generation_kwargs": {
+                "level": 1
+            }
+        },
+        {
+            "eval_id": "polynomial_L2_ab1",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab1",
+            "description": "多項式乘法 (Level 2) - Ab1",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "level": 2
+            }
+        },
+        {
+            "eval_id": "polynomial_L2_ab2",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab2",
+            "description": "多項式乘法 (Level 2) - Ab2",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "level": 2
+            }
+        },
+        {
+            "eval_id": "polynomial_L2_ab3",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab3",
+            "description": "多項式乘法 (Level 2) - Ab3",
+            "timeout_seconds": 240,
+            "generation_kwargs": {
+                "level": 2
+            }
+        },
+        {
+            "eval_id": "polynomial_L3_ab1",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab1",
+            "description": "求未知多項式 (Level 3) - Ab1",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "level": 3
+            }
+        },
+        {
+            "eval_id": "polynomial_L3_ab2",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab2",
+            "description": "求未知多項式 (Level 3) - Ab2",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "level": 3
+            }
+        },
+        {
+            "eval_id": "polynomial_L3_ab3",
+            "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+            "ablation_target": "Ab3",
+            "description": "求未知多項式 (Level 3) - Ab3",
+            "timeout_seconds": 300,
+            "generation_kwargs": {
+                "level": 3
+            }
+        }
+    ]
+}

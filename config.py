@@ -118,3 +118,8 @@ class Config:
     
     # [V2.5 Data Enhancement] Experiment Batch Tag
     EXPERIMENT_BATCH = 'Run_V2.5_Elite'
+
+    # [AST Pipeline] 單元-題型架構 feature flag
+    # USE_AST_PIPELINE=1: code_generator 優先從 agent_skills/<id>/SKILL.md 讀取規格
+    # 預設 0 不影響舊行為（SKILL.md 存在時仍會優先使用）
+    USE_AST_PIPELINE = os.environ.get('USE_AST_PIPELINE', '0') == '1'

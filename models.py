@@ -75,6 +75,17 @@ def init_db(engine):
         )
     ''')
 
+    # Ablation Settings 表格 (Healer 開關實驗用)
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS ablation_settings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            use_regex BOOLEAN DEFAULT 0,
+            use_ast BOOLEAN DEFAULT 0,
+            description TEXT
+        )
+    ''')
+
     # Classes 表格
     c.execute('''
         CREATE TABLE IF NOT EXISTS classes (
@@ -620,6 +631,22 @@ class SkillPrerequisites(db.Model):
 
     __table_args__ = (db.UniqueConstraint('skill_id', 'prerequisite_id', name='_skill_prerequisite_uc'),)
 
+
+
+class AblationSetting(db.Model):
+    """
+    [Research Edition] Ablation Study 實驗設定
+    控制不同實驗組的 Healer 開關
+    """
+    __tablename__ = 'ablation_settings'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    use_regex = db.Column(db.Boolean, default=False)
+    use_ast = db.Column(db.Boolean, default=False)
+    description = db.Column(db.Text)
+
+    def __repr__(self):
+        return f"<AblationSetting(id={self.id}, name='{self.name}', regex={self.use_regex}, ast={self.use_ast})>"
 
 
 def generate_invitation_code(length=8):
