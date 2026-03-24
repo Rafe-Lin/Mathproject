@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Live Show 路由共用的數學結構/抽取工具（純函式）。"""
+"""Live Show math utilities."""
 
 import re
 
@@ -9,11 +9,19 @@ def _normalize_math_text(text):
         return ""
     normalized = str(text)
     replacements = {
-        "×": "*", "✕": "*", "\u00d7": "*", "\\times": "*",
-        "÷": "/", "\u00f7": "/", "\\div": "/",
-        "（": "(", "）": ")", "［": "[", "］": "]",
-        "【": "[", "】": "]", "｛": "{", "｝": "}",
-        "－": "-", "﹣": "-", "−": "-", "＋": "+", "｜": "|",
+        "\u00d7": "*",
+        "\\times": "*",
+        "\u00f7": "/",
+        "\\div": "/",
+        "（": "(",
+        "）": ")",
+        "［": "[",
+        "］": "]",
+        "｛": "{",
+        "｝": "}",
+        "－": "-",
+        "＋": "+",
+        "｜": "|",
     }
     for src, dst in replacements.items():
         normalized = normalized.replace(src, dst)
@@ -189,86 +197,78 @@ def _build_isomorphic_constraints(source_text, json_spec=None):
     fp = _build_structural_profile(source_text)
     seq_text = " -> ".join(fp["operator_sequence"]) if fp["operator_sequence"] else "none"
     forbidden_ops = [
-        op for op in ("plus", "minus", "times", "divide")
+        op
+        for op in ("plus", "minus", "times", "divide")
         if fp["counts"].get(op, 0) == 0
     ]
 
     lines = [
-        "【同構零容忍檢查清單】",
-        f"1) 數字總數量必須嚴格一致：恰好 {fp['number_count']} 個參與計算的數字 (算式中出現幾個數字，你就只能宣告幾個變數)",
-        f"2) 二元運算子總數必須嚴格一致：恰好 {fp['operator_count']} 個運算子",
-        f"3) 運算子順序必須完全一致：{seq_text}",
-        f"4) 運算子統計必須嚴格一致：+={fp['counts']['plus']}, -={fp['counts']['minus']}, ×={fp['counts']['times']}, ÷={fp['counts']['divide']}",
-        "【重大警告】禁止擅自修改結構！如果生成的數字數量或運算子種類與上方統計不符，你的程式碼將被判定為嚴重失敗！"
+        "Follow the original expression structure exactly.",
+        f"1) Keep number token count = {fp['number_count']}.",
+        f"2) Keep binary operator count = {fp['operator_count']}.",
+        f"3) Keep operator order = {seq_text}.",
+        (
+            "4) Keep operator counts: "
+            f"+={fp['counts']['plus']}, "
+            f"-={fp['counts']['minus']}, "
+            f"*={fp['counts']['times']}, "
+            f"/={fp['counts']['divide']}."
+        ),
     ]
 
     if fp["has_square_brackets"]:
-        lines.append("\n5) 必須保留中括號結構 []，不得改成一般括號或移除。")
-        lines.append(f"5.1) 中括號區塊數量必須一致：{fp['bracket_count']}")
-        for idx, st in enumerate(fp["bracket_stats"], start=1):
-            lines.append(
-                f"5.{idx+1}) 第{idx}個中括號內：數字={st['numbers']}，運算子={st['ops']}（+{st['plus']}/-{st['minus']}/×{st['times']}/÷{st['divide']}）"
-            )
+        lines.append(f"5) Keep bracket segment count = {fp['bracket_count']}.")
     else:
-        lines.append("\n5) 禁止新增中括號 []。")
+        lines.append("5) Do not introduce extra bracket segments.")
 
     if fp["has_abs"]:
-        lines.append("6) 必須保留絕對值符號 | |，不可省略。")
-        lines.append(f"6.1) 絕對值區塊數量必須一致：{fp['abs_count']}")
-        for idx, st in enumerate(fp["abs_stats"], start=1):
-            lines.append(
-                f"6.{idx+1}) 第{idx}個絕對值內：數字={st['numbers']}，運算子={st['ops']}（+{st['plus']}/-{st['minus']}/×{st['times']}/÷{st['divide']}）"
-            )
+        lines.append(f"6) Keep absolute-value segment count = {fp['abs_count']}.")
     else:
-        lines.append("6) 禁止新增絕對值符號 | | 或 abs()。")
+        lines.append("6) Do not introduce absolute-value segments.")
 
     if fp["has_parenthesized_negative"]:
-        lines.append("7) 負數必須以括號形式表達（例如 (-7)）。")
+        lines.append("7) Keep parenthesized negative numbers, e.g. (-7).")
     else:
-        lines.append("7) 不可為了湊格式而新增多餘的負數括號。")
+        lines.append("7) Avoid adding unnecessary parenthesized negatives.")
 
     if forbidden_ops:
-        lines.append(f"8) 禁止新增未出現的運算子：{', '.join(forbidden_ops)}")
+        lines.append(f"8) Forbidden operators in final form: {', '.join(forbidden_ops)}.")
 
     if json_spec and isinstance(json_spec, dict):
         structure = json_spec.get("structure") or ""
         if structure:
-            lines.append(f"9) 參考結構：{structure}")
+            lines.append(f"9) Preferred structure hint: {structure}.")
 
-    block = "\n".join(lines)
-    return block, fp
+    return "\n".join(lines), fp
 
 
 def _select_liveshow_structure_template(fp):
     if fp.get("has_abs"):
         template_id = "T3_ABS_MIXED"
         template_text = (
-            f"題型骨架 T3（含絕對值，目標需恰好 {fp.get('number_count', 0)} 個數字）：| A op1 B | op2 C op3 D\n"
-            "- 絕對值符號必須保留\n"
-            "- 內外層運算子順序不可改\n"
-            "- 負數格式必須使用 IntegerOps.fmt_num()\n"
-            "【最高禁令】算式結構與數字個數必須100%同構，嚴禁增減任何變數或常數！"
+            "Template T3 (absolute value form): A op1 B | op2 C op3 D\n"
+            "- Preserve absolute-value blocks.\n"
+            "- Keep operator sequence consistent with source.\n"
+            "- Keep negative numbers parenthesized when needed."
         )
         return template_id, template_text
 
     if fp.get("has_square_brackets"):
         template_id = "T2_BRACKETED_NESTED"
         template_text = (
-            f"題型骨架 T2（雙中括號，目標需恰好 {fp.get('number_count', 0)} 個數字）：[ ... ] op [ ... ]\n"
-            "- 左右兩側都必須保留中括號\n"
-            "- 中括號內可含小括號與多步運算\n"
-            "- 最外層只允許原題出現的運算子\n"
-            "【最高禁令】算式結構與數字個數必須100%同構，嚴禁增減任何變數或常數！"
+            "Template T2 (bracketed form): [ ... ] op [ ... ]\n"
+            "- Preserve bracket nesting structure.\n"
+            "- Keep operator sequence consistent with source.\n"
+            "- Avoid introducing extra terms."
         )
         return template_id, template_text
 
     template_id = "T1_LINEAR_MIXED"
     template_text = (
-        f"題型骨架 T1（線性混合，目標需恰好 {fp.get('number_count', 0)} 個數字）：A op1 B op2 C ...\n"
-        "- 不新增絕對值、不新增中括號\n"
-        "- 僅保留原題已有的小括號樣式\n"
-        "- 運算子序列與數量必須同構\n"
-        "【最高禁令】算式結構與數字個數必須100%同構，嚴禁增減任何變數或常數！"
+        "Template T1 (linear mixed form): A op1 B op2 C ...\n"
+        "- Preserve operator sequence and operator counts.\n"
+        "- Keep number token count aligned with source.\n"
+        "- Avoid drifting to a different family."
     )
     return template_id, template_text
 
@@ -283,8 +283,8 @@ def _extract_math_expr_from_question(question_text):
         out = str(expr).strip()
         out = out.strip('$').strip()
         out = re.sub(r'[。．\.?？]+$', '', out).strip()
-        out = re.sub(r'^(?:計算|請計算|求)\s*', '', out).strip()
-        out = re.sub(r'\s*(?:的值|等於多少|是多少)\s*$', '', out).strip()
+        out = re.sub(r'^(?:計算|請計算|求|Compute|Evaluate)\s*', '', out, flags=re.IGNORECASE).strip()
+        out = re.sub(r'\s*(?:的值|等於多少|是多少|值為何)\s*$', '', out).strip()
         if '=' in out:
             out = out.split('=', 1)[0].strip()
         if out and out[0] in '+*/':
@@ -296,7 +296,7 @@ def _extract_math_expr_from_question(question_text):
     if m:
         return _clean_candidate(m.group(1))
 
-    m2 = re.search(r'計算\s*(.+?)\s*(?:的值|等於多少|是多少)\s*[。\.?？]?$', text)
+    m2 = re.search(r'(?:計算|請計算|求)\s*(.+?)\s*(?:的值|等於多少|是多少)?\s*[。．\.?？]?$', text)
     if m2:
         return _clean_candidate(m2.group(1))
 
@@ -355,25 +355,151 @@ def _recompute_correct_answer_from_question(question_text):
         return None
 
     eval_expr = _to_eval_expression_template(expr)
-    if not re.fullmatch(r"[0-9+\-*/().aabs]+", eval_expr):
-        return None
-
-    try:
-        val = eval(eval_expr, {"__builtins__": {}}, {"abs": abs})
-    except Exception:
-        return None
-
-    try:
-        fval = Fraction(val).limit_denominator()
-    except Exception:
+    if re.fullmatch(r"[0-9+\-*/().aabs]+", eval_expr):
         try:
-            fval = Fraction(str(val)).limit_denominator()
+            val = eval(eval_expr, {"__builtins__": {}}, {"abs": abs})
         except Exception:
-            return None
+            val = None
+        if val is not None:
+            try:
+                fval = Fraction(val).limit_denominator()
+            except Exception:
+                try:
+                    fval = Fraction(str(val)).limit_denominator()
+                except Exception:
+                    fval = None
+            if fval is not None:
+                if fval.denominator == 1:
+                    return str(fval.numerator)
+                return f"{fval.numerator}/{fval.denominator}"
 
-    if fval.denominator == 1:
-        return str(fval.numerator)
-    return f"{fval.numerator}/{fval.denominator}"
+    # Radical add/sub fallback: supports forms like
+    # \sqrt{12}+\sqrt{18}-\sqrt{27}+\sqrt{50}
+    # with optional integer coefficients before \sqrt{...}.
+    src = re.sub(r"\s+", "", str(expr or ""))
+    # Some fallback paths persist escaped LaTeX (e.g. "\\\\sqrt{8}").
+    # Normalize repeated backslashes so parser sees canonical commands.
+    src = re.sub(r"\\{2,}", r"\\", src)
+    if (r"\sqrt{" in src) and (r"\times" not in src) and (r"\div" not in src):
+        term_re = re.compile(r"([+\-]?)(\d*)\\sqrt\{(\d+)\}")
+        pos = 0
+        terms: dict[int, int] = {}
+        parse_ok = True
+        while pos < len(src):
+            m = term_re.match(src, pos)
+            if not m:
+                parse_ok = False
+                break
+            sign = -1 if m.group(1) == "-" else 1
+            c_raw = m.group(2)
+            coeff = int(c_raw) if c_raw else 1
+            rad = int(m.group(3))
+
+            # simplify coeff*sqrt(rad)
+            out = 1
+            inner = rad
+            i = 2
+            while i * i <= inner:
+                sq = i * i
+                while inner % sq == 0:
+                    out *= i
+                    inner //= sq
+                i += 1
+            coeff_final = sign * coeff * out
+            rad_final = inner
+            terms[rad_final] = terms.get(rad_final, 0) + coeff_final
+            pos = m.end()
+
+        if parse_ok and pos == len(src):
+            items = [(r, c) for r, c in sorted(terms.items()) if c != 0]
+            if not items:
+                return "0"
+
+            parts: list[str] = []
+            for idx, (r, c) in enumerate(items):
+                neg = c < 0
+                abs_c = abs(c)
+                if r == 1:
+                    body = str(abs_c)
+                elif abs_c == 1:
+                    body = rf"\sqrt{{{r}}}"
+                else:
+                    body = rf"{abs_c}\sqrt{{{r}}}"
+                if idx == 0:
+                    parts.append(("-" if neg else "") + body)
+                else:
+                    parts.append((" - " if neg else " + ") + body)
+            return "".join(parts)
+
+    # Sympy fallback for more complex radical forms, including:
+    # - \sqrt{1\frac{9}{16}} style mixed fractions inside radicals
+    # - \frac with radical expressions
+    try:
+        import sympy as sp
+
+        src2 = re.sub(r"\s+", "", str(expr or ""))
+        src2 = re.sub(r"\\{2,}", r"\\", src2)
+
+        def _mixed_latex_to_rational(match):
+            sign = match.group(1) or ""
+            whole = int(match.group(2))
+            num = int(match.group(3))
+            den = int(match.group(4))
+            if den == 0:
+                return match.group(0)
+            imp = whole * den + num
+            return f"{sign}(({imp})/({den}))"
+
+        src2 = re.sub(
+            r"([+\-]?)\s*(\d+)\\frac\{(\d+)\}\{(\d+)\}",
+            _mixed_latex_to_rational,
+            src2,
+        )
+        src2 = re.sub(
+            r"\\frac\{([^{}]+)\}\{([^{}]+)\}",
+            r"((\1)/(\2))",
+            src2,
+        )
+
+        def _replace_sqrt_braces(s: str) -> str:
+            out = []
+            i = 0
+            n = len(s)
+            while i < n:
+                if s.startswith(r"\sqrt{", i):
+                    j = i + 6
+                    depth = 1
+                    while j < n and depth > 0:
+                        if s[j] == "{":
+                            depth += 1
+                        elif s[j] == "}":
+                            depth -= 1
+                        j += 1
+                    if depth != 0:
+                        return s
+                    inner = s[i + 6 : j - 1]
+                    out.append("sqrt(" + inner + ")")
+                    i = j
+                else:
+                    out.append(s[i])
+                    i += 1
+            return "".join(out)
+
+        src2 = _replace_sqrt_braces(src2)
+        src2 = src2.replace("{", "(").replace("}", ")")
+        src2 = src2.replace(r"\times", "*").replace(r"\div", "/")
+
+        val = sp.simplify(sp.sympify(src2, locals={"sqrt": sp.sqrt}))
+        if val.is_Rational:
+            p, q = int(val.p), int(val.q)
+            if q == 1:
+                return str(p)
+            return f"{p}/{q}"
+        out = sp.latex(val)
+        out = out.replace(r"\left", "").replace(r"\right", "")
+        return out
+    except Exception:
+        return None
 
 
 def _is_expression_isomorphic(expected_fp, generated_expr):
@@ -381,7 +507,7 @@ def _is_expression_isomorphic(expected_fp, generated_expr):
         return False
     # Empty fingerprint = bypass mode (radical orchestrator, OCR-less path, etc.)
     # All fields default to None; comparing None against real values always returns
-    # False — treating an empty dict as "no constraints" is the correct semantic.
+    # False ??treating an empty dict as "no constraints" is the correct semantic.
     if not expected_fp:
         return True
     got_fp = _build_structural_profile(generated_expr)
@@ -429,14 +555,14 @@ def _profile_diff_summary(expected_fp, generated_expr):
 
 
 # ===========================================================================
-# Radical Math DNA — specialised profiler for jh_數學2上_FourOperationsOfRadicals
+# Radical Math DNA ??specialised profiler for jh_?詨飛2銝FourOperationsOfRadicals
 # ===========================================================================
 
 def _has_square_factor(n: int) -> bool:
     """Return True if integer n contains a perfect-square factor > 1.
 
     A radicand is *simplifiable* when it is not in its simplest radical form,
-    e.g. 12 = 4×3 → √12 = 2√3.  Prime radicands (2, 3, 5, 7, …) are already
+    e.g. 12 = 4?3 ????2 = 2??.  Prime radicands (2, 3, 5, 7, ?? are already
     in simplest form and return False.
     """
     if not isinstance(n, int) or n < 4:
@@ -521,6 +647,19 @@ def _iter_frac_num_den_strings(text: str):
         yield num_str, den_str
         i = pos + 1
 
+def _has_binary_add_sub(expr: str) -> bool:
+    """Detect binary + / - operators and ignore unary signs."""
+    s = re.sub(r"\s+", "", str(expr or ""))
+    if not s:
+        return False
+    for i, ch in enumerate(s):
+        if ch not in "+-":
+            continue
+        prev = s[i - 1] if i > 0 else ""
+        if i == 0 or prev in "({[*/^_+-":
+            continue
+        return True
+    return False
 
 def classify_radical_style(expr: str) -> str:
     """
@@ -531,16 +670,17 @@ def classify_radical_style(expr: str) -> str:
       - simplifiable_radical: at least one integer radicand has a square factor > 1.
       - fraction_radical: \\frac present and \\sqrt appears inside a numerator or denominator
         (and no separate plain-radical strand that makes the item truly *mixed*).
-      - mixed: plain \\sqrt strand coexists with a fraction–radical strand (detectable).
+      - mixed: plain \\sqrt strand coexists with a fraction?adical strand (detectable).
     """
     text = str(expr or "")
     if not text.strip():
         return "mixed"
 
     radicands: list[int] = []
-    for m in re.finditer(r"\\sqrt\{(\d+)\}", text):
+    for m in re.finditer(r"\\sqrt(?:\{(\d+)\}|(\d+))", text):
         try:
-            radicands.append(int(m.group(1)))
+            raw = m.group(1) or m.group(2)
+            radicands.append(int(raw))
         except ValueError:
             continue
 
@@ -557,21 +697,23 @@ def classify_radical_style(expr: str) -> str:
     if sqrt_in_frac and sqrt_outside_frac_blocks:
         return "mixed"
 
-    # e.g. \\frac{3}{5}\\times5\\sqrt{2} (sqrt not inside \\frac braces) — teaching "fraction × radical".
+    # e.g. \\frac{3}{5}\\times5\\sqrt{2} (sqrt not inside \\frac braces).
     if has_frac and has_sqrt and not sqrt_in_frac:
         rem = _strip_all_frac_commands(text)
-        rem_core = re.sub(r"\$+", "", rem).strip()
-        if (
-            " + " in rem_core
-            or " - " in rem_core
-            or rem_core.startswith("+")
-            or rem_core.startswith("-")
-        ):
+        rem_core = re.sub(r"\$+", "", rem)
+        if _has_binary_add_sub(rem_core):
             return "mixed"
         return "fraction_radical"
 
     if has_frac and sqrt_in_frac:
         return "fraction_radical"
+
+    # Pure radical division (no add/sub) is treated as fraction-radical family.
+    if has_sqrt and (r"\div" in text) and (not _has_binary_add_sub(text)):
+        return "fraction_radical"
+
+    if has_sqrt and (_has_binary_add_sub(text) or r"\times" in text or r"\div" in text):
+        return "mixed"
 
     if has_simplifiable:
         return "simplifiable_radical"
@@ -602,7 +744,7 @@ def _frac_denominators(text: str) -> list:
 
     Uses brace-depth tracking so nested LaTeX constructs are handled correctly.
     """
-    # Normalise \dfrac → \frac so a single pass suffices.
+    # Normalise \dfrac ??\frac so a single pass suffices.
     normalised = text.replace(r'\dfrac{', r'\frac{')
     denoms: list = []
     i = 0
@@ -652,11 +794,17 @@ def _build_radical_profile(ocr_text: str) -> dict:
     base_fp = _extract_operator_fingerprint(text)
 
     # 2. Count total radicals
-    rad_total = text.count(r'\sqrt') + text.count('√')
+    rad_total = text.count(r"\sqrt") + text.count("√")
 
-    # 3. Heuristic for simplifiable radicals (common non-square-free numbers under 150)
-    simplifiable_pattern = r'\\sqrt\{?\s*(8|12|18|20|24|27|28|32|44|45|48|50|54|63|72|75|80|98|99|108|125)\b\}?'
-    rad_simplifiable = len(re.findall(simplifiable_pattern, text))
+    # 3. Count every integer radicand that still contains a square factor.
+    rad_simplifiable = 0
+    for m in re.finditer(r"\\sqrt(?:\{(\d+)\}|(\d+))", text):
+        raw = m.group(1) or m.group(2)
+        try:
+            if _has_square_factor(int(raw)):
+                rad_simplifiable += 1
+        except ValueError:
+            continue
 
     # 4. Calculate simplified radicals
     rad_simplified = max(0, rad_total - rad_simplifiable)
@@ -721,10 +869,10 @@ def _max_bracket_depth(text: str) -> int:
 
 def build_radical_complexity_mirror_profile(latex_text: str) -> dict:
     """
-    Radicals-only「複雜度鏡像」profile（jh_*_FourOperationsOfRadicals 專用呼叫點）。
+    Radicals-only???漲?∪??rofile嚗h_*_FourOperationsOfRadicals 撠?澆暺???
 
-    實作等同 _build_radical_profile；呼叫端必須以 skill_id gate 限制僅根式技能使用，
-    整數／分數技能請沿用 _build_structural_profile / operator fingerprint 路徑。
+    撖虫?蝑? _build_radical_profile嚗?怎垢敹?隞?skill_id gate ??撘??賭蝙?剁?
+    ?湔嚗??豢??質?瘝輻 _build_structural_profile / operator fingerprint 頝臬???
     """
     profile = _build_radical_profile(latex_text)
     profile["fraction_count"] = len(list(_iter_frac_num_den_strings(latex_text or "")))
@@ -733,12 +881,12 @@ def build_radical_complexity_mirror_profile(latex_text: str) -> dict:
 
 
 def radical_complexity_mirror_isomorphic(expected_profile: dict, generated_expr_latex: str) -> bool:
-    """Radicals-only：比對預期 profile 與產出 LaTeX 片段是否同構（rad_count、simplifiable_count）。"""
+    """Radicals-only mirror check using profile isomorphism."""
     return _is_radical_isomorphic(expected_profile, generated_expr_latex)
 
 
 def radical_complexity_mirror_diff(expected_profile: dict, generated_expr_latex: str) -> list:
-    """Radicals-only：回傳鏡像欄位差異說明列表（與 _radical_profile_diff 相同語意）。"""
+    """Radicals-only mirror diff helper."""
     return _radical_profile_diff(expected_profile, generated_expr_latex)
 
 
@@ -797,3 +945,4 @@ def radical_complexity_mirror_compare(
         f"rad_count delta={abs(exp_rad - got_rad)}<=1"
     )
     return True, True, reason
+

@@ -1,184 +1,165 @@
-[Role] MathProject LiveShow 結構同構出題引擎（Qwen-8B-VL 專用）
+[Role] MathProject LiveShow 結構同構出題引擎（整數四則運算專用）
 
 [範例題型] {{OCR_RESULT}}
 
 [最高優先原則]
-你不是在「自由出題」，你是在「同構模仿」。
-必須複製原例題的結構複雜度，而不是只複製主題。
-**【致命嚴禁】絕對禁止硬編碼原題數字！你必須使用 `IntegerOps.random_nonzero` 產生全新的數字。若腳本中出現原題的常數，系統將會直接報錯崩潰！**
+你不是在自由出題，你是在做 family-preserving、structure-preserving 的同構生成。
+必須先判定 family，再產生同 family、同結構拓撲、同答案型態的新題。
+絕對禁止硬編碼原題常數；所有數值都必須動態生成，且優先使用 `IntegerOps.random_nonzero(...)`。
 
 --------------------------------------------------
-【A. 硬性同構規範（必須同時滿足）】
+【A. Family Catalogue（正式分類）】
 --------------------------------------------------
-1) 全式層級
-- 總數字數量必須一致。
-- 總二元運算子數量必須一致。
-- 加減乘除各自的數量必須一致。
-- 二元運算子順序必須一致。
-
-2) 中括號層級
-- 中括號區塊數量必須一致。
-- 每一個中括號區塊內：
-  - 數字數量一致
-  - 運算子總數一致
-  - 加減乘除分布一致
-
-3) 絕對值層級
-- 絕對值區塊數量必須一致。
-- 每一個絕對值區塊內：
-  - 數字數量一致
-  - 運算子總數一致
-  - 加減乘除分布一致
-
-4) 括號與負數表達
-- 若例題出現 (-n) 形式，生成題也必須保留負數括號風格。
-- 禁止新增/刪除絕對值與中括號。
+- `I1 int_numberline_add_sub`
+  - 數線語境的單步整數加減
+- `I2 int_flat_add_sub`
+  - 扁平整數加減
+- `I3 int_flat_mul_div_exact`
+  - 扁平整數乘除，含除法時需整除
+- `I4 int_flat_mixed_four_ops`
+  - 扁平整數四則混合
+- `I5 int_bracket_mixed`
+  - 含 `[]` 或明顯括號分組的整數四則
+- `I6 int_abs_value`
+  - 含 `| |` 的整數運算
+- `I7 int_division_exact_nested`
+  - 含局部括號/絕對值的整除型除法
+- `I8 int_composite_structure`
+  - 同時含兩種以上特殊結構的複合題
 
 --------------------------------------------------
-【B. 計算字串與顯示字串一致性（致命規則）】
+【B. 子技能節點】
 --------------------------------------------------
-1) 必須先得到「唯一計算來源」eval_str。
-2) math_str 必須由同一套變數與同一運算拓撲構成。
-3) 禁止計算 A 式、顯示 B 式。
+- `node.int.sign_handling`
+- `node.int.add_sub`
+- `node.int.mul_div`
+- `node.int.order_of_operations`
+- `node.int.bracket_scope`
+- `node.int.absolute_value`
+- `node.int.exact_divisibility`
+- `node.int.isomorphic_structure`
 
-錯誤示例（禁止）：
-- ans 用 val1+val2 算，math_str 卻顯示另一組運算。
-
-正確示例（必須）：
-- eval_str 和 math_str 只差在運算符顯示（*→\\times, /→\\div）與 fmt_num。
-
---------------------------------------------------
-【C. Qwen-8B-VL 特化規範（避免跑偏）】
---------------------------------------------------
-1) 輸出必須是 Python code ONLY。
-   - 禁止 markdown fence
-   - 禁止思考文字
-   - 禁止解釋段落
-
-2) 禁止重定義系統注入工具：
-   - 禁止自建 class IntegerOps
-   - 禁止覆蓋 IntegerOps.safe_eval / fmt_num / op_to_latex
-
-3) 必須使用：
-   - IntegerOps.random_nonzero
-   - IntegerOps.fmt_num
-   - IntegerOps.safe_eval
-
-4) 必須輸出函式：
-   - generate(level=1, **kwargs)
-   - check(user_answer, correct_answer)
+你必須先判斷原題依賴哪些節點，再生成對應 family 的新題。
 
 --------------------------------------------------
-【D. 生成演算法（必做步驟）】
+【C. Family 判定規則】
 --------------------------------------------------
-Step D1: 讀取 {{OCR_RESULT}}，建立結構模板。
-- 只替換數字，不替換結構符號。
-- 結構符號包含：[]、| |、()、+ - * /
-
-Step D2: 將例題中的每個常數位置映射成變數 v1, v2, ...
-- 常數是可替換點。
-- 結構與運算位置不是可替換點。
-
-Step D3: 依變數順序與原始常數正負號，給變數取值範圍。
-- v1 (第一個變數)：正數 [1, 100] / 負數 [-100, -1]
-- v2 (第二個變數)：正數 [1, 10] / 負數 [-10, -1]
-- v3 (第三個變數)：正數 [1, 10] / 負數 [-1, -1]
-- 其餘所有變數：正數 [1, 15] / 負數 [-15, -1]
-* 【防禦 0 除錯】：若變數在算式中擔任「除數」角色，絕對必須使用 `IntegerOps.random_nonzero(min, max)` 生成，嚴禁產出 0 造成 ZeroDivisionError。為求安全，強制所有變數皆使用 `IntegerOps.random_nonzero` 產生。
-
-Step D4: 組出 eval_str（純 Python 可計算）。
-- 若有絕對值段，eval_str 必須以 abs(...) 實作該段。
-- 不可在 eval_str 使用 \\times/\\div。
-
-Step D5: 組出 math_str（LaTeX 顯示）。
-- 乘號顯示為 \\times
-- 除號顯示為 \\div
-- 數字顯示用 fmt_num
-
-Step D6: 整除預檢（直接取模，不用 Fraction 縮放）
-- 用純 Python 計算分子與分母的實際整數值（不用 safe_eval）。
-- 直接以 `abs(numerator) % abs(denominator) == 0` 判斷能否整除。
-- 若整除，final_ans = abs(numerator) // abs(denominator)，套上正負號後回傳。
-- 若不整除，continue 重試（迴圈需至少 200 次）。
-- **禁止** 使用 `v1 = v1 * denominator` 強制縮放 —— 多項分子結構下此法無效。
-
-Step D7: 回傳
-- question_text = "計算 $" + math_str + "$ 的值。"
-- correct_answer = str(int(final_ans))
+1. 若題面為「利用數線求 ...」且核心算式只有一步加減，判為 `I1`。
+2. 若不含 `[]`、`| |`，且只有 `+ -`，判為 `I2`。
+3. 若不含 `[]`、`| |`，且只含 `* /` 或乘除鏈，判為 `I3`。
+4. 若不含 `[]`、`| |`，但同時含加減與乘除，判為 `I4`。
+5. 若含 `[]` 或明顯分組括號，且主結構依賴括號作用域，判為 `I5`。
+6. 若含 `| |` 且絕對值是主要結構，判為 `I6`。
+7. 若有除法，且整除依賴局部分子/分母先算後檢查，判為 `I7`。
+8. 若同時含 `[]`、`| |`、`(-n)`、混合四則、整除約束中的兩種以上，判為 `I8`。
+9. 若同時符合多個 family，優先保留最具結構性的 family：
+   - `I8` > `I7` > `I6` > `I5` > `I4` > `I3` > `I2` > `I1`
 
 --------------------------------------------------
-【E. 禁止事項（違反即視為失敗）】
+【D. 硬性同構規範】
 --------------------------------------------------
-- 禁止 random.choice 改運算子（會破壞同構）。
-- 禁止任意新增 abs()、[]、() 層級。
-- 禁止把 [] 結構改寫成純線性算式。
-- 禁止把 |a op b| 改成 a op b（或反之）。
-
---------------------------------------------------
-【F. 可直接遵循的骨架】
---------------------------------------------------
-import random
-import math
-from fractions import Fraction
-
-def generate(level=1, **kwargs):
-    # Step 0: 解析題型結構 (必須先寫出這三行註解，確保你確實算過)
-    # 變數個數: ... 個
-    # 運算符號數與種類: ... 個 (分別為 ...)
-    # 特殊結構: ... (無 / 絕對值 / 中括號)
-
-    fmt = IntegerOps.fmt_num
-
-    for _ in range(200):
-        # 1) 依 Step 0 解析出的「變數個數」，嚴格依序宣告對應數量的變數！
-        # 【最高禁令】原題有幾個參與運算的數字，你就只能生成幾個變數！
-        # 【致命錯誤防範】絕對禁止將變數寫死成固定數字（如 v1 = 5）！所有數值必須使用 IntegerOps.random_nonzero 動態生成！
-        # v1, v2, ... 根據原例題正負號與 D3 的區間規範生成
-        
-        # 2) 直接計算分子/分母整數值（不用 safe_eval，不用 Fraction 縮放）
-        # 依據上方宣告的變數，組合出分子分母的算式
-        numerator = ...  # 依題型填寫分子算式
-        denominator = ... # 依題型填寫分母算式
-        
-        # 3) 整除預檢：用 % 判斷
-        if denominator == 0 or abs(numerator) % abs(denominator) != 0:
-            continue
-        
-        final_ans = abs(numerator) // abs(denominator)
-        # 若分母為負，結果取負號（依題目運算方向而定）
-        
-        # 4) 組裝 eval_str（純運算）與 math_str（LaTeX 顯示）
-        # ★ 你必須宣告 eval_str 與 math_str 這兩個變數！
-        # 【最高禁令】必須按照原題的運算子與數字個數！嚴禁無腦照抄 5個變數的範例！
-        # 範例 (嚴禁照抄): eval_str = f"abs({v1} * {v2}) - ({v3} / {v4})"
-        #               math_str = f"\\left| {fmt(v1)} \\times {fmt(v2)} \\right| - ({fmt(v3)} \\div {fmt(v4)})"
-        eval_str = f"..."  # 純 Python 算式 (若有絕對值才用 abs)
-        math_str = f"..."  # LaTeX 顯示字串 (若有絕對值才用 \\left| \\right|)
-
-        ans = IntegerOps.safe_eval(eval_str)
-        if abs(ans - round(ans)) < 1e-6:
-            return {
-                'question_text': '計算 $' + math_str + '$ 的值。',
-                'answer': '',
-                'correct_answer': str(int(round(ans))),
-                'mode': 1,
-            }
-
-    return {'question_text': 'Error', 'answer': '', 'correct_answer': '0', 'mode': 1}
-
-def check(user_answer, correct_answer):
-    try:
-        if str(user_answer).strip() == str(correct_answer).strip():
-            return {'correct': True, 'result': '正確'}
-        if abs(float(user_answer) - float(correct_answer)) < 1e-6:
-            return {'correct': True, 'result': '正確'}
-    except Exception:
-        pass
-    return {'correct': False, 'result': '錯誤'}
+1. 保持 number token 數量一致。
+2. 保持二元運算子總數一致。
+3. 保持加減乘除各自數量一致。
+4. 保持運算子順序一致。
+5. 若原題有 `[]`，生成題也必須有相同數量的 `[]` 區塊。
+6. 若原題有 `| |`，生成題也必須有相同數量的絕對值區塊。
+7. 若原題有 `(-n)`，生成題也必須保留 parenthesized negative style。
+8. 禁止新增或刪除任何高階結構節點。
 
 --------------------------------------------------
-【G. 最終輸出要求】
+【E. 計算字串與顯示字串一致性】
 --------------------------------------------------
-- 只輸出 Python 原始碼。
-- 不要輸出任何額外文字。
-- 不要輸出 markdown。
+1. 必須先建立唯一的 `eval_str` 作為計算來源。
+2. `math_str` 必須由同一組變數與同一拓撲生成。
+3. `eval_str` 與 `math_str` 的差異只允許：
+   - `*` 對應 `\\times`
+   - `/` 對應 `\\div`
+   - 負數用 `IntegerOps.fmt_num`
+   - 絕對值用 `abs(...)` 對應 `\\left| ... \\right|`
+4. 禁止計算 A 式、顯示 B 式。
+
+--------------------------------------------------
+【F. 數值生成規則】
+--------------------------------------------------
+1. 所有整數都必須動態生成，不可抄原題。
+2. 所有可能成為除數的變數，必須使用 `IntegerOps.random_nonzero(...)`。
+3. 取值範圍可依變數出現順序控制量級：
+   - 第一個主變數：正數 `[1, 100]` / 負數 `[-100, -1]`
+   - 第二、三個變數：正數 `[1, 12]` / 負數 `[-12, -1]`
+   - 其餘變數：正數 `[1, 15]` / 負數 `[-15, -1]`
+4. 若題型含除法，先算局部分子與分母，再做整除檢查。
+
+--------------------------------------------------
+【G. Family-Specific 規則】
+--------------------------------------------------
+- `I1`
+  - 保留單一步加減
+  - 題面可保留數線語境
+- `I2`
+  - 不得引入乘除或括號
+- `I3`
+  - 不得引入加減或高階括號
+  - 若有除法，答案必須整數
+- `I4`
+  - 保留乘除優先於加減的拓撲
+- `I5`
+  - 中括號內外都要同構
+- `I6`
+  - `eval_str` 必須用 `abs(...)`
+  - `math_str` 必須用 `\\left| ... \\right|`
+- `I7`
+  - 先算整數分子與分母，使用 `%` 做整除預檢
+- `I8`
+  - 禁止刪除任何複合結構
+  - 生成器需優先保守，不可為了好算而降級
+
+--------------------------------------------------
+【H. 生成演算法】
+--------------------------------------------------
+Step 1: 讀取 `{{OCR_RESULT}}`，識別 family 與子技能節點。
+Step 2: 抽取結構模板：
+- number count
+- operator sequence
+- bracket count
+- abs count
+- parenthesized negative flags
+
+Step 3: 將每個數值位置映射成 `v1, v2, ...`。
+
+Step 4: 依 family 生成數值：
+- 所有值必須隨機
+- 除數必須非 0
+- 若需要整除，先算 `numerator`、`denominator`
+
+Step 5: 建立：
+- `eval_str`：純 Python 可計算
+- `math_str`：LaTeX 顯示
+
+Step 6: 驗證：
+- `ans = IntegerOps.safe_eval(eval_str)`
+- 若 family 要求整數答案，必須 `abs(ans - round(ans)) < 1e-6`
+
+Step 7: 回傳：
+- `question_text = "計算 $" + math_str + "$ 的值。"`
+- `correct_answer = str(int(round(ans)))`
+
+--------------------------------------------------
+【I. 禁止事項】
+--------------------------------------------------
+- 禁止 `random.choice` 隨機替換運算子
+- 禁止新增或刪除 `[]`
+- 禁止新增或刪除 `| |`
+- 禁止把 `|a op b|` 改成 `a op b`
+- 禁止把中括號題改成扁平算式
+- 禁止以固定常數取代動態變數
+- 禁止在 Python code 外輸出任何說明文字
+
+--------------------------------------------------
+【J. 最終輸出要求】
+--------------------------------------------------
+1. 只輸出 Python code。
+2. 必須定義 `generate(level=1, **kwargs)`。
+3. 必須定義 `check(user_answer, correct_answer)`。
+4. 不要輸出 markdown fence。
+5. 不要輸出思考過程或解釋文字。

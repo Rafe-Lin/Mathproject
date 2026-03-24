@@ -13,8 +13,14 @@ import os
 import google.generativeai as genai
 
 # --- ChromaDB & Embedding ---
-import chromadb
-from chromadb.utils import embedding_functions
+try:
+    import chromadb
+    from chromadb.utils import embedding_functions
+    HAS_CHROMADB = True
+except ImportError:
+    chromadb = None
+    embedding_functions = None
+    HAS_CHROMADB = False
 
 # 全域變數
 _chroma_client = None
@@ -32,6 +38,13 @@ def init_rag(app=None):
     以 skill_ch_name 作為虛擬文本進行 embedding，存入 ChromaDB。
     """
     global _chroma_client, _collection, _skill_map
+
+    if not HAS_CHROMADB:
+        print("[RAG] chromadb not installed; RAG disabled.")
+        _chroma_client = None
+        _collection = None
+        _skill_map = {}
+        return
 
     if not app:
         print("[RAG] ⚠️ 需要 Flask app 來存取資料庫")
@@ -103,7 +116,7 @@ def rag_search(query, top_k=5):
     接收學生問題，回傳 Top-K 最相似的 skill_ids。
     所有結果都是系統中存在的可練習技能。
     """
-    if _collection is None:
+    if (not HAS_CHROMADB) or _collection is None:
         return []
 
     results = _collection.query(
@@ -132,6 +145,9 @@ def rag_chat(query, top_skill_id):
     將 Top-1 檢索結果作為上下文，使用 Gemini 2.5 Flash 簡短回答學生問題。
     """
     ch_name = _skill_map.get(top_skill_id, top_skill_id)
+
+    if not HAS_CHROMADB:
+        return {"reply": "RAG is unavailable because chromadb is not installed."}
 
     prompt = f"""你是數學老師，回答要精簡直接。
 

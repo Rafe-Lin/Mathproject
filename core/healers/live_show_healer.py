@@ -5,6 +5,34 @@ import re
 from core.skill_policies import get_skill_policy
 
 
+def _normalize_absolute_value_literals(text):
+    if not text:
+        return text, 0
+
+    out = str(text)
+    total = 0
+
+    def _strip_inner_negative_parens(match):
+        inner = match.group(1)
+        return f"|{inner}|"
+
+    # Normalize |(-3)| -> |-3| for textbook-style absolute-value display.
+    out, n1 = re.subn(r'\|\(\s*(-?\d+)\s*\)\|', _strip_inner_negative_parens, out)
+    total += n1
+
+    def _restore_missing_minus_after_abs(match):
+        left = match.group(1)
+        right = match.group(2)
+        return f"{left}-{right[1:]}"
+
+    # Normalize |A|(-18) -> |A|-18 when a subtraction sign was accidentally
+    # swallowed into a wrapped negative literal after a closed absolute block.
+    out, n2 = re.subn(r'(\|[^|]+\|)\(\s*(-\d+)\s*\)', _restore_missing_minus_after_abs, out)
+    total += n2
+
+    return out, total
+
+
 def _normalize_plain_operator_tokens(text):
     if not text:
         return text, 0
@@ -71,6 +99,50 @@ def collapse_double_numeric_parentheses(expr_text):
     return out, total_replacements
 
 
+def _consume_braced_group(text, start):
+    if start >= len(text) or text[start] != '{':
+        return start
+    depth = 1
+    j = start + 1
+    while j < len(text) and depth > 0:
+        if text[j] == '{':
+            depth += 1
+        elif text[j] == '}':
+            depth -= 1
+        j += 1
+    return j
+
+
+def _consume_latex_command_args(text, start, command, arg_count):
+    if text[start:start + len(command)] != command:
+        return start
+    j = start + len(command)
+    for _ in range(arg_count):
+        j = _consume_braced_group(text, j)
+    return j
+
+
+def _consume_monomial_suffix(text, start):
+    j = start
+    while j < len(text):
+        if not text[j].isalpha():
+            break
+        j += 1
+        if j < len(text) and text[j] == '^':
+            j += 1
+            if j < len(text) and text[j] == '{':
+                j = _consume_braced_group(text, j)
+            else:
+                while j < len(text) and text[j].isdigit():
+                    j += 1
+    return j
+
+
+def _is_inside_plain_absolute(text, minus_index):
+    pipe_count = text[:minus_index].count('|')
+    return pipe_count % 2 == 1
+
+
 def enforce_negative_parentheses(expr_text):
     """
     將顯示算式中的「單元負數常數（或負混合分數）」統一為括號格式：
@@ -95,10 +167,17 @@ def enforce_negative_parentheses(expr_text):
         ch = compact[i]
         if ch == '-':
             prev = compact[i - 1] if i > 0 else ''
-            unary = (i == 0 or prev in '+-*/([|')
+            unary = (i == 0 or prev in '+-*/([' or (prev == '|' and _is_inside_plain_absolute(compact, i)))
             if unary:
+                if prev == '|' and _is_inside_plain_absolute(compact, i):
+                    out.append(ch)
+                    i += 1
+                    continue
                 j = i + 1
-                if j < len(compact) and compact[j].isdigit():
+                if compact[j:j + 5] == '\\frac':
+                    j = _consume_latex_command_args(compact, j, '\\frac', 2)
+                    j = _consume_monomial_suffix(compact, j)
+                elif j < len(compact) and compact[j].isdigit():
                     while j < len(compact) and compact[j].isdigit():
                         j += 1
 
@@ -106,30 +185,13 @@ def enforce_negative_parentheses(expr_text):
                     # 例：-4\frac{1}{5} → token="-4\frac{1}{5}"
                     # 這樣 already_wrapped 才能正確偵測到外層 (...)
                     if compact[j:j + 5] == '\\frac':
-                        j += 5  # skip '\frac'
-                        for _ in range(2):  # 掃過兩組 {分子}{分母}
-                            if j < len(compact) and compact[j] == '{':
-                                depth = 1
-                                j += 1
-                                while j < len(compact) and depth > 0:
-                                    if compact[j] == '{':
-                                        depth += 1
-                                    elif compact[j] == '}':
-                                        depth -= 1
-                                    j += 1
+                        j = _consume_latex_command_args(compact, j, '\\frac', 2)
 
                     # 若數字後緊接 \sqrt{a}，將整個根式併入 token（例：-4\sqrt{6}）
                     if compact[j:j + 5] == '\\sqrt':
-                        j += 5  # skip '\sqrt'
-                        if j < len(compact) and compact[j] == '{':
-                            depth = 1
-                            j += 1
-                            while j < len(compact) and depth > 0:
-                                if compact[j] == '{':
-                                    depth += 1
-                                elif compact[j] == '}':
-                                    depth -= 1
-                                j += 1
+                        j = _consume_latex_command_args(compact, j, '\\sqrt', 1)
+
+                    j = _consume_monomial_suffix(compact, j)
 
                     already_wrapped = (prev == '(' and j < len(compact) and compact[j] == ')')
                     token = compact[i:j]
@@ -273,7 +335,7 @@ def sanitize_question_text_display(question_text, return_report=False):
     if not question_text:
         return (question_text, {"double_paren_fixes": 0, "negative_wrap_fixes": 0, "operator_token_fixes": 0, "diffs": []}) if return_report else question_text
 
-    text = str(question_text)
+    text = str(question_text).replace(r"\dfrac", r"\frac")
 
     # [GUARD] 若 question_text 缺少 $...$ 但含有 LaTeX 指令，自動補加包裹
     # 常見情況：AI 直接輸出 \frac{1}{2}\times\frac{\sqrt{3}}{3} 而忘記 $ 和中文描述
@@ -296,6 +358,11 @@ def sanitize_question_text_display(question_text, return_report=False):
     
     if m:
         inner = m.group(1)
+        fixed_inner_0, abs_literal_count = _normalize_absolute_value_literals(inner)
+        if abs_literal_count > 0:
+            diffs.append(f"    * 絕對值內負數標準化: [{inner}] => [{fixed_inner_0}]")
+        inner = fixed_inner_0
+
         fixed_inner, fix_count = collapse_double_numeric_parentheses(inner)
         if fix_count > 0: diffs.append(f"    * {sanitize_rule_explain('double_paren_fixes')}: [{inner}] => [{fixed_inner}]")
         total_fixes += fix_count
@@ -311,7 +378,10 @@ def sanitize_question_text_display(question_text, return_report=False):
             
         sanitized = text[:m.start(1)] + fixed_inner_3 + text[m.end(1):]
     else:
-        sanitized_1, fix_count = collapse_double_numeric_parentheses(text)
+        sanitized_0, abs_literal_count = _normalize_absolute_value_literals(text)
+        if abs_literal_count > 0:
+            diffs.append(f"    * 絕對值內負數標準化: [{text}] => [{sanitized_0}]")
+        sanitized_1, fix_count = collapse_double_numeric_parentheses(sanitized_0)
         if fix_count > 0: diffs.append(f"    * {sanitize_rule_explain('double_paren_fixes')}: [{text}] => [{sanitized_1}]")
         total_fixes += fix_count
         
@@ -548,6 +618,14 @@ def format_fraction_mixed_display(
     _inc("fix_plain_div_token", n, inner2)
     inner2, n = re.subn(r'(?<!\\)times(?=\s*[\[\(\{])', r'\\times', inner2)
     _inc("fix_plain_times_token", n, inner2)
+
+    negative_atomic = r'(?:\\frac\{\d+\}\{\d+\}|\d+\\frac\{\d+\}\{\d+\}|\d+)'
+    inner2, n = re.subn(
+        rf'(^|(?<=\\times)|(?<=\\div))\s*-(?P<num>{negative_atomic})(?=\s*(?:\\times|\\div|[+\-)]|$))',
+        lambda mt: f"{mt.group(1)}(-{mt.group('num')})",
+        inner2,
+    )
+    _inc("wrap_negative_atomic_after_mul_div", n, inner2)
 
     inner2, n = re.subn(r'(\\left\[)\s*\+\s*', r'\1', inner2)
     _inc("remove_leading_plus_in_left_bracket", n, inner2)

@@ -67,6 +67,12 @@ from core.code_utils.latex_utils import *
 
 REFACTOR_MODULES_AVAILABLE = True
 
+
+def fix_code_via_ast(code_str: str, ai_client=None):
+    """Backward-compatible wrapper used by older tests and tooling."""
+    healer = ASTHealer(ai_client=ai_client)
+    return healer.heal(code_str)
+
 def _inject_domain_libs(code_str, skill_id: str | None = None):
     """
     [New Feature 2026-02-16] 自動注入 Domain Libraries (如 RadicalOps) 的完整實作
@@ -118,6 +124,14 @@ def _inject_domain_libs(code_str, skill_id: str | None = None):
         'FractionOps': 'FractionOps',
         'PolynomialOps': 'PolynomialOps'
     }
+
+    if (
+        skill_id
+        and "OfPolynomial" in skill_id
+        and "PolynomialOps" not in code_str
+        and re.search(r'(?<!\.)\b(add|sub|mul|normalize|format_plain|format_latex|random_poly)\s*\(', code_str)
+    ):
+        code_str = "# [skill.json declared: PolynomialOps]\n" + code_str
 
     # 強制注入 skill.json 宣告的 APIs（即使 code_str 未引用）
     for api in declared_apis:
@@ -195,7 +209,14 @@ def _inject_domain_libs(code_str, skill_id: str | None = None):
                               "poly_add = PolynomialOps.add\n" \
                               "poly_sub = PolynomialOps.sub\n" \
                               "poly_mul = PolynomialOps.mul\n" \
-                              "poly_random = PolynomialOps.random_poly\n"
+                              "poly_random = PolynomialOps.random_poly\n" \
+                              "normalize = PolynomialOps.normalize\n" \
+                              "format_latex = PolynomialOps.format_latex\n" \
+                              "format_plain = PolynomialOps.format_plain\n" \
+                              "add = PolynomialOps.add\n" \
+                              "sub = PolynomialOps.sub\n" \
+                              "mul = PolynomialOps.mul\n" \
+                              "random_poly = PolynomialOps.random_poly\n"
                 
                 feature_code += f"{header}{class_code}{aliases}\n"
                 injected_names.append(class_name)
@@ -1099,39 +1120,13 @@ def auto_generate_skill_code(skill_id, queue=None, **kwargs):
         ablation_name = f"Ablation-{ablation_id}"
 
     custom_output_path = kwargs.get('custom_output_path', None)
-    custom_master_spec = kwargs.get('custom_master_spec', None)
     
     # 打印 Pipeline 启动标题
     log_pipeline_header(skill_id, ablation_id, ablation_name)
     
-    # [Unit-Pattern] 外部傳入合併後的規格（sync_unit_pattern_skills 等使用）
-    if custom_master_spec:
-        db_master_spec = custom_master_spec
-        if VERBOSE_LEVEL >= 1:
-            print(f"   📄 使用 custom_master_spec ({len(custom_master_spec)} chars)")
-    else:
-        # [AST Pipeline] 優先從 agent_skills/<skill_id>/SKILL.md 讀取規格（USE_AST_PIPELINE=1 時）
-        from config import Config
-        use_ast = getattr(Config, 'USE_AST_PIPELINE', False)
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        skill_md_path = os.path.join(project_root, "agent_skills", skill_id, "SKILL.md")
-        if use_ast and os.path.isfile(skill_md_path):
-            try:
-                with open(skill_md_path, 'r', encoding='utf-8') as f:
-                    db_master_spec = f.read()
-                if VERBOSE_LEVEL >= 1:
-                    print(f"   📄 已從 agent_skills 讀取 SKILL.md: {skill_id}")
-            except Exception as e:
-                if VERBOSE_LEVEL >= 1:
-                    print(f"   ⚠️ 讀取 SKILL.md 失敗 ({e})，改用 DB Fallback")
-                db_master_spec = None
-        else:
-            db_master_spec = None
-    
-    # Get DB Spec (Fallback 當 SKILL.md 不存在且無 custom_master_spec 時)
-    if db_master_spec is None:
-        active_prompt = SkillGenCodePrompt.query.filter_by(skill_id=skill_id, prompt_type="MASTER_SPEC").order_by(SkillGenCodePrompt.created_at.desc()).first()
-        db_master_spec = active_prompt.prompt_content if active_prompt else "生成一題簡單的整數四則運算。"
+    # Get DB Spec (作為 Fallback)
+    active_prompt = SkillGenCodePrompt.query.filter_by(skill_id=skill_id, prompt_type="MASTER_SPEC").order_by(SkillGenCodePrompt.created_at.desc()).first()
+    db_master_spec = active_prompt.prompt_content if active_prompt else "生成一題簡單的整數四則運算。"
     
     # Prompt 構建（可能讀取 Golden Prompt 或保存新的 Golden Prompt）
     prompt, topic, textbook_example = _build_prompt(

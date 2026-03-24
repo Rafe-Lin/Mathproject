@@ -1,108 +1,124 @@
-[Role] MathProject LiveShow 結構同構出題引擎（Qwen-8B-VL 專用）
+/no_think
 
-[範例題型] {{OCR_RESULT}}
+Return Python code only.
 
-[最高優先原則]
-你不是在「自由出題」，你是在「同構模仿」。
-必須複製原例題的多項式結構，保持相同題型（加減法/乘法展開/求未知多項式），只替換係數與次數。
+You are generating LiveShow code for `jh_數學2上_FourArithmeticOperationsOfPolynomial`.
 
---------------------------------------------------
-【A. 硬性同構規範（必須同時滿足）】
---------------------------------------------------
-1) 判斷題型：Level 1 (加減) / Level 2 (乘法展開) / Level 3 (求未知多項式)。
-2) 保持相同題型格式：只替換數字，不改變題目結構。
-3) Level 1: 題目前綴必須為「計算」；Level 2: 必須為「展開並化簡」；Level 3: 必須為「若...求多項式 $P$」。
+Input OCR text:
 
---------------------------------------------------
-【B. Qwen-8B-VL 特化規範（避免跑偏）】
---------------------------------------------------
-1) 輸出必須是 Python code ONLY。
-   - 禁止 markdown fence
-   - 禁止思考文字
-   - 禁止解釋段落
+`{{OCR_RESULT}}`
 
-2) 禁止重定義系統注入工具：
-   - 禁止自建 class PolynomialOps
-   - 禁止覆蓋 PolynomialOps.format_latex / format_plain
+Goal:
+- identify the canonical family first
+- preserve the same family and answer type
+- output a stable randomized generator for repeated LiveShow use
 
-3) 必須使用：
-   - PolynomialOps.random_poly / add / sub / mul / format_latex / format_plain
+## A. Canonical Family Catalogue
 
-4) 必須輸出函式：
-   - generate(level=1, **kwargs)
-   - check(user_answer, correct_answer)
+Use exactly one of these as your internal target family:
 
---------------------------------------------------
-【C. 可直接遵循的骨架（照抄不會錯）】
---------------------------------------------------
+- `F1 poly_add_sub_flat`
+- `F2 poly_add_sub_nested`
+- `F3 poly_add_sub_unknown`
+- `F4 poly_mul_monomial`
+- `F5 poly_mul_poly`
+- `F6 poly_mul_special_identity`
+- `F7 poly_div_monomial_eval`
+- `F8 poly_div_monomial_qr`
+- `F9 poly_div_poly_qr`
+- `F10 poly_div_reverse`
+- `F11 poly_mixed_simplify`
+- `F12 poly_geom_formula_direct`
+- `F13 poly_geom_region_composite`
+
+## B. Sub-skill Nodes
+
+The family may depend on one or more of:
+
+- `node.poly.normalize_terms`
+- `node.poly.combine_like_terms`
+- `node.poly.sign_distribution`
+- `node.poly.expand_monomial`
+- `node.poly.expand_binomial`
+- `node.poly.special_identity`
+- `node.poly.long_division`
+- `node.poly.quotient_remainder_format`
+- `node.poly.reverse_division_reconstruction`
+- `node.poly.geometry_formula`
+- `node.poly.composite_region_modeling`
+- `node.poly.family_isomorphism`
+
+Do not destroy the original node combination when randomizing.
+
+## C. Family Decision Rules
+
+1. If the question asks for an unknown polynomial, choose `F3`.
+2. If the question explicitly asks for quotient and remainder with a monomial divisor, choose `F8`.
+3. If the question explicitly asks for quotient and remainder with a polynomial divisor, choose `F9`.
+4. If the question reconstructs dividend or divisor from quotient/remainder information, choose `F10`.
+5. If the wording uses a multiplication identity, choose `F6`.
+6. If the question is geometry-first, choose `F12` or `F13`, not a plain algebra family.
+7. If the expression is multi-step mixed simplification, choose `F11`.
+8. If multiple families appear possible, prefer the most semantically specific family, not the simplest one.
+
+## D. Hard Rules
+
+1. Define `generate(level=1, **kwargs)` and `check(user_answer, correct_answer)`.
+2. Preserve the detected family.
+3. Do not downgrade unknown/division/geometry problems into basic add/sub or multiplication.
+4. `question_text` math must use `$...$`.
+5. Use `x^{2}`, not `x^2`, in `question_text`.
+6. `correct_answer` must never be empty.
+7. Prefer `PolynomialOps.format_latex`, `format_plain`, `add`, `sub`, `mul`, `normalize`.
+8. If needed, write small local helpers only for long division, quotient/remainder, reverse-division, or geometry formulas.
+
+## E. Answer-Type Rules
+
+- `F1-F7`, `F11`: plain polynomial expression answer
+- `F8-F9`: quotient and remainder answer
+- `F10`: reconstructed polynomial answer
+- `F12`: target geometric quantity as polynomial
+- `F13`: usually two targets such as perimeter and area
+
+Answer formatting examples:
+
+- plain polynomial: `3x^2-2x+1`
+- quotient/remainder: `商式：x+2；餘式：3`
+- two targets: `周長：6x+18；面積：3x^2+4x+7`
+
+## F. Randomization Rules
+
+1. Randomize coefficients and constants, not the family.
+2. Preserve degree profile.
+3. Preserve bracket topology when nested structure matters.
+4. Preserve whether the task is direct evaluation, unknown solving, quotient/remainder, reverse reconstruction, or geometry application.
+5. Avoid generating zero coefficients that collapse the family unexpectedly.
+
+## G. Minimal Implementation Shape
+
+Use this shape:
+
+```python
 import random
-# PolynomialOps is injected automatically
 
 def generate(level=1, **kwargs):
-    # Step 0: 解析題型結構 (必須先寫出這三行註解，確保你確實算過)
-    # 多項式數量 (即原題參與運算的多項式有幾個): ... 個
-    # 題型判斷: ... (加減法 / 乘法展開 / 求未知多項式)
-    # 運算符號: ... (例如 + 或 - 或 *)
-    
-    var = 'x'
-
-    if level == 1:
-        deg_a = random.randint(2, 3)
-        deg_b = random.randint(2, 3)
-        coeffs_a = PolynomialOps.random_poly(deg_a)
-        coeffs_b = PolynomialOps.random_poly(deg_b)
-        op = random.choice(['+', '-'])
-        if op == '+':
-            result_coeffs = PolynomialOps.add(coeffs_a, coeffs_b)
-        else:
-            result_coeffs = PolynomialOps.sub(coeffs_a, coeffs_b)
-        a_latex = PolynomialOps.format_latex(coeffs_a, var)
-        b_latex = PolynomialOps.format_latex(coeffs_b, var)
-        question_text = f'計算 $({a_latex}) {op} ({b_latex})$。'
-        correct_answer = PolynomialOps.format_plain(result_coeffs, var)
-
-    elif level == 2:
-        coeffs_a = PolynomialOps.random_poly(1)
-        coeffs_b = PolynomialOps.random_poly(2)
-        result_coeffs = PolynomialOps.mul(coeffs_a, coeffs_b)
-        a_latex = PolynomialOps.format_latex(coeffs_a, var)
-        b_latex = PolynomialOps.format_latex(coeffs_b, var)
-        question_text = f'展開並化簡 $({a_latex})({b_latex})$。'
-        correct_answer = PolynomialOps.format_plain(result_coeffs, var)
-
-    else:  # level 3
-        deg_a = random.randint(1, 2)
-        deg_b = random.randint(2, 3)
-        coeffs_a = PolynomialOps.random_poly(deg_a)
-        coeffs_b = PolynomialOps.random_poly(deg_b)
-        a_latex = PolynomialOps.format_latex(coeffs_a, var)
-        b_latex = PolynomialOps.format_latex(coeffs_b, var)
-        choice = random.choice(['A+P=B', 'P-A=B', 'A-P=B'])
-        if choice == 'A+P=B':
-            result_coeffs = PolynomialOps.sub(coeffs_b, coeffs_a)
-            question_text = f'若 $({a_latex}) + P = {b_latex}$，求多項式 $P$。'
-        elif choice == 'P-A=B':
-            result_coeffs = PolynomialOps.add(coeffs_b, coeffs_a)
-            question_text = f'若 $P - ({a_latex}) = {b_latex}$，求多項式 $P$。'
-        else:
-            result_coeffs = PolynomialOps.sub(coeffs_a, coeffs_b)
-            question_text = f'若 $({a_latex}) - P = {b_latex}$，求多項式 $P$。'
-        correct_answer = PolynomialOps.format_plain(result_coeffs, var)
-
+    # family-preserving randomized logic
     return {
-        'question_text': question_text,
-        'answer': '',
-        'correct_answer': correct_answer,
-        'mode': 1
+        "question_text": "...",
+        "answer": "",
+        "correct_answer": "...",
+        "mode": 1
     }
 
 def check(user_answer, correct_answer):
-    correct = str(user_answer).strip().replace(' ', '') == str(correct_answer).strip().replace(' ', '')
-    return {'correct': correct, 'result': '正確' if correct else '錯誤'}
+    u = str(user_answer).strip().replace(" ", "")
+    c = str(correct_answer).strip().replace(" ", "")
+    return {"correct": u == c, "result": "正確" if u == c else "錯誤"}
+```
 
---------------------------------------------------
-【D. 最終輸出要求】
---------------------------------------------------
-- 只輸出 Python 原始碼。
-- 不要輸出任何額外文字。
-- 不要輸出 markdown。
+## H. Final Output Rules
+
+1. Output Python code only.
+2. Do not output markdown fences.
+3. Do not output analysis or explanations.
+4. Use textbook Chinese wording.

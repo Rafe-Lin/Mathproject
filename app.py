@@ -15,6 +15,19 @@ import re
 from sqlalchemy.orm import aliased
 import sys
 import os
+
+# Windows 主控台常為 cp950：請求流程中的 log 若含 emoji 會 UnicodeEncodeError
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # =========================================================
 # [新增] 強制路徑修正：解決 No module named 'core'
 # 這段程式碼必須放在所有 'from core ...' 之前
@@ -115,14 +128,16 @@ def create_app():
     login_manager.init_app(app)
 
     # 註冊藍圖
-    from core.routes import practice_bp # 導入新的 blueprint
+    from core.routes import practice_bp, live_show_bp # 導入新的 blueprint
     # 修改：移除 url_prefix，讓 API 路由可以直接使用 /api/skills/...
     # 而 admin 頁面路由已經在 routes.py 中定義為 /admin/...
     app.register_blueprint(core_bp)
     app.register_blueprint(practice_bp) # 註冊練習用的 blueprint，沒有前綴
+    app.register_blueprint(live_show_bp) # 註冊科展展演用的 blueprint
     
-    print("--- 目前系統註冊的所有路由清單 ---")
-    print(app.url_map)
+    # [隱藏路由清單輸出] 暫時註解掉以減少干擾
+    # print("--- 目前系統註冊的所有路由清單 ---")
+    # print(app.url_map)
 
     # === 路由定義 ===
     # 將所有路由定義移至工廠函式內部
@@ -421,12 +436,13 @@ def create_app():
         # 啟用 WAL (Write-Ahead Logging) 模式以提高併發性並減少鎖定
         try:
             with db.engine.connect() as conn:
+                # 啟用 WAL 模式，允許讀取和寫入並行
                 conn.execute(text("PRAGMA journal_mode=WAL"))
+                # 設定同步等級為 NORMAL，在 WAL 模式下是安全且高效的選擇
                 conn.execute(text("PRAGMA synchronous=NORMAL"))
         except Exception as e:
             app.logger.error(f"Failed to set WAL mode for SQLite: {e}")
 
-        # SEED_DB_ONLY=1 時跳過 Gemini/RAG 初始化（供 seed script 等使用）
         if os.environ.get('SEED_DB_ONLY') != '1':
             configure_gemini(
                 api_key=app.config['GEMINI_API_KEY'],
@@ -435,7 +451,7 @@ def create_app():
             try:
                 init_rag(app)
             except Exception as e:
-                app.logger.error(f"RAG 初始化失敗: {e}")
+                app.logger.error(f"RAG initialization failed: {e}")
 
     return app
 
@@ -443,4 +459,6 @@ app = create_app()
 
 if __name__ == '__main__':
     # 加入 use_reloader=False 以防止寫入檔案時伺服器自動重啟
-    app.run(debug=True, host='0.0.0.0',port=5000, use_reloader=False)
+    host = os.environ.get('HOST', '127.0.0.1')
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host=host, port=port, use_reloader=False)

@@ -34,6 +34,7 @@ from core.utils import get_skill_info
 from core.session import get_current, set_current
 from core.adaptive_engine import recommend_question, update_student_ability, apply_error_penalty, get_all_prerequisites
 from core.ai_analyzer import diagnose_error
+from config import Config
 
 # ==========================================
 # Helper Functions (輔助函式)
@@ -137,11 +138,14 @@ def practice(skill_id):
     ).order_by(SkillInfo.skill_ch_name).all()
 
     prereq_skills = [{'skill_id': p.skill_id, 'skill_ch_name': p.skill_ch_name} for p in prerequisites]
+    tutor_config = Config.MODEL_ROLES.get('tutor', {})
+    tutor_model_name = tutor_config.get('model', 'unknown')
 
     return render_template('index.html', 
                            skill_id=skill_id,
                            skill_ch_name=skill_ch_name,
-                           prereq_skills=prereq_skills)
+                           prereq_skills=prereq_skills,
+                           tutor_model_name=tutor_model_name)
 
 @practice_bp.route('/get_adaptive_question', methods=['GET'])
 @login_required

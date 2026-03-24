@@ -20,6 +20,7 @@ import re
 from flask import current_app
 import PIL.Image
 import io
+from core.ai_wrapper import get_ai_client
 
 # 初始化 gemini_model 為 None，避免 NameError
 gemini_model = None
@@ -106,6 +107,73 @@ def enforce_strict_mode(text):
     text = text.replace('\\\\', '\\\\\\\\')
     
     return text
+
+
+def _looks_like_direct_answer(text):
+    if not isinstance(text, str):
+        return False
+
+    s = re.sub(r'\s+', ' ', text).strip().lower()
+    if not s:
+        return False
+
+    answer_markers = [
+        '答案是',
+        '正確答案',
+        '最後答案',
+        '所以答案',
+        '因此答案',
+        '直接算出',
+        'you should get',
+        'the answer is',
+    ]
+    if any(marker in s for marker in answer_markers):
+        return True
+
+    # Common direct-answer patterns for math tutoring.
+    if re.search(r'[=＝]\s*[-+]?\d+(\.\d+)?', s):
+        return True
+    if re.search(r'^\s*[-+]?\d+(\.\d+)?\s*$', s):
+        return True
+    if re.search(r'\\frac\{[^{}]+\}\{[^{}]+\}\s*$', s):
+        return True
+
+    return False
+
+
+def _build_guiding_reply(user_question='', question_context=''):
+    focus_text = ''
+    for raw in (user_question, question_context):
+        if isinstance(raw, str) and raw.strip():
+            focus_text = raw
+            break
+
+    if any(token in focus_text for token in ['分數', '\\frac', '約分', '通分']):
+        return '先看分子和分母各能不能再約一次，好嗎？'
+    if any(token in focus_text for token in ['根號', '\\sqrt']):
+        return '先看根號前後能不能先整理成同一種型態。'
+    if any(token in focus_text for token in ['多項式', 'x', 'y', '項']):
+        return '先找同類項，再想想哪些項可以先合併。'
+    if any(token in focus_text for token in ['減', '-', '加', '+', '乘', '除', '×', '÷']):
+        return '先不要急著算完，先確認你現在用的運算符號有沒有看對。'
+    return '先別急著看答案，先想想這一步要用哪個規則。'
+
+
+def sanitize_tutor_reply(reply_text, user_question='', question_context=''):
+    if not isinstance(reply_text, str):
+        return _build_guiding_reply(user_question, question_context)
+
+    cleaned = re.sub(r'\s+', ' ', reply_text).strip()
+    if not cleaned:
+        return _build_guiding_reply(user_question, question_context)
+
+    if _looks_like_direct_answer(cleaned):
+        return _build_guiding_reply(user_question, question_context)
+
+    if len(cleaned) > 80:
+        cleaned = cleaned[:80].rstrip('，。；、 ') + '。'
+
+    return cleaned
 
 # 預設批改 Prompt
 DEFAULT_PROMPT =  """
@@ -818,15 +886,24 @@ def build_chat_prompt(skill_id, user_question, full_question_context, context, p
     # [SYSTEM OVERRIDE] 強制設定，覆蓋任何資料庫傳來的軟性指令
     # 我們不讀取 skill.gemini_prompt，以免舊的暖男指令汙染
     base_instruction = """
-[SYSTEM OVERRIDE]   
-ROLE: Strict Math Professor.
-TONE: Cold, Direct, Concise.
-FORBIDDEN: "同學", "你好", "很棒", "加油", "別擔心", "不過", "試試看".
-LENGTH: Max 80 words.
-TASK: 
-1. Identify the error in 1 sentence.
-2. Ask 1 leading question.
-3. Output standard JSON with "follow_up_prompts".
+[SYSTEM OVERRIDE]
+ROLE: 國中數學 AI 助教。
+LANGUAGE: 一律使用繁體中文。
+TARGET: 會考 C 程度，目標進步到 B 的國中生。
+TONE: 口語、自然、簡單、像老師在旁邊輕聲提示。
+FORBIDDEN:
+1. 不可直接公布最終答案。
+2. 不可直接把完整解題步驟講完。
+3. 不可用英文回答。
+4. 不可用大學程度或過度抽象的說法。
+5. 不可一次塞太多規則。
+LENGTH: reply 以 40 個中文字內為主，必要時最多 60 字。
+TASK:
+1. 先指出學生目前最關鍵的一個錯誤或盲點。
+2. 只提供一小步提示或一個引導問題。
+3. 優先幫學生看懂題目、符號、順序或規則。
+4. 讓學生自己往下想，不能直接代做完。
+5. Output standard JSON with "follow_up_prompts".
 LATEX: Use single backslash e.g. $x^2$.
     """
     
@@ -880,11 +957,13 @@ LATEX: Use single backslash e.g. $x^2$.
     # 7. Priority System Instruction (Override any fluff)
     ultra_short_prompt = """
     [CRITICAL RULES]
-    1. STYLE: Senior Professor. No greeting (Hi, Hello), No praise (Good job, Great), No encouragement (Don't worry, Keep going).
-    2. LENGTH: MAX 80 words.
-    3. CONTENT: Point out errors directly using questions.
-    4. FORMAT: Use single $ for LaTeX. Example: $x^2$.
-    5. JSON: Must include 'reply' and 'follow_up_prompts' ([Observe], [Relate], [Execute]).
+    1. 一律使用繁體中文。
+    2. 說法必須讓國中生看得懂。
+    3. 只能提示、追問、引導，不能直接講答案。
+    4. 不要給完整解法，只能推動學生自己做下一步。
+    5. reply 盡量控制在 40 個中文字內。
+    6. FORMAT: Use single $ for LaTeX. Example: $x^2$.
+    7. JSON: Must include 'reply' and 'follow_up_prompts' ([Observe], [Relate], [Execute]).
     """
     
     # Prepend this to ensure it's the first thing logic sees or append heavily
@@ -897,7 +976,7 @@ LATEX: Use single backslash e.g. $x^2$.
     請**嚴格按照以下 JSON 格式回覆**，不要加入任何過多文字。
     
     {
-      "reply": "用繁體中文回答學生的問題。如果學生答錯，給予引導；如果答對，給予鼓勵。**請完全口語化，不要使用「思考：」、「步驟：」等標題**。每次回話不超過 40 字。",
+      "reply": "用繁體中文回答學生，而且要像國中老師在旁邊提示。只能引導，不能直接公布答案，也不能直接講完整解法。請完全口語化，不要使用「思考：」、「步驟：」等標題。每次回話不超過 40 字。",
       "follow_up_prompts": [
             "問題1 (【觀察】：根據本題內容提出一個可檢查的觀察點)",
             "問題2 (【聯想】：連結一個和本題直接相關的公式或策略)",
@@ -920,6 +999,44 @@ def get_chat_response(prompt, image=None, user_question='', question_context='')
     global gemini_chat
     if gemini_chat is None and gemini_model is not None:
         gemini_chat = gemini_model.start_chat(history=[])
+
+    # Primary path for Practice AI tutor:
+    # use config.py -> MODEL_ROLES['tutor'].
+    # Keep the legacy Gemini flow below as fallback for quick rollback.
+    try:
+        tutor_client = get_ai_client(role='tutor')
+        tutor_response = tutor_client.generate_content(
+            prompt + " (IMPORTANT: Output ONLY valid JSON. Escape all backslashes.)"
+        )
+        tutor_raw_text = getattr(tutor_response, 'text', '') or ''
+        if tutor_raw_text.strip():
+            data = None
+            try:
+                data = json.loads(tutor_raw_text)
+            except json.JSONDecodeError:
+                data = clean_and_parse_json(tutor_raw_text)
+
+            if data is not None:
+                reply_text = data.get('reply', '')
+                nested_prompts = None
+                if isinstance(reply_text, str):
+                    reply_text, nested_prompts = _unwrap_nested_reply_payload(reply_text)
+                    reply_text = reply_text.replace('**', '')
+                data['reply'] = sanitize_tutor_reply(
+                    enforce_strict_mode(reply_text),
+                    user_question=user_question,
+                    question_context=question_context,
+                )
+                prompt_source = nested_prompts if isinstance(nested_prompts, list) else data.get('follow_up_prompts', [])
+                data['follow_up_prompts'] = normalize_follow_up_prompts(
+                    prompt_source,
+                    user_question=user_question,
+                    question_context=question_context,
+                    ai_reply=data.get('reply', '')
+                )
+                return data
+    except Exception as tutor_exc:
+        print(f"[chat_ai] tutor role path failed; fallback to legacy Gemini path: {tutor_exc}")
 
     """
     取得 Gemini 的回應，並確保回傳格式為 JSON。
@@ -982,7 +1099,11 @@ def get_chat_response(prompt, image=None, user_question='', question_context='')
             reply_text = reply_text.replace('**', '')
         
         # 2. 呼叫全域嚴格模式清洗 (去廢話 + 保護 LaTeX)
-        data['reply'] = enforce_strict_mode(reply_text)
+        data['reply'] = sanitize_tutor_reply(
+            enforce_strict_mode(reply_text),
+            user_question=user_question,
+            question_context=question_context,
+        )
         
         # 3. 確保 follow_up_prompts 存在
         prompt_source = nested_prompts if isinstance(nested_prompts, list) else data.get('follow_up_prompts', [])

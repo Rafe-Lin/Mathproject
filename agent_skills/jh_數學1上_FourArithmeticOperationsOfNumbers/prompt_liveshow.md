@@ -1,235 +1,155 @@
-[Role] MathProject LiveShow 結構同構出題引擎（Qwen-8B-VL 專用）
+[Role]
+You are the LiveShow generator for `jh_數學1上_FourArithmeticOperationsOfNumbers`.
 
-[範例題型] {{OCR_RESULT}}
+[OCR]
+{{OCR_RESULT}}
 
-[最高優先原則]
-你不是在「自由出題」，你是在「同構模仿」。
-必須複製原例題的結構複雜度，而不是只複製主題。
-**【致命嚴禁】絕對禁止硬編碼原題數字！你必須使用 `IntegerOps.random_nonzero` 產生全新的數值。若腳本中出現原題的常數，系統將會直接報錯崩潰！**
+## LiveShow Mission
 
---------------------------------------------------
-【A. 硬性同構規範（必須同時滿足）】
---------------------------------------------------
-1) 全式層級
-- 總數字數量必須一致。
-- 總二元運算子數量必須一致。
-- 加減乘除各自的數量必須一致。
-- 二元運算子順序必須一致。
+For this skill, LiveShow should prefer the deterministic helper path first.
+The LLM prompt path is a fallback only when helper matching fails.
 
-2) 中括號層級
-- 中括號區塊數量必須一致。
-- 每一個中括號區塊內：
-  - 數字數量一致
-  - 運算子總數一致
-  - 加減乘除分布一致
+The generated problem must preserve:
+- the same fraction family
+- the same answer type
+- the same sign logic
+- the same representation burden
 
-3) 絕對值層級
-- 絕對值區塊數量必須一致。
-- 每一個絕對值區塊內：
-  - 數字數量一致
-  - 運算子總數一致
-  - 加減乘除分布一致
+## Family Decision Rules
 
-4) 分數層級
-- `\frac{a}{b}` 的出現次數必須一致。
-- 每一個分數位置都必須保留為分數，不可偷換成整數或小數。
-- 分母位置不得生成 0。
+### LF1. Simplify
+Trigger:
+- contains `最簡分數`
+- contains `化成最簡分數`
+- math core is a single fraction or mixed number
 
-5) 小數風格層級（Decimal Mode）
-- 若【範例題型】含小數（例如 `1.5`），生成題也必須保留至少一個小數運算項。
-- 小數只可出現在原本是數值的位置，不可改變運算子順序與括號拓撲。
-- 若【範例題型】不含小數，禁止額外引入小數。
+Map to:
+- `frac_simplify`
 
---------------------------------------------------
-【B. 計算字串與顯示字串一致性（致命規則）】
---------------------------------------------------
-1) 必須先得到「唯一計算來源」eval_str。
-2) math_str 必須由同一套變數與同一運算拓撲構成。
-3) 禁止計算 A 式、顯示 B 式。
+### LF2. Equivalent Fill-Blank
+Trigger:
+- contains `_`
+- contains `=`
+- contains a chain of equivalent fractions
 
-錯誤示例（禁止）：
-- ans 用 val1+val2 算，math_str 卻顯示另一組運算。
+Map to:
+- `frac_equivalent_fill_blank`
 
-正確示例（必須）：
---------------------------------------------------
-【C. 分數題面顯示規格（本技能強制）】
---------------------------------------------------
-1) 題目文字必須使用「分數型態」而非整數四則型態：
-- 分數優先用 `\frac{a}{b}` 顯示。
-- 當為假分數（`|a| > b`）時，必須轉為帶分數顯示：`k\frac{r}{b}`。
+### LF3. Preserve-Value Invariance
+Trigger:
+- contains `其值才不會變`
+- contains `分母加上`
 
-2) 帶分數顯示規則：
-- 正數：`k\frac{r}{b}`
-- 負數：`-k\frac{r}{b}`
-- 若餘數 `r=0`，直接顯示整數 `k`（不保留 `/1`）。
+Map to:
+- `frac_preserve_value`
 
-3) 同構不代表可改運算拓撲：
-- 只能替換數值與數值顯示形式，不可新增/刪除運算子。
-- 若原題是分數拓撲，生成題也必須維持分數拓撲，不可退化成純整數四則。
-- 可隨機的是「數值與其正負號」，不可隨機的是「運算子順序與數量」。
+### LF4. Compare Set
+Trigger:
+- contains `比較`
+- contains `大小`
+- has at least two fraction / mixed-number targets
 
-4) Decimal Mode 一致性（本技能強制）
-- 來源題含小數：輸出題必須也含小數。
-- 來源題無小數：輸出題不得含小數。
-- Decimal Mode 只影響數值型態，不影響同構檢查（同構仍以運算拓撲為主）。
-- eval_str 和 math_str 只差在運算符顯示（*→\\times, /→\\div）與分數 LaTeX 包裝。
+Map to:
+- `frac_compare_set`
 
---------------------------------------------------
-【C. Qwen-8B-VL 特化規範（避免跑偏）】
---------------------------------------------------
-1) 輸出必須是 Python code ONLY。
-   - 禁止 markdown fence
-   - 禁止思考文字
-   - 禁止解釋段落
+### LF5. Reciprocal
+Trigger:
+- contains `倒數`
 
-2) 禁止重定義系統注入工具：
-   - 禁止自建 class IntegerOps / FractionOps
-   - 禁止覆蓋 IntegerOps.safe_eval / FractionOps.to_latex
+Map to:
+- `frac_reciprocal`
 
-3) 必須使用：
-   - IntegerOps.random_nonzero
-    - safe_eval
-   - FractionOps.to_latex
-   - Fraction
+### LF6. Eval Expression
+Trigger:
+- contains `計算`
+- or contains a direct fraction arithmetic expression
 
-4) 必須輸出函式：
-   - generate(level=1, **kwargs)
-   - check(user_answer, correct_answer)
+Map to:
+- `frac_eval_expression`
 
---------------------------------------------------
-【D. 生成演算法（必做步驟）】
---------------------------------------------------
-Step D1: 讀取 {{OCR_RESULT}}，建立結構模板。
-- 只替換數字，不替換結構符號。
-- 結構符號包含：[]、| |、()、\frac{}{}、+ - * /
+### LF7. Word Problems
+Trigger:
+- detect one of the fixed textbook narratives
 
-Step D2: 將例題中的每個常數位置映射成變數 v1, v2, ...
-- 分數的分子與分母必須各自映射成獨立變數。
-- 結構與運算位置不是可替換點。
+Map to:
+- `frac_word_drone_weight`
+- `frac_word_bottle_weight`
+- `frac_word_remaining_milk`
+- `frac_word_inheritance_compare`
+- `frac_word_library_total`
 
-Step D3: 依變數角色生成值。
-- 一般分子：`IntegerOps.random_nonzero(-99, 99)`
-- 一般分母：`IntegerOps.random_nonzero(2, 10)`
-- 若該變數是除數或分母，絕對不得為 0。
-- 若任一分子超出 `[-99, 99]`，必須 `continue` 重抽。
+## Sub-skill Nodes To Preserve
 
-Step D4: 組出 eval_str（純 Python 可計算）。
-- 所有分數必須明確寫成 `Fraction(num, den)`。
-- 若有絕對值段，eval_str 必須以 `abs(...)` 實作該段。
-- 不可在 eval_str 使用 `\\times/\\div`。
+- `sign_normalization`
+- `simplest_form_reduction`
+- `equivalent_scaling`
+- `mixed_number_interpretation`
+- `compare_negative_values`
+- `fraction_add_sub`
+- `fraction_mul_div`
+- `decimal_fraction_exact_eval`
+- `reciprocal_transform`
+- `word_problem_ratio_model`
 
-Step D5: 組出 math_str（LaTeX 顯示）。
-- **帶分數顯示模式由 Prompt 底部的【帶分數禁令】或【帶分數必要】指令決定：**
-  - 若 Prompt 中標記【帶分數必要】（輸入例題含帶分數）：假分數（|分子|>分母）**必須轉帶分數**：`FractionOps.to_latex(Fraction(num, den), mixed=True)`
-    - 例：`FractionOps.to_latex(Fraction(-13, 6), mixed=True)` → `"-2 \\frac{1}{6}"`
-    - 例：`FractionOps.to_latex(Fraction(15, 7), mixed=True)` → `"2 \\frac{1}{7}"`
-  - 若 Prompt 中標記【帶分數禁令】（輸入例題只有純分數）：所有分數一律用**純分數**顯示：`FractionOps.to_latex(Fraction(num, den), mixed=False)`
-    - 禁止生成 `k\\frac{r}{b}` 帶分數格式。
-  - 若無任何標記：預設使用 `mixed=False`（純分數顯示）。
-- 若分母為 1，`to_latex` 自動顯示整數（不必特殊處理）。
-- 題面分數必須是約分後結果（Fraction 自動約分）。
-- 乘號顯示為 `\\times`
-- 除號顯示為 `\\div`
-- abs 顯示為 `\\left| ... \\right|`
+## LiveShow Structural Rules
 
-Step D6: O(1) 智慧型倒算法與驗證
-- 建立 `eval_str_init` 並先算 `ans_init`（用 safe_eval，需包含 Fraction(...)）。
-- **只寫一條過濾**：`if not isinstance(ans_init, Fraction) or abs(ans_init.numerator) > 120 or ans_init.denominator > 120: continue`
-- 不可為了整數答案去人為放大或縮放變數。
-- 題面美觀檢核：若 math_str 含 `}{1}` 直接 `continue`。
-- 難度同量級：生成數值不可明顯大於原題量級。
+1. Keep the same operand count class:
+   - single target
+   - pair compare
+   - 3-term compare
+   - nested expression
+   - chained multiply/divide
 
-Step D7: 回傳
-- question_text = "計算 $" + math_str + "$ 的值。"
-- correct_answer：
-- 分母為 1 → `str(ans.numerator)`
-- 分母不為 1 → `f"{ans.numerator}/{ans.denominator}"`（保留分數型答案）
+2. Keep the same representation class:
+   - pure fractions
+   - mixed numbers
+   - decimals mixed with fractions
+   - word problem scalar relationship
 
---------------------------------------------------
-【E. 禁止事項（違反即視為失敗）】
---------------------------------------------------
-- 禁止 random.choice 改運算子（會破壞同構）。
-- 禁止任意新增 abs()、[]、()、\frac{}{} 層級。
-- 禁止把分數改成小數顯示。
-- 禁止把 `\frac{a}{b}` 直接展平成 `a/b` 的裸字串輸出（顯示層）。
-- 禁止輸出超過初學者負擔的巨大常數（如 `1575`、`23612/15`）。
+3. Keep the same sign burden:
+   - all positive
+   - mixed signs
+   - all negative
 
---------------------------------------------------
-【F. 可直接遵循的骨架】
---------------------------------------------------
-import random
-import math
-from fractions import Fraction
+4. Keep the same evaluation burden:
+   - same denominator
+   - unlike denominator
+   - nested parentheses
+   - telescoping
+   - reciprocal conversion before division
 
+## Display Rules
 
-def generate(level=1, **kwargs):
-    # Step 0: 解析題型結構 (必須先寫出這三行註解，確保你確實算過)
-    # 分數個數 (即原題參與運算的分數數量): ... 個
-    # 運算符號數與種類: ... 個 (分別為 ...)
-    # 特殊結構: ... (無 / 絕對值 / 中括號)
-    
-    for _ in range(100):  # 多迭代確保一定能找到樣本
-        try:
-            # Step 1: 依 Step 0 的「分數個數」生成對應長度的變數
-            # 【最高禁令】原題有幾個參與運算的數字，你就只能生成幾組分子分母！絕對禁止直接抄寫 3個分數！
-            # 【致命錯誤防範】絕對禁止將變數寫死成固定數字（如 n1 = 5）！所有數值必須使用 IntegerOps.random_nonzero 動態生成！
-            # n1 = IntegerOps.random_nonzero(-99, 99)
-            # d1 = IntegerOps.random_nonzero(2, 10)
-            # ... 依此類推，請嚴格依序宣告。
+- `correct_answer` must use reduced fraction form.
+- Normalize denominator sign to positive.
+- Never output `a/-b`.
+- Mixed numbers may appear in `question_text`, but `correct_answer` may stay as reduced improper fraction unless the family explicitly requires mixed-number output.
+- Decimal operands must be evaluated exactly as fractions, not rounded floats.
 
-            # Step 2: 用 safe_eval 預計算答案（Fraction 精確計算）
-            # 【最高禁令】必須按照原題的運算子！
-            eval_str = f"...填入同構算式..." # 例：f"Fraction({n1}, {d1}) - Fraction({n2}, {d2})"
-            ans = safe_eval(eval_str)
+## Word-Problem Contract
 
-            # Step 3: D6 單一過濾（閾值 120，無運算子優先級陷阱）
-            if not isinstance(ans, Fraction) or abs(ans.numerator) > 120 or ans.denominator > 120:
-                continue
+If the source is a word problem:
+- preserve the same hidden relationship
+- preserve the same queried quantity
+- do not collapse the problem into a naked expression
 
-            # Step 4: 組裝 math_str（LaTeX 顯示，關鍵：mixed=True 強制帶分數格式）
-            # ★ 你必須宣告 math_str 這個變數！
-            # 範例 (嚴禁照抄): f1_str = FractionOps.to_latex(Fraction(n1, d1), mixed=True)
-            #               math_str = f"({f1_str}) - ({f2_str})"
-            math_str = f"..."
+Examples:
+- drone problem: solve empty drone weight from full/remaining linear spray rate
+- bottle problem: solve bottle weight from total and one-third remaining juice
+- milk problem: repeated remaining-fraction multiplication
+- inheritance problem: compare shares after sequential allocation
+- library problem: solve original quantity from before/after ratio
 
-            # Step 5: 美觀檢核
-            if "}{1}" in math_str:
-                continue
+## Exclusions
 
-            # Step 6: 格式化答案（分母為 1 時顯示整數）
-            if ans.denominator == 1:
-                correct_answer = str(ans.numerator)
-            else:
-                correct_answer = f"{ans.numerator}/{ans.denominator}"
+Do not attempt phase-1 generation for:
+- image-dependent shaded geometry
+- region-area questions where the visual partition is not encoded in text
 
-            return {
-                'question_text': '計算 $' + math_str + '$ 的值。',
-                'answer': '',
-                'correct_answer': correct_answer,
-                'mode': 1,
-                '_o1_healed': False
-            }
-        except Exception:
-            continue
+## Fallback Behavior
 
-    return {'question_text': 'Error', 'answer': '', 'correct_answer': '0', 'mode': 1}
-
-
-def check(user_answer, correct_answer):
-    try:
-        ua = str(user_answer).strip()
-        ca = str(correct_answer).strip()
-        if ua == ca:
-            return {'correct': True, 'result': '正確'}
-        if Fraction(ua) == Fraction(ca):
-            return {'correct': True, 'result': '正確'}
-    except Exception:
-        pass
-    return {'correct': False, 'result': '錯誤'}
-
---------------------------------------------------
-【G. 最終輸出要求】
---------------------------------------------------
-- 只輸出 Python 原始碼。
-- 不要輸出任何額外文字。
-- 不要輸出 markdown。
+If helper classification is uncertain:
+- preserve fraction arithmetic only
+- do not drift into integer-only templates
+- do not emit empty answers
+- keep `question_text` mathematically valid
