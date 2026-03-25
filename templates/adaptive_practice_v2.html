@@ -394,13 +394,25 @@
       if (!box) return;
       box.innerHTML = "這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。";
     }
-    function addMessage(role, text) {
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+    function setMessageContent(element, text) {
+      if (!element) return;
+      element.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+    }
+    async function addMessage(role, text) {
       const box = document.getElementById("chatHistory");
       const div = document.createElement("div");
       div.className = `msg ${role}`;
-      div.textContent = text;
+      setMessageContent(div, text);
       box.appendChild(div);
       scrollChatToBottom();
+      await typesetMath(div);
+      return div;
     }
     function summarizeHandwritingResult(data) {
       const messages = [];
@@ -534,7 +546,9 @@
         const response = await fetch(`/api/adaptive/rag_hint?${query.toString()}`);
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "rag hint failed");
-        document.getElementById("hintBox").innerHTML = data.hint_html;
+        const hintBox = document.getElementById("hintBox");
+        hintBox.innerHTML = data.hint_html;
+        await typesetMath(hintBox);
         if (data.hint_summary) {
           addMessage("bot", `這題先看：${data.hint_summary}。`);
         } else if (Array.isArray(data.subskill_labels) && data.subskill_labels.length) {
@@ -546,10 +560,8 @@
 
     async function askTutor(question, sourceLabel = "user") {
       if (!state.currentQuestionText) { setStatus("請先開始診斷，再使用 AI 助教。"); return; }
-      addMessage(sourceLabel === "user" ? "user" : "bot", question);
-      addMessage("bot", "AI 助教正在整理提示...");
-      const messages = document.getElementById("chatHistory").querySelectorAll(".msg");
-      const thinking = messages[messages.length - 1];
+      await addMessage(sourceLabel === "user" ? "user" : "bot", question);
+      const thinking = await addMessage("bot", "AI 助教正在整理提示...");
       try {
         const response = await fetch("/chat_ai", {
           method: "POST",
@@ -557,10 +569,11 @@
           body: JSON.stringify({ question, context: `Adaptive diagnosis | family=${state.currentFamilyId} | subskills=${state.currentSubskills.join(", ")}`, question_text: state.currentQuestionText })
         });
         const data = await response.json();
-        thinking.textContent = (data.reply || "先檢查題目的條件與運算順序。").trim();
+        setMessageContent(thinking, (data.reply || "先檢查題目的條件與運算順序。").trim());
+        await typesetMath(thinking);
         scrollChatToBottom();
       } catch (err) {
-        thinking.textContent = "目前助教暫時沒有整理出新提示，先檢查你是不是抓對了這一題的核心觀念。";
+        setMessageContent(thinking, "目前助教暫時沒有整理出新提示，先檢查你是不是抓對了這一題的核心觀念。");
         scrollChatToBottom();
       }
     }
@@ -569,10 +582,8 @@
       if (!state.currentQuestionText) { setStatus("請先開始診斷，再進行手寫檢查。"); return; }
       try {
         const imageDataUrl = canvas.toDataURL("image/png");
-        addMessage("user", "請幫我檢查我白板上的手寫步驟。");
-        addMessage("bot", "正在分析你的手寫內容...");
-        const messages = document.getElementById("chatHistory").querySelectorAll(".msg");
-        const thinking = messages[messages.length - 1];
+        await addMessage("user", "請幫我檢查我白板上的手寫步驟。");
+        const thinking = await addMessage("bot", "正在分析你的手寫內容...");
         const response = await fetch("/analyze_handwriting", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -585,9 +596,10 @@
           })
         });
         const data = await response.json();
-        thinking.textContent = summarizeHandwritingResult(data);
+        setMessageContent(thinking, summarizeHandwritingResult(data));
+        await typesetMath(thinking);
       } catch (err) {
-        addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
+        await addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
       }
     }
 
