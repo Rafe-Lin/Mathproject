@@ -1565,6 +1565,15 @@
         let isDrawing = false;
         let undoStack = [];
         let selectedLevel = 1; // 新增：用於儲存當前選擇的難度
+
+        function getSafeSelectedLevel() {
+            const parsed = Number.parseInt(selectedLevel, 10);
+            if (Number.isNaN(parsed) || parsed < 1) {
+                selectedLevel = 1;
+                return 1;
+            }
+            return parsed;
+        }
         let consecutiveWrongs = 0; // 新增：追蹤連續答錯次數
         let redoStack = [];
         let blankCanvas = null;
@@ -2124,6 +2133,10 @@
             document.querySelectorAll('.level-button').forEach(button => {
                 button.addEventListener('click', () => {
                     const level = parseInt(button.dataset.level, 10);
+                    if (Number.isNaN(level) || level < 1) {
+                        console.warn('Ignore invalid level button dataset.level:', button.dataset.level);
+                        return;
+                    }
                     if (level !== selectedLevel) {
                         selectedLevel = level;
                         document.querySelectorAll('.level-button').forEach(btn => btn.classList.remove('active'));
@@ -2271,7 +2284,8 @@
             // 顯示載入中...
             if (questionText) questionText.style.opacity = '0.5';
 
-            fetch(`/get_next_question?skill=${skill}&level=${selectedLevel}`)
+            const safeLevel = getSafeSelectedLevel();
+            fetch(`/get_next_question?skill=${skill}&level=${safeLevel}`)
                 .then(r => r.json())
                 .then(data => {
                     if (questionText) questionText.style.opacity = '1';
@@ -2353,7 +2367,7 @@
                     });
 
                     // 4. 更新連續答對數
-                    if (data.consecutive_correct !== undefined && selectedLevel === 1) {
+                    if (data.consecutive_correct !== undefined && getSafeSelectedLevel() === 1) {
                         currentStreak = data.consecutive_correct;
                         streakCounter.textContent = `連續答對：${currentStreak}`;
                         streakCounter.style.display = 'inline-block';

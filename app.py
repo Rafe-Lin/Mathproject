@@ -98,10 +98,15 @@ def create_app():
         font_path = 'C:/Windows/Fonts/msjhl.ttc'
         if os.path.exists(font_path):
             font_manager.fontManager.addfont(font_path)
-            plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei Light', 'sans-serif']
+            available_fonts = {f.name for f in font_manager.fontManager.ttflist}
+            if 'Microsoft JhengHei' in available_fonts:
+                plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'DejaVu Sans']
+            elif 'Microsoft JhengHei UI' in available_fonts:
+                plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei UI', 'DejaVu Sans']
+            else:
+                plt.rcParams['font.sans-serif'] = ['DejaVu Sans']
         else:
-            # Fallback for non-Windows or if font is not found
-            plt.rcParams['font.sans-serif'] = ['sans-serif']
+            plt.rcParams['font.sans-serif'] = ['DejaVu Sans']
         plt.rcParams['axes.unicode_minus'] = False  # Fix for displaying the minus sign
     except Exception as e:
         app.logger.warning(f"Could not set Chinese font: {e}")

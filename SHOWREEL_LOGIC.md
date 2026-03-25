@@ -1,492 +1,350 @@
 # SHOWREEL_LOGIC
 
-更新日期: 2026-03-24
-工作目錄: `D:\Python\Mathproject`
+- 更新日期：2026-03-25
+- 專案根目錄：`D:\Python\Mathproject`
+- 用途：公司電腦與家中電腦之間的交接文件
 
-## 1. 這份文件的用途
+## 1. 專案定位
 
-這份文件用來承接今天對 `Mathproject` 的整合、修正、測試與 showreel/demo 相關決策。
-之後若要讓 AI 接手，請先讀這份文件，再讀相關檔案。
+這個專案目前已經不是單純的練習平台，而是把研究內容逐步落成可展示的自適應診斷系統。
 
-本日工作主軸:
+核心方向如下：
 
-1. 將 `D:\Python\MathProject_AST_Research` 的 agent-skill / live_show 能力整合回 `D:\Python\Mathproject`
-2. 將 `practice` AI 助教改成以 `qwen3-vl-8b` 為主，並強化國中生教學提示風格
-3. 修正 `live_show` 下一題卡死問題
-4. 重建缺失的 MCRI evaluator，讓 live_show 的 MCRI 分數不再是假 fallback
-5. 整理 demo/showreel 可持續推進的待辦事項
+- 平台主體留在 `Mathproject`
+- `AST_Research` 負責 agent skill / live_show / prompt / healer / research toolkit
+- `practice` 的 AI 助教目前改成可切換的 `qwen3-vl-8b`
+- `adaptive_summative` 已成為本單元總結性診斷入口
+- `live_show`、`MCRI`、`RAG`、`whiteboard` 都已接上
 
 ---
 
-## 2. 專案整合總原則
+## 2. 今天的主要討論結論
 
-### 2.1 專案角色分工
+### 2.1 專案合併原則
 
-- `D:\Python\Mathproject`
-  - 主平台
-  - 主資料庫
-  - 既有操作流程與網站宿主
-
-- `D:\Python\MathProject_AST_Research`
-  - agent skill 子系統真源
-  - live_show / healer / prompt architect / skill policies / research toolkit 真源
-
-### 2.2 最終採用原則
-
-- 平台主體保留 `Mathproject`
-- agent skill / live_show / qwen3-vl-8b 推理鏈，採用 `AST_Research` 路線
-- `config.py` 不整份覆蓋，採增量整合
+- `D:\Python\Mathproject` 是主平台與資料庫宿主
+- `D:\Python\MathProject_AST_Research` 是 agent skill 與相關研究程式的真源
+- `config.py` 不能直接覆蓋，必須保留原本模型與設定，只做增量調整
 - 主資料庫固定使用 `D:\Python\Mathproject\instance\kumon_math.db`
-- research 額外 schema 採增量遷移，不用 research DB 蓋主庫
+- research-only 的研究表不進主庫，只留給即時建立的實驗 DB
+
+### 2.2 研究內容落地方向
+
+論文最終要落成三層：
+
+1. 大腦層：AKT + PPO
+2. 雙手層：Edge AI 微技能腳本
+3. 嘴巴層：Hybrid RAG 補救提示
+
+其中：
+
+- `AKT + PPO` 目前是完整流程，但仍屬 heuristic / stub 版
+- `微技能腳本` 已有 catalog -> manifest -> script 管線
+- `Hybrid RAG` 已完成真檢索版，不再只是模板字串
+
+### 2.3 使用者介面方向
+
+`adaptive_summative` 的介面已經調成：
+
+- 上方：三等分資訊區
+  - 本單元學習導航
+  - 系統導航狀態
+  - 動態精熟軌跡圖
+- 中下方：題目與作答、手寫計算紙
+- 右側：AI 助教與 RAG 補救提示
+
+目標是讓學生和評審一眼能看出：
+
+- 這是診斷頁
+- 不是 debug 頁
+- RAG 只影響右側補救提示與手寫檢查摘要
 
 ---
 
-## 3. 已完成的整合與修改
+## 3. 今天已完成的事項
 
-### 3.1 Agent Skill / Live Show 主體已搬回主專案
+### 3.1 自適應診斷頁
 
-已整合的核心範圍:
+已完成的功能：
 
-- `agent_skills/`
-- `templates/live_show.html`
-- `core/routes/live_show.py`
-- `core/routes/live_show_pipeline.py`
-- `core/prompt_architect.py`
-- `core/code_generator.py`
-- `core/code_utils/live_show_math_utils.py`
-- `core/healers/live_show_healer.py`
-- `core/skill_policies/`
-- `agent_tools/`
-- 多組 `live_show` regression tests
+- `adaptive_summative` 可開啟
+- 有題目與作答區
+- 有手寫白板
+- 有 AI 助教區
+- 有動態精熟軌跡圖
+- 有結束條件與診斷結論
+- 有 `Local APR` 與策略顯示
 
-已刪除主專案中分裂的舊 radical skills:
+### 3.2 結束邏輯
 
-- `agent_skills/jh_數學2上_RadicalSimplify`
-- `agent_skills/jh_數學2上_RadicalMultiply`
-- `agent_skills/jh_數學2上_RadicalAddSub`
+目前結束規則：
 
-保留由 research 版主導的:
+- 最多 8 題
+- 至少完成 5 題後
+- 若 `Local APR >= 0.65`，就可提前結束
 
-- `agent_skills/jh_數學2上_FourOperationsOfRadicals`
+結束時會顯示：
 
-### 3.2 資料庫策略
+- 是否達標
+- 最終 APR
+- 作答題數
+- 涉及 family
+- 下一步建議
 
-主資料庫:
+### 3.3 題目與手寫一致性
 
-- `D:\Python\Mathproject\instance\kumon_math.db`
+已修正：
 
-已採用策略:
+- `/analyze_handwriting` 會帶目前畫面上的 `question_text`
+- 會帶 `question_context`
+- 會帶 `family_id`
+- 會帶 `subskill_nodes`
 
-- 保留主庫
-- 補 research 真正需要、且會寫入主庫的欄位
-- 不把 research-only 即時實驗表整套塞回主庫
+這樣手寫檢查不會再講到上一題。
 
-已確認不進主庫的 research-only 表:
+### 3.4 線上提示與助教
 
-- `ablation_summary`
-- `execution_samples`
-- `experiment_runs`
-- `evaluation_items`
-- `healer_events`
+目前右側助教已調整為：
 
-原因:
+- 台灣國中生可懂的繁體中文
+- 不直接報答案
+- 只能引導
+- Review 時會強化補救
 
-- 這些會寫到另外即時建立的 DB
-- 不應污染主平台正式資料庫
+### 3.5 RAG 真檢索層
 
-### 3.3 config 與模型整合
+已完成：
 
-原則:
+- 不再只是 stub
+- 會根據 `subskill_nodes`
+- 會看 `skill_id / family_id`
+- 會看 `question_context / question_text`
+- 會參考 `skill_breakpoint_catalog.csv`
+- 會參考對應 `SKILL.md`
+- 回傳簡單中文的：
+  - 課本級提示
+  - 常見錯誤
+  - 例題
+  - 下一步提醒
 
-- 保留 `Mathproject` 原本所有模型設定
-- 不刪舊 model
-- 新增 `qwen3-vl-8b`
-- 之後可手動註解或切換，不強迫單一路線
+RAG 目前實際影響的地方：
 
-目前關鍵設定位置:
+- 右側補救提示
+- 手寫檢查摘要
 
-- `config.py`
-  - `DEFAULT_CODER_PRESET`
-  - `MODEL_ROLES['coder']`
-  - `MODEL_ROLES['vision_analyzer']`
-  - `MODEL_ROLES['tutor']`
+它不會改變題目本身。
 
-目前已採設定:
+### 3.6 微技能腳本工廠
 
-- `coder`: `qwen3-vl-8b`
-- `vision_analyzer`: `qwen3-vl-8b`
-- `tutor`: `qwen3-vl-8b`
+已完成：
 
-舊 tutor 路線仍保留註解，方便改回。
+- `skill_breakpoint_catalog.csv -> manifest -> script`
+- 整數四則已建立 `I1~I8` 的微技能出題模式
+- `skills/adaptive` 已有生成結果
+- `skill_manifest.json` 已能註冊 family 與腳本路徑
 
-### 3.4 practice AI 助教已改為 qwen3-vl-8b 主路徑
+### 3.7 MCRI
 
-修改方向:
+已修復：
 
-- `practice` AI 助教原本偏 Gemini 路線
-- 目前已改成優先走 `get_ai_client(role='tutor')`
-- `tutor` 角色綁 `qwen3-vl-8b`
-- 舊 Gemini 流程保留作 fallback
+- 原本 `evaluate_mcri.py` 缺檔造成 fallback 分數
+- 現在已重建可用版 evaluator
+- 測試可通過
 
-主要修改檔案:
+### 3.8 practice 助教
 
-- `core/ai_analyzer.py`
-- `config.py`
+已調整為：
 
-### 3.5 practice 頁面標題會顯示目前 tutor model 名稱
-
-效果:
-
-- `practice` 左上 AI 助教標題會顯示目前 model 名稱
-
-主要修改檔案:
-
-- `core/routes/practice.py`
-- `templates/index.html`
-
-### 3.6 practice 助教提示辭已改成國中生教學模式
-
-目標:
-
-- 一律繁體中文
-- 國中生可懂
-- 短、清楚
-- 只能提示，不可直接講答案
-- 對象是「會考 C 程度，目標升到 B」的學生
-
-已實作兩層限制:
-
-1. Prompt 層
-   - 在 `core/ai_analyzer.py` 的 `build_chat_prompt()` 中重寫 system override
-   - 明確禁止完整解法與直接答案
-
-2. 後端防呆層
-   - 新增 `sanitize_tutor_reply()`
-   - 若偵測到像「答案是...」「=5」這類直接答案型回覆，會自動改寫成引導句
-
-本次新增/調整的重要函式:
-
-- `sanitize_tutor_reply`
-- `_looks_like_direct_answer`
-- `_build_guiding_reply`
-
-### 3.7 live_show 不再硬編碼模型名稱
-
-修正前問題:
-
-- `live_show.py` 有直接寫死 model 名稱
-- 不符合全域 config 控制原則
-
-修正後:
-
-- 改為統一由 `Config.MODEL_ROLES[...]` 與 `Config.DEFAULT_CODER_PRESET` 決定
-- route 層不再硬綁 model string
-
-### 3.8 live_show 下一題卡死問題已修正
-
-使用者實際回報:
-
-- 題型不是 100% 正確
-- 程式只能呼叫 `generate()` 一次
-- 點下一題一次後就卡死
-
-根因:
-
-1. 前端「下一題」只是重打 `/api/run_generated_code`
-2. 後端缺少「這次是 next question」的明確旗標
-3. 我們先前為 radicals regression 加的 sticky rerun，誤把「下一題」也當 rerun
-
-已修正:
-
-- `templates/live_show.html`
-  - `runNextQuestion()` 會送 `next_question: true`
-  - 同送回 `skill_id`、`ocr_text`、`json_spec`
-  - 補記錄 `latestSkillId`、`latestJsonSpec`、`latestOcrText`
-
-- `core/routes/live_show.py`
-  - 新增 `next_question = bool(data.get("next_question", False))`
-  - sticky rerun 只在 `not next_question` 時生效
-  - response 會補 `file_path`
-
-結果:
-
-- Ab2 / Ab3 的「下一題」可連續使用
-- 不再卡在同一題
-
-### 3.9 MCRI evaluator 已重建
-
-發現問題:
-
-- 畫面上的 MCRI 分數很低
-- 追查後發現不是模型品質本身，而是 `scripts/evaluate_mcri.py` 缺失
-- `live_show.py` 與 `scaler.py` 仍在 import 它
-
-缺檔造成的後果:
-
-- `Ab3` 可能直接吃 `50` 的保底 fallback
-- `Ab2` 可能走 `0.4*hygiene + 0.4*50 + 0.2*60` 的 fallback，常見為 `32%`
-
-已重建檔案:
-
-- `scripts/evaluate_mcri.py`
-- `scripts/__init__.py`
-- `tests/test_evaluate_mcri.py`
-
-目前 evaluator 提供的 API:
-
-- `analyze_code_robustness(code)`
-- `evaluate_math_hygiene(question_text)`
-- `evaluate_live_code(code, exec_result, healer_trace=None, ablation_mode=False)`
-
-目前評估面向:
-
-- syntax
-- logic
-- render
-- stability
-- hygiene breakdown
-
-這版是可用 heuristic 版，不是 research 原版 100% 還原版，但已足夠讓 live_show 不再用假分數。
+- 預設繁體中文
+- 國中生看得懂
+- 只能提示，不能直接給答案
+- 標題會顯示目前使用的 model 名稱
 
 ---
 
-## 4. 本日主要修改檔案清單
+## 4. 目前實作狀態總覽
 
-以下為今天最重要的變動檔案:
+### 4.1 已穩定可用
 
-- `config.py`
-- `core/ai_analyzer.py`
-- `core/routes/practice.py`
-- `core/routes/analysis.py`
-- `core/routes/live_show.py`
-- `core/routes/live_show_pipeline.py`
-- `templates/index.html`
-- `templates/live_show.html`
-- `scripts/evaluate_mcri.py`
-- `scripts/__init__.py`
-- `tests/test_evaluate_mcri.py`
+- `adaptive_summative`
+- `live_show`
+- `practice` AI 助教
+- `MCRI evaluator`
+- `RAG hint`
+- `whiteboard`
+- `trajectory` 繪圖
+- `database` 主庫結構
 
-另外還有先前整合進來的重要模組:
+### 4.2 仍在持續補強
 
-- `core/fraction_domain_functions.py`
-- `core/integer_domain_functions.py`
-- `core/polynomial_domain_functions.py`
-- `core/architect_v01.py`
-- `core/v01_pipeline.py`
+- 真正的 AKT 模型
+- 真正的 PPO agent
+- 全單元微技能腳本補齊
+- 更完整的課本知識庫
+- 更完整的 family 規格化資料管理
 
 ---
 
-## 5. 本日測試與驗證結果
+## 5. 今天修改過的重點檔案
 
-### 5.1 全專案整合期曾通過的測試狀態
+### 5.1 自適應診斷頁
 
-在前一輪整合完成時，整體測試結果曾為:
+- [templates/adaptive_practice_v2.html](D:/Python/Mathproject/templates/adaptive_practice_v2.html)
 
-- `127 passed, 2 skipped`
+調整內容：
 
-### 5.2 practice 助教 smoke test
+- 三等分上方區塊
+- 系統導航狀態移到上方中間
+- 動態精熟軌跡圖固定高度、可捲動
+- 右側 AI 助教固定視窗、高度鎖定
+- AI 助教加入 RAG 影響範圍提示
+- 白板工具列改成單行 icon 風格
+- 移除多餘按鈕，保留必要工具
+- 完成時同步更新上方 APR
+- 會把最後一題的最終 APR 補進軌跡圖
 
-驗證方式:
+### 5.2 RAG 真檢索
 
-- 透過 Flask test client 呼叫 `/chat_ai`
+- [core/adaptive/rag_hint_engine.py](D:/Python/Mathproject/core/adaptive/rag_hint_engine.py)
+- [core/adaptive/session_engine.py](D:/Python/Mathproject/core/adaptive/session_engine.py)
+- [core/routes/adaptive_api.py](D:/Python/Mathproject/core/routes/adaptive_api.py)
 
-驗證結果:
+### 5.3 測試
 
-- 助教已能回短句提示
-- 範例輸出:
-  - `8-3 是減法，你有看清楚符號嗎？`
+- [tests/test_adaptive_rag_hint.py](D:/Python/Mathproject/tests/test_adaptive_rag_hint.py)
 
-這代表:
+測試結果：
 
-- qwen3-vl-8b tutor 路徑可通
-- prompt 已往國中生提示風格收斂
-- 後端 response sanitization 可生效
-
-### 5.3 live_show 下一題修正驗證
-
-已驗證:
-
-- `tests/test_run_generated_code_regression.py`
-  - 通過
-
-- 手動連續觸發 `next_question: true`
-  - 已可連續產題
-  - 不再卡在同一題
-
-### 5.4 live_show 相關測試
-
-已通過或曾通過的重要測試:
-
-- `tests/test_classify_image_text_consistency.py`
-- `tests/test_run_generated_code_regression.py`
-- `tests/test_live_show_fraction_helper.py`
-- 多組 `test_live_show_*`
-
-### 5.5 MCRI evaluator 驗證
-
-已通過:
-
-- `pytest -q tests/test_evaluate_mcri.py tests/test_classify_image_text_consistency.py`
-- 結果:
-  - `5 passed`
-
-目的:
-
-- 確保 `scripts.evaluate_mcri` 可被 import
-- 確保三個公開函式可用
-- 避免系統再退回假 fallback 分數
+- `pytest -q tests/test_adaptive_rag_hint.py`
+- `2 passed`
 
 ---
 
-## 6. Showreel / Demo 目前的重要判斷
+## 6. 論文三大部分 vs 目前實作完成度
 
-### 6.1 單模型策略
+| 論文支柱 | 論文理論要求 | 目前實作狀態 | 完成度 | 主要差距 / 下一步 |
+|---|---|---|---|---|
+| 大腦層：AKT + PPO | 用 AKT 追蹤 `subskill_nodes`，用 PPO 根據 `Local APR`、挫折感、歷史表現決定下一題與教學策略 | 已有完整診斷流程、`Local APR`、策略切換、結束條件、軌跡圖、log 紀錄；目前是 heuristic / stub 版，不是真 AKT/PPO | 中高 | 之後要把 heuristic stub 換成真正 AKT state update 與 PPO policy 推論 |
+| 雙手層：Edge AI 微技能腳本 | 依 `skill_breakpoint_catalog.csv` 批次生成每個 `family_id` 的微技能出題腳本，穩定輸出 JSON 題目 | 已有 `catalog -> manifest -> micro skill script` 管線，整數四則已做出較完整的 `I1~I8` 微技能題；其他單元仍在補齊 | 中等 | 擴充到分數、多項式、根式等其餘 family，讓每個 family 都有穩定出題器 |
+| 嘴巴層：Hybrid RAG 補救提示 | 根據 `subskill_nodes`、題目脈絡、課本/知識圖譜/SKILL.md，回傳課本級提示、例題、常錯點、下一步提醒 | 已接成真 Hybrid RAG：會依 `subskill_nodes + skill_id + family_id + question_context` 產生簡單中文提示，並作用在右側助教與手寫檢查摘要 | 高 | 後續可再加更完整的課本文字庫、知識圖譜節點管理、提示歷史紀錄 |
 
-目前傾向:
+結論：
 
-- 全專案主模型先定為 `Qwen3-VL-8B`
-
-原因:
-
-- 已接進整個系統
-- 能看圖
-- 能 OCR
-- 能做數學題理解
-- 能做 tutor 提示
-- 不想反覆換模型重調 prompt 與流程
-
-### 6.2 硬體限制判斷
-
-使用者補充情境:
-
-- 開發機 GPU 只有 6GB
-- 展演機是 4060 8GB notebook
-
-目前判斷:
-
-- 6GB 開發機:
-  - 不適合把 `Qwen3-VL-8B` 當長時間主力
-  - 適合做流程整合、prompt 調整、小量測試
-
-- 8GB 展演機:
-  - 可作為 showreel/demo 主模型
-  - 但仍需保守配置:
-    - 圖片不要太大
-    - prompt 不要太長
-    - output tokens 要控制
-    - 避免多請求並發
-
-### 6.3 模型建議
-
-若堅持「一個模型打到底」:
-
-- 目前建議: `Qwen3-VL-8B`
-
-理由:
-
-- 工程切換成本最低
-- 已經是目前 project 中最完整接好的路線
-- 比起繼續換模型，現在更值得把流程磨穩
-
-若未來允許做 challenger 對照:
-
-- 可評估 `MiniCPM-o 2.6`
-- 優先拿來比較手寫數學辨識 / OCR / edge 效率
-
-但目前不建議立刻改主模型路線。
+- RAG 最完整
+- AKT/PPO 已有完整流程，但仍是工程化近似版
+- 微技能工廠已成立，但尚未全單元鋪滿
 
 ---
 
-## 7. 目前已知問題與風險
+## 7. 目前最重要的 UI / UX 結論
 
-### 7.1 MCRI 是重建版，不是 research 原始完整版
+### 7.1 上方版面
 
-目前 `scripts/evaluate_mcri.py` 是可用版。
-它已能防止 fallback 假分數，但未必完全等同 research 版本的評分哲學。
+現在上方是三等分：
 
-後續若要更精準:
+- 本單元學習導航
+- 系統導航狀態
+- 動態精熟軌跡圖
 
-- 需再把 MCRI 與 isomorphic/structure drift/fingerprint 做更細對齊
-- 可能還要把 evaluator 分數與 UI 語意重新校準
+這樣比原本左右不平衡的版本更舒服。
 
-### 7.2 Structure Drift 與 MCRI 是兩套邏輯
+### 7.2 右側 AI 助教
 
-目前畫面上:
+目前已明確標示：
 
-- `Structure Drift Detected`
-- `MCRI score`
+- RAG 只影響右側補救提示與手寫檢查摘要
+- 不會直接改變題目本身
+- 手動提問還是以引導式助教為主
 
-這兩者不是同一件事。
-後續要避免 demo 時誤導，需要再釐清或調整文案。
+### 7.3 手寫白板
 
-### 7.3 某些檔案仍有舊編碼/亂碼痕跡
+目前保留：
 
-例如部分歷史中文註解與舊字串出現編碼異常。
-雖不一定影響執行，但會影響後續維護與 prompt 可讀性。
+- 畫筆
+- 橡皮擦
+- 顏色
+- 筆寬
+- 上一步 / 下一步
+- 清空白板
+- AI 檢查手寫
 
----
+已移除：
 
-## 8. 建議的下一步工作
-
-### A. 高優先
-
-1. 實機在 `4060 8GB notebook` 上做完整 showreel smoke test
-   - 測 `live_show`
-   - 測 `practice`
-   - 測手寫上傳與 OCR
-
-2. 實際確認 `Qwen3-VL-8B` 在 demo 機上的穩定參數
-   - 圖片大小
-   - timeout
-   - output token 長度
-   - 單輪延遲
-
-3. 驗證 MCRI 分數是否已從 fallback 變成真分數
-   - 對同一題測 Ab1 / Ab2 / Ab3
-   - 比對 `breakdown`
-   - 必要時把 `breakdown` 暫時顯示到 debug panel
-
-### B. 中優先
-
-4. 微調 `practice` tutor 的追問模板
-   - 再縮短回話
-   - 更像「會考 C 拉到 B」的補救教學風格
-
-5. 檢查 `agent_tools` 是否有舊路徑寫死到 research 目錄
-   - 若有，改成主專案相對路徑
-
-6. 清理亂碼與舊註解
-   - 尤其是 `core/ai_analyzer.py`
-   - 以免後續 prompt 修改被舊內容干擾
-
-### C. 低優先
-
-7. 將 MCRI evaluator 再精修成 research 對齊版
-8. 規劃 `Qwen3-VL-8B` vs `MiniCPM-o 2.6` 的手寫數學 A/B 測試表
+- 繪製示意圖
+- 上傳圖片
 
 ---
 
-## 9. 接手 AI 建議先讀的檔案順序
+## 8. 今天觀察到的重點與限制
 
-若下一個 AI 要續做，建議先依序閱讀:
+### 8.1 `RAG` 的影響範圍
 
-1. `SHOWREEL_LOGIC.md`
-2. `config.py`
-3. `core/ai_analyzer.py`
-4. `core/routes/analysis.py`
-5. `core/routes/practice.py`
-6. `core/routes/live_show.py`
-7. `core/routes/live_show_pipeline.py`
-8. `templates/live_show.html`
-9. `scripts/evaluate_mcri.py`
-10. `tests/test_evaluate_mcri.py`
+目前 RAG 的作用範圍是：
+
+- 右側補救提示
+- 手寫檢查摘要
+
+不是整個頁面。
+
+### 8.2 `MCRI` 的定位
+
+現在 MCRI 已能正常運作，但屬於可用的工程版，不是最終研究版。
+
+### 8.3 `AKT / PPO`
+
+目前是完整流程 + 工程近似版，還沒接真模型。
 
 ---
 
-## 10. 一句話狀態摘要
+## 9. 待完成事項
 
-主專案已成功承接 `AST_Research` 的 agent-skill / live_show 能力，
-`practice` 助教已切到 `qwen3-vl-8b` 並收斂成國中生提示模式，
-`live_show` 下一題卡死已修掉，
-缺失的 MCRI evaluator 也已重建回來，
-目前最值得做的是在 4060 8GB 展演機上完成一輪真機 smoke test 與分數校準。
+### 短期
+
+1. 把其他 `family_id` 的微技能腳本補齊
+2. 讓 `adaptive_summative` 的題目更完整、更像真正診斷測驗
+3. 進一步整理 `RAG` 的課本級提示來源
+4. 把 `dashboard` 每個大單元的入口掛好
+
+### 中期
+
+5. 將 `AKT` 與 `PPO` 從 stub 升級為真模型接法
+6. 建立更完整的 `family registry / manifest`
+7. 建立更完整的研究輸出資料
+
+### 長期
+
+8. 讓論文系統成為可重現、可展示、可維護的完整產品
+
+---
+
+## 10. 回家後要怎麼接著做
+
+你回家後，只要先看這份檔案，接著從這幾個檔案開始：
+
+1. [SHOWREEL_LOGIC.md](D:/Python/Mathproject/SHOWREEL_LOGIC.md)
+2. [templates/adaptive_practice_v2.html](D:/Python/Mathproject/templates/adaptive_practice_v2.html)
+3. [core/adaptive/rag_hint_engine.py](D:/Python/Mathproject/core/adaptive/rag_hint_engine.py)
+4. [core/adaptive/session_engine.py](D:/Python/Mathproject/core/adaptive/session_engine.py)
+5. [core/routes/adaptive_api.py](D:/Python/Mathproject/core/routes/adaptive_api.py)
+
+如果要從交接文件直接繼續，可以直接說：
+
+> 請從 `SHOWREEL_LOGIC.md` 繼續，先處理 `adaptive_summative` 的下一步。
+
+---
+
+## 11. 最後一句
+
+目前專案已經有：
+
+- 可展示的 `adaptive_summative`
+- 可展示的 `live_show`
+- 可用的 `practice` 助教
+- 真可用的 `RAG` 補救層
+- 可用的 `MCRI`
+
+接下來要做的不是重新開始，而是：
+
+1. 補齊其餘微技能腳本
+2. 強化 AKT / PPO 接法
+3. 讓首頁入口與論文敘事完全一致

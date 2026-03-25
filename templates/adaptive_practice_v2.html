@@ -1,0 +1,737 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ unit_name }}</title>
+  <style>
+    :root {
+      --bg: #eef4fb;
+      --panel: #ffffff;
+      --line: #d8e1ef;
+      --ink: #1f2a44;
+      --muted: #64748b;
+      --accent: #1565c0;
+      --accent-soft: #edf5ff;
+      --ok: #1f9d55;
+      --warn: #d97706;
+      --hint-bg: #fff7e8;
+      --hint-line: #f1cc84;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, rgba(21, 101, 192, 0.08), transparent 28%), linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    }
+    .shell { max-width: 1400px; margin: 0 auto; padding: 22px 18px 36px; }
+    .hero { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:14px; }
+    .hero h1 { margin:0 0 4px; font-size:28px; }
+    .hero p { margin:0; line-height:1.65; color:var(--muted); max-width:900px; font-size:14px; }
+    .badge { display:inline-flex; align-items:center; justify-content:center; min-width:260px; text-align:center; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 14px 44px rgba(18,44,99,.06); padding:14px; }
+    .panel h2 { margin:0 0 12px; font-size:17px; }
+    .top-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-bottom:14px; align-items:stretch; }
+    .top-grid .panel { min-width:0; }
+    .top-grid .panel h2 { font-size:18px; }
+    .bottom-grid { display:grid; grid-template-columns:minmax(0,1.85fr) minmax(280px,.75fr); gap:14px; align-items:start; }
+    .left-stack, .assistant-shell { display:grid; gap:16px; }
+    .assistant-shell { position:sticky; top:14px; }
+    .meta { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
+    .chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
+    .chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .value { font-size:18px; font-weight:700; }
+    .status { min-height:18px; font-size:13px; color:var(--muted); }
+    .trajectory-board { height:188px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(180deg,#fbfdff 0%,#f5f8fc 100%); padding:12px 10px 12px 12px; display:flex; flex-direction:column; gap:8px; justify-content:flex-start; overflow-y:auto; overflow-x:hidden; scrollbar-gutter:stable; }
+    .trajectory-board::-webkit-scrollbar { width:10px; }
+    .trajectory-board::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
+    .trajectory-board::-webkit-scrollbar-track { background:transparent; }
+    .trajectory-empty { padding:6px 4px; font-size:13px; color:var(--muted); }
+    .track-row { display:grid; grid-template-columns:58px 1fr 118px; gap:8px; align-items:center; font-size:13px; }
+    .bar { position:relative; height:12px; overflow:hidden; border-radius:999px; background:#e7eef8; }
+    .threshold { position:absolute; inset:0 auto 0 65%; width:2px; background:rgba(220,38,38,.45); }
+    .fill { height:100%; background:linear-gradient(90deg,#1565c0 0%,#31a2ac 100%); }
+    .strategy-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; background:var(--accent-soft); color:#1e5faa; }
+    .review-active { background:#fff2dd; color:#a75e00; }
+    .apr-ring { width:78px; height:78px; border-radius:50%; background:conic-gradient(var(--accent) 0deg, var(--accent) 162deg, #e6eef8 162deg); display:grid; place-items:center; position:relative; }
+    .apr-ring::before { content:""; width:58px; height:58px; border-radius:50%; background:#fff; position:absolute; }
+    .apr-core { position:relative; z-index:1; text-align:center; line-height:1.1; }
+    .apr-core strong { display:block; font-size:20px; }
+    .apr-core span { font-size:11px; color:var(--muted); }
+    .overview-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .overview-left { display:flex; align-items:center; gap:14px; }
+    .overview-copy h2 { margin:0 0 4px; font-size:18px; }
+    .overview-copy p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
+    .soft-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#f7fbff; color:#31557d; font-size:12px; font-weight:700; }
+    .strategy-badge { display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); font-size:14px; font-weight:700; background:var(--accent-soft); color:#1e5faa; }
+    .strategy-badge.review { background:#fff7e8; color:#9a5800; border-color:#f0d39a; }
+    .question-box { min-height:128px; border:1px dashed #bdd1ec; border-radius:14px; background:#fbfdff; padding:14px; margin-bottom:10px; }
+    .question-family { margin-bottom:10px; font-size:14px; color:var(--muted); }
+    .question-text { white-space:pre-wrap; line-height:1.65; font-size:21px; font-weight:700; }
+    .question-text .mjx-container { font-size: 1.02em !important; }
+    .question-context { margin-top:10px; font-size:14px; color:#60708c; }
+    .subskills { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0; }
+    .subskills span { padding:6px 10px; border-radius:999px; font-size:13px; background:#edf5ff; color:#245ea5; }
+    .answer-box { display:grid; grid-template-columns:1fr 150px; gap:10px; margin-bottom:10px; }
+    .answer-box input, .assistant-input input { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:16px; background:#fff; font-family:inherit; }
+    .controls, .guide-buttons { display:flex; flex-wrap:wrap; gap:8px; }
+    .canvas-tools { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; overflow-x:auto; overflow-y:hidden; padding-bottom:2px; }
+    button { border:0; border-radius:12px; padding:10px 16px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .primary { background:var(--accent); color:#fff; }
+    .secondary { background:#eaf1fa; color:var(--ink); }
+    .success { background:var(--ok); color:#fff; }
+    .warning { background:var(--warn); color:#fff; }
+    .workspace-header { display:flex; justify-content:space-between; align-items:end; gap:12px; margin-bottom:10px; }
+    .workspace-header p { margin:0; font-size:13px; line-height:1.55; color:var(--muted); }
+    .canvas-tools { margin-bottom:10px; }
+    .tool-btn { border:1px solid transparent; background:#eff4fb; color:var(--ink); padding:7px 9px; border-radius:10px; min-width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; }
+    .tool-btn.active { background:#d9ebff; border-color:#7ab4f0; color:#0f5aa8; }
+    .tool-btn svg { width:18px; height:18px; stroke:currentColor; stroke-width:1.9; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .tool-sep { width:1px; height:22px; background:#d6deeb; margin:0 4px; }
+    .pen-width-wrap { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:10px; background:#eff4fb; font-size:12px; color:var(--muted); height:36px; }
+    .pen-width-wrap input[type="range"] { width:84px; }
+    .color-dot { display:inline-block; width:16px; height:16px; vertical-align:middle; border-radius:999px; border:2px solid rgba(255,255,255,.92); box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+    .canvas-tools .warning { white-space:nowrap; height:36px; border-radius:10px; padding:7px 12px; }
+    .canvas-wrap { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:linear-gradient(90deg, rgba(21,101,192,.06) 1px, transparent 1px), linear-gradient(rgba(21,101,192,.06) 1px, transparent 1px), #ffffff; background-size:22px 22px; }
+    #handwriting-canvas { display:block; width:100%; height:300px; background:transparent; cursor:crosshair; touch-action:none; user-select:none; }
+    .assistant-title { color:#9b59b6; text-align:center; margin:0 0 12px; font-size:20px; font-weight:700; }
+    .assistant-rag-scope { margin:-2px 0 10px; text-align:center; font-size:12px; color:#8f5e18; background:#fff5da; border:1px solid #f1cf7e; border-radius:999px; padding:6px 10px; }
+    .assistant-banner { padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#f5f8fd; font-size:14px; line-height:1.65; color:#334155; }
+    .assistant-banner.review { background:var(--hint-bg); border-color:var(--hint-line); color:#784c00; box-shadow:0 10px 24px rgba(243,201,118,.18); }
+    .hint-box { min-height:160px; padding:14px; border:1px solid var(--hint-line); border-radius:14px; background:var(--hint-bg); line-height:1.75; color:#5b4516; }
+    .adaptive-hint { display:flex; flex-direction:column; gap:10px; }
+    .adaptive-hint .hint-title { font-size:18px; font-weight:700; color:#7a4c00; }
+    .adaptive-hint .hint-chip { display:inline-block; margin:4px 6px 0 0; padding:6px 10px; border-radius:999px; background:#fff5d9; border:1px solid #f0cf7a; color:#8a5b00; font-size:12px; line-height:1.4; }
+    .adaptive-hint .hint-section { background:#fffaf0; border:1px solid #efcf91; border-radius:12px; padding:10px 12px; }
+    .adaptive-hint .hint-section-title { font-size:13px; font-weight:700; margin-bottom:6px; color:#8a5b00; }
+    .adaptive-hint .hint-section ul { margin:0; padding-left:18px; }
+    .adaptive-hint .hint-section li { margin:4px 0; line-height:1.6; }
+    .adaptive-hint .hint-source { font-size:12px; color:#8d6a2b; opacity:.88; }
+    .chat-history { height:clamp(280px, 36vh, 420px); overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:12px 10px 12px 12px; border:1px solid #dee2e6; border-radius:10px; background:#ffffff; scroll-behavior:smooth; overscroll-behavior:contain; scrollbar-gutter:stable; }
+    .chat-history::-webkit-scrollbar { width:10px; }
+    .chat-history::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
+    .chat-history::-webkit-scrollbar-track { background:transparent; }
+    .msg { max-width:94%; padding:10px 12px; border-radius:12px; line-height:1.65; font-size:14px; white-space:pre-wrap; }
+    .msg.user { align-self:flex-end; background:#e7f2ff; color:#17447a; }
+    .msg.bot { align-self:flex-start; background:#ffffff; color:#2c3e50; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .guide-buttons { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
+    .guide-buttons::-webkit-scrollbar { display:none; }
+    .guide-buttons button { background:#eef4fb; color:#274472; padding:8px 12px; font-size:13px; font-weight:600; white-space:nowrap; border-radius:999px; }
+    .assistant-input { display:grid; grid-template-columns:1fr 110px; gap:8px; }
+    .assistant-input input { min-height:44px; }
+    #assistantSendBtn { background:#16a34a; }
+    .nav-kpis { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .nav-chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
+    .nav-chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .nav-chip span { font-size:18px; font-weight:700; }
+    .nav-panel { display:flex; flex-direction:column; justify-content:space-between; }
+    .nav-panel .nav-kpis { grid-template-columns:1fr; }
+    .assistant-shell .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .assistant-card.idle { opacity:.92; }
+    .assistant-card.review { border-color:#f0d39a; box-shadow:0 0 0 4px rgba(245, 158, 11, 0.18), 0 18px 44px rgba(18,44,99,.08); }
+    .json-box { margin:0; max-height:240px; overflow-y:auto; color:#384965; white-space:pre-wrap; }
+    .summary-card { display:none; border:1px solid var(--line); border-radius:14px; padding:14px; background:#f8fbff; }
+    .summary-card.show { display:block; }
+    .summary-card.pass { border-color:#b9e5c7; background:#f3fbf6; }
+    .summary-card.review { border-color:#f1cc84; background:#fff8ec; }
+    .summary-card h3 { margin:0 0 8px; font-size:18px; }
+    .summary-card p { margin:6px 0; line-height:1.7; }
+    .summary-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .summary-badges span { padding:6px 10px; border-radius:999px; background:#eef4fb; color:#31557d; font-size:13px; }
+    @media (max-width:1080px) { .top-grid, .bottom-grid { grid-template-columns:1fr; } .assistant-shell { position:static; } }
+    @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="hero">
+      <div>
+        <h1>{{ unit_name }}</h1>
+        <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
+      </div>
+      <div class="badge">{{ skill_id or 'all_catalog' }}</div>
+    </div>
+
+    <div class="top-grid">
+      <section class="panel">
+        <div class="overview-head">
+          <div class="overview-left">
+            <div class="apr-ring" id="aprRing">
+              <div class="apr-core">
+                <strong id="aprPercent">45%</strong>
+                <span>掌握度</span>
+              </div>
+            </div>
+            <div class="overview-copy">
+              <h2>本單元學習導航</h2>
+              <p>系統會依你的作答表現調整題型。掌握度越高，代表你對目前微技能越穩定。</p>
+            </div>
+          </div>
+          <div class="soft-badge" id="familyBadge">微技能：待診斷</div>
+        </div>
+        <div class="meta">
+          <div class="chip"><strong>目前題號</strong><div class="value" id="stepValue">0</div></div>
+          <div class="chip"><strong>挫折指數</strong><div class="value" id="frustrationValue">0</div></div>
+        </div>
+        <div class="strategy-badge" id="strategyBadge">🟢 當前策略：探索新知</div>
+        <div style="height:8px;"></div>
+        <div class="status" id="statusText">尚未啟動。</div>
+      </section>
+
+      <section class="panel nav-panel">
+        <div>
+          <h2>系統導航狀態</h2>
+          <p class="panel-note">系統會依照你的掌握度與作答表現，決定現在要探索新知、維持熟練，或切換到補救教學。</p>
+        </div>
+        <div class="nav-kpis">
+          <div class="nav-chip"><strong>目前策略</strong><span id="strategyMini">探索</span></div>
+          <div class="nav-chip"><strong>連錯次數</strong><span id="frustrationMini">0</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>動態精熟軌跡圖</h2>
+        <div class="trajectory-board" id="trajectoryBox">
+          <div class="trajectory-empty">尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="left-stack">
+        <section class="panel">
+          <h2>題目與作答</h2>
+          <div class="summary-card" id="summaryCard">
+            <h3 id="summaryTitle">本次診斷完成</h3>
+            <p id="summaryMessage"></p>
+            <p id="summaryAction"></p>
+            <div class="summary-badges" id="summaryBadges"></div>
+          </div>
+          <div class="question-box">
+            <div class="question-family" id="questionFamily">Family: -</div>
+            <div class="question-text" id="questionText">按下「開始診斷」後載入第一題。</div>
+            <div class="question-context" id="questionContext"></div>
+            <div class="subskills" id="subskillsBox"></div>
+          </div>
+          <div class="answer-box">
+            <input id="answerInput" type="text" placeholder="請輸入你的答案，例如：-5/3 或 12" disabled>
+            <button class="primary" id="submitBtn" disabled>送出答案</button>
+          </div>
+          <div class="controls">
+            <button class="primary" id="bootstrapBtn">開始診斷</button>
+            <button class="secondary" id="hintBtn" disabled>查看補救提示</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="workspace-header">
+            <div>
+              <h2 style="margin:0 0 6px;">手寫計算紙</h2>
+              <p>把中間步驟寫出來，比較不會把所有運算都塞在腦中。你也可以把白板送給 AI 幫你檢查。</p>
+            </div>
+          </div>
+          <div class="canvas-tools">
+            <button class="tool-btn active" id="penToolBtn" type="button" title="畫筆" aria-label="畫筆">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </button>
+            <button class="tool-btn" id="eraserToolBtn" type="button" title="橡皮擦" aria-label="橡皮擦">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21 10.6-10.6a2 2 0 0 0 0-2.8l-2.6-2.6a2 2 0 0 0-2.8 0L1.6 15.6a2 2 0 0 0 0 2.8L4.2 21"/><path d="M22 21H7"/></svg>
+            </button>
+            <button class="tool-btn active" id="blackInkBtn" type="button" title="黑筆"><span class="color-dot" style="background:#1f2937;"></span></button>
+            <button class="tool-btn" id="blueInkBtn" type="button" title="藍筆"><span class="color-dot" style="background:#1565c0;"></span></button>
+            <button class="tool-btn" id="redInkBtn" type="button" title="紅筆"><span class="color-dot" style="background:#dc2626;"></span></button>
+            <button class="tool-btn" id="greenInkBtn" type="button" title="綠筆"><span class="color-dot" style="background:#16a34a;"></span></button>
+            <div class="tool-sep"></div>
+            <div class="pen-width-wrap"><span>筆寬</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
+            <div class="tool-sep"></div>
+            <button class="tool-btn" id="undoBtn" type="button" title="上一步" aria-label="上一步">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
+            </button>
+            <button class="tool-btn" id="redoBtn" type="button" title="下一步" aria-label="下一步">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
+            </button>
+            <button class="tool-btn" id="clearCanvasBtn" type="button" title="清空白板" aria-label="清空白板">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
+            </button>
+            <button class="warning" id="analyzeCanvasBtn" type="button">AI 檢查手寫</button>
+          </div>
+          <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
+        </section>
+      </div>
+
+      <div class="assistant-shell">
+        <section class="panel assistant-card idle" id="assistantCard">
+          <div class="assistant-title">AI 助教（這題專用）</div>
+          <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
+          <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
+          <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
+          <div style="height:12px;"></div>
+          <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+          <div style="height:10px;"></div>
+          <div class="guide-buttons">
+            <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
+            <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+            <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+          </div>
+          <div style="height:10px;"></div>
+          <div class="assistant-input">
+            <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+            <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>目前題目 JSON 摘要</h2>
+          <pre class="json-box" id="jsonBox"></pre>
+        </section>
+      </div>
+    </div>
+</div>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <script>
+    const state = { sessionId: "", stepNumber: 0, currentApr: 0.45, ppoStrategy: 1, frustrationIndex: 0, currentFamilyId: "", currentQuestionText: "", currentContext: "", currentSubskills: [], history: [] };
+    const skillId = {{ skill_id|tojson }};
+    const basePayload = {};
+    if (skillId) basePayload.skill_id = skillId;
+
+    const canvas = document.getElementById("handwriting-canvas");
+    const ctx = canvas.getContext("2d");
+    const answerInput = document.getElementById("answerInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const bootstrapBtn = document.getElementById("bootstrapBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const analyzeCanvasBtn = document.getElementById("analyzeCanvasBtn");
+    const assistantInput = document.getElementById("assistantInput");
+    const assistantSendBtn = document.getElementById("assistantSendBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const clearCanvasBtn = document.getElementById("clearCanvasBtn");
+    const penWidthRange = document.getElementById("penWidthRange");
+    const penWidthLabel = document.getElementById("penWidthLabel");
+
+    let isDrawing = false;
+    let isErasing = false;
+    let currentColor = "#1f2937";
+    let currentWidth = 2;
+    let undoStack = [];
+    let redoStack = [];
+
+    function strategyName(code) { const map = {0:"0 Max-Fisher",1:"1 ZPD",2:"2 Diversity",3:"3 Review"}; return map[code] || String(code); }
+    function strategyLabel(code) { const map = {0:"最大資訊探索",1:"近側發展區",2:"多樣化抽樣",3:"觀念補救"}; return map[code] || String(code); }
+    function strategyBadgeText(code) {
+      const map = {
+        0: "🟢 當前策略：探索新知",
+        1: "🔵 當前策略：近側發展",
+        2: "🟣 當前策略：多樣抽樣",
+        3: "🛡️ 當前策略：觀念補救",
+      };
+      return map[code] || `策略：${code}`;
+    }
+    function setText(id, text) {
+      const node = document.getElementById(id);
+      if (node) node.textContent = text;
+    }
+    function setStatus(text) { setText("statusText", text); }
+    function setAssistantBanner(text, isReview = false) {
+      const banner = document.getElementById("assistantBanner");
+      const card = document.getElementById("assistantCard");
+      banner.textContent = text;
+      banner.classList.toggle("review", isReview);
+      card.classList.toggle("review", isReview);
+      card.classList.toggle("idle", !isReview);
+    }
+    function updateRagScopeBadge(mode = "idle") {
+      const badge = document.getElementById("ragScopeBadge");
+      if (!badge) return;
+      const map = {
+        idle: "RAG 影響範圍：右側補救提示、手寫檢查摘要",
+        review: "RAG 已啟用：現在會優先給你這題的補救提示",
+        active: "RAG 目前只影響右側補救提示，不會改變題目本身",
+        done: "RAG 已結束：你可以看總結，或回頭複習相同微技能",
+      };
+      badge.textContent = map[mode] || map.idle;
+    }
+    const SUBSKILL_LABELS = {
+      sign_handling: "正負號判讀",
+      add_sub: "整數加減",
+      mul_div: "整數乘除",
+      mixed_ops: "四則混合運算",
+      absolute_value: "絕對值",
+      parentheses: "括號運算",
+      divide_terms: "分項整理",
+      conjugate_rationalize: "分母有理化",
+    };
+    function toFriendlySubskillLabel(code) {
+      if (!code) return "";
+      return SUBSKILL_LABELS[code] || String(code).replaceAll("_", " ");
+    }
+    function scrollChatToBottom() {
+      const box = document.getElementById("chatHistory");
+      if (!box) return;
+      box.scrollTop = box.scrollHeight;
+    }
+    function resetChatHistory() {
+      const box = document.getElementById("chatHistory");
+      if (!box) return;
+      box.innerHTML = '<div class="msg bot">你好，我是這一題的 AI 助教。你先自己做題，我會在旁邊提醒你重點，但不會直接把答案講出來。</div>';
+      scrollChatToBottom();
+    }
+    function resetHintBox() {
+      const box = document.getElementById("hintBox");
+      if (!box) return;
+      box.innerHTML = "這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。";
+    }
+    function addMessage(role, text) {
+      const box = document.getElementById("chatHistory");
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      div.textContent = text;
+      box.appendChild(div);
+      scrollChatToBottom();
+    }
+    function summarizeHandwritingResult(data) {
+      const messages = [];
+      if (data && data.correct === true) {
+        messages.push("我看過你的手寫內容了，這一題的計算方向大致正確。");
+      } else if (data && data.is_process_correct === true) {
+        messages.push("你的步驟方向大致正確，再檢查最後一個計算有沒有算準。");
+      } else {
+        messages.push("我看過你的手寫內容了，這一題先不要急著往下算。");
+      }
+
+      if (Array.isArray(data?.focus_points) && data.focus_points.length) {
+        messages.push(`先特別檢查：${data.focus_points.join("、")}。`);
+      } else if (Array.isArray(data?.subskill_labels) && data.subskill_labels.length) {
+        messages.push(`先特別檢查：${data.subskill_labels.join("、")}。`);
+      } else {
+        messages.push("先檢查你有沒有看清楚數字、符號和運算順序。");
+      }
+
+      if (typeof data?.reply === "string" && data.reply.trim()) {
+        const cleaned = data.reply
+          .replace(/[{}[\]"]/g, " ")
+          .replace(/error_type|is_process_correct|next_question|correct|reply|description|improvement_suggestion/gi, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (cleaned) messages.push(cleaned);
+      }
+      return messages.join(" ");
+    }
+    function updateOverview(response, q) {
+      const apr = Number(response.current_apr || 0);
+      const percent = Math.round(apr * 100);
+      setText("aprPercent", `${percent}%`);
+      const aprRing = document.getElementById("aprRing");
+      if (aprRing) aprRing.style.background = `conic-gradient(var(--accent) 0deg, var(--accent) ${Math.max(4, percent) * 3.6}deg, #e6eef8 ${Math.max(4, percent) * 3.6}deg)`;
+      setText("stepValue", String(response.step_number));
+      setText("frustrationValue", String(response.frustration_index));
+      setText("frustrationMini", String(response.frustration_index));
+      setText("familyBadge", `微技能：${response.target_family_id || "待診斷"}`);
+      setText("strategyMini", strategyLabel(response.ppo_strategy));
+      const strategyBadge = document.getElementById("strategyBadge");
+      if (strategyBadge) {
+        strategyBadge.textContent = strategyBadgeText(response.ppo_strategy);
+        strategyBadge.classList.toggle("review", response.ppo_strategy === 3);
+      }
+      if (q && q.family_name) {
+        setText("questionFamily", `Family: ${response.target_family_id} · ${q.family_name}`);
+      } else {
+        setText("questionFamily", `Family: ${response.target_family_id || "-"}`);
+      }
+      state.currentApr = apr;
+    }
+    function setFinishedState(disabled) {
+      answerInput.disabled = disabled;
+      submitBtn.disabled = disabled;
+      hintBtn.disabled = disabled;
+      assistantSendBtn.disabled = disabled;
+      assistantInput.disabled = disabled;
+      analyzeCanvasBtn.disabled = disabled;
+    }
+    async function typesetMath(element) {
+      if (!element || !window.MathJax || !window.MathJax.typesetPromise) return;
+      try {
+        await window.MathJax.typesetPromise([element]);
+      } catch (err) {
+        console.warn("MathJax typeset failed", err);
+      }
+    }
+
+    function renderTrajectory() {
+      const box = document.getElementById("trajectoryBox");
+      if (!state.history.length) {
+        box.innerHTML = "<div class='trajectory-empty'>尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>";
+        return;
+      }
+      box.innerHTML = state.history.map((item) => {
+        const width = Math.max(4, Math.min(100, Math.round(item.current_apr * 100)));
+        const reviewClass = item.ppo_strategy === 3 ? "strategy-tag review-active" : "strategy-tag";
+        const reviewText = item.completed ? "完成" : (item.ppo_strategy === 3 ? "🛡 Review" : strategyName(item.ppo_strategy));
+        const stepLabel = item.completed ? `Step ${item.step_number}（結束）` : `Step ${item.step_number}`;
+        return `<div class="track-row"><div>${stepLabel}</div><div class="bar"><div class="threshold"></div><div class="fill" style="width:${width}%"></div></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span>${Math.round(item.current_apr * 100)}%</span><span class="${reviewClass}">${reviewText}</span></div></div>`;
+      }).join("");
+      requestAnimationFrame(() => {
+        box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    function updateUndoRedoButtons() { undoBtn.disabled = undoStack.length <= 1; redoBtn.disabled = redoStack.length === 0; }
+    function saveState() { const current = canvas.toDataURL(); if (undoStack.length > 0 && undoStack[undoStack.length - 1] === current) return; redoStack = []; undoStack.push(current); if (undoStack.length > 50) undoStack.shift(); updateUndoRedoButtons(); }
+    function restoreFromDataUrl(dataUrl) { const img = new Image(); img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.clientWidth, canvas.clientHeight); }; img.src = dataUrl; }
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(rect.width));
+      const height = Math.max(1, Math.floor(rect.height));
+      const snapshot = undoStack.length ? undoStack[undoStack.length - 1] : null;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      if (snapshot) restoreFromDataUrl(snapshot); else clearCanvas(false);
+    }
+    function clearCanvas(resetHistory = true) { ctx.clearRect(0, 0, canvas.width, canvas.height); if (resetHistory) { undoStack = []; redoStack = []; saveState(); } }
+    function getPointerPos(event) { const rect = canvas.getBoundingClientRect(); const point = event.touches && event.touches[0] ? event.touches[0] : event; return { x: point.clientX - rect.left, y: point.clientY - rect.top }; }
+    function setPenStyle() { ctx.lineWidth = isErasing ? 24 : currentWidth; ctx.strokeStyle = isErasing ? "#ffffff" : currentColor; ctx.lineCap = "round"; ctx.lineJoin = "round"; }
+    function startDraw(event) { event.preventDefault(); isDrawing = true; const pos = getPointerPos(event); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); setPenStyle(); saveState(); }
+    function draw(event) { if (!isDrawing) return; event.preventDefault(); const pos = getPointerPos(event); setPenStyle(); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }
+    function stopDraw() { if (!isDrawing) return; isDrawing = false; ctx.closePath(); saveState(); }
+    function setActiveToolButton(buttonId) { ["penToolBtn", "eraserToolBtn"].forEach((id) => document.getElementById(id).classList.toggle("active", id === buttonId)); }
+    function setActiveColorButton(buttonId) { ["blackInkBtn", "blueInkBtn", "redInkBtn", "greenInkBtn"].forEach((id) => document.getElementById(id).classList.toggle("active", id === buttonId)); }
+    function activatePen(color, buttonId) { isErasing = false; currentColor = color; canvas.style.cursor = "crosshair"; setActiveToolButton("penToolBtn"); setActiveColorButton(buttonId); }
+    function activateEraser() { isErasing = true; canvas.style.cursor = "cell"; setActiveToolButton("eraserToolBtn"); }
+    function undo() { if (undoStack.length <= 1) return; redoStack.push(undoStack.pop()); restoreFromDataUrl(undoStack[undoStack.length - 1]); updateUndoRedoButtons(); }
+    function redo() { if (redoStack.length === 0) return; const next = redoStack.pop(); undoStack.push(next); restoreFromDataUrl(next); updateUndoRedoButtons(); }
+
+    async function postAdaptive(payload) {
+      const response = await fetch("/api/adaptive/submit_and_get_next", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "adaptive request failed");
+      return data;
+    }
+
+      async function fetchHint() {
+        const query = new URLSearchParams();
+        state.currentSubskills.forEach((item) => query.append("subskill_nodes", item));
+        if (skillId) query.set("skill_id", skillId);
+        if (state.currentFamilyId) query.set("family_id", state.currentFamilyId);
+        if (state.currentQuestionText) query.set("question_text", state.currentQuestionText);
+        if (state.currentContext) query.set("question_context", state.currentContext);
+        const response = await fetch(`/api/adaptive/rag_hint?${query.toString()}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "rag hint failed");
+        document.getElementById("hintBox").innerHTML = data.hint_html;
+        if (data.hint_summary) {
+          addMessage("bot", `這題先看：${data.hint_summary}。`);
+        } else if (Array.isArray(data.subskill_labels) && data.subskill_labels.length) {
+          addMessage("bot", `這題先看這些重點：${data.subskill_labels.join("、")}。`);
+        }
+        scrollChatToBottom();
+        return data;
+      }
+
+    async function askTutor(question, sourceLabel = "user") {
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再使用 AI 助教。"); return; }
+      addMessage(sourceLabel === "user" ? "user" : "bot", question);
+      addMessage("bot", "AI 助教正在整理提示...");
+      const messages = document.getElementById("chatHistory").querySelectorAll(".msg");
+      const thinking = messages[messages.length - 1];
+      try {
+        const response = await fetch("/chat_ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, context: `Adaptive diagnosis | family=${state.currentFamilyId} | subskills=${state.currentSubskills.join(", ")}`, question_text: state.currentQuestionText })
+        });
+        const data = await response.json();
+        thinking.textContent = (data.reply || "先檢查題目的條件與運算順序。").trim();
+        scrollChatToBottom();
+      } catch (err) {
+        thinking.textContent = "目前助教暫時沒有整理出新提示，先檢查你是不是抓對了這一題的核心觀念。";
+        scrollChatToBottom();
+      }
+    }
+
+    async function analyzeHandwriting() {
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再進行手寫檢查。"); return; }
+      try {
+        const imageDataUrl = canvas.toDataURL("image/png");
+        addMessage("user", "請幫我檢查我白板上的手寫步驟。");
+        addMessage("bot", "正在分析你的手寫內容...");
+        const messages = document.getElementById("chatHistory").querySelectorAll(".msg");
+        const thinking = messages[messages.length - 1];
+        const response = await fetch("/analyze_handwriting", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_data_url: imageDataUrl,
+            question_text: state.currentQuestionText,
+            question_context: state.currentContext,
+            family_id: state.currentFamilyId,
+            subskill_nodes: state.currentSubskills,
+          })
+        });
+        const data = await response.json();
+        thinking.textContent = summarizeHandwritingResult(data);
+      } catch (err) {
+        addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
+      }
+    }
+
+    function renderQuestion(response) {
+      const q = response.new_question_data || {};
+      state.sessionId = response.session_id;
+      state.stepNumber = response.step_number;
+      state.currentApr = response.current_apr;
+      state.ppoStrategy = response.ppo_strategy;
+      state.frustrationIndex = response.frustration_index;
+      state.currentFamilyId = response.target_family_id;
+      state.currentQuestionText = q.question_text || q.question || "";
+      state.currentContext = q.context_string || "";
+      state.currentSubskills = response.target_subskills || [];
+      state.history.push({ step_number: response.step_number, current_apr: response.current_apr, ppo_strategy: response.ppo_strategy });
+      updateOverview(response, q);
+      const questionEl = document.getElementById("questionText");
+      questionEl.textContent = state.currentQuestionText || "(no question)";
+      setText("questionContext", state.currentContext);
+      const subskillsBox = document.getElementById("subskillsBox");
+      if (subskillsBox) subskillsBox.innerHTML = state.currentSubskills.map((item) => `<span>${toFriendlySubskillLabel(item)}</span>`).join("");
+      setText("jsonBox", JSON.stringify(q, null, 2));
+      setFinishedState(false);
+      answerInput.value = "";
+      renderTrajectory();
+      clearCanvas(true);
+      resetChatHistory();
+      resetHintBox();
+      if (response.ppo_strategy === 3) setAssistantBanner("這一題先切到補救模式。你先看右邊提示，再回到左邊慢慢做。", true);
+      else setAssistantBanner("你可以先自己解題。若有卡住，再看右邊提示，或直接問我這一題的下一步。", false);
+      setStatus(`已載入 Step ${response.step_number}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
+      typesetMath(questionEl);
+    }
+
+    function renderSummary(summary) {
+      const card = document.getElementById("summaryCard");
+      const passed = Boolean(summary && summary.passed);
+      const finalApr = Number(summary?.final_apr ?? state.currentApr ?? 0);
+      card.classList.add("show");
+      card.classList.toggle("pass", passed);
+      card.classList.toggle("review", !passed);
+      setText("aprPercent", `${Math.round(finalApr * 100)}%`);
+      const aprRing = document.getElementById("aprRing");
+      if (aprRing) aprRing.style.background = `conic-gradient(var(--accent) 0deg, var(--accent) ${Math.max(4, Math.round(finalApr * 100)) * 3.6}deg, #e6eef8 ${Math.max(4, Math.round(finalApr * 100)) * 3.6}deg)`;
+      setText("stepValue", String(summary?.answered_steps ?? state.stepNumber));
+      setText("frustrationValue", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
+      setText("frustrationMini", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
+      setText("strategyMini", passed ? "完成" : strategyLabel(state.ppoStrategy));
+      setText("familyBadge", `微技能：${summary?.visited_families?.slice(-1)[0] || state.currentFamilyId || "待診斷"}`);
+      setText("summaryTitle", summary?.title || "本次診斷完成");
+      setText("summaryMessage", summary?.message || "");
+      setText("summaryAction", summary?.next_action || "");
+      const badges = [];
+      badges.push(`作答題數：${summary?.answered_steps ?? 0}`);
+      badges.push(`最終 APR：${Math.round((summary?.final_apr ?? 0) * 100)}%`);
+      if (Array.isArray(summary?.visited_families)) {
+        badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
+      }
+      document.getElementById("summaryBadges").innerHTML = badges.map((item) => `<span>${item}</span>`).join("");
+      setFinishedState(true);
+      setText("questionText", passed ? "你已完成本單元自適應診斷。" : "本次診斷已完成，請先看補強建議。");
+      setText("questionContext", "");
+      const subskillsBox = document.getElementById("subskillsBox");
+      if (subskillsBox) subskillsBox.innerHTML = "";
+      setStatus("本次診斷已結束。");
+      setAssistantBanner(passed ? "這個單元已經達標了。你可以先換下一單元，或再做一次加強。" : "這次診斷已結束。先看右邊提示，再回頭補強同類題型。", !passed);
+      updateRagScopeBadge("done");
+    }
+
+    bootstrapBtn.addEventListener("click", async () => {
+      try {
+        setStatus("正在建立診斷 session...");
+        state.history = [];
+        resetChatHistory();
+        resetHintBox();
+        updateRagScopeBadge("idle");
+        const data = await postAdaptive({ ...basePayload, step_number: 0 });
+        document.getElementById("summaryCard").className = "summary-card";
+        renderQuestion(data);
+      } catch (err) { setStatus(`啟動失敗：${err.message}`); }
+    });
+
+      submitBtn.addEventListener("click", async () => {
+        try {
+          const answer = answerInput.value.trim();
+          if (!answer) { setStatus("請先輸入答案。"); return; }
+          const data = await postAdaptive({ ...basePayload, session_id: state.sessionId, step_number: state.stepNumber, user_answer: answer });
+          if (data.completed) {
+            state.history.push({
+              step_number: data.step_number,
+              current_apr: data.current_apr,
+              ppo_strategy: data.ppo_strategy,
+              completed: true,
+            });
+            renderTrajectory();
+            updateOverview(data, data.new_question_data || {});
+            renderSummary(data.summary || {});
+            setText("jsonBox", JSON.stringify(data.summary || {}, null, 2));
+            return;
+          }
+        renderQuestion(data);
+        if (data.ppo_strategy === 3) {
+          updateRagScopeBadge("review");
+          await fetchHint();
+          addMessage("bot", "我已經依照你目前卡住的微技能，整理出補救提示。先看右側說明，再試下一題。");
+        } else {
+          updateRagScopeBadge("active");
+        }
+      } catch (err) { setStatus(`提交失敗：${err.message}`); }
+    });
+
+    answerInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); submitBtn.click(); } });
+    hintBtn.addEventListener("click", async () => { try { updateRagScopeBadge("review"); await fetchHint(); setAssistantBanner("你已手動請求補救提示。助教會優先針對本題相關的 subskill 給出提示。", true); setStatus("已載入補救提示。"); } catch (err) { setStatus(`提示載入失敗：${err.message}`); } });
+    document.querySelectorAll("[data-guide]").forEach((btn) => btn.addEventListener("click", async () => { await askTutor(btn.dataset.guide, "user"); }));
+    assistantSendBtn.addEventListener("click", async () => { const question = assistantInput.value.trim(); if (!question) { setStatus("請輸入你想問助教的問題。"); return; } assistantInput.value = ""; await askTutor(question, "user"); });
+    assistantInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); assistantSendBtn.click(); } });
+    analyzeCanvasBtn.addEventListener("click", analyzeHandwriting);
+
+    document.getElementById("penToolBtn").addEventListener("click", () => activatePen(currentColor, currentColor === "#1565c0" ? "blueInkBtn" : currentColor === "#dc2626" ? "redInkBtn" : currentColor === "#16a34a" ? "greenInkBtn" : "blackInkBtn"));
+    document.getElementById("eraserToolBtn").addEventListener("click", activateEraser);
+    document.getElementById("blackInkBtn").addEventListener("click", () => activatePen("#1f2937", "blackInkBtn"));
+    document.getElementById("blueInkBtn").addEventListener("click", () => activatePen("#1565c0", "blueInkBtn"));
+    document.getElementById("redInkBtn").addEventListener("click", () => activatePen("#dc2626", "redInkBtn"));
+    document.getElementById("greenInkBtn").addEventListener("click", () => activatePen("#16a34a", "greenInkBtn"));
+    clearCanvasBtn.addEventListener("click", () => clearCanvas(true));
+    undoBtn.addEventListener("click", undo);
+    redoBtn.addEventListener("click", redo);
+    penWidthRange.addEventListener("input", (event) => { currentWidth = Number.parseInt(event.target.value, 10) || 2; penWidthLabel.textContent = String(currentWidth); });
+
+    canvas.addEventListener("pointerdown", startDraw);
+    canvas.addEventListener("pointermove", draw);
+    canvas.addEventListener("pointerup", stopDraw);
+    canvas.addEventListener("pointerleave", stopDraw);
+    canvas.addEventListener("touchstart", startDraw, { passive: false });
+    canvas.addEventListener("touchmove", draw, { passive: false });
+    canvas.addEventListener("touchend", stopDraw, { passive: false });
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    saveState();
+    updateUndoRedoButtons();
+    assistantSendBtn.disabled = true;
+    assistantInput.disabled = true;
+    analyzeCanvasBtn.disabled = true;
+  </script>
+</body>
+</html>

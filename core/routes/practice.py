@@ -123,6 +123,22 @@ def adaptive_practice_page():
                            curriculum=curriculum)
 
 
+@practice_bp.route('/adaptive_summative')
+@login_required
+def adaptive_summative_page():
+    """
+    v1.1 PoC entrance for paper-aligned summative adaptive diagnosis.
+    """
+    skill_id = request.args.get('skill_id', '').strip()
+    unit_name = request.args.get('unit_name', '本單元自適應學習（總結性診斷）').strip()
+    return render_template(
+        'adaptive_practice_v2.html',
+        unit_name=unit_name,
+        skill_id=skill_id,
+        student_id=current_user.id,
+    )
+
+
 @practice_bp.route('/practice/<skill_id>')
 def practice(skill_id):
     """進入特定技能的練習頁面"""

@@ -120,6 +120,19 @@ def chat_ai():
         'last_context': full_question_context
     }
 
+    focus_points = []
+    for item in state.get('subskill_nodes', []) or []:
+        label = subskill_map.get(str(item), str(item).replace('_', ' '))
+        if label and label not in focus_points:
+            focus_points.append(label)
+    if not focus_points:
+        focus_points.append('看清楚數字、符號和運算順序')
+    result['subskill_labels'] = focus_points
+
+    result['question_text'] = question_text
+    result['family_id'] = family_id
+    result['question_context'] = question_context or question_text
+
     return jsonify(result)
 
 @practice_bp.route('/analyze_handwriting', methods=['POST'])
@@ -133,8 +146,21 @@ def analyze_handwriting():
     state = get_current()
     api_key = current_app.config['GEMINI_API_KEY']
     prereq_skills = state.get('prereq_skills', [])
+    question_text = (data.get('question_text') or state.get('question_text') or state.get('question') or "").strip()
+    question_context = (data.get('question_context') or state.get('question') or "").strip()
+    family_id = (data.get('family_id') or state.get('family_id') or state.get('skill') or "").strip()
+    subskill_map = {
+        'sign_handling': '正負號判讀',
+        'add_sub': '整數加減',
+        'mul_div': '整數乘除',
+        'mixed_ops': '四則混合運算',
+        'absolute_value': '絕對值',
+        'parentheses': '括號運算',
+        'divide_terms': '分項整理',
+        'conjugate_rationalize': '分母有理化',
+    }
     
-    result = analyze(image_data_url=img, context=state['question'], 
+    result = analyze(image_data_url=img, context=question_context or question_text, 
                      api_key=api_key, 
                      prerequisite_skills=prereq_skills)
 

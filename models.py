@@ -369,6 +369,23 @@ def init_db(engine):
             UNIQUE(user_id, skill_id)
         )
     ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS adaptive_learning_logs (
+            log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            session_id TEXT NOT NULL,
+            step_number INTEGER NOT NULL,
+            target_family_id TEXT NOT NULL,
+            target_subskills TEXT NOT NULL,
+            is_correct BOOLEAN NOT NULL,
+            current_apr REAL NOT NULL,
+            ppo_strategy INTEGER NOT NULL,
+            frustration_index INTEGER NOT NULL DEFAULT 0,
+            execution_latency INTEGER NOT NULL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (student_id) REFERENCES users (id)
+        )
+    ''')
 
     conn.commit()
     conn.close()
@@ -879,6 +896,41 @@ class StudentAbility(db.Model):
 
     user = db.relationship('User', backref=db.backref('student_abilities', lazy=True))
     skill = db.relationship('SkillInfo', backref=db.backref('student_abilities', lazy=True))
+
+
+class AdaptiveLearningLog(db.Model):
+    __tablename__ = 'adaptive_learning_logs'
+
+    log_id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    session_id = db.Column(db.String(64), nullable=False, index=True)
+    step_number = db.Column(db.Integer, nullable=False)
+    target_family_id = db.Column(db.String(64), nullable=False, index=True)
+    target_subskills = db.Column(db.Text, nullable=False)  # JSON serialized list
+    is_correct = db.Column(db.Boolean, nullable=False)
+    current_apr = db.Column(db.Float, nullable=False)
+    ppo_strategy = db.Column(db.Integer, nullable=False)  # 0/1/2/3
+    frustration_index = db.Column(db.Integer, nullable=False, default=0)
+    execution_latency = db.Column(db.Integer, nullable=False, default=0)  # milliseconds
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+    student = db.relationship('User', backref=db.backref('adaptive_learning_logs', lazy=True))
+
+    def to_dict(self):
+        return {
+            'log_id': self.log_id,
+            'student_id': self.student_id,
+            'session_id': self.session_id,
+            'step_number': self.step_number,
+            'target_family_id': self.target_family_id,
+            'target_subskills': json.loads(self.target_subskills) if self.target_subskills else [],
+            'is_correct': bool(self.is_correct),
+            'current_apr': float(self.current_apr),
+            'ppo_strategy': int(self.ppo_strategy),
+            'frustration_index': int(self.frustration_index),
+            'execution_latency': int(self.execution_latency),
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+        }
 
 
 class StudentUploadedQuestion(db.Model):

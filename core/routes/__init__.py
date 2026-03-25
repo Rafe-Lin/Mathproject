@@ -15,4 +15,4 @@ practice_bp = Blueprint('practice', __name__)
 live_show_bp = Blueprint('live_show', __name__)
 
 # ??銵??餉?????admin.py
-from . import auth, admin, practice, classroom, analysis, exam, knowledge_graph, live_show
+from . import auth, admin, practice, classroom, analysis, exam, knowledge_graph, live_show, adaptive_api
