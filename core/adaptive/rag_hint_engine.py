@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -432,6 +433,8 @@ def build_rag_hint(
         source_note="資料來源：skill_family_bridge、SKILL.md 與目前題目脈絡。",
     )
 
+    html_hint = f"{html_hint}<!-- subskill_nodes:{','.join(nodes)} -->"
+
     summary = "、".join(labels[:3]) if labels else "目前題目重點"
 
     return {
@@ -445,4 +448,3 @@ def build_rag_hint(
         "matched_family_id": matched_entry.family_id if matched_entry else family_id,
         "source": "bridge_rag",
     }
-

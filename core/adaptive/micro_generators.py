@@ -351,7 +351,10 @@ def _fraction_f2(entry: CatalogEntry) -> dict:
 
     target = base * factor
 
-    question = f"請填入等值分數：${_frac_latex(base)} = \\frac{{{target.numerator}}}{{{target.denominator}}} \\div {factor}$"
+    question = (
+        f"請在空格中填入等值分數："
+        f"$\\square = \\frac{{{target.numerator}}}{{{target.denominator}}} \\div {factor}$"
+    )
     return {
 
         "question_text": question,

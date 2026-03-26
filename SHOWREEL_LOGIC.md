@@ -1,373 +1,226 @@
-# SHOWREEL_LOGIC
+# SHOWREEL_LOGIC.md
 
-- 更新日期：2026-03-25
-- 專案根目錄：`D:\Python\Mathproject`
-- 用途：公司電腦與家中電腦之間的交接文件
-
-## 1. 專案定位
-
-這個專案目前已經不是單純的練習平台，而是把研究內容逐步落成可展示的自適應診斷系統。
-
-核心方向如下：
-
-- 平台主體留在 `Mathproject`
-- `AST_Research` 負責 agent skill / live_show / prompt / healer / research toolkit
-- `practice` 的 AI 助教目前改成可切換的 `qwen3-vl-8b`
-- `adaptive_summative` 已成為本單元總結性診斷入口
-- `live_show`、`MCRI`、`RAG`、`whiteboard` 都已接上
+最後更新：2026-03-26  
+專案路徑：`D:\Python\Mathproject`
 
 ---
 
-## 2. 今天的主要討論結論
+## 1. 專案現況總覽
 
-### 2.1 專案合併原則
+本專案目前以 `adaptive_summative` 為核心，已完成以下主軸：
 
-- `D:\Python\Mathproject` 是主平台與資料庫宿主
-- `D:\Python\MathProject_AST_Research` 是 agent skill 與相關研究程式的真源
-- `config.py` 不能直接覆蓋，必須保留原本模型與設定，只做增量調整
-- 主資料庫固定使用 `D:\Python\Mathproject\instance\kumon_math.db`
-- research-only 的研究表不進主庫，只留給即時建立的實驗 DB
-
-### 2.2 研究內容落地方向
-
-論文最終要落成三層：
-
-1. 大腦層：AKT + PPO
-2. 雙手層：Edge AI 微技能腳本
-3. 嘴巴層：Hybrid RAG 補救提示
-
-其中：
-
-- `AKT + PPO` 目前是完整流程，但仍屬 heuristic / stub 版
-- `微技能腳本` 已有 catalog -> manifest -> script 管線
-- `Hybrid RAG` 已完成真檢索版，不再只是模板字串
-
-### 2.3 使用者介面方向
-
-`adaptive_summative` 的介面已經調成：
-
-- 上方：三等分資訊區
-  - 本單元學習導航
-  - 系統導航狀態
-  - 動態精熟軌跡圖
-- 中下方：題目與作答、手寫計算紙
-- 右側：AI 助教與 RAG 補救提示
-
-目標是讓學生和評審一眼能看出：
-
-- 這是診斷頁
-- 不是 debug 頁
-- RAG 只影響右側補救提示與手寫檢查摘要
+- Adaptive 診斷流程（submit_and_get_next）
+- RAG × PPO 跨技能補救（MVP）
+- Routing state / timeline / summary 可觀測性
+- RAG diagnosis mapping layer
+- PPO findings mapping layer
+- 兩個 mapping layer 的 YAML 外部化設定
 
 ---
 
-## 3. 今天已完成的事項
+## 2. 今日重點完成事項（完整）
 
-### 3.1 自適應診斷頁
+### 2.1 Routing 防呆測試（4 支）
 
-已完成的功能：
+已補上並通過：
 
-- `adaptive_summative` 可開啟
-- 有題目與作答區
-- 有手寫白板
-- 有 AI 助教區
-- 有動態精熟軌跡圖
-- 有結束條件與診斷結論
-- 有 `Local APR` 與策略顯示
+1. `test_no_cross_skill_when_trigger_not_met`  
+2. `test_remediation_lock_blocks_extra_routing`  
+3. `test_forced_return_at_lock_max_steps`  
+4. `test_bridge_state_clears_after_completion`
 
-### 3.2 結束邏輯
+重點：驗證 trigger、lock、forced return、bridge completion 全鏈路行為。
 
-目前結束規則：
+### 2.2 Session-level routing summary
 
-- 最多 8 題
-- 至少完成 5 題後
-- 若 `Local APR >= 0.65`，就可提前結束
+已在 `session_engine.py` 增加 session 級彙總，並在 response / debug 可讀：
 
-結束時會顯示：
+- `total_routing_decisions`
+- `ppo_routing_decisions`
+- `fallback_routing_decisions`
+- `remediation_entries`
+- `successful_returns`
+- `bridge_completions`
+- `ppo_usage_rate`
+- `return_success_rate`
 
-- 是否達標
-- 最終 APR
-- 作答題數
-- 涉及 family
-- 下一步建議
+### 2.3 單次作答軌跡（routing_timeline）JSON 匯出
 
-### 3.3 題目與手寫一致性
+每一步至少記錄：
 
-已修正：
+- `step`
+- `current_skill`
+- `selected_agent_skill`
+- `is_correct`
+- `fail_streak`
+- `frustration`
+- `cross_skill_trigger`
+- `allowed_actions`
+- `ppo_action`
+- `decision_source`
+- `in_remediation`
+- `remediation_step_count`
+- `bridge_active`
+- `final_route_reward`
 
-- `/analyze_handwriting` 會帶目前畫面上的 `question_text`
-- 會帶 `question_context`
-- 會帶 `family_id`
-- 會帶 `subskill_nodes`
+### 2.4 Timeline summary helper
 
-這樣手寫檢查不會再講到上一題。
+已新增 `summarize_routing_timeline(timeline) -> dict`，輸出：
 
-### 3.4 線上提示與助教
+- `total_steps`
+- `unique_skills_visited`
+- `remediation_entered`
+- `remediation_count`
+- `return_count`
+- `bridge_count`
+- `final_skill`
+- `ppo_decision_count`
+- `fallback_decision_count`
+- `total_route_reward`
+- `avg_route_reward`
+- `first_remediation_step`
+- `first_return_step`
+- `first_bridge_step`
 
-目前右側助教已調整為：
+### 2.5 RAG diagnosis mapping layer（MVP）
 
-- 台灣國中生可懂的繁體中文
-- 不直接報答案
-- 只能引導
-- Review 時會強化補救
+新增模組：`core/adaptive/rag_diagnosis_mapping.py`  
+已支援 concept 對應：
 
-### 3.5 RAG 真檢索層
+- `negative_sign_handling -> integer_arithmetic / signed_arithmetic`
+- `division_misconception -> integer_arithmetic / division`
+- `basic_arithmetic_instability -> integer_arithmetic / basic_operations`
+
+保留欄位：`route_type`, `retrieval_confidence`, `top_concept`。
+
+### 2.6 PPO policy findings integration layer（MVP）
+
+新增模組：`core/adaptive/policy_findings_mapping.py`  
+集中管理三類 hints：
+
+- trigger hints（cross-skill 觸發傾向）
+- reward hints（現有 reward components 的輕量微調）
+- action prior hints（stay/remediate/return 傾向）
+
+重點：不改 PPO model / training，只做 controller/routing 可選擇接入。
+
+### 2.7 YAML 外部化設定（完成）
+
+新增：
+
+- `configs/rag_diagnosis_mapping.yaml`
+- `configs/policy_findings_mapping.yaml`
 
 已完成：
 
-- 不再只是 stub
-- 會根據 `subskill_nodes`
-- 會看 `skill_id / family_id`
-- 會看 `question_context / question_text`
-- 會參考 `skill_breakpoint_catalog.csv`
-- 會參考對應 `SKILL.md`
-- 回傳簡單中文的：
-  - 課本級提示
-  - 常見錯誤
-  - 例題
-  - 下一步提醒
-
-RAG 目前實際影響的地方：
-
-- 右側補救提示
-- 手寫檢查摘要
-
-它不會改變題目本身。
-
-### 3.6 微技能腳本工廠
-
-已完成：
-
-- `skill_breakpoint_catalog.csv -> manifest -> script`
-- 整數四則已建立 `I1~I8` 的微技能出題模式
-- `skills/adaptive` 已有生成結果
-- `skill_manifest.json` 已能註冊 family 與腳本路徑
-
-### 3.7 MCRI
-
-已修復：
-
-- 原本 `evaluate_mcri.py` 缺檔造成 fallback 分數
-- 現在已重建可用版 evaluator
-- 測試可通過
-
-### 3.8 practice 助教
-
-已調整為：
-
-- 預設繁體中文
-- 國中生看得懂
-- 只能提示，不能直接給答案
-- 標題會顯示目前使用的 model 名稱
+- config 不存在時 fallback default
+- 部分欄位缺失時 default merge
+- 不 crash
 
 ---
 
-## 4. 目前實作狀態總覽
+## 3. 本次主要修改檔案
 
-### 4.1 已穩定可用
+### 核心程式
 
-- `adaptive_summative`
-- `live_show`
-- `practice` AI 助教
-- `MCRI evaluator`
-- `RAG hint`
-- `whiteboard`
-- `trajectory` 繪圖
-- `database` 主庫結構
+- `core/adaptive/session_engine.py`
+- `core/adaptive/routing.py`
+- `core/adaptive/rag_diagnosis_mapping.py`（新增）
+- `core/adaptive/policy_findings_mapping.py`（新增）
 
-### 4.2 仍在持續補強
+### 設定檔
 
-- 真正的 AKT 模型
-- 真正的 PPO agent
-- 全單元微技能腳本補齊
-- 更完整的課本知識庫
-- 更完整的 family 規格化資料管理
+- `configs/rag_diagnosis_mapping.yaml`（新增）
+- `configs/policy_findings_mapping.yaml`（新增）
 
----
+### 測試
 
-## 5. 今天修改過的重點檔案
-
-### 5.1 自適應診斷頁
-
-- [templates/adaptive_practice_v2.html](D:/Python/Mathproject/templates/adaptive_practice_v2.html)
-
-調整內容：
-
-- 三等分上方區塊
-- 系統導航狀態移到上方中間
-- 動態精熟軌跡圖固定高度、可捲動
-- 右側 AI 助教固定視窗、高度鎖定
-- AI 助教加入 RAG 影響範圍提示
-- 白板工具列改成單行 icon 風格
-- 移除多餘按鈕，保留必要工具
-- 完成時同步更新上方 APR
-- 會把最後一題的最終 APR 補進軌跡圖
-
-### 5.2 RAG 真檢索
-
-- [core/adaptive/rag_hint_engine.py](D:/Python/Mathproject/core/adaptive/rag_hint_engine.py)
-- [core/adaptive/session_engine.py](D:/Python/Mathproject/core/adaptive/session_engine.py)
-- [core/routes/adaptive_api.py](D:/Python/Mathproject/core/routes/adaptive_api.py)
-
-### 5.3 測試
-
-- [tests/test_adaptive_rag_hint.py](D:/Python/Mathproject/tests/test_adaptive_rag_hint.py)
-
-測試結果：
-
-- `pytest -q tests/test_adaptive_rag_hint.py`
-- `2 passed`
+- `tests/test_adaptive_m2_api.py`（更新）
+- `tests/test_rag_diagnosis_mapping.py`（更新）
+- `tests/test_policy_findings_mapping.py`（更新）
+- `tests/test_mapping_yaml_config.py`（新增）
 
 ---
 
-## 6. 論文三大部分 vs 目前實作完成度
+## 4. 測試結果（最新）
 
-| 論文支柱 | 論文理論要求 | 目前實作狀態 | 完成度 | 主要差距 / 下一步 |
-|---|---|---|---|---|
-| 大腦層：AKT + PPO | 用 AKT 追蹤 `subskill_nodes`，用 PPO 根據 `Local APR`、挫折感、歷史表現決定下一題與教學策略 | 已有完整診斷流程、`Local APR`、策略切換、結束條件、軌跡圖、log 紀錄；目前是 heuristic / stub 版，不是真 AKT/PPO | 中高 | 之後要把 heuristic stub 換成真正 AKT state update 與 PPO policy 推論 |
-| 雙手層：Edge AI 微技能腳本 | 依 `skill_breakpoint_catalog.csv` 批次生成每個 `family_id` 的微技能出題腳本，穩定輸出 JSON 題目 | 已有 `catalog -> manifest -> micro skill script` 管線，整數四則已做出較完整的 `I1~I8` 微技能題；其他單元仍在補齊 | 中等 | 擴充到分數、多項式、根式等其餘 family，讓每個 family 都有穩定出題器 |
-| 嘴巴層：Hybrid RAG 補救提示 | 根據 `subskill_nodes`、題目脈絡、課本/知識圖譜/SKILL.md，回傳課本級提示、例題、常錯點、下一步提醒 | 已接成真 Hybrid RAG：會依 `subskill_nodes + skill_id + family_id + question_context` 產生簡單中文提示，並作用在右側助教與手寫檢查摘要 | 高 | 後續可再加更完整的課本文字庫、知識圖譜節點管理、提示歷史紀錄 |
+已執行並通過：
 
-結論：
-
-- RAG 最完整
-- AKT/PPO 已有完整流程，但仍是工程化近似版
-- 微技能工廠已成立，但尚未全單元鋪滿
+- `pytest -q tests/test_adaptive_m2_api.py` -> `14 passed`
+- `pytest -q tests/test_policy_findings_mapping.py tests/test_adaptive_m2_api.py` -> `16 passed`
+- `pytest -q tests/test_mapping_yaml_config.py tests/test_rag_diagnosis_mapping.py tests/test_policy_findings_mapping.py tests/test_adaptive_m2_api.py` -> `23 passed`
 
 ---
 
-## 7. 目前最重要的 UI / UX 結論
+## 5. Config 欄位說明
 
-### 7.1 上方版面
+### 5.1 `configs/rag_diagnosis_mapping.yaml`
 
-現在上方是三等分：
+- `concept_to_prereq.<concept>.suggested_prereq_skill`
+- `concept_to_prereq.<concept>.suggested_prereq_subskill`
+- `concept_to_prereq.<concept>.concept_weight`
+- `scoring.base`
+- `scoring.retrieval_weight`
+- `scoring.concept_weight`
+- `scoring.unknown_concept_weight`
 
-- 本單元學習導航
-- 系統導航狀態
-- 動態精熟軌跡圖
+### 5.2 `configs/policy_findings_mapping.yaml`
 
-這樣比原本左右不平衡的版本更舒服。
-
-### 7.2 右側 AI 助教
-
-目前已明確標示：
-
-- RAG 只影響右側補救提示與手寫檢查摘要
-- 不會直接改變題目本身
-- 手動提問還是以引導式助教為主
-
-### 7.3 手寫白板
-
-目前保留：
-
-- 畫筆
-- 橡皮擦
-- 顏色
-- 筆寬
-- 上一步 / 下一步
-- 清空白板
-- AI 檢查手寫
-
-已移除：
-
-- 繪製示意圖
-- 上傳圖片
+- `trigger_hints.fail_streak_cross_skill_threshold`
+- `trigger_hints.frustration_cross_skill_threshold`
+- `trigger_hints.same_skill_cross_skill_threshold`
+- `reward_hints.same_skill_streak_penalty_start`
+- `reward_hints.stagnation_penalty_scale`
+- `reward_hints.frustration_recovery_bonus_threshold`
+- `reward_hints.frustration_recovery_bonus`
+- `action_prior_hints.frustration_remediate_threshold`
+- `action_prior_hints.remediate_bias`
+- `action_prior_hints.stay_bias`
+- `action_prior_hints.return_bias`
 
 ---
 
-## 8. 今天觀察到的重點與限制
+## 6. 可安全調整的參數（不動訓練）
 
-### 8.1 `RAG` 的影響範圍
+可直接在 YAML 調整（不改 PPO training）：
 
-目前 RAG 的作用範圍是：
-
-- 右側補救提示
-- 手寫檢查摘要
-
-不是整個頁面。
-
-### 8.2 `MCRI` 的定位
-
-現在 MCRI 已能正常運作，但屬於可用的工程版，不是最終研究版。
-
-### 8.3 `AKT / PPO`
-
-目前是完整流程 + 工程近似版，還沒接真模型。
+- cross-skill trigger 門檻
+- stagnation/recovery 的 bonus/penalty 係數
+- action prior bias
+- concept weight / diagnosis scoring 權重
 
 ---
 
-## 9. 待完成事項
+## 7. 環境變數（可選）
 
-### 短期
-
-1. 把其他 `family_id` 的微技能腳本補齊
-2. 讓 `adaptive_summative` 的題目更完整、更像真正診斷測驗
-3. 進一步整理 `RAG` 的課本級提示來源
-4. 把 `dashboard` 每個大單元的入口掛好
-
-### 中期
-
-5. 將 `AKT` 與 `PPO` 從 stub 升級為真模型接法
-6. 建立更完整的 `family registry / manifest`
-7. 建立更完整的研究輸出資料
-
-### 長期
-
-8. 讓論文系統成為可重現、可展示、可維護的完整產品
+- `ADAPTIVE_ENABLE_POLICY_FINDINGS=1`
+- `ADAPTIVE_ROUTING_SUMMARY_LOG=1`
+- `ADAPTIVE_RAG_DIAGNOSIS_MAPPING_CONFIG=<path>`
+- `ADAPTIVE_POLICY_FINDINGS_MAPPING_CONFIG=<path>`
 
 ---
 
-## 10. 回家後要怎麼接著做
+## 8. 回家接續工作建議（Next）
 
-你回家後，只要先看這份檔案，接著從這幾個檔案開始：
-
-1. [SHOWREEL_LOGIC.md](D:/Python/Mathproject/SHOWREEL_LOGIC.md)
-2. [templates/adaptive_practice_v2.html](D:/Python/Mathproject/templates/adaptive_practice_v2.html)
-3. [core/adaptive/rag_hint_engine.py](D:/Python/Mathproject/core/adaptive/rag_hint_engine.py)
-4. [core/adaptive/session_engine.py](D:/Python/Mathproject/core/adaptive/session_engine.py)
-5. [core/routes/adaptive_api.py](D:/Python/Mathproject/core/routes/adaptive_api.py)
-
-如果要從交接文件直接繼續，可以直接說：
-
-> 請從 `SHOWREEL_LOGIC.md` 繼續，先處理 `adaptive_summative` 的下一步。
+1. 用真實學生資料校準 YAML 門檻（目前仍是 MVP 係數）。  
+2. 將 `routing_timeline_summary` 轉成前端圖表（session 報告卡）。  
+3. 補「錯誤概念辨識品質」測試（精準率、過度補救率）。  
+4. 建立 findings 版本控管（v1 / v1.1）與論文附錄對照表。  
+5. 擴充 RAG concept mapping（依你們論文章節與知識圖譜節點）。  
 
 ---
 
-## 11. 最後一句
+## 9. 快速交接指令
 
-目前專案已經有：
+```powershell
+cd D:\Python\Mathproject
+venv\Scripts\activate
+python app.py
+```
 
-- 可展示的 `adaptive_summative`
-- 可展示的 `live_show`
-- 可用的 `practice` 助教
-- 真可用的 `RAG` 補救層
-- 可用的 `MCRI`
+測試：
 
-接下來要做的不是重新開始，而是：
+```powershell
+pytest -q tests/test_mapping_yaml_config.py tests/test_rag_diagnosis_mapping.py tests/test_policy_findings_mapping.py tests/test_adaptive_m2_api.py
+```
 
-1. 補齊其餘微技能腳本
-2. 強化 AKT / PPO 接法
-3. 讓首頁入口與論文敘事完全一致
-
----
-
-## 12. 2026-03-26 ??: RAG ?????????
-
-- ?????? `kumon_math.db` ?? `skill_family_bridge` ????
-- ???? `skill_breakpoint_catalog.csv` ??????? `skill_id ? family_id ? subskill_nodes` ??????
-- ?? RAG `core/rag_engine.py` ????? bridge table???? Chroma ???
-- ????? `core/adaptive/rag_hint_engine.py` ??????? bridge table?catalog ? `SKILL.md` ?????
-- ??????? RAG ????????????????????? `skills_info` ? `subskill_nodes` ?????????
-
-### 12.1 ????
-- `skills_info` / `skill_curriculum`????????????
-- `skill_family_bridge`?????????? `skill_id`?`family_id`?`subskill_nodes`??????
-- `adaptive_summative`?? bridge table ??????
-- `RAG hint`?? bridge table ?????????? `SKILL.md` / ?????????
-
-### 12.2 ????
-- ???????????????????
-  1. [models.py](D:/Python/Mathproject/models.py)
-  2. [core/rag_engine.py](D:/Python/Mathproject/core/rag_engine.py)
-  3. [core/adaptive/rag_hint_engine.py](D:/Python/Mathproject/core/adaptive/rag_hint_engine.py)
-- ??????????????? `skill_breakpoint_catalog.csv`?bridge table ????????

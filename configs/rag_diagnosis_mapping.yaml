@@ -1,0 +1,19 @@
+concept_to_prereq:
+  negative_sign_handling:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: signed_arithmetic
+    concept_weight: 0.95
+  division_misconception:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: division
+    concept_weight: 0.90
+  basic_arithmetic_instability:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: basic_operations
+    concept_weight: 0.85
+
+scoring:
+  base: 0.25
+  retrieval_weight: 0.55
+  concept_weight: 0.20
+  unknown_concept_weight: 0.40

@@ -40,8 +40,11 @@ def adaptive_submit_and_get_next():
         if runtime:
             payload["last_family_id"] = runtime.get("family_id", payload.get("last_family_id"))
             payload["last_subskills"] = runtime.get("subskill_nodes", payload.get("last_subskills"))
+            payload["routing_state"] = runtime.get("routing_state", payload.get("routing_state"))
+            payload["last_expected_answer"] = runtime.get("correct_answer", payload.get("last_expected_answer"))
             if "user_answer" in payload and "is_correct" not in payload:
                 payload["is_correct"] = judge_answer(payload.get("user_answer"), runtime.get("correct_answer"))
+            payload["last_user_answer"] = payload.get("user_answer", payload.get("last_user_answer"))
 
         response = submit_and_get_next(payload)
         next_session_id = response["session_id"]
@@ -53,6 +56,7 @@ def adaptive_submit_and_get_next():
                 "subskill_nodes": response["target_subskills"],
                 "correct_answer": response["new_question_data"].get("correct_answer") or response["new_question_data"].get("answer") or "",
                 "question_text": response["new_question_data"].get("question_text") or response["new_question_data"].get("question") or "",
+                "routing_state": response.get("routing_state", {}),
             }
         session["adaptive_runtime"] = runtime_store
         session.modified = True
