@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>自適應評量與教學 - 學習儀表板</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
+        .navbar { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+        .panel { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h1 { margin: 0 0 10px 0; color: #333; }
+        .desc { margin: 0 0 20px 0; color: #666; }
+        .unit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+        .unit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            background: #e67e22;
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .unit-btn:hover { background: #d96f13; transform: translateY(-1px); }
+        .back-link { display: inline-block; margin-top: 16px; color: #007bff; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+        .modal-card {
+            width: min(92vw, 420px);
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+            padding: 18px;
+        }
+        .modal-title { margin: 0 0 8px 0; font-size: 1.15em; color: #222; }
+        .modal-text { margin: 0 0 16px 0; color: #555; line-height: 1.45; }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        .mode-assessment { background: #2f80ed; color: #fff; }
+        .mode-teaching { background: #27ae60; color: #fff; }
+        .mode-cancel { background: #e9ecef; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('dashboard') }}" class="logo">自適應性教學系統</a>
+        <a href="{{ url_for('dashboard') }}">返回學習儀表板</a>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h1>自適應評量與教學</h1>
+            <p class="desc">請先選擇要進入的單元，再選擇「評量」或「教學」模式。</p>
+            <div class="unit-grid">
+                {% for unit in units %}
+                <button
+                    class="unit-btn adaptive-learning-entry"
+                    data-skill-id="{{ unit.skill_id }}"
+                    data-unit-name="{{ unit.label }}"
+                >
+                    <i class="fa fa-book" aria-hidden="true"></i> {{ unit.label }}
+                </button>
+                {% endfor %}
+            </div>
+            <a class="back-link" href="{{ url_for('dashboard') }}">← 回到學習儀表板</a>
+        </div>
+    </div>
+
+    <div class="modal" id="adaptiveModeDialog" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="adaptiveModeTitle">
+            <h2 id="adaptiveModeTitle" class="modal-title">選擇模式</h2>
+            <p class="modal-text" id="adaptiveModeText">請選擇要進行「評量」或「教學」模式。</p>
+            <div class="modal-actions">
+                <button class="mode-assessment" id="modeAssessmentBtn">評量</button>
+                <button class="mode-teaching" id="modeTeachingBtn">教學</button>
+                <button class="mode-cancel" id="modeCancelBtn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            let selectedSkillId = "";
+            let selectedUnitName = "";
+
+            const modal = document.getElementById("adaptiveModeDialog");
+            const modalText = document.getElementById("adaptiveModeText");
+            const assessmentBtn = document.getElementById("modeAssessmentBtn");
+            const teachingBtn = document.getElementById("modeTeachingBtn");
+            const cancelBtn = document.getElementById("modeCancelBtn");
+
+            function openDialog(skillId, unitName) {
+                selectedSkillId = skillId || "";
+                selectedUnitName = unitName || "";
+                modalText.textContent = `你選擇的是「${selectedUnitName}」，請選擇要進行「評量」或「教學」模式。`;
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+            }
+
+            function closeDialog() {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+            }
+
+            function goAdaptive(mode) {
+                if (!selectedSkillId) return;
+                const query = new URLSearchParams();
+                query.set("skill_id", selectedSkillId);
+                query.set("unit_name", selectedUnitName);
+                query.set("mode", mode);
+                window.location.href = `{{ url_for('practice.adaptive_summative_page') }}?${query.toString()}`;
+            }
+
+            document.querySelectorAll(".adaptive-learning-entry").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    openDialog(btn.dataset.skillId, btn.dataset.unitName);
+                });
+            });
+
+            assessmentBtn.addEventListener("click", () => goAdaptive("assessment"));
+            teachingBtn.addEventListener("click", () => goAdaptive("teaching"));
+            cancelBtn.addEventListener("click", closeDialog);
+            modal.addEventListener("click", (event) => {
+                if (event.target === modal) closeDialog();
+            });
+        })();
+    </script>
+</body>
+</html>

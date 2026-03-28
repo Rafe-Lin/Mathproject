@@ -8,7 +8,8 @@ from typing import Any
 # Centralized placeholder mapping for PPO research findings integration.
 # Keep all threshold/bias knobs in this module (single source of truth).
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "policy_findings_mapping.yaml"
+DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "adaptive" / "policy_findings_mapping.yaml"
+LEGACY_CONFIG_PATH = PROJECT_ROOT / "configs" / "policy_findings_mapping.yaml"
 CONFIG_ENV_KEY = "ADAPTIVE_POLICY_FINDINGS_MAPPING_CONFIG"
 
 DEFAULT_POLICY_FINDINGS_CONFIG: dict[str, Any] = {
@@ -63,7 +64,11 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 def _resolve_config_path() -> Path:
     override = str(os.getenv(CONFIG_ENV_KEY, "") or "").strip()
-    return Path(override) if override else DEFAULT_CONFIG_PATH
+    if override:
+        return Path(override)
+    if DEFAULT_CONFIG_PATH.exists():
+        return DEFAULT_CONFIG_PATH
+    return LEGACY_CONFIG_PATH
 
 
 def _merge_section(default_section: dict[str, Any], override_section: Any) -> dict[str, Any]:

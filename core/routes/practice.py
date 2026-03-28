@@ -130,13 +130,31 @@ def adaptive_summative_page():
     v1.1 PoC entrance for paper-aligned summative adaptive diagnosis.
     """
     skill_id = request.args.get('skill_id', '').strip()
+    mode = request.args.get('mode', 'teaching').strip().lower()
+    if mode not in {'assessment', 'teaching'}:
+        mode = 'teaching'
     unit_name = request.args.get('unit_name', '本單元自適應學習（總結性診斷）').strip()
     return render_template(
         'adaptive_practice_v2.html',
         unit_name=unit_name,
         skill_id=skill_id,
+        mode=mode,
         student_id=current_user.id,
     )
+
+
+@practice_bp.route('/adaptive_learning_entry')
+@login_required
+def adaptive_learning_entry_page():
+    """學生端「自適應評量與教學」入口頁。"""
+    units = [
+        {"label": "整數四則運算", "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers"},
+        {"label": "分數四則運算", "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers"},
+        {"label": "根式四則運算", "skill_id": "jh_數學2上_FourOperationsOfRadicals"},
+        {"label": "一元一次式", "skill_id": "jh_數學1上_OperationsOnLinearExpressions"},
+        {"label": "多項式四則運算", "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial"},
+    ]
+    return render_template('adaptive_learning_entry.html', units=units)
 
 
 @practice_bp.route('/practice/<skill_id>')

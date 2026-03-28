@@ -26,6 +26,8 @@ EXPECTED_STATE_VECTOR_LEN = 8
 ROUTE_ACTIONS = ["stay", "remediate", "return"]
 ROUTE_TO_IDX = {label: i for i, label in enumerate(ROUTE_ACTIONS)}
 IDX_TO_ROUTE = {i: label for i, label in enumerate(ROUTE_ACTIONS)}
+MODE_MAINLINE = "mainline"
+MODE_REMEDIATION = "remediation"
 
 _PHASE2_POLICY_MODEL: Any = None
 _PHASE2_POLICY_MODEL_PATH: str | None = None
@@ -35,6 +37,18 @@ _LAST_PPO_ERROR: dict[str, Any] = {
     "message": None,
     "traceback": None,
     "context": {},
+}
+_LAST_ROUTE_POLICY_DEBUG: dict[str, Any] = {
+    "raw_logits": None,
+    "biased_logits": None,
+    "masked_logits": None,
+    "raw_action": None,
+    "raw_action_idx": None,
+    "final_action": None,
+    "final_action_idx": None,
+    "remediate_bias_applied": False,
+    "remediate_bias_value": 0.0,
+    "bias_reason": "",
 }
 
 
@@ -121,8 +135,31 @@ def get_last_ppo_error() -> dict[str, Any]:
     return dict(_LAST_PPO_ERROR)
 
 
+def get_last_route_policy_debug() -> dict[str, Any]:
+    return dict(_LAST_ROUTE_POLICY_DEBUG)
+
+
 def _clear_last_ppo_error() -> None:
     _set_last_ppo_error(error_type=None, error_message=None, tb=None, context={})
+
+
+def _set_last_route_policy_debug(values: dict[str, Any] | None = None) -> None:
+    global _LAST_ROUTE_POLICY_DEBUG
+    defaults = {
+        "raw_logits": None,
+        "biased_logits": None,
+        "masked_logits": None,
+        "raw_action": None,
+        "raw_action_idx": None,
+        "final_action": None,
+        "final_action_idx": None,
+        "remediate_bias_applied": False,
+        "remediate_bias_value": 0.0,
+        "bias_reason": "",
+    }
+    if values:
+        defaults.update(values)
+    _LAST_ROUTE_POLICY_DEBUG = defaults
 
 
 def _summarize_output(value: Any, max_len: int = 240) -> str:
@@ -596,12 +633,61 @@ def _mask_route_logits(raw_logits: list[float], action_mask: dict[str, bool]) ->
     return masked
 
 
+def _compute_remediate_bias(route_state: dict[str, Any], action_mask: dict[str, bool]) -> tuple[bool, float, str]:
+    if not bool(action_mask.get("remediate", False)):
+        return False, 0.0, "remediate_not_allowed"
+    diag = dict(route_state.get("diagnostic_signal") or {})
+    ctx = dict(route_state.get("routing_context") or {})
+    affect = dict(route_state.get("affect") or {})
+    current_mode = str(ctx.get("current_mode") or MODE_MAINLINE).strip().lower()
+    in_remediation = bool(ctx.get("in_remediation", 0))
+    remediation_review_ready = bool(ctx.get("remediation_review_ready", 0))
+    cross_skill_trigger = bool(ctx.get("cross_skill_trigger", 0))
+    diagnosis_confidence = float(diag.get("diagnosis_confidence", 0.0) or 0.0)
+    suggested_prereq_skill = str(diag.get("suggested_prereq_skill") or "").strip()
+    fail_streak = int(affect.get("fail_streak", 0) or 0)
+    frustration = float(affect.get("frustration", 0.0) or 0.0)
+    consecutive_wrong_on_family = int(ctx.get("consecutive_wrong_on_family", 0) or 0)
+    rescue_recommended = int(diag.get("rescue_recommended", 0) or 0)
+
+    if current_mode != MODE_MAINLINE or in_remediation:
+        return False, 0.0, "not_mainline_mode"
+    if not remediation_review_ready:
+        return False, 0.0, "review_not_ready"
+    if not cross_skill_trigger:
+        return False, 0.0, "cross_skill_not_triggered"
+    if diagnosis_confidence < 0.8:
+        return False, 0.0, "low_diagnosis_confidence"
+    if not suggested_prereq_skill:
+        return False, 0.0, "missing_prereq_skill"
+
+    risk_signal = (
+        fail_streak >= 2
+        or frustration >= 0.65
+        or consecutive_wrong_on_family >= 2
+        or rescue_recommended >= 1
+    )
+    if not risk_signal:
+        return False, 0.0, "risk_signal_not_met"
+
+    bias = 0.32
+    if consecutive_wrong_on_family >= 3:
+        bias += 0.12
+    if fail_streak >= 3:
+        bias += 0.10
+    if frustration >= 0.8:
+        bias += 0.08
+    bias = min(0.75, max(0.0, bias))
+    return True, float(bias), "mainline_review_ready_cross_skill_high_confidence"
+
+
 def select_route_action_with_ppo(
     route_state: dict[str, Any],
     action_mask: dict[str, bool],
     model: Any = None,
 ) -> tuple[str | None, list[float] | None, int | None, str]:
     try:
+        _set_last_route_policy_debug()
         if not any(bool(action_mask.get(a, False)) for a in ROUTE_ACTIONS):
             _warn("[adaptive_phase2_policy][WARNING] route action mask has no legal action")
             return None, None, None, "ppo_error"
@@ -630,29 +716,84 @@ def select_route_action_with_ppo(
             _warn("[adaptive_phase2_policy] route inference failed: invalid route logits")
             return None, None, None, "ppo_error"
 
-        masked_logits = _mask_route_logits(raw_logits[:3], action_mask)
+        raw_logits = [float(x) for x in raw_logits[:3]]
+        raw_masked_logits = _mask_route_logits(raw_logits, action_mask)
+        raw_action_idx = max(range(len(raw_masked_logits)), key=lambda i: raw_masked_logits[i])
+        raw_action = IDX_TO_ROUTE.get(raw_action_idx)
+
+        remediate_bias_applied, remediate_bias_value, bias_reason = _compute_remediate_bias(route_state, action_mask)
+        biased_logits = list(raw_logits)
+        if remediate_bias_applied:
+            biased_logits[ROUTE_TO_IDX["remediate"]] = float(biased_logits[ROUTE_TO_IDX["remediate"]] + remediate_bias_value)
+
+        masked_logits = _mask_route_logits(biased_logits, action_mask)
         action_idx = max(range(len(masked_logits)), key=lambda i: masked_logits[i])
         if action_idx not in IDX_TO_ROUTE:
             _warn(f"[adaptive_phase2_policy][ERROR] route action_idx out of range: {action_idx}")
-            return None, raw_logits[:3], action_idx, "ppo_error"
+            _set_last_route_policy_debug(
+                {
+                    "raw_logits": raw_logits,
+                    "biased_logits": biased_logits,
+                    "masked_logits": masked_logits,
+                    "raw_action": raw_action,
+                    "raw_action_idx": raw_action_idx,
+                    "final_action": None,
+                    "final_action_idx": action_idx,
+                    "remediate_bias_applied": remediate_bias_applied,
+                    "remediate_bias_value": remediate_bias_value,
+                    "bias_reason": bias_reason,
+                }
+            )
+            return None, raw_logits, action_idx, "ppo_error"
         action = IDX_TO_ROUTE[action_idx]
         if not action_mask.get(action, False):
             _warn(
                 "[adaptive_phase2_policy][ERROR] route action selected but masked "
                 f"action={action} mask={action_mask}"
             )
-            return None, raw_logits[:3], action_idx, "ppo_error"
+            _set_last_route_policy_debug(
+                {
+                    "raw_logits": raw_logits,
+                    "biased_logits": biased_logits,
+                    "masked_logits": masked_logits,
+                    "raw_action": raw_action,
+                    "raw_action_idx": raw_action_idx,
+                    "final_action": action,
+                    "final_action_idx": action_idx,
+                    "remediate_bias_applied": remediate_bias_applied,
+                    "remediate_bias_value": remediate_bias_value,
+                    "bias_reason": bias_reason,
+                }
+            )
+            return None, raw_logits, action_idx, "ppo_error"
+        _set_last_route_policy_debug(
+            {
+                "raw_logits": raw_logits,
+                "biased_logits": biased_logits,
+                "masked_logits": masked_logits,
+                "raw_action": raw_action,
+                "raw_action_idx": raw_action_idx,
+                "final_action": action,
+                "final_action_idx": action_idx,
+                "remediate_bias_applied": remediate_bias_applied,
+                "remediate_bias_value": remediate_bias_value,
+                "bias_reason": bias_reason,
+            }
+        )
         _info(
             "[adaptive_phase2_policy] route inference "
-            f"raw_logits={raw_logits[:3]} masked_logits={masked_logits} "
-            f"action_idx={action_idx} action={action} action_mask={action_mask}"
+            f"raw_logits={raw_logits} biased_logits={biased_logits} masked_logits={masked_logits} "
+            f"raw_action={raw_action} action_idx={action_idx} action={action} action_mask={action_mask} "
+            f"remediate_bias_applied={remediate_bias_applied} remediate_bias_value={remediate_bias_value:.3f} "
+            f"bias_reason={bias_reason}"
         )
-        return action, raw_logits[:3], action_idx, "ppo"
+        return action, raw_logits, action_idx, "ppo"
     except Exception as exc:
         _warn(
             "[adaptive_phase2_policy] route inference exception "
             f"type={type(exc).__name__} message={exc} traceback={traceback.format_exc()}"
         )
+        _set_last_route_policy_debug()
         return None, None, None, "ppo_error"
 
 
@@ -673,6 +814,27 @@ def select_route_action_heuristic(
     if rescue_recommended and action_mask.get("remediate", False):
         return "remediate", {"mode": "heuristic_remediate"}
     return "stay", {"mode": "heuristic_stay"}
+
+
+def map_route_action_by_mode(action: str | None, *, current_mode: str) -> str:
+    """
+    Interpret raw route action in a mode-safe way:
+    - mainline: allow stay/remediate, suppress return
+    - remediation: allow stay/return, suppress remediate
+    """
+    mode = str(current_mode or MODE_MAINLINE).strip().lower()
+    normalized = str(action or "stay").strip().lower()
+    if normalized not in {"stay", "remediate", "return"}:
+        normalized = "stay"
+    if mode == MODE_MAINLINE:
+        if normalized == "return":
+            return "stay"
+        return "remediate" if normalized == "remediate" else "stay"
+    if mode == MODE_REMEDIATION:
+        if normalized == "remediate":
+            return "stay"
+        return "return" if normalized == "return" else "stay"
+    return "stay"
 
 
 def select_agent_skill_heuristic(

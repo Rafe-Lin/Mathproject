@@ -42,6 +42,7 @@ def adaptive_submit_and_get_next():
             payload["last_subskills"] = runtime.get("subskill_nodes", payload.get("last_subskills"))
             payload["routing_state"] = runtime.get("routing_state", payload.get("routing_state"))
             payload["last_expected_answer"] = runtime.get("correct_answer", payload.get("last_expected_answer"))
+            payload["last_question_text"] = runtime.get("question_text", payload.get("last_question_text"))
             if "user_answer" in payload and "is_correct" not in payload:
                 payload["is_correct"] = judge_answer(payload.get("user_answer"), runtime.get("correct_answer"))
             payload["last_user_answer"] = payload.get("user_answer", payload.get("last_user_answer"))

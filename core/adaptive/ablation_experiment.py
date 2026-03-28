@@ -74,7 +74,7 @@ class ExperimentConfig:
     perturbation: float = 0.03
     random_seed: int = 42
     output_dir: str = "outputs"
-    subskill_config_path: str = str(Path("configs") / "subskill_remediation.yaml")
+    subskill_config_path: str = str(Path("configs") / "adaptive" / "subskill_remediation.yaml")
     difficulty_by_skill: dict[str, float] = field(
         default_factory=lambda: {
             "integer": 0.55,

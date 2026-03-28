@@ -64,6 +64,18 @@ def _error_type_to_subskill(agent_skill: str, error_type: str) -> str | None:
         if "mul" in error_type:
             return "poly_mul_poly"
         return "poly_add_sub"
+    if agent_skill == "linear_expression_arithmetic":
+        if "outer_minus" in error_type or "bracket" in error_type:
+            return "outer_minus_scope"
+        if "distribution" in error_type:
+            return "monomial_distribution"
+        if "nested" in error_type:
+            return "nested_bracket_scope"
+        if "fraction" in error_type:
+            return "fractional_expression_simplification"
+        if "like" in error_type:
+            return "like_term_combination"
+        return "term_collection_with_constants"
     return None
 
 

@@ -87,15 +87,90 @@ class AdaptiveSkillPolicyEnv:
     - step(action_idx) -> (next_state, reward, done, info)
     """
 
-    def __init__(self, max_steps: int = 15, seed: int = 42):
+    def __init__(
+        self,
+        max_steps: int = 15,
+        seed: int = 42,
+        return_mode: str = "ab3",
+        fixed_remediation_steps: int = 3,
+        min_remediation_steps: int = 1,
+        recent_correct_streak_threshold: int = 2,
+        mastery_growth_delta_threshold: float = 0.0,
+        remediation_fail_streak_threshold: int = 2,
+    ):
         self.max_steps = int(max_steps)
         self.rng = random.Random(seed)
         self.student: StudentSimulator | None = None
         self.current_step = 0
+        self.return_mode = str(return_mode).lower()
+        if self.return_mode not in {"ab2", "ab3"}:
+            raise ValueError("return_mode must be 'ab2' or 'ab3'")
+        self.fixed_remediation_steps = int(fixed_remediation_steps)
+        self.min_remediation_steps = int(min_remediation_steps)
+        self.recent_correct_streak_threshold = int(recent_correct_streak_threshold)
+        self.mastery_growth_delta_threshold = float(mastery_growth_delta_threshold)
+        self.remediation_fail_streak_threshold = int(remediation_fail_streak_threshold)
+        self.in_remediation = False
+        self.parent_skill: int | None = None
+        self.remediation_skill: int | None = None
+        self.remediation_step_count = 0
+        self.recent_correct_streak = 0
+        self.remediation_start_mastery = 0.0
+        self.last_answer_correct = 1
+
+    def _get_skill_mastery(self, skill_idx: int | None) -> float:
+        if self.student is None or skill_idx is None:
+            return 0.0
+        skill = SKILL_LABELS[int(skill_idx)]
+        return float(self.student.mastery_by_skill.get(skill, 0.0))
+
+    def current_remediation_mastery_growth(self) -> float:
+        if not self.in_remediation or self.remediation_skill is None:
+            return 0.0
+        return self._get_skill_mastery(self.remediation_skill) - float(self.remediation_start_mastery)
+
+    def start_remediation(self, parent_skill: int, remediation_skill: int) -> None:
+        self.in_remediation = True
+        self.parent_skill = int(parent_skill)
+        self.remediation_skill = int(remediation_skill)
+        self.remediation_step_count = 0
+        self.recent_correct_streak = 0
+        self.remediation_start_mastery = self._get_skill_mastery(remediation_skill)
+
+    def clear_remediation(self) -> None:
+        self.in_remediation = False
+        self.parent_skill = None
+        self.remediation_skill = None
+        self.remediation_step_count = 0
+        self.recent_correct_streak = 0
+        self.remediation_start_mastery = 0.0
+
+    def should_return_from_remediation(self) -> bool:
+        if not self.in_remediation:
+            return False
+        if self.return_mode == "ab2":
+            return self.remediation_step_count >= self.fixed_remediation_steps
+        if self.remediation_step_count < self.min_remediation_steps:
+            return False
+        if self.recent_correct_streak < self.recent_correct_streak_threshold:
+            return False
+        return self.current_remediation_mastery_growth() >= self.mastery_growth_delta_threshold
+
+    def step_direct(self, action_idx: int) -> tuple[bool, float]:
+        if self.student is None:
+            raise RuntimeError("Environment not initialized; call reset() first.")
+        return self.student.step(int(action_idx), self.rng)
 
     def reset(self) -> list[float]:
         self.current_step = 0
         self.student = StudentSimulator.random(self.rng)
+        self.in_remediation = False
+        self.parent_skill = None
+        self.remediation_skill = None
+        self.remediation_step_count = 0
+        self.recent_correct_streak = 0
+        self.remediation_start_mastery = 0.0
+        self.last_answer_correct = 1
         return self.student.build_state_vector()
 
     def step(self, action_idx: int) -> tuple[list[float], float, bool, dict[str, Any]]:
@@ -104,12 +179,74 @@ class AdaptiveSkillPolicyEnv:
         if not (0 <= int(action_idx) < ACTION_DIM):
             raise ValueError(f"action_idx must be in [0, {ACTION_DIM - 1}]")
 
+        raw_target_skill = int(action_idx)
+        final_target_skill = raw_target_skill
+        entered_remediation = False
+        returned_to_parent = False
+        info_parent_skill = self.parent_skill
+        info_remediation_skill = self.remediation_skill
+        info_remediation_start_mastery = self.remediation_start_mastery
+
+        if self.in_remediation:
+            info_parent_skill = self.parent_skill
+            info_remediation_skill = self.remediation_skill
+            info_remediation_start_mastery = self.remediation_start_mastery
+            if self.should_return_from_remediation() and self.parent_skill is not None:
+                final_target_skill = int(self.parent_skill)
+                returned_to_parent = True
+                self.clear_remediation()
+            elif self.remediation_skill is not None:
+                final_target_skill = int(self.remediation_skill)
+        else:
+            last_skill = int(self.student.last_skill_idx)
+            should_enter_remediation = (
+                last_skill >= 0
+                and raw_target_skill != last_skill
+                and self.student.fail_streak >= self.remediation_fail_streak_threshold
+            )
+            if should_enter_remediation:
+                self.start_remediation(parent_skill=last_skill, remediation_skill=raw_target_skill)
+                entered_remediation = True
+                info_parent_skill = self.parent_skill
+                info_remediation_skill = self.remediation_skill
+                info_remediation_start_mastery = self.remediation_start_mastery
+                final_target_skill = int(self.remediation_skill)
+
         self.current_step += 1
-        is_correct, reward = self.student.step(int(action_idx), self.rng)
+        is_correct, reward = self.step_direct(final_target_skill)
+        self.last_answer_correct = 1 if is_correct else 0
+
+        if self.in_remediation:
+            self.remediation_step_count += 1
+            if is_correct:
+                self.recent_correct_streak += 1
+            else:
+                self.recent_correct_streak = 0
+
         next_state = self.student.build_state_vector()
         done = self.current_step >= self.max_steps
-        info = {"is_correct": is_correct, "step": self.current_step}
+        mastery_growth_delta = 0.0
+        if info_remediation_skill is not None:
+            mastery_growth_delta = self._get_skill_mastery(info_remediation_skill) - float(info_remediation_start_mastery)
+        info = {
+            "is_correct": is_correct,
+            "step": self.current_step,
+            "raw_target_skill": raw_target_skill,
+            "final_target_skill": final_target_skill,
+            "in_remediation": self.in_remediation,
+            "parent_skill": info_parent_skill,
+            "remediation_skill": info_remediation_skill,
+            "remediation_step_count": self.remediation_step_count,
+            "recent_correct_streak": self.recent_correct_streak,
+            "return_mode": self.return_mode,
+            "returned_to_parent": returned_to_parent,
+            "entered_remediation": entered_remediation,
+            "mastery_growth_delta": mastery_growth_delta,
+        }
         return next_state, float(reward), bool(done), info
+
+
+EduRLEnv = AdaptiveSkillPolicyEnv
 
 
 def teacher_policy_action(state_vector: list[float]) -> int:

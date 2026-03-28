@@ -8,15 +8,15 @@ def _clamp(value: float, lower: float = 0.05, upper: float = 0.98) -> float:
 
 def bootstrap_local_apr() -> float:
     """
-    v1.1 PoC bootstrap value.
-    The real AKT model will later replace this heuristic.
+    v1.1 local APR bootstrap value.
+    This module is a heuristic runtime tracker (AKT stub), not a real AKT model.
     """
     return 0.45
 
 
 def update_local_apr(previous_apr: float, is_correct: bool, frustration_index: int, subskill_count: int = 1) -> float:
     """
-    Heuristic AKT stub for v1.1:
+    Heuristic local APR update for v1.1:
     - correct answers raise local APR
     - wrong answers lower local APR
     - repeated frustration slightly amplifies the penalty

@@ -48,12 +48,16 @@
     .trajectory-board::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
     .trajectory-board::-webkit-scrollbar-track { background:transparent; }
     .trajectory-empty { padding:6px 4px; font-size:13px; color:var(--muted); }
-    .track-row { display:grid; grid-template-columns:58px 1fr 118px; gap:8px; align-items:center; font-size:13px; }
+    .track-row { display:grid; grid-template-columns:58px 1fr 176px; gap:8px; align-items:center; font-size:13px; }
     .bar { position:relative; height:12px; overflow:hidden; border-radius:999px; background:#e7eef8; }
     .threshold { position:absolute; inset:0 auto 0 65%; width:2px; background:rgba(220,38,38,.45); }
     .fill { height:100%; background:linear-gradient(90deg,#1565c0 0%,#31a2ac 100%); }
     .strategy-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; background:var(--accent-soft); color:#1e5faa; }
     .review-active { background:#fff2dd; color:#a75e00; }
+    .mode-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid transparent; }
+    .mode-main { background:#e9f3ff; color:#1e5faa; border-color:#c9ddf7; }
+    .mode-remediation { background:#fff4de; color:#9a5800; border-color:#f0d39a; }
+    .mode-returned { background:#e9f8ee; color:#1d7a42; border-color:#b9e5c7; }
     .apr-ring { width:78px; height:78px; border-radius:50%; background:conic-gradient(var(--accent) 0deg, var(--accent) 162deg, #e6eef8 162deg); display:grid; place-items:center; position:relative; }
     .apr-ring::before { content:""; width:58px; height:58px; border-radius:50%; background:#fff; position:absolute; }
     .apr-core { position:relative; z-index:1; text-align:center; line-height:1.1; }
@@ -109,6 +113,7 @@
     .adaptive-hint .hint-section ul { margin:0; padding-left:18px; }
     .adaptive-hint .hint-section li { margin:4px 0; line-height:1.6; }
     .adaptive-hint .hint-source { font-size:12px; color:#8d6a2b; opacity:.88; }
+    .hint-focus { margin-bottom:10px; padding:8px 10px; border:1px solid #efcf91; border-radius:10px; background:#fffaf0; color:#7d4f00; font-size:13px; font-weight:700; }
     .chat-history { height:clamp(280px, 36vh, 420px); overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:12px 10px 12px 12px; border:1px solid #dee2e6; border-radius:10px; background:#ffffff; scroll-behavior:smooth; overscroll-behavior:contain; scrollbar-gutter:stable; }
     .chat-history::-webkit-scrollbar { width:10px; }
     .chat-history::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
@@ -131,6 +136,11 @@
     .assistant-shell .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
     .assistant-card.idle { opacity:.92; }
     .assistant-card.review { border-color:#f0d39a; box-shadow:0 0 0 4px rgba(245, 158, 11, 0.18), 0 18px 44px rgba(18,44,99,.08); }
+    .adaptive-state-panel { border-color:#cfe0f5; background:linear-gradient(180deg, #fbfdff 0%, #f4f9ff 100%); }
+    .adaptive-state-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
+    .adaptive-state-item { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#ffffff; }
+    .adaptive-state-item strong { display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .adaptive-state-item div { font-size:14px; font-weight:700; line-height:1.5; color:#26415f; }
     .json-box { margin:0; max-height:240px; overflow-y:auto; color:#384965; white-space:pre-wrap; }
     .summary-card { display:none; border:1px solid var(--line); border-radius:14px; padding:14px; background:#f8fbff; }
     .summary-card.show { display:block; }
@@ -262,6 +272,53 @@
       </div>
 
       <div class="assistant-shell">
+        <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
+          <h2>自適應決策狀態</h2>
+          <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程。</p>
+          <div class="adaptive-state-grid">
+            <div class="adaptive-state-item">
+              <strong>目前模式（主線 / 補救 / 返回）</strong>
+              <div id="adaptiveModeValue">尚未開始</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>主技能（Main Skill）</strong>
+              <div id="mainSkillValue">待載入</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>PPO 路由動作</strong>
+              <div id="ppoActionValue">尚未開始</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>目前題型 family</strong>
+              <div id="familyValue">待載入</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>偵測斷點子技能</strong>
+              <div id="detectedSubskillValue">尚未偵測</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>補救技能（Skill）</strong>
+              <div id="remediationSkillValue">尚未進入補救</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>補救子技能（Subskill）</strong>
+              <div id="remediationSubskillValue">尚未進入補救</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>切換原因（為何切換）</strong>
+              <div id="switchReasonValue">無</div>
+            </div>
+            <div class="adaptive-state-item">
+              <strong>返回主線狀態</strong>
+              <div id="returnStateValue">尚未判定</div>
+            </div>
+            <div class="adaptive-state-item" style="grid-column:1 / -1;">
+              <strong>決策說明（Explanation）</strong>
+              <div id="adaptiveRationaleValue">尚未開始診斷，系統尚未做路由決策。</div>
+            </div>
+          </div>
+        </section>
+
         <section class="panel assistant-card idle" id="assistantCard">
           <div class="assistant-title">AI 助教（這題專用）</div>
           <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
@@ -302,10 +359,53 @@
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
   <script>
-    const state = { sessionId: "", stepNumber: 0, currentApr: 0.45, ppoStrategy: 1, frustrationIndex: 0, currentFamilyId: "", currentQuestionText: "", currentContext: "", currentSubskills: [], history: [] };
+    const state = {
+      sessionId: "",
+      stepNumber: 0,
+      currentApr: 0.45,
+      ppoStrategy: 1,
+      frustrationIndex: 0,
+      currentFamilyId: "",
+      currentQuestionText: "",
+      currentContext: "",
+      currentSubskills: [],
+      history: [],
+      learningMode: "main",
+      mainSkill: "",
+      mainSkillLabel: "",
+      currentFamilyLabel: "",
+      detectedSubskill: "",
+      detectedSubskillLabel: "",
+      remediationSkill: "",
+      remediationSkillLabel: "",
+      switchReason: "",
+      returnReady: false,
+      hasReturnedToMain: false,
+      ppoRouteAction: "",
+      ppoRouteActionIdx: null,
+      familyNameEn: "",
+      currentMode: "",
+      postMode: "",
+      remediationTriggeredFinal: false,
+      remediationReviewReady: false,
+      actionMaskHasRemediate: false,
+      crossSkillTrigger: false,
+      selectedFamilyForRender: "",
+      originFamily: "",
+      remediationFamily: "",
+      isRemediationActive: false,
+      isRemediationCandidate: false,
+      isCompleted: false,
+      displayMode: "",
+      displayFamily: "",
+      displaySubskill: "",
+      displaySkill: "",
+    };
     const skillId = {{ skill_id|tojson }};
+    const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
     const basePayload = {};
     if (skillId) basePayload.skill_id = skillId;
+    if (adaptiveEntryMode) basePayload.mode = adaptiveEntryMode;
 
     const canvas = document.getElementById("handwriting-canvas");
     const ctx = canvas.getContext("2d");
@@ -364,19 +464,356 @@
       };
       badge.textContent = map[mode] || map.idle;
     }
-    const SUBSKILL_LABELS = {
-      sign_handling: "正負號判讀",
-      add_sub: "整數加減",
-      mul_div: "整數乘除",
-      mixed_ops: "四則混合運算",
-      absolute_value: "絕對值",
-      parentheses: "括號運算",
-      divide_terms: "分項整理",
-      conjugate_rationalize: "分母有理化",
+    const SUBSKILL_UI_MAP = {
+      sign_handling: { label: "正負號規則（先分清正負）", hint: "負號先看清，再決定往哪邊算" },
+      add_sub: { label: "加減運算（先整理再算）", hint: "先把式子整理好，再做加減" },
+      mul_div: { label: "整數乘除（正負號規則）", hint: "先判斷正負，再算乘除大小" },
+      order_of_operations: { label: "運算順序（先乘除後加減）", hint: "先做乘除，再回來算加減" },
+      bracket_scope: { label: "括號範圍（整組一起看）", hint: "去括號前先看整組受誰影響" },
+      absolute_value: { label: "絕對值概念（看離 0 多遠）", hint: "絕對值只看大小，不看正負號" },
+      exact_divisibility: { label: "整除判斷（要除得盡）", hint: "除之前先看能不能整除" },
+      isomorphic_structure: { label: "結構辨識（換個樣子也一樣）", hint: "先看題型骨架，再套用同樣做法" },
+      proper_improper_fraction: { label: "真分數與假分數（先看分子分母）", hint: "分子和分母誰大，先分清楚" },
+      mixed_numbers: { label: "帶分數換算（整數和分數分開看）", hint: "帶分數先換好，再做後面運算" },
+      sign_normalization: { label: "分數正負號整理（符號放前面）", hint: "正負號先統一位置，比較不會亂" },
+      decimal_to_fraction_exact_conversion: { label: "小數換分數（先寫成幾分之幾）", hint: "先看小數位數，再改寫成分數" },
+      simplest_form_reduction: { label: "約成最簡（分子分母一起約）", hint: "最後再檢查一次，能不能再約分" },
+      equivalent_fraction_scaling: { label: "等值分數（分子分母同乘除）", hint: "分子分母要一起變，值才不變" },
+      reciprocal_transform: { label: "倒數概念（上下對調）", hint: "除以分數時，先想到倒數" },
+      preserve_value_invariance: { label: "分數值不變（一起放大縮小）", hint: "只要同乘同除，分數值不會變" },
+      positive_fraction_comparison: { label: "正分數比較（先通分再比）", hint: "分母不同時，先通分再比較" },
+      negative_fraction_comparison: { label: "負分數比較（越負越小）", hint: "負分數比較時，要注意方向相反" },
+      mixed_number_comparison: { label: "帶分數比較（先比整數部分）", hint: "先比整數部分，再比分數部分" },
+      multiply: { label: "分數乘法（先約分再乘）", hint: "能先約分就先約，再相乘" },
+      divide: { label: "分數除法（改乘倒數）", hint: "除法先改成乘倒數，再計算" },
+      nested_parentheses: { label: "括號分數運算（先算括號內）", hint: "先算括號裡，再處理外面" },
+      decimal_fraction_mixed_arithmetic: { label: "小數分數混合算（先統一形式）", hint: "小數和分數先統一，再運算" },
+      telescoping_products: { label: "連鎖約分（前後交叉看）", hint: "前後能約的先找出來" },
+      remaining_amount: { label: "剩餘量理解（先看用了多少）", hint: "先分清楚剩下和用掉的是哪一部分" },
+      container_weight: { label: "容器重量差（總量和空瓶分開）", hint: "先分出內容物和容器，再比較" },
+      before_after_ratio: { label: "前後變化比較（先釐清基準）", hint: "先看前後各是幾分之幾" },
+      share_comparison: { label: "分配比較（同一份量再比較）", hint: "先確認比較的是不是同一份量" },
+      normalize_terms: { label: "項的整理（先排整齊）", hint: "先把同類項排好，計算比較穩" },
+      combine_like_terms: { label: "同類項合併（長得一樣才能加減）", hint: "只有同類的項，才能直接合併" },
+      sign_distribution: { label: "符號分配（每一項都要顧到）", hint: "負號乘進去，每一項都要變號" },
+      expand_monomial: { label: "單項式乘法（係數字母都要乘）", hint: "每一項都要乘到，次方也要顧" },
+      expand_binomial: { label: "多項式展開（每項都要乘到）", hint: "展開時不要漏乘任何一項" },
+      special_identity: { label: "乘法公式（套公式也要看符號）", hint: "套公式前，先看是不是標準型" },
+      long_division: { label: "長除法步驟（對齊次方）", hint: "每一步都要對齊最高次項" },
+      quotient_remainder_format: { label: "商與餘式表示（寫完整）", hint: "有餘數時，商和餘式都要寫清楚" },
+      reverse_division_reconstruction: { label: "反推除法（用商和餘式還原）", hint: "先用除式乘商，再把餘式加回來" },
+      geometry_formula: { label: "幾何公式應用（看清長寬關係）", hint: "先找出公式裡每一段代表什麼" },
+      composite_region_modeling: { label: "複合圖形拆解（分塊再合併）", hint: "先拆成簡單圖形，再組回答案" },
+      family_isomorphism: { label: "題型結構辨識（換題皮不換做法）", hint: "題目變樣子，做法骨架可能一樣" },
+      unknown_target_preservation: { label: "未知式保留（先把未知量留乾淨）", hint: "移項整理時，先把未知多項式留完整" },
+      simplify: { label: "根式化簡（先找完全平方）", hint: "根號內先找能開出來的因數" },
+      multiply_terms: { label: "根式乘法（根號內外分清楚）", hint: "先分清楚根號外和根號內再相乘" },
+      divide_terms: { label: "根式除法（先約再除）", hint: "能先約的先約，再看要不要有理化" },
+      distribute: { label: "分配律（每一項都要乘）", hint: "乘進括號時，每一項都不能漏" },
+      binomial_expand: { label: "雙括號展開（內外都要算）", hint: "展開雙括號時，四個乘積都要顧到" },
+      conjugate_rationalize: { label: "共軛有理化（配對消根號）", hint: "看清共軛式，分母才能順利有理化" },
+      fractional_radical: { label: "分式根式（分子分母分開看）", hint: "分式和根號一起出現時，先分層看" },
+      mixed_number_radical: { label: "帶分數根式（整數部分別漏掉）", hint: "帶分數根式要把整數部分一起算" },      structure_isomorphism: { label: "\u7d50\u69cb\u8fa8\u8b58\uff08\u5148\u770b\u9577\u76f8\u518d\u4e0b\u624b\uff09", hint: "\u984c\u76ee\u8b8a\u5f62\u4e86\uff0c\u898f\u5247\u901a\u5e38\u6c92\u8b8a" },
+      coefficient_sign_handling: { label: "\u4fc2\u6578\u8207\u7b26\u865f\u8655\u7406\uff08\u5148\u5224\u65b7\u6b63\u8ca0\uff09", hint: "\u5148\u5224\u65b7\u4fc2\u6578\u6b63\u8ca0\uff0c\u518d\u505a\u4e58\u9664\u6216\u5408\u4f75" },
+      like_term_combination: { label: "\u540c\u985e\u9805\u5408\u4f75\uff08\u8b8a\u6578\u76f8\u540c\u624d\u80fd\u4f75\uff09", hint: "\u78ba\u8a8d\u8b8a\u6578\u8207\u6b21\u65b9\u76f8\u540c\u518d\u5408\u4f75" },
+      term_collection_with_constants: { label: "\u4ee3\u6578\u9805\u8207\u5e38\u6578\u5206\u7d44\uff08\u5206\u958b\u6574\u7406\uff09", hint: "\u5148\u5206\u4ee3\u6578\u9805\u8207\u5e38\u6578\u9805\uff0c\u518d\u5404\u81ea\u5408\u4f75" },
+      outer_minus_scope: { label: "\u5916\u5c64\u8ca0\u865f\u4f5c\u7528\u7bc4\u570d\uff08\u6574\u5305\u8b8a\u865f\uff09", hint: "\u8ca0\u865f\u5728\u62ec\u865f\u524d\uff0c\u62ec\u865f\u5167\u6bcf\u4e00\u9805\u90fd\u8981\u8b8a\u865f" },
+      monomial_distribution: { label: "\u55ae\u9805\u5206\u914d\u5230\u62ec\u865f\uff08\u6bcf\u9805\u90fd\u4e58\u5230\uff09", hint: "\u5206\u914d\u6642\u6bcf\u4e00\u9805\u90fd\u8981\u4e58\u4e0a\u4fc2\u6578" },
+      nested_bracket_scope: { label: "\u5de2\u72c0\u62ec\u865f\u7bc4\u570d\uff08\u7531\u5167\u5f80\u5916\uff09", hint: "\u5148\u7b97\u6700\u5167\u5c64\u62ec\u865f\uff0c\u518d\u9010\u5c64\u5c55\u958b" },
+      fractional_expression_simplification: { label: "\u5206\u5f0f\u4ee3\u6578\u5f0f\u5316\u7c21\uff08\u5148\u7d71\u4e00\u5206\u6bcd\uff09", hint: "\u5148\u8655\u7406\u5206\u6bcd\uff0c\u518d\u5408\u4f75\u540c\u985e\u9805" },      mixed_ops: { label: "\u56db\u5247\u6df7\u5408\u904b\u7b97\uff08\u5148\u770b\u9806\u5e8f\uff09", hint: "\u5148\u4e58\u9664\u5f8c\u52a0\u6e1b\uff0c\u9806\u5e8f\u4e0d\u8981\u4e82" },
+      parentheses: { label: "括號運算（先算裡面）", hint: "先處理括號內，再往外算" },
     };
+    const SKILL_UI_MAP = {
+      "jh_數學1上_FourArithmeticOperationsOfIntegers": "整數四則運算",
+      "jh_數學1上_FourArithmeticOperationsOfNumbers": "分數四則運算",
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": "多項式四則運算",
+      "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
+      "\u006a\u0068_\u6578\u5b781\u4e0a_OperationsOnLinearExpressions": "\u4e00\u5143\u4e00\u6b21\u5f0f\u5316\u7c21",
+    };
+    const FAMILY_NAME_UI_MAP = {
+      int_numberline_add_sub: "數線整數加減",
+      int_flat_add_sub: "整數平面加減",
+      int_flat_mul_div_exact: "整數乘除（整除）",
+      int_flat_mixed_four_ops: "整數四則混合",
+      int_bracket_mixed: "整數括號混合",
+      int_abs_value: "整數絕對值",
+      int_division_exact_nested: "整數巢狀除法",
+      int_composite_structure: "整數綜合結構題",
+      "Fraction Simplification": "分數化簡",
+      "Equivalent Fraction Fill-Blank": "等值分數填空",
+      "Preserve-Value Fraction Invariance": "值不變分數轉換",
+      "Fraction Comparison": "分數大小比較",
+      "Fraction Add/Subtract": "分數加減",
+      "Fraction Multiply": "分數乘法",
+      "Fraction Divide": "分數除法",
+      "Fraction Mixed Four Operations": "分數四則混合",
+      "Decimal-Fraction Mixed Evaluation": "小數分數混合計算",
+      "Fraction Word Problems": "分數應用題",
+      poly_add_sub_flat: "平面多項式加減",
+      poly_add_sub_nested: "巢狀多項式加減",
+      poly_add_sub_unknown: "含未知式多項式加減",
+      poly_mul_monomial: "單項式乘多項式",
+      poly_mul_poly: "多項式乘法展開",
+      poly_mul_special_identity: "乘法公式",
+      poly_div_monomial_eval: "單項式除法直接化簡",
+      poly_div_monomial_qr: "單項式除法（商與餘式）",
+      poly_div_poly_qr: "多項式長除法（商與餘式）",
+      poly_div_reverse: "反推除法",
+      poly_mixed_simplify: "綜合化簡",
+      poly_geom_formula_direct: "幾何公式應用",
+      poly_geom_region_composite: "複合圖形應用",
+      p0_simplify: "根式化簡",
+      p1_add_sub: "純根式加減",
+      p1b_add_sub_bracket: "括號根式加減",
+      p1c_mixed_frac_rad_add_sub: "分數根式加減",
+      p2a_mult_direct: "根式直接乘法",
+      p2b_mult_distrib: "根式分配乘法",
+      p2c_mult_binomial: "根式雙括號乘法",
+      p2d_perfect_square: "完全平方公式",
+      p2e_diff_of_squares: "平方差公式",
+      p2f_int_mult_rad: "整數乘根式",
+      p2g_rad_mult_frac: "根式乘分式",
+      p2h_frac_mult_rad: "分式乘根式",
+      p3a_div_expr: "根式除法（整式）",
+      p3b_div_simple: "根式除法（有理化）",
+      p3c_div_direct: "根式直接除法",
+      p4_frac_mult: "分式根式乘法",
+      p4b_frac_rad_div: "分式根式除法",
+      p4c_nested_frac_chain: "巢狀分式連鎖",
+      p4d_frac_rad_div_mixed: "分式根式混合除法",
+      p5a_conjugate_int: "共軛有理化（整數）",
+      p5b_conjugate_rad: "共軛有理化（根式）",
+      p6_combo: "根式綜合題",
+      p7_mixed_rad_add: "帶分數根式加減",
+    };
+    const SKILL_FAMILY_ID_UI_MAP = {
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+        F1: "平面多項式加減",
+        F2: "巢狀多項式加減",
+        F3: "含未知式多項式加減",
+        F4: "單項式乘多項式",
+        F5: "多項式乘法展開",
+        F6: "乘法公式",
+        F7: "單項式除法直接化簡",
+        F8: "單項式除法（商與餘式）",
+        F9: "多項式長除法（商與餘式）",
+        F10: "反推除法",
+        F11: "綜合化簡",
+        F12: "幾何公式應用",
+        F13: "複合圖形應用",
+      },
+    };
+    function getSubskillLabel(subskillKey) {
+      if (!subskillKey) return "";
+      const raw = String(subskillKey).trim();
+      if (SUBSKILL_UI_MAP[raw]?.label) return SUBSKILL_UI_MAP[raw].label;
+      const shortKey = raw.includes(".") ? raw.split(".").pop() : raw;
+      return SUBSKILL_UI_MAP[shortKey]?.label || String(shortKey).replaceAll("_", " ");
+    }
+    function getSubskillHint(subskillKey) {
+      if (!subskillKey) return "";
+      const raw = String(subskillKey).trim();
+      if (SUBSKILL_UI_MAP[raw]?.hint) return SUBSKILL_UI_MAP[raw].hint;
+      const shortKey = raw.includes(".") ? raw.split(".").pop() : raw;
+      return SUBSKILL_UI_MAP[shortKey]?.hint || "先把這個子技能的規則看清楚。";
+    }
     function toFriendlySubskillLabel(code) {
       if (!code) return "";
-      return SUBSKILL_LABELS[code] || String(code).replaceAll("_", " ");
+      return getSubskillLabel(code);
+    }
+    function normalizeLearningMode(mode) {
+      const value = String(mode || "").trim().toLowerCase();
+      if (value === "main" || value === "remediation" || value === "returned") return value;
+      return "";
+    }
+    function toLearningModeLabel(mode) {
+      const map = {
+        main: "主技能學習中",
+        remediation: "前置子技能補救中",
+        returned: "已返回主技能",
+        "": "尚未開始",
+      };
+      return map[normalizeLearningMode(mode)] || map[""];
+    }
+    function toLearningModeBadgeLabel(mode) {
+      const map = {
+        main: "主線",
+        remediation: "補救",
+        returned: "返回",
+      };
+      return map[normalizeLearningMode(mode)] || map.main;
+    }
+    function toLearningModeBadgeClass(mode) {
+      const map = {
+        main: "mode-tag mode-main",
+        remediation: "mode-tag mode-remediation",
+        returned: "mode-tag mode-returned",
+      };
+      return map[normalizeLearningMode(mode)] || map.main;
+    }
+    function normalizeBoolean(value, fallback = false) {
+      if (typeof value === "boolean") return value;
+      if (typeof value === "string") {
+        const raw = value.trim().toLowerCase();
+        if (raw === "true" || raw === "1" || raw === "yes") return true;
+        if (raw === "false" || raw === "0" || raw === "no") return false;
+      }
+      if (typeof value === "number") return value !== 0;
+      return fallback;
+    }
+    function inferLearningModeFromResponse(response, previousMode) {
+      const postMode = normalizeLearningMode(response?.post_mode);
+      if (postMode) return postMode;
+      const currentMode = normalizeLearningMode(response?.current_mode);
+      if (currentMode) return currentMode;
+      if (normalizeBoolean(response?.remediation_triggered_final, false)) return "remediation";
+      const explicit = String(response?.learning_mode || "").trim().toLowerCase();
+      if (explicit === "main" || explicit === "remediation" || explicit === "returned") return explicit;
+      if (normalizeBoolean(response?.has_returned_to_main, false)) return "returned";
+      const prev = normalizeLearningMode(previousMode);
+      return prev || "";
+    }
+    function parseAllowedActions(rawAllowedActions) {
+      if (Array.isArray(rawAllowedActions)) {
+        return rawAllowedActions.map((item) => String(item || "").trim().toLowerCase()).filter(Boolean);
+      }
+      if (rawAllowedActions && typeof rawAllowedActions === "object") {
+        return Object.keys(rawAllowedActions).filter((key) => normalizeBoolean(rawAllowedActions[key], false)).map((key) => String(key).trim().toLowerCase());
+      }
+      if (typeof rawAllowedActions === "string") {
+        return rawAllowedActions.split(/[,\s]+/).map((part) => part.trim().toLowerCase()).filter(Boolean);
+      }
+      return [];
+    }
+    function isRemediationActiveFromState() {
+      return Boolean(
+        normalizeLearningMode(state.currentMode) === "remediation"
+        || normalizeLearningMode(state.postMode) === "remediation"
+        || normalizeLearningMode(state.learningMode) === "remediation"
+        || state.remediationTriggeredFinal
+      );
+    }
+    function isRemediationCandidateOnlyFromState() {
+      const route = normalizeRouteAction(state.ppoRouteAction);
+      const inMainline = normalizeLearningMode(state.currentMode || state.learningMode) !== "remediation";
+      const staysMainlineFamily = Boolean(state.selectedFamilyForRender) && state.selectedFamilyForRender === state.originFamily;
+      return Boolean(
+        !state.isRemediationActive
+        && inMainline
+        && route === "stay"
+        && (state.remediationReviewReady || state.actionMaskHasRemediate || state.crossSkillTrigger)
+        && staysMainlineFamily
+      );
+    }
+    function toSkillLabel(skillKey) {
+      if (!skillKey) return "";
+      return SKILL_UI_MAP[skillKey] || String(skillKey);
+    }
+    function normalizeRouteAction(action) {
+      const raw = String(action || "").trim().toLowerCase();
+      if (raw === "stay" || raw === "remediate" || raw === "return") return raw;
+      return "";
+    }
+    function toRouteActionLabel(action) {
+      const map = {
+        stay: "stay（維持目前主線）",
+        remediate: "remediate（切入補救路線）",
+        return: "return（返回主線）",
+        "": "尚未開始",
+      };
+      return map[normalizeRouteAction(action)] || map[""];
+    }
+    function normalizeDisplayMode(mode) {
+      const value = String(mode || "").trim().toLowerCase();
+      if (value === "completed" || value === "mainline" || value === "remediation") return value;
+      return "";
+    }
+    function resolveFamilyLabel({ skillKey, familyId, familyNameEn, backendFamilyLabel }) {
+      if (backendFamilyLabel) return String(backendFamilyLabel);
+      const id = String(familyId || "").trim();
+      const nameEn = String(familyNameEn || "").trim();
+      const skill = String(skillKey || "").trim();
+      const byName = FAMILY_NAME_UI_MAP[nameEn];
+      const bySkillId = SKILL_FAMILY_ID_UI_MAP[skill]?.[id];
+      if (byName && id) return `${id}｜${byName}`;
+      if (bySkillId && id) return `${id}｜${bySkillId}`;
+      if (byName) return byName;
+      return id || nameEn || "待載入";
+    }
+    function buildAdaptiveRationale() {
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      if (!hasStarted) return "尚未開始診斷，系統尚未做路由決策。";
+      if (state.isCompleted || normalizeDisplayMode(state.displayMode) === "completed") {
+        const mainSkillDone = state.mainSkillLabel || toSkillLabel(state.displaySkill || state.mainSkill) || "本單元";
+        const familyDone = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "主線 family";
+        return `本次診斷已完成。最終停留於主線「${mainSkillDone} / ${familyDone}」，不再顯示補救中狀態。`;
+      }
+      const mode = normalizeLearningMode(state.learningMode);
+      const route = normalizeRouteAction(state.ppoRouteAction);
+      const mainSkill = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "主技能";
+      const family = state.currentFamilyLabel || state.currentFamilyId || "目前 family";
+      const breakpoint = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "待判定子技能";
+      const remSkill = state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "補救技能";
+      const remSub = getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "補救子技能";
+      if (state.isRemediationCandidate) {
+        return `系統偵測到你可能卡在「${breakpoint}」，且補救候選已就緒；但本輪 PPO 動作為 ${toRouteActionLabel(route)}，目前仍維持主線「${family}」。`;
+      }
+      if (mode === "returned" || state.hasReturnedToMain) {
+        return `PPO 動作為 ${toRouteActionLabel(route)}，已完成補救並返回「${mainSkill}」，目前題型為「${family}」。`;
+      }
+      if (state.isRemediationActive || mode === "remediation") {
+        return `PPO 動作為 ${toRouteActionLabel(route)}，系統判定斷點在「${breakpoint}」，目前進入「${remSkill}」補救（子技能：${remSub}）。`;
+      }
+      if (state.returnReady) {
+        return `目前仍在主線「${mainSkill}」，題型為「${family}」。系統已判定達返回條件，可視下一步切回主線穩定練習。`;
+      }
+      return `目前維持主線「${mainSkill}」，題型為「${family}」。PPO 動作為 ${toRouteActionLabel(route)}，暫未切入補救。`;
+    }
+    function updateAdaptiveStatePanel() {
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      const displayMode = normalizeDisplayMode(state.displayMode);
+      const showCompleted = state.isCompleted || displayMode === "completed";
+      const showMainlineByDisplay = !showCompleted && displayMode === "mainline";
+      const showRemediationByDisplay = !showCompleted && displayMode === "remediation";
+      const modeLabel = showCompleted
+        ? "本次診斷完成"
+        : (showMainlineByDisplay
+          ? "主技能學習中"
+          : (showRemediationByDisplay ? "前置子技能補救中" : (hasStarted ? toLearningModeLabel(state.learningMode) : "尚未開始")));
+      const mainSkillText = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入";
+      const familyText = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "待載入";
+      const detectedText = showCompleted
+        ? (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "已完成")
+        : (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "尚未偵測");
+      const remediationText = (showCompleted || showMainlineByDisplay)
+        ? "目前為主線狀態"
+        : (state.isRemediationActive
+        ? (state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待載入")
+        : (state.isRemediationCandidate
+          ? `建議補救候選：${state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待判定"}`
+          : "尚未進入補救"));
+      const remediationSubskillText = (showCompleted || showMainlineByDisplay)
+        ? "目前無補救進行中"
+        : (state.isRemediationActive
+        ? (getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待載入")
+        : (state.isRemediationCandidate
+          ? `偵測斷點：${getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待判定"}`
+          : "尚未進入補救"));
+      const switchReasonText = state.switchReason || "無";
+      const returnText = showCompleted
+        ? (state.hasReturnedToMain ? "已回主線後完成" : "已完成")
+        : (state.hasReturnedToMain ? "已返回主技能" : (state.returnReady ? "已達返回條件" : "尚未達返回條件"));
+      const ppoActionText = hasStarted ? toRouteActionLabel(state.ppoRouteAction) : "尚未開始";
+      setText("adaptiveModeValue", modeLabel || "尚未開始");
+      setText("mainSkillValue", mainSkillText);
+      setText("ppoActionValue", ppoActionText);
+      setText("familyValue", familyText);
+      setText("detectedSubskillValue", detectedText);
+      setText("remediationSkillValue", remediationText);
+      setText("remediationSubskillValue", remediationSubskillText);
+      setText("switchReasonValue", switchReasonText);
+      setText("returnStateValue", state.stepNumber > 0 ? returnText : "尚未判定");
+      setText("adaptiveRationaleValue", buildAdaptiveRationale());
     }
     function scrollChatToBottom() {
       const box = document.getElementById("chatHistory");
@@ -492,8 +929,10 @@
         const width = Math.max(4, Math.min(100, Math.round(item.current_apr * 100)));
         const reviewClass = item.ppo_strategy === 3 ? "strategy-tag review-active" : "strategy-tag";
         const reviewText = item.completed ? "完成" : (item.ppo_strategy === 3 ? "🛡 Review" : strategyName(item.ppo_strategy));
+        const modeClass = toLearningModeBadgeClass(item.learning_mode);
+        const modeText = toLearningModeBadgeLabel(item.learning_mode);
         const stepLabel = item.completed ? `Step ${item.step_number}（結束）` : `Step ${item.step_number}`;
-        return `<div class="track-row"><div>${stepLabel}</div><div class="bar"><div class="threshold"></div><div class="fill" style="width:${width}%"></div></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span>${Math.round(item.current_apr * 100)}%</span><span class="${reviewClass}">${reviewText}</span></div></div>`;
+        return `<div class="track-row"><div>${stepLabel}</div><div class="bar"><div class="threshold"></div><div class="fill" style="width:${width}%"></div></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span>${Math.round(item.current_apr * 100)}%</span><span class="${reviewClass}">${reviewText}</span><span class="${modeClass}">${modeText}</span></div></div>`;
       }).join("");
       requestAnimationFrame(() => {
         box.scrollTop = box.scrollHeight;
@@ -547,7 +986,10 @@
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "rag hint failed");
         const hintBox = document.getElementById("hintBox");
-        hintBox.innerHTML = data.hint_html;
+        const focusSubskill = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || (state.currentSubskills[0] ? getSubskillLabel(state.currentSubskills[0]) : "");
+        const focusPrefix = state.isRemediationActive ? "目前補救重點" : "系統偵測斷點";
+        const focusHtml = focusSubskill ? `<div class="hint-focus">${focusPrefix}：${escapeHtml(focusSubskill)}</div>` : "";
+        hintBox.innerHTML = `${focusHtml}${data.hint_html || ""}`;
         await typesetMath(hintBox);
         if (data.hint_summary) {
           addMessage("bot", `這題先看：${data.hint_summary}。`);
@@ -612,17 +1054,112 @@
 
     function renderQuestion(response) {
       const q = response.new_question_data || {};
+      const previousMode = state.learningMode;
+      state.isCompleted = false;
       state.sessionId = response.session_id;
       state.stepNumber = response.step_number;
       state.currentApr = response.current_apr;
       state.ppoStrategy = response.ppo_strategy;
       state.frustrationIndex = response.frustration_index;
-      state.currentFamilyId = response.target_family_id;
+      state.selectedFamilyForRender = String(
+        response?.selected_family_for_render
+        || response?.selected_family
+        || response?.target_family_id
+        || ""
+      );
+      state.currentFamilyId = state.selectedFamilyForRender;
+      state.originFamily = String(
+        response?.origin_family
+        || response?.origin_family_id
+        || state.originFamily
+        || state.selectedFamilyForRender
+      );
+      const responseRemediationFamily = String(
+        response?.remediation_family
+        || response?.remediation_family_id
+        || ""
+      );
+      state.remediationFamily = responseRemediationFamily;
+      state.familyNameEn = String((response.new_question_data || {}).family_name || "");
       state.currentQuestionText = q.question_text || q.question || "";
       state.currentContext = q.context_string || "";
       state.currentSubskills = response.target_subskills || [];
-      state.history.push({ step_number: response.step_number, current_apr: response.current_apr, ppo_strategy: response.ppo_strategy });
+      state.currentMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");
+      state.postMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");
+      state.displayMode = String(response?.display_mode || "");
+      state.displayFamily = String(response?.display_family || "");
+      state.displaySubskill = String(response?.display_subskill || "");
+      state.displaySkill = String(response?.display_skill || "");
+      state.remediationTriggeredFinal = normalizeBoolean(response?.remediation_triggered_final, false);
+      state.remediationReviewReady = normalizeBoolean(response?.remediation_review_ready, false);
+      state.crossSkillTrigger = normalizeBoolean(response?.cross_skill_trigger, false);
+      const allowedActions = parseAllowedActions(response?.allowed_actions || response?.action_mask);
+      state.actionMaskHasRemediate = allowedActions.includes("remediate");
+      const inferredMode = inferLearningModeFromResponse(response, previousMode);
+      const primarySubskill = String(response.detected_subskill_node || state.currentSubskills[0] || state.detectedSubskill || "");
+      state.mainSkill = String(response.main_skill || state.mainSkill || skillId || "");
+      state.mainSkillLabel = String(response.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
+      state.currentFamilyLabel = resolveFamilyLabel({
+        skillKey: response.main_skill || state.mainSkill || skillId,
+        familyId: state.currentFamilyId,
+        familyNameEn: q.family_name || state.familyNameEn,
+        backendFamilyLabel: response.target_family_label,
+      });
+      state.detectedSubskill = primarySubskill;
+      state.detectedSubskillLabel = String(response.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || "尚未偵測");
+      state.remediationSkill = String(response.remediation_skill || state.remediationSkill || "");
+      state.remediationSkillLabel = String(
+        response.remediation_skill_label
+        || getSubskillLabel(state.remediationSkill)
+        || toSkillLabel(state.remediationSkill)
+        || (state.remediationTriggeredFinal ? state.detectedSubskillLabel : "")
+      );
+      state.learningMode = normalizeLearningMode(inferredMode);
+      state.isRemediationActive = normalizeDisplayMode(state.displayMode) === "remediation"
+        ? true
+        : isRemediationActiveFromState();
+      if (!state.learningMode) {
+        state.learningMode = state.isRemediationActive ? "remediation" : "main";
+      }
+      if (!state.isRemediationActive && state.learningMode !== "remediation") {
+        state.remediationFamily = "";
+        if (!response?.remediation_skill && !response?.remediation_skill_label) {
+          state.remediationSkill = "";
+          state.remediationSkillLabel = "";
+        }
+      }
+      state.isRemediationCandidate = isRemediationCandidateOnlyFromState();
+      state.returnReady = normalizeBoolean(response.return_ready, inferredMode === "returned");
+      state.hasReturnedToMain = normalizeBoolean(response?.return_to_mainline, state.learningMode === "returned");
+      state.ppoRouteActionIdx = response?.route_action_idx ?? response?.action_idx ?? null;
+      state.ppoRouteAction = String(
+        response?.ppo_action
+        || response?.route_action
+        || response?.selection_debug?.route_action
+        || response?.selection_debug?.ppo_action
+        || state.ppoRouteAction
+        || ""
+      );
+      if (response.switch_reason) {
+        state.switchReason = String(response.switch_reason);
+      } else if (state.isRemediationActive || state.learningMode === "remediation") {
+        state.switchReason = previousMode === "remediation" ? (state.switchReason || "目前維持補救模式，持續加強前置子技能") : "偵測到前置技能不足，已切換補救";
+      } else if (state.isRemediationCandidate) {
+        state.switchReason = "偵測到補救需求，但本輪仍維持主線";
+      } else if (state.learningMode === "returned") {
+        state.switchReason = "補救達到返回條件，已回到主技能";
+      } else {
+        state.switchReason = "無";
+      }
+      state.history.push({
+        step_number: response.step_number,
+        current_apr: response.current_apr,
+        ppo_strategy: response.ppo_strategy,
+        learning_mode: state.learningMode,
+        detected_subskill: state.detectedSubskill,
+      });
       updateOverview(response, q);
+      updateAdaptiveStatePanel();
       const questionEl = document.getElementById("questionText");
       questionEl.textContent = state.currentQuestionText || "(no question)";
       setText("questionContext", state.currentContext);
@@ -635,16 +1172,101 @@
       clearCanvas(true);
       resetChatHistory();
       resetHintBox();
-      if (response.ppo_strategy === 3) setAssistantBanner("這一題先切到補救模式。你先看右邊提示，再回到左邊慢慢做。", true);
-      else setAssistantBanner("你可以先自己解題。若有卡住，再看右邊提示，或直接問我這一題的下一步。", false);
-      setStatus(`已載入 Step ${response.step_number}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
+      if (state.learningMode === "returned") {
+        setAssistantBanner(`你已完成「${state.detectedSubskillLabel || "前置子技能"}」補救，系統現在帶你回到主技能「${state.mainSkillLabel || "主技能"}」。`, false);
+      } else if (state.isRemediationActive || state.learningMode === "remediation") {
+        if (previousMode !== "remediation") {
+          setAssistantBanner(`系統偵測你目前卡在「${state.detectedSubskillLabel || "前置觀念"}」，已切換到「${state.remediationSkillLabel || "補救技能"}」進行補救。`, true);
+        } else {
+          setAssistantBanner(`目前先練「${state.remediationSkillLabel || state.detectedSubskillLabel || "補救子技能"}」，這一題是針對剛才卡住的地方設計的。`, true);
+        }
+      } else if (state.isRemediationCandidate) {
+        setAssistantBanner(`系統偵測你可能卡在「${state.detectedSubskillLabel || "前置觀念"}」，若後續持續出錯將切入補救；本輪先維持主線題型。`, false);
+      } else {
+        setAssistantBanner("你可以先自己解題。若有卡住，再看右邊提示，或直接問我這一題的下一步。", false);
+      }
+      setStatus(`已載入 Step ${response.step_number}，模式：${toLearningModeLabel(state.learningMode)}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
       typesetMath(questionEl);
     }
 
-    function renderSummary(summary) {
+    function renderSummary(summary, responseMeta = {}) {
       const card = document.getElementById("summaryCard");
       const passed = Boolean(summary && summary.passed);
       const finalApr = Number(summary?.final_apr ?? state.currentApr ?? 0);
+      state.isCompleted = normalizeBoolean(summary?.is_completed, true);
+      state.displayMode = String(summary?.display_mode || responseMeta?.display_mode || "completed");
+      state.displayFamily = String(summary?.display_family || responseMeta?.display_family || state.currentFamilyId || "");
+      state.displaySubskill = String(summary?.display_subskill || responseMeta?.display_subskill || state.detectedSubskill || "");
+      state.displaySkill = String(summary?.display_skill || responseMeta?.display_skill || state.mainSkill || skillId || "");
+      state.learningMode = normalizeLearningMode(summary?.learning_mode || state.learningMode || "");
+      state.mainSkill = String(summary?.main_skill || state.mainSkill || skillId || "");
+      state.mainSkillLabel = String(summary?.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
+      state.currentFamilyLabel = resolveFamilyLabel({
+        skillKey: summary?.main_skill || state.mainSkill || skillId,
+        familyId: summary?.target_family_id || state.currentFamilyId,
+        familyNameEn: summary?.target_family_name || state.familyNameEn,
+        backendFamilyLabel: summary?.target_family_label || state.currentFamilyLabel,
+      });
+      state.detectedSubskill = String(summary?.detected_subskill_node || state.detectedSubskill || "");
+      state.detectedSubskillLabel = String(summary?.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "尚未偵測");
+      state.remediationSkill = String(summary?.remediation_skill || state.remediationSkill || "");
+      state.remediationSkillLabel = String(
+        summary?.remediation_skill_label
+        || getSubskillLabel(state.remediationSkill)
+        || toSkillLabel(state.remediationSkill)
+        || state.remediationSkillLabel
+        || ""
+      );
+      state.switchReason = String(summary?.switch_reason || state.switchReason || "");
+      state.returnReady = normalizeBoolean(summary?.return_ready, state.returnReady);
+      state.ppoRouteAction = String(summary?.ppo_action || summary?.route_action || state.ppoRouteAction || "");
+      state.ppoRouteActionIdx = summary?.route_action_idx ?? state.ppoRouteActionIdx;
+      state.currentMode = normalizeLearningMode(summary?.post_mode || summary?.current_mode || state.currentMode || "");
+      state.postMode = normalizeLearningMode(summary?.post_mode || summary?.current_mode || state.postMode || "");
+      state.remediationTriggeredFinal = normalizeBoolean(summary?.remediation_triggered_final, state.remediationTriggeredFinal);
+      state.remediationReviewReady = normalizeBoolean(summary?.remediation_review_ready, state.remediationReviewReady);
+      state.crossSkillTrigger = normalizeBoolean(summary?.cross_skill_trigger, state.crossSkillTrigger);
+      state.selectedFamilyForRender = String(
+        summary?.selected_family_for_render
+        || summary?.selected_family
+        || state.selectedFamilyForRender
+        || state.currentFamilyId
+        || ""
+      );
+      state.currentFamilyId = state.selectedFamilyForRender || state.currentFamilyId;
+      state.originFamily = String(summary?.origin_family || summary?.origin_family_id || state.originFamily || state.selectedFamilyForRender || "");
+      state.remediationFamily = String(summary?.remediation_family || summary?.remediation_family_id || "");
+      state.actionMaskHasRemediate = parseAllowedActions(summary?.allowed_actions || summary?.action_mask).includes("remediate");
+      state.isRemediationActive = isRemediationActiveFromState();
+      state.isRemediationCandidate = isRemediationCandidateOnlyFromState();
+      if (state.isCompleted || normalizeDisplayMode(state.displayMode) === "completed") {
+        state.learningMode = "returned";
+        state.currentMode = "main";
+        state.postMode = "main";
+        state.remediationTriggeredFinal = false;
+        state.remediationReviewReady = false;
+        state.actionMaskHasRemediate = false;
+        state.crossSkillTrigger = false;
+        state.remediationFamily = "";
+        state.remediationSkill = "";
+        state.remediationSkillLabel = "";
+        state.isRemediationActive = false;
+        state.isRemediationCandidate = false;
+      }
+      if (!state.isRemediationActive && state.learningMode !== "remediation") {
+        state.remediationFamily = "";
+        if (summary?.remediation_skill === undefined && summary?.remediation_skill_label === undefined) {
+          state.remediationSkill = "";
+          state.remediationSkillLabel = "";
+        }
+      }
+      if (summary?.has_returned_to_main !== undefined || summary?.return_to_mainline !== undefined || responseMeta?.return_to_mainline !== undefined) {
+        state.hasReturnedToMain = normalizeBoolean(
+          summary?.has_returned_to_main,
+          normalizeBoolean(summary?.return_to_mainline, normalizeBoolean(responseMeta?.return_to_mainline, state.hasReturnedToMain))
+        );
+      }
+      updateAdaptiveStatePanel();
       card.classList.add("show");
       card.classList.toggle("pass", passed);
       card.classList.toggle("review", !passed);
@@ -671,7 +1293,7 @@
       setText("questionContext", "");
       const subskillsBox = document.getElementById("subskillsBox");
       if (subskillsBox) subskillsBox.innerHTML = "";
-      setStatus("本次診斷已結束。");
+      setStatus(`本次診斷已結束。模式：${toLearningModeLabel(state.learningMode)}`);
       setAssistantBanner(passed ? "這個單元已經達標了。你可以先換下一單元，或再做一次加強。" : "這次診斷已結束。先看右邊提示，再回頭補強同類題型。", !passed);
       updateRagScopeBadge("done");
     }
@@ -680,6 +1302,32 @@
       try {
         setStatus("正在建立診斷 session...");
         state.history = [];
+        state.learningMode = "main";
+        state.mainSkill = "";
+        state.mainSkillLabel = "";
+        state.currentFamilyLabel = "";
+        state.detectedSubskill = "";
+        state.detectedSubskillLabel = "";
+        state.remediationSkill = "";
+        state.remediationSkillLabel = "";
+        state.switchReason = "";
+        state.returnReady = false;
+        state.hasReturnedToMain = false;
+        state.ppoRouteAction = "";
+        state.ppoRouteActionIdx = null;
+        state.familyNameEn = "";
+        state.currentMode = "";
+        state.postMode = "";
+        state.remediationTriggeredFinal = false;
+        state.remediationReviewReady = false;
+        state.actionMaskHasRemediate = false;
+        state.crossSkillTrigger = false;
+        state.selectedFamilyForRender = "";
+        state.originFamily = "";
+        state.remediationFamily = "";
+        state.isRemediationActive = false;
+        state.isRemediationCandidate = false;
+        updateAdaptiveStatePanel();
         resetChatHistory();
         resetHintBox();
         updateRagScopeBadge("idle");
@@ -699,11 +1347,13 @@
               step_number: data.step_number,
               current_apr: data.current_apr,
               ppo_strategy: data.ppo_strategy,
+              learning_mode: normalizeLearningMode(data.summary?.learning_mode || data.learning_mode || state.learningMode || ""),
+              detected_subskill: String(data.detected_subskill_node || state.detectedSubskill || ""),
               completed: true,
             });
             renderTrajectory();
             updateOverview(data, data.new_question_data || {});
-            renderSummary(data.summary || {});
+            renderSummary(data.summary || {}, data);
             setText("jsonBox", JSON.stringify(data.summary || {}, null, 2));
             return;
           }
@@ -748,6 +1398,7 @@
     resizeCanvas();
     saveState();
     updateUndoRedoButtons();
+    updateAdaptiveStatePanel();
     assistantSendBtn.disabled = true;
     assistantInput.disabled = true;
     analyzeCanvasBtn.disabled = true;

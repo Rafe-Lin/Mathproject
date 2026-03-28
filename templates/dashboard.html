@@ -588,6 +588,25 @@
     </div>
     </div>
 
+    <script>
+        (function () {
+            const selfPracticeBtn = document.querySelector("a[href*='adaptive_selection']");
+            if (!selfPracticeBtn || !selfPracticeBtn.parentElement) return;
+
+            const adaptiveBtn = document.createElement("a");
+            adaptiveBtn.href = "{{ url_for('practice.adaptive_learning_entry_page') }}";
+            adaptiveBtn.className = "btn-practice";
+            adaptiveBtn.style.backgroundColor = "#e67e22";
+            adaptiveBtn.style.display = "inline-block";
+            adaptiveBtn.style.padding = "10px 25px";
+            adaptiveBtn.style.fontSize = "1.1em";
+            adaptiveBtn.style.marginLeft = "12px";
+            adaptiveBtn.innerHTML = '<i class="fa fa-sitemap"></i> 自適應評量與教學';
+
+            selfPracticeBtn.insertAdjacentElement("afterend", adaptiveBtn);
+        })();
+    </script>
+
     </div>
 </body>
 

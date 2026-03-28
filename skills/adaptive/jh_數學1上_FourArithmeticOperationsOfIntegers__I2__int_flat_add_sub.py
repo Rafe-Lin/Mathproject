@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Auto-generated adaptive micro-skill stub.
-
-skill_id: jh_數學1上_FourArithmeticOperationsOfIntegers
-family_id: I2
-family_name: int_flat_add_sub
-subskill_nodes: ["sign_handling", "add_sub"]
-"""
-
 from __future__ import annotations
+
+import random
 
 
 def generate(level=1):
-    question_text = "【I2】int_flat_add_sub（level={}）".format(level)
-    answer = "I2_answer"
+    count = random.choice([3, 4, 4, 5])
+    nums = [random.randint(-18, 18) for _ in range(count)]
+    if all(n == 0 for n in nums):
+        nums[0] = random.randint(1, 9)
+    answer = sum(nums)
+    expr = " ".join([str(nums[0])] + [f"{n:+d}" for n in nums[1:]])
+    question_text = f"請計算：{expr}"
     return {
         "question": question_text,
         "question_text": question_text,
-        "latex": question_text,
-        "answer": answer,
+        "latex": expr,
+        "answer": str(answer),
+        "correct_answer": str(answer),
+        "explanation": "依序處理每一項，負號要跟著數字一起算。",
         "family_id": "I2",
+        "family_name": "int_flat_add_sub",
         "subskill_nodes": ["sign_handling", "add_sub"],
     }
 

@@ -6,7 +6,8 @@ from typing import Any
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "rag_diagnosis_mapping.yaml"
+DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "adaptive" / "rag_diagnosis_mapping.yaml"
+LEGACY_CONFIG_PATH = PROJECT_ROOT / "configs" / "rag_diagnosis_mapping.yaml"
 CONFIG_ENV_KEY = "ADAPTIVE_RAG_DIAGNOSIS_MAPPING_CONFIG"
 
 DEFAULT_CONCEPT_TO_PREREQ: dict[str, dict[str, Any]] = {
@@ -24,6 +25,56 @@ DEFAULT_CONCEPT_TO_PREREQ: dict[str, dict[str, Any]] = {
         "suggested_prereq_skill": "integer_arithmetic",
         "suggested_prereq_subskill": "basic_operations",
         "concept_weight": 0.85,
+    },
+    "outer_minus_scope": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "outer_minus_scope",
+        "concept_weight": 0.96,
+    },
+    "bracket_scope_error": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "outer_minus_scope",
+        "concept_weight": 0.93,
+    },
+    "sign_distribution": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "sign_distribution",
+        "concept_weight": 0.92,
+    },
+    "sign_flip_after_distribution": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "sign_handling",
+        "concept_weight": 0.94,
+    },
+    "combine_like_terms_after_distribution": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "combine_after_distribution",
+        "concept_weight": 0.90,
+    },
+    "coefficient_arithmetic_error": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "coefficient_arithmetic",
+        "concept_weight": 0.91,
+    },
+    "nested_grouping_structure_error": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "bracket_scope",
+        "concept_weight": 0.89,
+    },
+    "binomial_expansion_structure_error": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "expand_structure",
+        "concept_weight": 0.90,
+    },
+    "mixed_simplify_transition_error": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "order_of_operations",
+        "concept_weight": 0.88,
+    },
+    "family_isomorphism_confusion": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "structure_isomorphism",
+        "concept_weight": 0.86,
     },
 }
 DEFAULT_SCORING: dict[str, float] = {
@@ -58,7 +109,11 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 def _resolve_config_path() -> Path:
     override = str(os.getenv(CONFIG_ENV_KEY, "") or "").strip()
-    return Path(override) if override else DEFAULT_CONFIG_PATH
+    if override:
+        return Path(override)
+    if DEFAULT_CONFIG_PATH.exists():
+        return DEFAULT_CONFIG_PATH
+    return LEGACY_CONFIG_PATH
 
 
 def _load_config() -> dict[str, Any]:
@@ -172,3 +227,5 @@ def map_retrieval_to_diagnosis(
         "suggested_prereq_subskill": suggested_prereq_subskill,
         "route_type": route_type,
     }
+
+

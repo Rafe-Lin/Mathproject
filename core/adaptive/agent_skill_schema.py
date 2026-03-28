@@ -6,12 +6,14 @@ AGENT_SKILL_INTEGER_ARITHMETIC: Final[str] = "integer_arithmetic"
 AGENT_SKILL_FRACTION_ARITHMETIC: Final[str] = "fraction_arithmetic"
 AGENT_SKILL_RADICAL_ARITHMETIC: Final[str] = "radical_arithmetic"
 AGENT_SKILL_POLYNOMIAL_ARITHMETIC: Final[str] = "polynomial_arithmetic"
+AGENT_SKILL_LINEAR_EXPRESSION_ARITHMETIC: Final[str] = "linear_expression_arithmetic"
 
 AGENT_SKILLS: Final[tuple[str, ...]] = (
     AGENT_SKILL_INTEGER_ARITHMETIC,
     AGENT_SKILL_FRACTION_ARITHMETIC,
     AGENT_SKILL_RADICAL_ARITHMETIC,
     AGENT_SKILL_POLYNOMIAL_ARITHMETIC,
+    AGENT_SKILL_LINEAR_EXPRESSION_ARITHMETIC,
 )
 
 AGENT_SKILL_SUBSKILLS: Final[dict[str, list[str]]] = {
@@ -46,6 +48,16 @@ AGENT_SKILL_SUBSKILLS: Final[dict[str, list[str]]] = {
         "poly_expand",
         "poly_formula",
     ],
+    AGENT_SKILL_LINEAR_EXPRESSION_ARITHMETIC: [
+        "coefficient_sign_handling",
+        "like_term_combination",
+        "term_collection_with_constants",
+        "outer_minus_scope",
+        "monomial_distribution",
+        "nested_bracket_scope",
+        "structure_isomorphism",
+        "fractional_expression_simplification",
+    ],
 }
 
 SYSTEM_SKILL_TO_AGENT_SKILL: Final[dict[str, str]] = {
@@ -57,4 +69,10 @@ SYSTEM_SKILL_TO_AGENT_SKILL: Final[dict[str, str]] = {
 
 
 def resolve_agent_skill(system_skill_id: str) -> str | None:
-    return SYSTEM_SKILL_TO_AGENT_SKILL.get(str(system_skill_id or "").strip())
+    key = str(system_skill_id or "").strip()
+    hit = SYSTEM_SKILL_TO_AGENT_SKILL.get(key)
+    if hit:
+        return hit
+    if key.endswith("OperationsOnLinearExpressions"):
+        return AGENT_SKILL_LINEAR_EXPRESSION_ARITHMETIC
+    return None

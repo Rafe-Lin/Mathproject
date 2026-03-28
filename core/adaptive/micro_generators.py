@@ -679,12 +679,6 @@ def _poly_answer(expr) -> str:
 
 
 def _poly_generator(entry: CatalogEntry) -> dict | None:
-    try:
-        from sympy import symbols, expand
-    except Exception:
-        return None
-
-    x = symbols("x")
     fid = entry.family_id
 
     def nz(low: int, high: int) -> int:
@@ -692,6 +686,148 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
         while value == 0:
             value = random.randint(low, high)
         return value
+
+    def format_linear(coef_x: int, const: int) -> str:
+        parts: list[str] = []
+        if coef_x != 0:
+            if coef_x == 1:
+                parts.append("x")
+            elif coef_x == -1:
+                parts.append("-x")
+            else:
+                parts.append(f"{coef_x}x")
+        if const != 0:
+            if parts:
+                sign = "+" if const > 0 else "-"
+                parts.append(f"{sign} {abs(const)}")
+            else:
+                parts.append(str(const))
+        return " ".join(parts) if parts else "0"
+
+    # Minimal no-dependency fallback for polynomial F1 so demo never drops to catalog_fallback.
+    if fid == "F1":
+        while True:
+            a, c = [nz(-8, 8) for _ in range(2)]
+            b, d = [random.randint(-9, 9) for _ in range(2)]
+            coef_x = a + c
+            const = b + d
+            if coef_x == 0 and const == 0:
+                continue
+            break
+
+        pieces = [f"{a}x"]
+        if b != 0:
+            pieces.append(f"{'+' if b > 0 else '-'} {abs(b)}")
+        pieces.append(f"{'+' if c > 0 else '-'} {abs(c)}x")
+        if d != 0:
+            pieces.append(f"{'+' if d > 0 else '-'} {abs(d)}")
+
+        answer = format_linear(coef_x, const)
+        q = f"請化簡：{' '.join(pieces)}"
+        exp = "先把 x 項合併，再把常數項合併，最後用 ax + b 形式寫出。"
+        return {
+            "question": q,
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "先整理同類項，再合併。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
+
+    # Minimal no-dependency fallback for polynomial F2 (nested add/sub).
+    if fid == "F2":
+        a, c = [nz(-7, 7) for _ in range(2)]
+        b, d = [random.randint(-9, 9) for _ in range(2)]
+        coef_x = (-a) + c
+        const = (-b) - d
+        if coef_x == 0 and const == 0:
+            coef_x = 1
+
+        def poly_linear(c1: int, c0: int) -> str:
+            items: list[str] = []
+            if c1 != 0:
+                if c1 == 1:
+                    items.append("x")
+                elif c1 == -1:
+                    items.append("-x")
+                else:
+                    items.append(f"{c1}x")
+            if c0 != 0:
+                if items:
+                    items.append(f"{'+' if c0 > 0 else '-'} {abs(c0)}")
+                else:
+                    items.append(str(c0))
+            return " ".join(items) if items else "0"
+
+        answer = poly_linear(coef_x, const)
+        q = f"請化簡：-( {a}x {'+' if b >= 0 else '-'} {abs(b)} ) + ( {c}x - {abs(d)} )"
+        exp = "先把負號分配進去，再合併同類項。"
+        return {
+            "question": q,
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "先分配符號，再做同類項合併。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
+
+    # Minimal no-dependency fallback for polynomial F5 (poly * poly).
+    if fid == "F5":
+        a, b = random.randint(-8, 8), random.randint(-8, 8)
+        bx = a + b
+        c0 = a * b
+
+        def poly_quadratic(c2: int, c1: int, c0_: int) -> str:
+            parts: list[str] = []
+            if c2 != 0:
+                if c2 == 1:
+                    parts.append("x^2")
+                elif c2 == -1:
+                    parts.append("-x^2")
+                else:
+                    parts.append(f"{c2}x^2")
+            if c1 != 0:
+                if parts:
+                    parts.append(f"{'+' if c1 > 0 else '-'} {abs(c1)}x")
+                else:
+                    parts.append(f"{c1}x")
+            if c0_ != 0:
+                if parts:
+                    parts.append(f"{'+' if c0_ > 0 else '-'} {abs(c0_)}")
+                else:
+                    parts.append(str(c0_))
+            return " ".join(parts) if parts else "0"
+
+        answer = poly_quadratic(1, bx, c0)
+        q = f"請展開：(x {'+' if a >= 0 else '-'} {abs(a)})(x {'+' if b >= 0 else '-'} {abs(b)})"
+        exp = "用分配律把每一項都乘到，再合併同類項。"
+        return {
+            "question": q,
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "每一項都要相乘，最後再整理。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
+
+    try:
+        from sympy import symbols, expand
+    except Exception:
+        return None
+
+    x = symbols("x")
 
     def signed_term(coef: int, suffix: str = "") -> str:
         if coef == 0:
@@ -926,3 +1062,17 @@ def generate_micro_question(entry: CatalogEntry) -> dict | None:
         if payload:
             return payload
     return None
+
+
+def has_micro_generator(entry: CatalogEntry) -> bool:
+    skill_key = str(entry.skill_id)
+    fid = str(entry.family_id)
+    if 'FourArithmeticOperationsOfIntegers' in skill_key:
+        return fid in INTEGER_GENERATORS
+    if 'FourArithmeticOperationsOfNumbers' in skill_key:
+        return fid in NUMBER_GENERATORS
+    if 'FourArithmeticOperationsOfPolynomial' in skill_key:
+        return fid in {"F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "F13"}
+    if 'FourOperationsOfRadicals' in skill_key:
+        return fid in {"p0", "p1", "p1b", "p1c", "p2a", "p2b", "p2c", "p2d", "p2e", "p2f", "p2g", "p2h", "p3a", "p3b", "p3c", "p4", "p4b", "p4c", "p4d", "p5a", "p5b", "p6", "p7"}
+    return False

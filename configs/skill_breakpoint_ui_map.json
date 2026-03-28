@@ -1,0 +1,230 @@
+{
+  "sign_handling": {
+    "label": "正負號規則（先分清正負）",
+    "hint": "負號先看清，再決定往哪邊算"
+  },
+  "add_sub": {
+    "label": "加減運算（先整理再算）",
+    "hint": "先把式子整理好，再做加減"
+  },
+  "mul_div": {
+    "label": "整數乘除（正負號規則）",
+    "hint": "先判斷正負，再算乘除大小"
+  },
+  "exact_divisibility": {
+    "label": "整除判斷（要除得盡）",
+    "hint": "除之前先看能不能整除"
+  },
+  "order_of_operations": {
+    "label": "運算順序（先乘除後加減）",
+    "hint": "先做乘除，再回來算加減"
+  },
+  "bracket_scope": {
+    "label": "括號範圍（整組一起看）",
+    "hint": "去括號前先看整組受誰影響"
+  },
+  "absolute_value": {
+    "label": "絕對值概念（看離 0 多遠）",
+    "hint": "絕對值只看大小，不看正負號"
+  },
+  "isomorphic_structure": {
+    "label": "結構辨識（換個樣子也一樣）",
+    "hint": "先看題型骨架，再套用同樣做法"
+  },
+  "proper_improper_fraction": {
+    "label": "真分數與假分數（先看分子分母）",
+    "hint": "分子和分母誰大，先分清楚"
+  },
+  "mixed_numbers": {
+    "label": "帶分數換算（整數和分數分開看）",
+    "hint": "帶分數先換好，再做後面運算"
+  },
+  "sign_normalization": {
+    "label": "分數正負號整理（符號放前面）",
+    "hint": "正負號先統一位置，比較不會亂"
+  },
+  "simplest_form_reduction": {
+    "label": "約成最簡（分子分母一起約）",
+    "hint": "最後再檢查一次，能不能再約分"
+  },
+  "equivalent_fraction_scaling": {
+    "label": "等值分數（分子分母同乘除）",
+    "hint": "分子分母要一起變，值才不變"
+  },
+  "preserve_value_invariance": {
+    "label": "分數值不變（一起放大縮小）",
+    "hint": "只要同乘同除，分數值不會變"
+  },
+  "positive_fraction_comparison": {
+    "label": "正分數比較（先通分再比）",
+    "hint": "分母不同時，先通分再比較"
+  },
+  "negative_fraction_comparison": {
+    "label": "負分數比較（越負越小）",
+    "hint": "負分數比較時，要注意方向相反"
+  },
+  "mixed_number_comparison": {
+    "label": "帶分數比較（先比整數部分）",
+    "hint": "先比整數部分，再比分數部分"
+  },
+  "nested_parentheses": {
+    "label": "括號分數運算（先算括號內）",
+    "hint": "先算括號裡，再處理外面"
+  },
+  "multiply": {
+    "label": "分數乘法（先約分再乘）",
+    "hint": "能先約分就先約，再相乘"
+  },
+  "telescoping_products": {
+    "label": "連鎖約分（前後交叉看）",
+    "hint": "前後能約的先找出來"
+  },
+  "divide": {
+    "label": "分數除法（改乘倒數）",
+    "hint": "除法先改成乘倒數，再計算"
+  },
+  "decimal_fraction_mixed_arithmetic": {
+    "label": "小數分數混合算（先統一形式）",
+    "hint": "小數和分數先統一，再運算"
+  },
+  "reciprocal_transform": {
+    "label": "倒數概念（上下對調）",
+    "hint": "除以分數時，先想到倒數"
+  },
+  "decimal_to_fraction_exact_conversion": {
+    "label": "小數換分數（先寫成幾分之幾）",
+    "hint": "先看小數位數，再改寫成分數"
+  },
+  "remaining_amount": {
+    "label": "剩餘量理解（先看用了多少）",
+    "hint": "先分清楚剩下和用掉的是哪一部分"
+  },
+  "container_weight": {
+    "label": "容器重量差（總量和空瓶分開）",
+    "hint": "先分出內容物和容器，再比較"
+  },
+  "before_after_ratio": {
+    "label": "前後變化比較（先釐清基準）",
+    "hint": "先看前後各是幾分之幾"
+  },
+  "share_comparison": {
+    "label": "分配比較（同一份量再比較）",
+    "hint": "先確認比較的是不是同一份量"
+  },
+  "normalize_terms": {
+    "label": "項的整理（先排整齊）",
+    "hint": "先把同類項排好，計算比較穩"
+  },
+  "combine_like_terms": {
+    "label": "同類項合併（長得一樣才能加減）",
+    "hint": "只有同類的項，才能直接合併"
+  },
+  "sign_distribution": {
+    "label": "符號分配（每一項都要顧到）",
+    "hint": "負號乘進去，每一項都要變號"
+  },
+  "family_isomorphism": {
+    "label": "題型結構辨識（換題皮不換做法）",
+    "hint": "題目變樣子，做法骨架可能一樣"
+  },
+  "unknown_target_preservation": {
+    "label": "未知式保留（先把未知量留乾淨）",
+    "hint": "移項整理時，先把未知多項式留完整"
+  },
+  "expand_monomial": {
+    "label": "單項式乘法（係數字母都要乘）",
+    "hint": "每一項都要乘到，次方也要顧"
+  },
+  "expand_binomial": {
+    "label": "多項式展開（每項都要乘到）",
+    "hint": "展開時不要漏乘任何一項"
+  },
+  "special_identity": {
+    "label": "乘法公式（套公式也要看符號）",
+    "hint": "套公式前，先看是不是標準型"
+  },
+  "long_division": {
+    "label": "長除法步驟（對齊次方）",
+    "hint": "每一步都要對齊最高次項"
+  },
+  "quotient_remainder_format": {
+    "label": "商與餘式表示（寫完整）",
+    "hint": "有餘數時，商和餘式都要寫清楚"
+  },
+  "reverse_division_reconstruction": {
+    "label": "反推除法（用商和餘式還原）",
+    "hint": "先用除式乘商，再把餘式加回來"
+  },
+  "geometry_formula": {
+    "label": "幾何公式應用（看清長寬關係）",
+    "hint": "先找出公式裡每一段代表什麼"
+  },
+  "composite_region_modeling": {
+    "label": "複合圖形拆解（分塊再合併）",
+    "hint": "先拆成簡單圖形，再組回答案"
+  },
+  "simplify": {
+    "label": "根式化簡（先找完全平方）",
+    "hint": "根號內先找能開出來的因數"
+  },
+  "fractional_radical": {
+    "label": "分式根式（分子分母分開看）",
+    "hint": "分式和根號一起出現時，先分層看"
+  },
+  "multiply_terms": {
+    "label": "根式乘法（根號內外分清楚）",
+    "hint": "先分清楚根號外和根號內再相乘"
+  },
+  "distribute": {
+    "label": "分配律（每一項都要乘）",
+    "hint": "乘進括號時，每一項都不能漏"
+  },
+  "binomial_expand": {
+    "label": "雙括號展開（內外都要算）",
+    "hint": "展開雙括號時，四個乘積都要顧到"
+  },
+  "divide_terms": {
+    "label": "根式除法（先約再除）",
+    "hint": "能先約的先約，再看要不要有理化"
+  },
+  "conjugate_rationalize": {
+    "label": "共軛有理化（配對消根號）",
+    "hint": "看清共軛式，分母才能順利有理化"
+  },
+  "structure_isomorphism": {
+    "label": "結構辨識（先看長相再下手）",
+    "hint": "題目變形了，規則通常沒變"
+  },
+  "mixed_number_radical": {
+    "label": "帶分數根式（整數部分別漏掉）",
+    "hint": "帶分數根式要把整數部分一起算"
+  },
+  "coefficient_sign_handling": {
+    "label": "係數與符號處理（先判斷正負）",
+    "hint": "先判斷係數正負，再做乘除或合併"
+  },
+  "like_term_combination": {
+    "label": "同類項合併（變數相同才能併）",
+    "hint": "確認變數與次方相同再合併"
+  },
+  "term_collection_with_constants": {
+    "label": "代數項與常數分組（分開整理）",
+    "hint": "先分代數項與常數項，再各自合併"
+  },
+  "outer_minus_scope": {
+    "label": "外層負號作用範圍（整包變號）",
+    "hint": "負號在括號前，括號內每一項都要變號"
+  },
+  "monomial_distribution": {
+    "label": "單項分配到括號（每項都乘到）",
+    "hint": "分配時每一項都要乘上係數"
+  },
+  "nested_bracket_scope": {
+    "label": "巢狀括號範圍（由內往外）",
+    "hint": "先算最內層括號，再逐層展開"
+  },
+  "fractional_expression_simplification": {
+    "label": "分式代數式化簡（先統一分母）",
+    "hint": "先處理分母，再合併同類項"
+  }
+}
