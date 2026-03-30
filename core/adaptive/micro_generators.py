@@ -1035,7 +1035,6 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             expr = expand((x + a) * (x - a))
             q = f"請展開：$(x + {a})(x - {a})$"
     elif fid == "F7":
-<<<<<<< HEAD
         # 單項式除法直接化簡
         divisor_coef = random.randint(1, 4)
         divisor_deg = random.randint(1, 2)
@@ -1071,40 +1070,18 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
         q = f"請求商與餘數：$({format_poly(dividend)}) \\div ({format_poly(divisor)})$"
         answer = f"商：{format_poly(quotient)}，餘：{format_poly(remainder)}"
         exp = "先做單項式除法得到商，再檢查餘式次數是否小於除式次數。"
-=======
-        a, b, c = random.randint(2, 8), random.randint(1, 4), random.randint(2, 4)
-        expr = expand((a * x**c) / (b * x))
-        q = f"請化簡：$\\frac{{{a}x^{c}}}{{{b}x}}$"
-    elif fid == "F8":
-        d = random.randint(2, 6)
-        q1, q0 = random.randint(-5, 5), random.randint(-9, 9)
-        if q1 == 0:
-            q1 = random.choice([-3, -2, -1, 1, 2, 3])
-        r = random.randint(1, d - 1)
-        quotient_expr = q1 * x + q0
-        dividend_expr = expand((d * x) * quotient_expr + r)
-        q = (
-            f"請求商與餘數：$({ _sympy_text(dividend_expr) }) \\div ({d}x)$"
-            "（寫成 Q, R）"
-        )
-        answer = f"Q={_sympy_text(quotient_expr)}, R={r}"
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
         return {
             "question_text": q,
             "latex": q,
             "answer": answer,
-<<<<<<< HEAD
             "correct_answer": answer,
             "context_string": "用『被除式 = 除式×商 + 餘式』檢查結果。",
             "explanation": exp,
             "solution": exp,
-=======
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
             "family_id": entry.family_id,
             "subskill_nodes": list(entry.subskill_nodes),
         }
     elif fid == "F9":
-<<<<<<< HEAD
         # 多項式長除法（商與餘數）
         divisor = {1: 1, 0: random.randint(-5, 5)}  # x + b
         quotient = {2: nz(-3, 3), 1: random.randint(-6, 6), 0: random.randint(-6, 6)}
@@ -1114,39 +1091,18 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
         q = f"請用多項式長除法求商與餘數：$({format_poly(dividend)}) \\div ({format_poly(divisor)})$"
         answer = f"商：{format_poly(quotient)}，餘：{format_poly(remainder)}"
         exp = "每一步都用最高次項相除，寫出商，再回乘相減。"
-=======
-        b = random.randint(-5, 5)
-        if b == 0:
-            b = 2
-        q1, q0 = random.randint(-4, 4), random.randint(-7, 7)
-        if q1 == 0:
-            q1 = random.choice([-3, -2, -1, 1, 2, 3])
-        r = random.randint(-6, 6)
-        divisor_expr = x - b
-        quotient_expr = q1 * x + q0
-        dividend_expr = expand(divisor_expr * quotient_expr + r)
-        q = (
-            f"請做多項式除法，求商與餘數：$({ _sympy_text(dividend_expr) }) \\div ({ _sympy_text(divisor_expr) })$"
-            "（寫成 Q, R）"
-        )
-        answer = f"Q={_sympy_text(quotient_expr)}, R={r}"
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
         return {
             "question_text": q,
             "latex": q,
             "answer": answer,
-<<<<<<< HEAD
             "correct_answer": answer,
             "context_string": "長除法重點是『最高次對齊』與『回乘相減』。",
             "explanation": exp,
             "solution": exp,
-=======
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
             "family_id": entry.family_id,
             "subskill_nodes": list(entry.subskill_nodes),
         }
     elif fid == "F10":
-<<<<<<< HEAD
         # 反推除法：已知除式、商、餘，求被除式
         divisor = {1: 1, 0: random.randint(-4, 4)}
         quotient = {1: nz(-5, 5), 0: random.randint(-5, 5)}
@@ -1172,23 +1128,6 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             "family_id": entry.family_id,
             "subskill_nodes": list(entry.subskill_nodes),
         }
-=======
-        b = random.randint(-5, 5)
-        if b == 0:
-            b = -2
-        q1, q0 = random.randint(-4, 4), random.randint(-6, 6)
-        if q1 == 0:
-            q1 = random.choice([-3, -2, -1, 1, 2, 3])
-        r = random.randint(-6, 6)
-        divisor_expr = x - b
-        quotient_expr = q1 * x + q0
-        expr = expand(divisor_expr * quotient_expr + r)
-        q = (
-            "反推被除式：已知"
-            f" 除式 $({_sympy_text(divisor_expr)})$、商 $({_sympy_text(quotient_expr)})$、餘數 ${r}$，"
-            "求被除式。"
-        )
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
     elif fid == "F11":
         a, b, c = random.randint(1, 5), random.randint(1, 5), random.randint(-5, 5)
         expr = expand((x + a) ** 2 + (x + b) * (x - b) + c * x)

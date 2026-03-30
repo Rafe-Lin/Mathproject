@@ -137,11 +137,7 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
             "required_core_families": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
             "minimum_covered_core_families": 8,
             "minimum_passed_core_families": 8,
-<<<<<<< HEAD
             "require_integrative_family_pass": False,
-=======
-            "require_integrative_family_pass": True,
->>>>>>> 5dd9cdbb57ab9fa1f840cbfd1f743a61bfdb08d7
         },
         "teaching": {
             "minimum_covered_core_families": 4,
