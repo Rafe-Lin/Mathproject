@@ -13,6 +13,7 @@ _CACHE: dict[str, dict[str, Any]] = {}
 DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
     "unit_skill_id": POLY_SKILL_ID,
     "mainline_sequence": ["F1", "F2", "F5", "F11"],
+    "assessment_sequence": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
     "families": {
         "F1": {
             "family_name": "poly_add_sub_flat",
@@ -121,9 +122,10 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
         "optional_extension_families": ["F6", "F7", "F8", "F9", "F10"],
         "integrative_family_id": "F11",
         "assessment": {
-            "minimum_covered_core_families": 2,
-            "minimum_passed_core_families": 2,
-            "require_integrative_family_pass": False,
+            "required_core_families": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
+            "minimum_covered_core_families": 8,
+            "minimum_passed_core_families": 8,
+            "require_integrative_family_pass": True,
         },
         "teaching": {
             "minimum_covered_core_families": 4,

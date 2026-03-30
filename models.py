@@ -25,6 +25,7 @@ db = SQLAlchemy()
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 BRIDGE_CATALOG_PATH = PROJECT_ROOT / "docs" / "自適應實作" / "skill_breakpoint_catalog.csv"
+LINEAR_SKILL_ID = "jh_數學1上_OperationsOnLinearExpressions"
 
 
 
@@ -36,7 +37,34 @@ def _read_bridge_catalog_rows() -> list[dict[str, str]]:
         try:
             with BRIDGE_CATALOG_PATH.open("r", encoding=encoding, newline="") as fh:
                 reader = csv.DictReader(fh)
-                return [dict(row) for row in reader]
+                rows = [dict(row) for row in reader]
+                skill_ids = sorted(
+                    {
+                        str(row.get("skill_id", "") or "").strip()
+                        for row in rows
+                        if str(row.get("skill_id", "") or "").strip()
+                    }
+                )
+                linear_rows = [
+                    row for row in rows
+                    if str(row.get("skill_id", "") or "").strip() == LINEAR_SKILL_ID
+                ]
+                print(
+                    "[RAG SOURCE] "
+                    f"catalog={BRIDGE_CATALOG_PATH.name} total_rows={len(rows)} "
+                    f"skill_count={len(skill_ids)} contains_linear_skill={bool(linear_rows)} "
+                    f"linear_rows={len(linear_rows)}"
+                )
+                if linear_rows:
+                    preview = [
+                        {
+                            "family_id": str(row.get("family_id", "") or "").strip(),
+                            "subskill_nodes": str(row.get("subskill_nodes", "") or "").strip(),
+                        }
+                        for row in linear_rows[:5]
+                    ]
+                    print(f"[RAG SOURCE] linear_preview={preview}")
+                return rows
         except Exception as exc:  # pragma: no cover
             last_error = exc
     raise RuntimeError(f"Failed to read bridge catalog {BRIDGE_CATALOG_PATH}: {last_error}")

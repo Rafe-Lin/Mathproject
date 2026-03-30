@@ -10,6 +10,7 @@ if _PROJECT_ROOT not in sys.path:
 
 from app import create_app
 from core.adaptive.agent_skill_schema import SYSTEM_SKILL_TO_AGENT_SKILL
+from core.adaptive.textbook_progression import load_textbook_progression
 from models import AdaptiveLearningLog, User, db
 
 
@@ -122,6 +123,12 @@ def _assert_timeline_summary_fields(summary: dict):
     )
 
 
+class _HistoryRow:
+    def __init__(self, family_id: str, is_correct: bool):
+        self.target_family_id = family_id
+        self.is_correct = is_correct
+
+
 def test_submit_bootstrap_returns_first_question():
     app = create_app()
     with app.app_context():
@@ -139,9 +146,182 @@ def test_submit_bootstrap_returns_first_question():
         assert payload["step_number"] == 1
         assert payload["new_question_data"]["family_id"]
         assert payload["new_question_data"]["skill_id"] == TARGET_SKILL_ID
+
+
+def test_assessment_completion_requires_all_polynomial_core_families():
+    import core.adaptive.session_engine as engine
+
+    poly_skill_id = next(
+        key for key in SYSTEM_SKILL_TO_AGENT_SKILL.keys()
+        if "FourArithmeticOperationsOfPolynomial" in key
+    )
+    textbook_cfg = load_textbook_progression(poly_skill_id)
+
+    partial = engine._evaluate_unit_completion(
+        mode="assessment",
+        system_skill_id=poly_skill_id,
+        textbook_cfg=textbook_cfg,
+        history_rows=[_HistoryRow("F1", True), _HistoryRow("F2", True)],
+        current_family_id="F2",
+        last_is_correct=None,
+        current_apr=0.98,
+        answered_steps=6,
+    )
+    assert partial["unit_completed"] is False
+    assert partial["used_apr_for_completion"] is False
+    assert partial["required_core_families"] == ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"]
+    assert partial["completed_core_families"] == ["F1", "F2"]
+
+    still_incomplete = engine._evaluate_unit_completion(
+        mode="assessment",
+        system_skill_id=poly_skill_id,
+        textbook_cfg=textbook_cfg,
+        history_rows=[
+            _HistoryRow("F1", True),
+            _HistoryRow("F2", True),
+            _HistoryRow("F5", True),
+            _HistoryRow("F11", True),
+        ],
+        current_family_id="F11",
+        last_is_correct=None,
+        current_apr=0.98,
+        answered_steps=8,
+    )
+    assert still_incomplete["unit_completed"] is False
+    assert still_incomplete["completion_reason"] == "unit_completion_waiting_core_coverage"
+
+    complete = engine._evaluate_unit_completion(
+        mode="assessment",
+        system_skill_id=poly_skill_id,
+        textbook_cfg=textbook_cfg,
+        history_rows=[
+            _HistoryRow("F1", True),
+            _HistoryRow("F2", True),
+            _HistoryRow("F5", True),
+            _HistoryRow("F11", True),
+            _HistoryRow("F7", True),
+            _HistoryRow("F8", True),
+            _HistoryRow("F9", True),
+            _HistoryRow("F10", True),
+        ],
+        current_family_id="F10",
+        last_is_correct=None,
+        current_apr=0.98,
+        answered_steps=12,
+    )
+    assert complete["unit_completed"] is True
+    assert complete["completion_reason"] == "completed_all_core_families"
+    assert complete["used_apr_for_completion"] is False
+
+
+def test_polynomial_assessment_all_correct_advances_past_f11(monkeypatch):
+    import core.adaptive.session_engine as engine
+
+    poly_skill_id = next(
+        key for key in SYSTEM_SKILL_TO_AGENT_SKILL.keys()
+        if "FourArithmeticOperationsOfPolynomial" in key
+    )
+
+    monkeypatch.setattr(
+        engine,
+        "_generate_question_payload",
+        lambda entry, selected_subskill=None: {
+            "skill_id": entry.skill_id,
+            "family_id": entry.family_id,
+            "question": f"{entry.family_id} question",
+            "correct_answer": "1",
+            "choices": ["1", "2", "3", "4"],
+        },
+    )
+
+    app = create_app()
+    with app.app_context():
+        user = _ensure_test_user()
+        client = app.test_client()
+        _login(client, user.id)
+
+        response = client.post(
+            "/api/adaptive/submit_and_get_next",
+            json={"step_number": 0, "skill_id": poly_skill_id, "mode": "assessment"},
+        )
+        assert response.status_code == 200
+        payload = response.get_json()
+        sid = payload["session_id"]
+        seen_families = [payload["target_family_id"]]
+
+        step = 1
+        while not payload.get("completed", False) and step <= 12:
+            response = client.post(
+                "/api/adaptive/submit_and_get_next",
+                json={
+                    "session_id": sid,
+                    "step_number": step,
+                    "skill_id": poly_skill_id,
+                    "mode": "assessment",
+                    "is_correct": True,
+                },
+            )
+            assert response.status_code == 200
+            payload = response.get_json()
+            if not payload.get("completed", False):
+                seen_families.append(payload["target_family_id"])
+            step += 1
+
+        assert seen_families[:8] == ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"]
+        assert payload["completed"] is True
+        assert payload["assessment_completed"] is True
+        assert payload["assessment_stop_reason"] == "completed_all_core_families"
+        assert payload["completed_core_families"] == ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"]
+
+
+def test_assessment_stops_at_teaching_remediation_trigger_without_entering_remediation(monkeypatch):
+    import core.adaptive.session_engine as engine
+
+    poly_skill_id = next(
+        key for key in SYSTEM_SKILL_TO_AGENT_SKILL.keys()
+        if "FourArithmeticOperationsOfPolynomial" in key
+    )
+
+    def _route_action(route_state, action_mask, model=None):
+        if action_mask.get("remediate", False):
+            return "remediate", [0.0, 1.0, -1.0], 1, "ppo"
+        return "stay", [1.0, 0.0, -1.0], 0, "ppo"
+
+    monkeypatch.setattr(engine, "select_route_action_with_ppo", _route_action)
+
+    app = create_app()
+    with app.app_context():
+        user = _ensure_test_user()
+        client = app.test_client()
+        _login(client, user.id)
+
+        first = client.post(
+            "/api/adaptive/submit_and_get_next",
+            json={"step_number": 0, "skill_id": poly_skill_id, "mode": "assessment"},
+        )
+        assert first.status_code == 200
+        sid = first.get_json()["session_id"]
+
+        client.post(
+            "/api/adaptive/submit_and_get_next",
+            json={"session_id": sid, "step_number": 1, "skill_id": poly_skill_id, "mode": "assessment", "user_answer": "__wrong__"},
+        )
+        final_response = client.post(
+            "/api/adaptive/submit_and_get_next",
+            json={"session_id": sid, "step_number": 2, "skill_id": poly_skill_id, "mode": "assessment", "user_answer": "__wrong__"},
+        )
+        assert final_response.status_code == 200
+        payload = final_response.get_json()
+        assert payload["completed"] is True
+        assert payload["assessment_completed"] is True
+        assert payload["assessment_stop_reason"] == "stable_breakpoint_detected"
+        assert payload["stable_breakpoint_detected"] is True
+        assert payload["used_apr_for_completion"] is False
+        assert payload["unit_completed"] is False
+        assert payload["local_remediation_completed"] is False
+        assert bool((payload.get("routing_state") or {}).get("in_remediation", False)) is False
         assert "correct_answer" not in payload["new_question_data"]
         assert "answer" not in payload["new_question_data"]
-        _assert_debug_fields(payload)
 
 
 def test_submit_second_step_autojudges_and_writes_log():

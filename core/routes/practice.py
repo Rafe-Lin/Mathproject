@@ -47,6 +47,20 @@ def get_skill(skill_id):
     except:
         return None
 
+
+def _resolve_adaptive_unit_name(skill_id, requested_unit_name=""):
+    requested = str(requested_unit_name or "").strip()
+    if requested and requested != "本單元自適應學習（總結性診斷）":
+        return requested
+    skill_map = {
+        "jh_數學1上_FourArithmeticOperationsOfIntegers": "整數四則運算",
+        "jh_數學1上_FourArithmeticOperationsOfNumbers": "分數四則運算",
+        "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
+        "jh_數學1上_OperationsOnLinearExpressions": "一元一次式",
+        "jh_數學2上_FourArithmeticOperationsOfPolynomial": "多項式四則運算",
+    }
+    return skill_map.get(str(skill_id or "").strip(), requested or "未指定單元")
+
 def update_progress(user_id, skill_id, is_correct):
     """
     更新用戶進度 (Progress)
@@ -133,7 +147,10 @@ def adaptive_summative_page():
     mode = request.args.get('mode', 'teaching').strip().lower()
     if mode not in {'assessment', 'teaching'}:
         mode = 'teaching'
-    unit_name = request.args.get('unit_name', '本單元自適應學習（總結性診斷）').strip()
+    unit_name = _resolve_adaptive_unit_name(
+        skill_id,
+        request.args.get('unit_name', '本單元自適應學習（總結性診斷）').strip(),
+    )
     return render_template(
         'adaptive_practice_v2.html',
         unit_name=unit_name,

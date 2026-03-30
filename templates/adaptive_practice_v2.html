@@ -30,6 +30,15 @@
     .hero h1 { margin:0 0 4px; font-size:28px; }
     .hero p { margin:0; line-height:1.65; color:var(--muted); max-width:900px; font-size:14px; }
     .badge { display:inline-flex; align-items:center; justify-content:center; min-width:260px; text-align:center; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px; }
+    .mode-banner { margin-bottom:14px; padding:18px 20px; display:flex; justify-content:space-between; align-items:flex-start; gap:18px; background:linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%); }
+    .mode-banner-copy { min-width:0; }
+    .mode-banner-copy h2 { margin:0 0 8px; font-size:24px; }
+    .mode-banner-copy p { margin:0; color:var(--muted); line-height:1.75; font-size:14px; max-width:920px; }
+    .mode-banner-meta { display:flex; flex-direction:column; align-items:flex-end; gap:8px; min-width:220px; }
+    .mode-badge { display:inline-flex; align-items:center; justify-content:center; padding:8px 14px; border-radius:999px; font-size:13px; font-weight:700; border:1px solid transparent; }
+    .mode-badge.teaching { background:#eaf4ff; color:#1959a6; border-color:#c8ddfa; }
+    .mode-badge.assessment { background:#fff4df; color:#9a5a00; border-color:#efcf96; }
+    .unit-chip { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; border:1px solid var(--line); background:#fff; color:#35506f; font-size:13px; }
     .panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 14px 44px rgba(18,44,99,.06); padding:14px; }
     .panel h2 { margin:0 0 12px; font-size:17px; }
     .top-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-bottom:14px; align-items:stretch; }
@@ -158,6 +167,7 @@
     .summary-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .summary-badges span { padding:6px 10px; border-radius:999px; background:#eef4fb; color:#31557d; font-size:13px; }
     @media (max-width:1080px) { .top-grid, .bottom-grid { grid-template-columns:1fr; } .assistant-shell { position:static; } }
+    @media (max-width:1080px) { .mode-banner { flex-direction:column; } .mode-banner-meta { align-items:flex-start; min-width:0; } }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
   </style>
 </head>
@@ -165,11 +175,22 @@
   <div class="shell">
     <div class="hero">
       <div>
-        <h1>{{ unit_name }}</h1>
+        <h1 id="heroUnitTitle">{{ unit_name }}</h1>
         <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
       </div>
       <div class="badge">{{ skill_id or 'all_catalog' }}</div>
     </div>
+
+    <section class="panel mode-banner">
+      <div class="mode-banner-copy">
+        <h2 id="modeBannerTitle">自適應教學模式｜{{ unit_name }}</h2>
+        <p id="modeBannerDescription">系統會依你的作答情況診斷斷點，必要時安排前置子技能補救，補回後再返回主線繼續學習。</p>
+      </div>
+      <div class="mode-banner-meta">
+        <div class="mode-badge teaching" id="modeBannerBadge">教學模式</div>
+        <div class="unit-chip">目前單元：<strong id="modeBannerUnit">{{ unit_name }}</strong></div>
+      </div>
+    </section>
 
     <div class="top-grid">
       <section class="panel">
@@ -423,11 +444,59 @@
       assessmentStopReason: "",
     };
     const skillId = {{ skill_id|tojson }};
+    const rawUnitName = {{ unit_name|tojson }};
     const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
+    const SKILL_LABEL_MAP = {
+      "jh_數學1上_FourArithmeticOperationsOfIntegers": "整數四則運算",
+      "jh_數學1上_FourArithmeticOperationsOfNumbers": "分數四則運算",
+      "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
+      "jh_數學1上_OperationsOnLinearExpressions": "一元一次式",
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": "多項式四則運算",
+    };
     const basePayload = {};
     if (skillId) basePayload.skill_id = skillId;
     if (adaptiveEntryMode) basePayload.mode = adaptiveEntryMode;
     state.mode = String(adaptiveEntryMode || "teaching").toLowerCase();
+
+    function resolveUnitDisplayName(skill, currentUnitName) {
+      const cleaned = String(currentUnitName || "").trim();
+      if (cleaned && cleaned !== "本單元自適應學習（總結性診斷）") return cleaned;
+      return SKILL_LABEL_MAP[String(skill || "").trim()] || cleaned || "未指定單元";
+    }
+
+    function getAdaptiveModeMeta(mode) {
+      const normalized = String(mode || "teaching").trim().toLowerCase();
+      if (normalized === "assessment") {
+        return {
+          title: "自適應評量模式",
+          badge: "評量模式",
+          badgeClass: "mode-badge assessment",
+          description: "系統會依教材主線逐步檢核本單元核心題型，不進入補救支線，並在偵測穩定斷點或完成全單元後給出成績與建議。",
+        };
+      }
+      return {
+        title: "自適應教學模式",
+        badge: "教學模式",
+        badgeClass: "mode-badge teaching",
+        description: "系統會依你的作答情況診斷斷點，必要時安排前置子技能補救，補回後再返回主線繼續學習。",
+      };
+    }
+
+    function renderModeBanner() {
+      const unitLabel = resolveUnitDisplayName(skillId, rawUnitName);
+      const meta = getAdaptiveModeMeta(state.mode || adaptiveEntryMode || "teaching");
+      const title = `${meta.title}｜${unitLabel}`;
+      setText("heroUnitTitle", unitLabel);
+      setText("modeBannerTitle", title);
+      setText("modeBannerDescription", meta.description);
+      setText("modeBannerUnit", unitLabel);
+      const badge = document.getElementById("modeBannerBadge");
+      if (badge) {
+        badge.textContent = meta.badge;
+        badge.className = meta.badgeClass;
+      }
+      document.title = unitLabel;
+    }
 
     const canvas = document.getElementById("handwriting-canvas");
     const ctx = canvas.getContext("2d");
@@ -1427,6 +1496,17 @@
       const badges = [];
       badges.push(`作答題數：${summary?.answered_steps ?? 0}`);
       badges.push(`最終 APR：${Math.round((summary?.final_apr ?? 0) * 100)}%`);
+      if (state.mode === "assessment") {
+        const completedCore = Array.isArray(summary?.completed_core_families) ? summary.completed_core_families : [];
+        const requiredCore = Array.isArray(summary?.required_core_families) ? summary.required_core_families : [];
+        badges.push(`核心 family：${completedCore.length}/${requiredCore.length}`);
+        if (requiredCore.length) {
+          badges.push(`核心範圍：${requiredCore.join("、")}`);
+        }
+        if (completedCore.length) {
+          badges.push(`已完成核心：${completedCore.join("、")}`);
+        }
+      }
       if (Array.isArray(summary?.visited_families)) {
         badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
       }
@@ -1438,9 +1518,11 @@
       if (subskillsBox) subskillsBox.innerHTML = "";
       setStatus(`本次診斷已結束。模式：${toLearningModeLabel(state.learningMode)}`);
       if (state.mode === "assessment" && state.assessmentCompleted && state.assessmentStopReason === "stable_breakpoint_detected") {
-        setAssistantBanner("已偵測到本單元穩定斷點。建議切換 teaching 模式，針對斷點子技能進行補強。", true);
+        setAssistantBanner("評量完成：已偵測學習斷點。系統不會進入補救支線，建議切換 teaching 模式進行補強。", true);
+      } else if (state.mode === "assessment" && state.assessmentCompleted && state.assessmentStopReason === "completed_all_core_families") {
+        setAssistantBanner("評量完成：已完成本單元核心檢核。", false);
       } else if (state.mode === "assessment" && state.assessmentCompleted) {
-        setAssistantBanner("評量模式完成：已通過核心題型檢核，系統已產出精熟度與學習建議。", false);
+        setAssistantBanner("評量模式完成：已依主線完成本單元核心檢核。", false);
       } else if (state.unitCompleted) {
         setAssistantBanner("🎉 本次診斷完成：已達本單元目標。你可以進入下一單元，或回頭複習弱點。", false);
       } else if (state.localRemediationCompleted) {
@@ -1560,6 +1642,7 @@
     saveState();
     updateUndoRedoButtons();
     updateAdaptiveStatePanel();
+    renderModeBanner();
     assistantSendBtn.disabled = true;
     assistantInput.disabled = true;
     analyzeCanvasBtn.disabled = true;

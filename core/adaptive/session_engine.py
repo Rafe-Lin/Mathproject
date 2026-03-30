@@ -445,9 +445,15 @@ def _select_entries(payload: dict[str, Any]) -> list[CatalogEntry]:
     return entries
 
 
-def _apply_demo_safe_family_filter(entries: list[CatalogEntry]) -> list[CatalogEntry]:
+def _apply_demo_safe_family_filter(
+    entries: list[CatalogEntry],
+    *,
+    mode: str = "",
+    system_skill_id: str = "",
+) -> list[CatalogEntry]:
     if not ADAPTIVE_DEMO_SAFE_MODE or ADAPTIVE_USE_FULL_CATALOG:
         return entries
+    assessment_allowed = _demo_safe_assessment_families(system_skill_id, mode)
     kept: list[CatalogEntry] = []
     removed: list[str] = []
     for entry in entries:
@@ -456,7 +462,10 @@ def _apply_demo_safe_family_filter(entries: list[CatalogEntry]) -> list[CatalogE
         if allowed is None:
             kept.append(entry)
             continue
-        if entry.family_id in allowed:
+        effective_allowed = set(allowed)
+        if agent_skill == "polynomial_arithmetic" and assessment_allowed:
+            effective_allowed.update(assessment_allowed)
+        if entry.family_id in effective_allowed:
             kept.append(entry)
         else:
             removed.append(f"{entry.skill_id}:{entry.family_id}")
@@ -467,6 +476,43 @@ def _apply_demo_safe_family_filter(entries: list[CatalogEntry]) -> list[CatalogE
             ",".join(removed),
         )
     return kept
+
+
+def _sequence_for_mode(textbook_cfg: dict[str, Any] | None, mode: str) -> list[str]:
+    if not textbook_cfg:
+        return []
+    normalized_mode = _normalize_mode(mode)
+    if normalized_mode == "assessment":
+        seq = textbook_cfg.get("assessment_sequence") or textbook_cfg.get("assessment_mainline_sequence")
+        if isinstance(seq, list):
+            cleaned = [str(item).strip() for item in seq if str(item).strip()]
+            if cleaned:
+                return cleaned
+    seq = textbook_cfg.get("mainline_sequence") or textbook_cfg.get("demo_mainline_sequence") or []
+    if not isinstance(seq, list):
+        return []
+    return [str(item).strip() for item in seq if str(item).strip()]
+
+
+def _neighbor_family_in_sequence(sequence: list[str], current_family: str, *, offset: int) -> str | None:
+    current = _normalize_family_id(current_family)
+    if not sequence:
+        return None
+    if not current:
+        return sequence[0] if offset > 0 else None
+    if current not in sequence:
+        return None
+    idx = sequence.index(current) + int(offset)
+    if 0 <= idx < len(sequence):
+        return str(sequence[idx]).strip() or None
+    return None
+
+
+def _demo_safe_assessment_families(system_skill_id: str, mode: str) -> set[str]:
+    if _normalize_mode(mode) != "assessment":
+        return set()
+    cfg = load_textbook_progression(system_skill_id)
+    return set(_sequence_for_mode(cfg, "assessment"))
 
 
 def _clamp01(value: Any, default: float = 0.0) -> float:
@@ -892,16 +938,26 @@ def _evaluate_unit_completion(
 ) -> dict[str, Any]:
     normalized_mode = _normalize_mode(mode)
     if not textbook_cfg:
+        used_apr_for_completion = bool(normalized_mode != "assessment")
         legacy_completed = bool(
             answered_steps >= MAX_DIAGNOSIS_STEPS
-            or (answered_steps >= MIN_STEPS_BEFORE_EARLY_PASS and current_apr >= TARGET_APR)
+            or (
+                used_apr_for_completion
+                and answered_steps >= MIN_STEPS_BEFORE_EARLY_PASS
+                and current_apr >= TARGET_APR
+            )
         )
         return {
             "unit_completed": legacy_completed,
-            "completion_reason": "legacy_default",
+            "completion_reason": (
+                "completed_all_core_families"
+                if legacy_completed and normalized_mode == "assessment"
+                else "legacy_default"
+            ),
             "required_core_families": [],
             "covered_core_families": [],
             "passed_core_families": [],
+            "completed_core_families": [],
             "minimum_covered_core_families": 0,
             "minimum_passed_core_families": 0,
             "require_integrative_family_pass": False,
@@ -909,6 +965,8 @@ def _evaluate_unit_completion(
             "integrative_family_passed": False,
             "answered_steps": int(answered_steps),
             "mode": normalized_mode,
+            "stable_breakpoint_detected": False,
+            "used_apr_for_completion": used_apr_for_completion and legacy_completed,
             "family_performance": _family_performance(
                 history_rows,
                 current_family_id=current_family_id,
@@ -918,9 +976,13 @@ def _evaluate_unit_completion(
         }
 
     completion_gate = get_completion_gate(system_skill_id) or dict(textbook_cfg.get("completion_gate") or {})
+    mode_gate = completion_gate.get(normalized_mode, {}) if isinstance(completion_gate, dict) else {}
+    if not isinstance(mode_gate, dict):
+        mode_gate = {}
+    required_core_source = mode_gate.get("required_core_families")
     required_core = [
         str(x).strip()
-        for x in (completion_gate.get("required_core_families") or [])
+        for x in (required_core_source or completion_gate.get("required_core_families") or [])
         if str(x).strip()
     ]
     if not required_core:
@@ -930,13 +992,10 @@ def _evaluate_unit_completion(
             if str(x).strip()
         ]
     integrative_family_id = str(completion_gate.get("integrative_family_id") or "F11").strip()
-    mode_gate = completion_gate.get(normalized_mode, {}) if isinstance(completion_gate, dict) else {}
-    if not isinstance(mode_gate, dict):
-        mode_gate = {}
     if normalized_mode == "assessment":
-        default_min_cover = min(2, len(required_core)) if required_core else 1
-        default_min_pass = min(2, len(required_core)) if required_core else 1
-        default_require_integrative = False
+        default_min_cover = len(required_core)
+        default_min_pass = len(required_core)
+        default_require_integrative = True
     else:
         default_min_cover = len(required_core)
         default_min_pass = max(1, len(required_core) - 1) if required_core else 1
@@ -952,13 +1011,16 @@ def _evaluate_unit_completion(
     )
     covered_core = [fid for fid in required_core if int((family_perf.get(fid) or {}).get("attempts", 0)) > 0]
     passed_core = [fid for fid in required_core if int((family_perf.get(fid) or {}).get("correct", 0)) > 0]
+    completed_core = list(passed_core)
     integrative_passed = int((family_perf.get(integrative_family_id) or {}).get("correct", 0)) > 0 if integrative_family_id else False
 
     coverage_ok = len(covered_core) >= max(1, min_covered)
     mastery_ok = len(passed_core) >= max(1, min_passed)
     integrative_ok = (not require_integrative) or integrative_passed
     unit_completed = bool(coverage_ok and mastery_ok and integrative_ok)
-    if unit_completed:
+    if unit_completed and normalized_mode == "assessment":
+        completion_reason = "completed_all_core_families"
+    elif unit_completed:
         completion_reason = "unit_completion_gate_passed"
     elif not coverage_ok:
         completion_reason = "unit_completion_waiting_core_coverage"
@@ -973,6 +1035,7 @@ def _evaluate_unit_completion(
         "required_core_families": required_core,
         "covered_core_families": covered_core,
         "passed_core_families": passed_core,
+        "completed_core_families": completed_core,
         "minimum_covered_core_families": min_covered,
         "minimum_passed_core_families": min_passed,
         "require_integrative_family_pass": require_integrative,
@@ -980,6 +1043,8 @@ def _evaluate_unit_completion(
         "integrative_family_passed": integrative_passed,
         "answered_steps": int(answered_steps),
         "mode": normalized_mode,
+        "stable_breakpoint_detected": False,
+        "used_apr_for_completion": False,
         "family_performance": family_perf,
         "local_remediation_completed": False,
     }
@@ -1001,7 +1066,18 @@ def _build_summary(
     normalized_mode = _normalize_mode(mode)
     passed = bool(unit_completed)
     stats = dict(completion_stats or {})
-    if passed:
+    assessment_completed = bool(stats.get("assessment_completed", False))
+    assessment_stop_reason = str(stats.get("assessment_stop_reason", "") or "")
+    if normalized_mode == "assessment" and assessment_completed:
+        if assessment_stop_reason == "stable_breakpoint_detected":
+            title = "評量完成：已偵測學習斷點"
+            message = "系統已在主線核心 family 上偵測到穩定斷點，評量在此停止，不會進入補救支線。"
+            next_action = "系統不會進入補救支線，建議切換 teaching 模式進行補強。"
+        else:
+            title = "評量完成：已完成本單元核心檢核"
+            message = "本次評量已依主線完成本單元核心 family 檢核，結束條件不使用 APR。"
+            next_action = "你可以查看核心 family 表現摘要，或切換到 teaching 模式做針對性加強。"
+    elif passed:
         title = "??????????????"
         message = "??????? family ????????"
         next_action = "????????????? family ?????"
@@ -1024,6 +1100,12 @@ def _build_summary(
         "local_remediation_completed": bool(local_remediation_completed),
         "completion_reason": str(completion_reason or ""),
         "completion_stats": stats,
+        "assessment_completed": assessment_completed,
+        "assessment_stop_reason": assessment_stop_reason,
+        "required_core_families": list(stats.get("required_core_families") or []),
+        "completed_core_families": list(stats.get("completed_core_families") or []),
+        "stable_breakpoint_detected": bool(stats.get("stable_breakpoint_detected", False)),
+        "used_apr_for_completion": bool(stats.get("used_apr_for_completion", False)),
         "answered_steps": answered_steps,
         "final_apr": round(current_apr, 4),
         "frustration_index": frustration_index,
@@ -1232,7 +1314,11 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         last_is_correct = bool(last_is_correct)
 
     mode = _normalize_mode(payload.get("mode"))
-    entries = _apply_demo_safe_family_filter(_select_entries(payload))
+    entries = _apply_demo_safe_family_filter(
+        _select_entries(payload),
+        mode=mode,
+        system_skill_id=str(payload.get("skill_id") or ""),
+    )
     if not entries:
         raise ValueError("No catalog entries available for the requested adaptive scope")
     allowed_demo_families_display = (
@@ -1319,9 +1405,12 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
     completion_eval.setdefault("assessment_completed", False)
     completion_eval.setdefault("assessment_stop_reason", "")
     completion_eval.setdefault("assessment_breakpoint_detected", False)
+    completion_eval.setdefault("stable_breakpoint_detected", False)
+    completion_eval.setdefault("used_apr_for_completion", False)
     if mode == "assessment" and bool(completion_eval.get("unit_completed", False)):
         completion_eval["assessment_completed"] = True
         completion_eval["assessment_stop_reason"] = "completed_all_core_families"
+        completion_eval["stable_breakpoint_detected"] = False
     should_finish = bool(last_is_correct is not None and completion_eval.get("unit_completed", False))
 
     next_step_number = requested_step + 1
@@ -1342,7 +1431,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         db.session.add(log)
         db.session.commit()
 
-    mainline_sequence = list(textbook_cfg.get("mainline_sequence") or textbook_cfg.get("demo_mainline_sequence") or []) if textbook_cfg else []
+    mainline_sequence = _sequence_for_mode(textbook_cfg, mode)
     progression_rules = dict(textbook_cfg.get("progression_rules") or {}) if textbook_cfg else {}
     remediation_rules = dict(textbook_cfg.get("remediation_rules") or {}) if textbook_cfg else {}
     return_mastery_threshold = float(remediation_rules.get("return_mastery_threshold", 0.85) or 0.85)
@@ -1356,8 +1445,12 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         if current_family_for_progression in mainline_sequence
         else 0
     )
-    next_family_candidate = get_next_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
-    previous_family_candidate = get_previous_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
+    if textbook_cfg and _normalize_mode(mode) == "assessment":
+        next_family_candidate = _neighbor_family_in_sequence(mainline_sequence, current_family_for_progression, offset=1)
+        previous_family_candidate = _neighbor_family_in_sequence(mainline_sequence, current_family_for_progression, offset=-1)
+    else:
+        next_family_candidate = get_next_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
+        previous_family_candidate = get_previous_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
     remediation_retrieval: dict[str, Any] = {}
     remediation_candidates: list[dict[str, Any]] = []
     remediation_candidate_labels: list[str] = []
@@ -1596,6 +1689,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                 "milestone_state": completed_milestone_state,
                 "assessment_completed": bool(completion_eval.get("assessment_completed", False)),
                 "assessment_stop_reason": str(completion_eval.get("assessment_stop_reason", "")),
+                "required_core_families": list(completion_eval.get("required_core_families") or []),
+                "completed_core_families": list(completion_eval.get("completed_core_families") or []),
+                "stable_breakpoint_detected": bool(completion_eval.get("stable_breakpoint_detected", False)),
+                "used_apr_for_completion": bool(completion_eval.get("used_apr_for_completion", False)),
             }
         )
         return {
@@ -1625,6 +1722,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             "is_completed": completed_display_state["is_completed"],
             "unit_completed": bool(completion_eval.get("unit_completed", False)),
             "local_remediation_completed": bool(completion_eval.get("local_remediation_completed", False)),
+            "required_core_families": list(completion_eval.get("required_core_families") or []),
+            "completed_core_families": list(completion_eval.get("completed_core_families") or []),
+            "stable_breakpoint_detected": bool(completion_eval.get("stable_breakpoint_detected", False)),
+            "used_apr_for_completion": bool(completion_eval.get("used_apr_for_completion", False)),
             "completion_reason": str(completion_eval.get("completion_reason", "")),
             "completion_stats": completion_eval,
             "mode": mode,
@@ -1808,6 +1909,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         if mode == "assessment":
             assessment_breakpoint_detected = bool(teaching_trigger_ready)
             completion_eval["assessment_breakpoint_detected"] = assessment_breakpoint_detected
+            completion_eval["stable_breakpoint_detected"] = assessment_breakpoint_detected
             if assessment_breakpoint_detected:
                 completion_eval["assessment_completed"] = True
                 completion_eval["assessment_stop_reason"] = "stable_breakpoint_detected"
@@ -1873,6 +1975,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                     "mode": mode,
                     "assessment_completed": True,
                     "assessment_stop_reason": "stable_breakpoint_detected",
+                    "required_core_families": list(completion_eval.get("required_core_families") or []),
+                    "completed_core_families": list(completion_eval.get("completed_core_families") or []),
+                    "stable_breakpoint_detected": True,
+                    "used_apr_for_completion": False,
                     "breakpoint_family": current_family_for_progression or _normalize_family_id(payload.get("last_family_id")),
                     "breakpoint_subskill": breakpoint_subskill,
                     "breakpoint_concept": breakpoint_concept,
@@ -1912,6 +2018,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                 "mode": mode,
                 "assessment_completed": True,
                 "assessment_stop_reason": "stable_breakpoint_detected",
+                "required_core_families": list(completion_eval.get("required_core_families") or []),
+                "completed_core_families": list(completion_eval.get("completed_core_families") or []),
+                "stable_breakpoint_detected": True,
+                "used_apr_for_completion": False,
                 "unit_completed": False,
                 "local_remediation_completed": False,
                 "milestone_state": "assessment_breakpoint_detected",
@@ -2365,7 +2475,11 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             and selected_agent_skill
             and selected_agent_skill != current_skill
         ):
-            cross_skill_pool = _apply_demo_safe_family_filter(load_catalog())
+            cross_skill_pool = _apply_demo_safe_family_filter(
+                load_catalog(),
+                mode=mode,
+                system_skill_id=system_skill_id,
+            )
             phase1_entries, subskill_filter_hit, fallback_to_skill_only = _filter_entries_for_agent_and_subskill(
                 cross_skill_pool,
                 selected_agent_skill=selected_agent_skill,
@@ -2812,6 +2926,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         ),
         "assessment_completed": bool(completion_eval.get("assessment_completed", False)),
         "assessment_stop_reason": str(completion_eval.get("assessment_stop_reason", "")),
+        "required_core_families": list(completion_eval.get("required_core_families") or []),
+        "completed_core_families": list(completion_eval.get("completed_core_families") or []),
+        "stable_breakpoint_detected": bool(completion_eval.get("stable_breakpoint_detected", False)),
+        "used_apr_for_completion": bool(completion_eval.get("used_apr_for_completion", False)),
         "retrieved_candidates": diagnosis.get("retrieved_candidates", []),
         "diagnostic_choice": diagnosis.get("diagnostic_choice"),
         "qwen_classifier_choice": diagnosis.get("diagnostic_choice"),

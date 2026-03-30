@@ -873,21 +873,68 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             expr = expand((x + a) * (x - a))
             q = f"請展開：$(x + {a})(x - {a})$"
     elif fid == "F7":
-        a, b, c = random.randint(2, 8), random.randint(1, 4), random.randint(1, 3)
+        a, b, c = random.randint(2, 8), random.randint(1, 4), random.randint(2, 4)
         expr = expand((a * x**c) / (b * x))
         q = f"請化簡：$\\frac{{{a}x^{c}}}{{{b}x}}$"
     elif fid == "F8":
-        a, b = random.randint(1, 5), random.randint(-8, 8)
-        expr = expand((x + a) * (x + b))
-        q = f"請展開：$(x + {a})(x + {b})$"
+        d = random.randint(2, 6)
+        q1, q0 = random.randint(-5, 5), random.randint(-9, 9)
+        if q1 == 0:
+            q1 = random.choice([-3, -2, -1, 1, 2, 3])
+        r = random.randint(1, d - 1)
+        quotient_expr = q1 * x + q0
+        dividend_expr = expand((d * x) * quotient_expr + r)
+        q = (
+            f"請求商與餘數：$({ _sympy_text(dividend_expr) }) \\div ({d}x)$"
+            "（寫成 Q, R）"
+        )
+        answer = f"Q={_sympy_text(quotient_expr)}, R={r}"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F9":
-        a, b = random.randint(1, 5), random.randint(-8, 8)
-        expr = expand((x + a) * (x + b))
-        q = f"請展開：$(x + {a})(x + {b})$"
+        b = random.randint(-5, 5)
+        if b == 0:
+            b = 2
+        q1, q0 = random.randint(-4, 4), random.randint(-7, 7)
+        if q1 == 0:
+            q1 = random.choice([-3, -2, -1, 1, 2, 3])
+        r = random.randint(-6, 6)
+        divisor_expr = x - b
+        quotient_expr = q1 * x + q0
+        dividend_expr = expand(divisor_expr * quotient_expr + r)
+        q = (
+            f"請做多項式除法，求商與餘數：$({ _sympy_text(dividend_expr) }) \\div ({ _sympy_text(divisor_expr) })$"
+            "（寫成 Q, R）"
+        )
+        answer = f"Q={_sympy_text(quotient_expr)}, R={r}"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F10":
-        a, b = random.randint(1, 6), random.randint(1, 6)
-        expr = expand((x + a) * (x - b))
-        q = f"請展開並化簡：$(x + {a})(x - {b})$"
+        b = random.randint(-5, 5)
+        if b == 0:
+            b = -2
+        q1, q0 = random.randint(-4, 4), random.randint(-6, 6)
+        if q1 == 0:
+            q1 = random.choice([-3, -2, -1, 1, 2, 3])
+        r = random.randint(-6, 6)
+        divisor_expr = x - b
+        quotient_expr = q1 * x + q0
+        expr = expand(divisor_expr * quotient_expr + r)
+        q = (
+            "反推被除式：已知"
+            f" 除式 $({_sympy_text(divisor_expr)})$、商 $({_sympy_text(quotient_expr)})$、餘數 ${r}$，"
+            "求被除式。"
+        )
     elif fid == "F11":
         a, b, c = random.randint(1, 5), random.randint(1, 5), random.randint(-5, 5)
         expr = expand((x + a) ** 2 + (x + b) * (x - b) + c * x)
