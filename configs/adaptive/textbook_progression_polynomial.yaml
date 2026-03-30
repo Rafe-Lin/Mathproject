@@ -1,46 +1,42 @@
-unit_skill_id: jh_數學2上_FourArithmeticOperationsOfPolynomial
+﻿unit_skill_id: jh_數學2上_FourArithmeticOperationsOfPolynomial
 
 mainline_sequence:
   - F1
   - F2
   - F5
   - F11
+assessment_sequence:
+  - F1
+  - F2
+  - F5
+  - F11
+  - F7
+  - F8
+  - F9
+  - F10
 
 families:
   F1:
     family_name: poly_add_sub_flat
-    textbook_section: "1-2 多項式與其加減運算"
-    textbook_examples:
-      - "P.6 例1"
-      - "P.7 例2"
-      - "P.8 例3"
+    textbook_section: "1-2 polynomial add/sub"
+    textbook_examples: ["P.6 ex1", "P.7 ex2", "P.8 ex3"]
     difficulty_level: 1
-    main_subskills:
-      - combine_like_terms
-      - normalize_terms
-    prerequisite_candidates:
-      - add_sub
-      - sign_handling
-      - mul_div
-      - order_of_operations
+    main_subskills: [combine_like_terms, normalize_terms]
+    prerequisite_candidates: [add_sub, sign_handling, mul_div, order_of_operations]
     prerequisite_candidate_descriptions:
-      add_sub: "基礎整數加減流程不穩，常在係數或常數項運算時出錯。"
-      sign_handling: "正負號處理不穩，常在異號合併或去括號時出錯。"
-      mul_div: "基礎乘除概念薄弱，影響係數運算。"
-      order_of_operations: "多步驟化簡的先後順序不穩，容易中途失焦。"
+      add_sub: "base integer add/sub instability"
+      sign_handling: "sign handling instability"
+      mul_div: "base integer mul/div instability"
+      order_of_operations: "order of operations instability"
     next_on_success: F2
     fallback_on_repeat_failure: F1
 
   F2:
     family_name: poly_add_sub_nested
-    textbook_section: "1-2 多項式與其加減運算"
-    textbook_examples:
-      - "P.9 例4"
-      - "P.9 例5"
+    textbook_section: "1-2 polynomial add/sub"
+    textbook_examples: ["P.9 ex4", "P.9 ex5"]
     difficulty_level: 2
-    main_subskills:
-      - sign_distribution
-      - combine_like_terms
+    main_subskills: [sign_distribution, combine_like_terms]
     prerequisite_candidates:
       - outer_minus_scope
       - monomial_distribution
@@ -50,30 +46,29 @@ families:
       - structure_isomorphism
       - combine_after_distribution
     prerequisite_candidate_descriptions:
-      outer_minus_scope: "括號前負號作用範圍不清，常只改部分項目的符號。"
-      monomial_distribution: "分配律展開不完整，遺漏乘到某些項目。"
-      like_term_combination: "展開後同類項辨識不穩，合併對象容易配錯。"
-      nested_bracket_scope: "多層括號作用範圍判斷錯，拆解流程容易失真。"
-      order_of_operations: "括號展開與合併的先後次序不穩，常中途卡住。"
-      structure_isomorphism: "題型變形後無法對齊已學過的解題骨架。"
-      combine_after_distribution: "分配律後續合併流程卡住，無法完成整理。"
+      outer_minus_scope: "outer minus scope instability"
+      monomial_distribution: "distribution instability"
+      like_term_combination: "combine like terms after distribution instability"
+      nested_bracket_scope: "nested bracket scope instability"
+      order_of_operations: "operation order instability in nested expressions"
+      structure_isomorphism: "structure transfer instability"
+      combine_after_distribution: "post-distribution combine instability"
     next_on_success: F5
     fallback_on_repeat_failure: F1
 
   F5:
     family_name: poly_mul_poly
-    textbook_section: "1-3 多項式的乘除運算"
-    textbook_examples:
-      - "P.36 例題1"
-      - "P.37 例題2"
-      - "P.38 例題3"
-      - "P.39 例題4"
+    textbook_section: "1-3 polynomial mul/div"
+    textbook_examples: ["P.36 ex1", "P.37 ex2", "P.38 ex3", "P.39 ex4"]
     difficulty_level: 3
-    main_subskills:
-      - expand_binomial
-      - sign_distribution
-      - combine_like_terms
+    main_subskills: [expand_binomial, sign_distribution, combine_like_terms]
     prerequisite_candidates:
+      - power_notation_basics
+      - signed_power_interpretation
+      - power_precedence_in_mixed_ops
+      - same_base_multiplication_rule
+      - power_of_power_rule
+      - product_power_distribution
       - mul_div
       - expand_structure
       - sign_handling
@@ -81,28 +76,34 @@ families:
       - order_of_operations
       - combine_after_distribution
     prerequisite_candidate_descriptions:
-      mul_div: "乘法展開時係數乘除與整數運算不穩。"
-      expand_structure: "需先展開再化簡時，展開架構掌握不足。"
-      sign_handling: "異號項展開與整理時，符號追蹤容易反轉。"
-      add_sub: "展開後同類項合併時，加減運算不穩定。"
-      order_of_operations: "展開、合併、收斂順序不穩，流程易斷裂。"
-      combine_after_distribution: "分配後無法順利完成同類項整理。"
+      mul_div: "coefficient mul/div instability"
+      expand_structure: "expansion structure instability"
+      power_notation_basics: "power notation basics instability"
+      signed_power_interpretation: "signed power interpretation instability"
+      power_precedence_in_mixed_ops: "power precedence instability"
+      same_base_multiplication_rule: "same-base multiplication rule instability"
+      power_of_power_rule: "power-of-power rule instability"
+      product_power_distribution: "product-power distribution instability"
+      sign_handling: "sign handling instability"
+      add_sub: "add/sub instability"
+      order_of_operations: "operation order instability"
+      combine_after_distribution: "post-distribution combine instability"
     next_on_success: F11
     fallback_on_repeat_failure: F2
 
   F11:
     family_name: poly_mixed_simplify
-    textbook_section: "1-3 多項式的乘除運算"
-    textbook_examples:
-      - "P.47 例題10"
-      - "P.48 例題11"
-      - "P.50 自我評量5"
+    textbook_section: "1-3 polynomial mul/div"
+    textbook_examples: ["P.47 ex10", "P.48 ex11", "P.50 self-check 5"]
     difficulty_level: 4
-    main_subskills:
-      - expand_binomial
-      - combine_like_terms
-      - family_isomorphism
+    main_subskills: [expand_binomial, combine_like_terms, family_isomorphism]
     prerequisite_candidates:
+      - power_notation_basics
+      - signed_power_interpretation
+      - power_precedence_in_mixed_ops
+      - same_base_multiplication_rule
+      - power_of_power_rule
+      - product_power_distribution
       - nested_bracket_scope
       - structure_isomorphism
       - outer_minus_scope
@@ -116,18 +117,24 @@ families:
       - combine_after_distribution
       - expand_structure
     prerequisite_candidate_descriptions:
-      nested_bracket_scope: "多層括號巢狀拆解不穩，常在中層就失焦。"
-      structure_isomorphism: "題型變形後無法對齊既有解題骨架。"
-      outer_minus_scope: "外層負號跨括號作用錯誤，常只改局部符號。"
-      monomial_distribution: "分配律展開不完整，常漏乘某些項。"
-      like_term_combination: "多步驟後同類項辨識不穩，合併對象易錯。"
-      order_of_operations: "混合化簡先後次序不穩，容易中途偏題。"
-      bracket_scope: "多層括號作用範圍判斷錯，導致整串變號失真。"
-      sign_handling: "多步驟中符號持續追蹤失誤，最後答案正負反轉。"
-      mul_div: "展開或係數運算中的乘除流程不穩，造成中間項錯誤。"
-      add_sub: "最後收斂同類項時，加減運算不穩定。"
-      combine_after_distribution: "分配律後續整併卡住，無法順利收斂。"
-      expand_structure: "需先展開再化簡時，展開架構掌握不足。"
+      nested_bracket_scope: "nested bracket scope instability"
+      structure_isomorphism: "structure transfer instability"
+      outer_minus_scope: "outer minus scope instability"
+      monomial_distribution: "distribution instability"
+      like_term_combination: "like-term combine instability"
+      power_notation_basics: "power notation basics instability"
+      signed_power_interpretation: "signed power interpretation instability"
+      power_precedence_in_mixed_ops: "power precedence instability"
+      same_base_multiplication_rule: "same-base multiplication rule instability"
+      power_of_power_rule: "power-of-power rule instability"
+      product_power_distribution: "product-power distribution instability"
+      order_of_operations: "operation order instability"
+      bracket_scope: "bracket scope instability"
+      sign_handling: "sign handling instability"
+      mul_div: "mul/div instability"
+      add_sub: "add/sub instability"
+      combine_after_distribution: "post-distribution combine instability"
+      expand_structure: "expansion structure instability"
     next_on_success: null
     fallback_on_repeat_failure: F5
 
@@ -138,21 +145,13 @@ progression_rules:
   fallback_to_previous_family_if_no_remediation: true
 
 completion_gate:
-  required_core_families:
-    - F1
-    - F2
-    - F5
-    - F11
-  optional_extension_families:
-    - F6
-    - F7
-    - F8
-    - F9
-    - F10
+  required_core_families: [F1, F2, F5, F11]
+  optional_extension_families: [F6, F7, F8, F9, F10]
   integrative_family_id: F11
   assessment:
-    minimum_covered_core_families: 2
-    minimum_passed_core_families: 2
+    required_core_families: [F1, F2, F5, F11, F7, F8, F9, F10]
+    minimum_covered_core_families: 8
+    minimum_passed_core_families: 8
     require_integrative_family_pass: false
   teaching:
     minimum_covered_core_families: 4

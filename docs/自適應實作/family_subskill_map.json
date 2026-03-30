@@ -194,5 +194,27 @@
   ],
   "jh_數學1上_OperationsOnLinearExpressions:L7": [
     "fractional_expression_simplification"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I9": [
+    "power_notation_basics",
+    "signed_power_interpretation",
+    "parenthesized_negative_base",
+    "minus_outside_power"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I10": [
+    "power_precedence_in_mixed_ops",
+    "signed_power_evaluation",
+    "mixed_power_arithmetic"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F11": [
+    "same_base_multiplication_rule",
+    "power_building_from_repetition"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F12": [
+    "power_of_power_rule"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F13": [
+    "product_power_distribution",
+    "fraction_power_distribution"
   ]
 }

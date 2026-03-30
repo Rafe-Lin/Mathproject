@@ -20,6 +20,13 @@ RUNTIME_SUBSKILL_ALIASES: Final[dict[str, dict[str, str]]] = {
         "sign_distribution": "sign_handling",
         "sign_flip_after_distribution": "sign_handling",
         "combine_after_distribution": "add_sub",
+        "power_sign_parentheses_confusion": "signed_power_interpretation",
+        "power_precedence_confusion": "power_precedence_in_mixed_ops",
+    },
+    "fraction_arithmetic": {
+        "same_base_power_rule_error": "same_base_multiplication_rule",
+        "power_of_power_rule_error": "power_of_power_rule",
+        "product_power_distribution_error": "product_power_distribution",
     },
     "linear_expression_arithmetic": {
         "outer_minus_scope": "outer_minus_scope",
@@ -59,6 +66,11 @@ ERROR_CONCEPT_CANONICAL_RUNTIME_SUBSKILL: Final[dict[tuple[str, str, str], str]]
     ("polynomial_arithmetic", "linear_expression_arithmetic", "nested_grouping_structure_error"): "nested_bracket_scope",
     ("polynomial_arithmetic", "linear_expression_arithmetic", "mixed_simplify_transition_error"): "nested_bracket_scope",
     ("polynomial_arithmetic", "linear_expression_arithmetic", "family_isomorphism_confusion"): "structure_isomorphism",
+    ("polynomial_arithmetic", "integer_arithmetic", "power_sign_parentheses_confusion"): "signed_power_interpretation",
+    ("polynomial_arithmetic", "integer_arithmetic", "power_precedence_confusion"): "power_precedence_in_mixed_ops",
+    ("polynomial_arithmetic", "fraction_arithmetic", "same_base_power_rule_error"): "same_base_multiplication_rule",
+    ("polynomial_arithmetic", "fraction_arithmetic", "power_of_power_rule_error"): "power_of_power_rule",
+    ("polynomial_arithmetic", "fraction_arithmetic", "product_power_distribution_error"): "product_power_distribution",
 }
 
 

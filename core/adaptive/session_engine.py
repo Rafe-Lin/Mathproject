@@ -94,11 +94,13 @@ ADAPTIVE_USE_FULL_CATALOG: bool = str(os.getenv("ADAPTIVE_USE_FULL_CATALOG", "0"
     "on",
 }
 DEMO_SAFE_FAMILIES_BY_AGENT_SKILL: dict[str, set[str]] = {
-    "integer_arithmetic": {"I1", "I2", "I3", "I4", "I5", "I7"},
-    "fraction_arithmetic": set(),
+    "integer_arithmetic": {"I1", "I2", "I3", "I4", "I5", "I7", "I9", "I10"},
+    "fraction_arithmetic": {"F11", "F12", "F13"},
     "polynomial_arithmetic": {"F1", "F2", "F5", "F11"},
     "radical_arithmetic": set(),
 }
+ASSESSMENT_POLY_FAMILY_IDS: set[str] = {"F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"}
+ASSESSMENT_POLY_STANDARDIZED_CORE_FAMILIES: tuple[str, ...] = ("F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10")
 DEMO_ALLOWED_FAMILY_IDS: set[str] = {
     family_id
     for family_ids in DEMO_SAFE_FAMILIES_BY_AGENT_SKILL.values()
@@ -445,14 +447,26 @@ def _select_entries(payload: dict[str, Any]) -> list[CatalogEntry]:
     return entries
 
 
-def _apply_demo_safe_family_filter(entries: list[CatalogEntry]) -> list[CatalogEntry]:
+def _apply_demo_safe_family_filter(
+    entries: list[CatalogEntry],
+    *,
+    mode: str = "teaching",
+    system_skill_id: str = "",
+) -> list[CatalogEntry]:
     if not ADAPTIVE_DEMO_SAFE_MODE or ADAPTIVE_USE_FULL_CATALOG:
         return entries
+    normalized_mode = _normalize_mode(mode)
+    is_poly_assessment = (
+        normalized_mode == "assessment"
+        and str(system_skill_id or "").strip().endswith("FourArithmeticOperationsOfPolynomial")
+    )
     kept: list[CatalogEntry] = []
     removed: list[str] = []
     for entry in entries:
         agent_skill = resolve_agent_skill(entry.skill_id) or ""
         allowed = DEMO_SAFE_FAMILIES_BY_AGENT_SKILL.get(agent_skill)
+        if is_poly_assessment and agent_skill == "polynomial_arithmetic":
+            allowed = ASSESSMENT_POLY_FAMILY_IDS
         if allowed is None:
             kept.append(entry)
             continue
@@ -673,6 +687,15 @@ def _normalize_question_payload(raw: dict[str, Any] | None, entry: CatalogEntry,
     }
 
 
+def _question_preview(raw: dict[str, Any] | None, *, max_len: int = 90) -> str:
+    if not isinstance(raw, dict):
+        return ""
+    text = str(raw.get("question_text") or raw.get("question") or "").strip()
+    if len(text) <= max_len:
+        return text
+    return text[:max_len] + "..."
+
+
 def _generate_question_payload(entry: CatalogEntry, *, selected_subskill: str | None = None) -> dict[str, Any]:
     micro_status = "not_run"
     micro_generator_exists = has_micro_generator(entry)
@@ -856,6 +879,22 @@ def _normalize_mode(mode: Any) -> str:
     return "teaching"
 
 
+def _sequence_for_mode(textbook_cfg: dict[str, Any] | None, mode: str) -> list[str]:
+    if not isinstance(textbook_cfg, dict) or not textbook_cfg:
+        return []
+    normalized_mode = _normalize_mode(mode)
+    if normalized_mode == "assessment":
+        seq = textbook_cfg.get("assessment_sequence") or []
+        if isinstance(seq, list):
+            out = [str(x).strip() for x in seq if str(x).strip()]
+            if out:
+                return out
+    main = textbook_cfg.get("mainline_sequence") or textbook_cfg.get("demo_mainline_sequence") or []
+    if not isinstance(main, list):
+        return []
+    return [str(x).strip() for x in main if str(x).strip()]
+
+
 def _family_performance(
     history_rows: list[AdaptiveLearningLog],
     *,
@@ -918,9 +957,12 @@ def _evaluate_unit_completion(
         }
 
     completion_gate = get_completion_gate(system_skill_id) or dict(textbook_cfg.get("completion_gate") or {})
+    mode_gate = completion_gate.get(normalized_mode, {}) if isinstance(completion_gate, dict) else {}
+    if not isinstance(mode_gate, dict):
+        mode_gate = {}
     required_core = [
         str(x).strip()
-        for x in (completion_gate.get("required_core_families") or [])
+        for x in (mode_gate.get("required_core_families") or completion_gate.get("required_core_families") or [])
         if str(x).strip()
     ]
     if not required_core:
@@ -930,9 +972,6 @@ def _evaluate_unit_completion(
             if str(x).strip()
         ]
     integrative_family_id = str(completion_gate.get("integrative_family_id") or "F11").strip()
-    mode_gate = completion_gate.get(normalized_mode, {}) if isinstance(completion_gate, dict) else {}
-    if not isinstance(mode_gate, dict):
-        mode_gate = {}
     if normalized_mode == "assessment":
         default_min_cover = min(2, len(required_core)) if required_core else 1
         default_min_pass = min(2, len(required_core)) if required_core else 1
@@ -992,6 +1031,7 @@ def _build_summary(
     frustration_index: int,
     visited_family_ids: list[str],
     mode: str = "teaching",
+    system_skill_id: str = "",
     unit_completed: bool = False,
     local_remediation_completed: bool = False,
     completion_reason: str = "",
@@ -1001,6 +1041,25 @@ def _build_summary(
     normalized_mode = _normalize_mode(mode)
     passed = bool(unit_completed)
     stats = dict(completion_stats or {})
+    standardized_score: float | None = None
+    if (
+        normalized_mode == "assessment"
+        and str(system_skill_id).strip() == "jh_數學2上_FourArithmeticOperationsOfPolynomial"
+    ):
+        family_perf = stats.get("family_performance") if isinstance(stats, dict) else None
+        if not isinstance(family_perf, dict):
+            family_perf = {}
+        mastery_values: list[float] = []
+        for family_id in ASSESSMENT_POLY_STANDARDIZED_CORE_FAMILIES:
+            slot = family_perf.get(family_id) if isinstance(family_perf.get(family_id), dict) else {}
+            attempts = int(slot.get("attempts", 0) or 0)
+            correct = int(slot.get("correct", 0) or 0)
+            mastery = 0.0
+            if attempts > 0:
+                mastery = max(0.0, min(1.0, float(correct) / float(attempts)))
+            mastery_values.append(mastery)
+        if mastery_values:
+            standardized_score = round((sum(mastery_values) / float(len(mastery_values))) * 100.0, 1)
     if passed:
         title = "??????????????"
         message = "??????? family ????????"
@@ -1028,6 +1087,8 @@ def _build_summary(
         "final_apr": round(current_apr, 4),
         "frustration_index": frustration_index,
         "visited_families": unique_families,
+        "standardized_score": standardized_score,
+        "standardized_score_percent": standardized_score,
     }
 
 
@@ -1231,8 +1292,15 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
     if last_is_correct is not None:
         last_is_correct = bool(last_is_correct)
 
-    mode = _normalize_mode(payload.get("mode"))
-    entries = _apply_demo_safe_family_filter(_select_entries(payload))
+    routing_session = dict(payload.get("routing_state") or {})
+    mode = _normalize_mode(payload.get("mode") or routing_session.get("mode"))
+    print(f"[DEBUG] mode={mode}", flush=True)
+    system_skill_id = str(payload.get("skill_id", "") or "").strip()
+    entries = _apply_demo_safe_family_filter(
+        _select_entries(payload),
+        mode=mode,
+        system_skill_id=system_skill_id,
+    )
     if not entries:
         raise ValueError("No catalog entries available for the requested adaptive scope")
     allowed_demo_families_display = (
@@ -1241,7 +1309,8 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         else sorted(DEMO_ALLOWED_FAMILY_IDS)
     )
 
-    system_skill_id = str(payload.get("skill_id") or (entries[0].skill_id if entries else "")).strip()
+    if not system_skill_id:
+        system_skill_id = str(entries[0].skill_id if entries else "").strip()
     textbook_cfg = load_textbook_progression(system_skill_id)
     progression_mode = "textbook_sequence" if bool(textbook_cfg) else "default"
 
@@ -1277,7 +1346,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
 
     visited = [row.target_family_id for row in history_rows]
     answered_steps = requested_step if last_is_correct is not None else 0
-    routing_session = dict(payload.get("routing_state") or {})
+    routing_session["mode"] = mode
     demo_start_forced = bool(routing_session.get("demo_start_forced", False))
     demo_first_remediation_forced = bool(routing_session.get("demo_first_remediation_forced", False))
     demo_first_return_forced = bool(routing_session.get("demo_first_return_forced", False))
@@ -1342,7 +1411,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         db.session.add(log)
         db.session.commit()
 
-    mainline_sequence = list(textbook_cfg.get("mainline_sequence") or textbook_cfg.get("demo_mainline_sequence") or []) if textbook_cfg else []
+    mainline_sequence = _sequence_for_mode(textbook_cfg, mode)
     progression_rules = dict(textbook_cfg.get("progression_rules") or {}) if textbook_cfg else {}
     remediation_rules = dict(textbook_cfg.get("remediation_rules") or {}) if textbook_cfg else {}
     return_mastery_threshold = float(remediation_rules.get("return_mastery_threshold", 0.85) or 0.85)
@@ -1356,8 +1425,25 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         if current_family_for_progression in mainline_sequence
         else 0
     )
-    next_family_candidate = get_next_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
-    previous_family_candidate = get_previous_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
+    if textbook_cfg and mode == "assessment":
+        if current_family_for_progression in mainline_sequence:
+            current_index = mainline_sequence.index(current_family_for_progression)
+            next_family_candidate = (
+                str(mainline_sequence[current_index + 1])
+                if current_index + 1 < len(mainline_sequence)
+                else None
+            )
+            previous_family_candidate = (
+                str(mainline_sequence[current_index - 1])
+                if current_index > 0
+                else None
+            )
+        else:
+            next_family_candidate = (str(mainline_sequence[0]) if mainline_sequence else None)
+            previous_family_candidate = None
+    else:
+        next_family_candidate = get_next_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
+        previous_family_candidate = get_previous_family(system_skill_id, current_family_for_progression) if textbook_cfg else None
     remediation_retrieval: dict[str, Any] = {}
     remediation_candidates: list[dict[str, Any]] = []
     remediation_candidate_labels: list[str] = []
@@ -1542,6 +1628,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             frustration_index=frustration_index,
             visited_family_ids=visited + [_normalize_family_id(payload.get("last_family_id"))],
             mode=mode,
+            system_skill_id=system_skill_id,
             unit_completed=bool(completion_eval.get("unit_completed", False)),
             local_remediation_completed=bool(completion_eval.get("local_remediation_completed", False)),
             completion_reason=str(completion_eval.get("completion_reason", "")),
@@ -1862,6 +1949,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                 frustration_index=frustration_index,
                 visited_family_ids=visited + [_normalize_family_id(payload.get("last_family_id"))],
                 mode=mode,
+                system_skill_id=system_skill_id,
                 unit_completed=False,
                 local_remediation_completed=False,
                 completion_reason="stable_breakpoint_detected",
@@ -2015,26 +2103,52 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                     token in concept_hint
                     for token in ("outer_minus_scope", "bracket_scope", "sign_distribution", "sign_flip")
                 )
-                remediation_candidates = [
-                    {
-                        "code": "outer_minus_scope" if sign_scope_like else "like_term_combination",
-                        "runtime_subskill": "outer_minus_scope" if sign_scope_like else "like_term_combination",
-                        "prereq_skill": "linear_expression_arithmetic",
-                        "description": "括號前負號作用範圍與變號流程不穩。",
-                    },
-                    {
-                        "code": "monomial_distribution" if sign_scope_like else "term_collection_with_constants",
-                        "runtime_subskill": "monomial_distribution" if sign_scope_like else "term_collection_with_constants",
-                        "prereq_skill": "linear_expression_arithmetic",
-                        "description": "分配律展開與步驟銜接不穩定。",
-                    },
-                    {
-                        "code": "like_term_combination" if sign_scope_like else "add_sub",
-                        "runtime_subskill": "like_term_combination" if sign_scope_like else "add_sub",
-                        "prereq_skill": "linear_expression_arithmetic" if sign_scope_like else "integer_arithmetic",
-                        "description": "合併同類項或整數加減流程不穩。",
-                    },
-                ]
+                power_like = any(
+                    token in concept_hint
+                    for token in ("power", "binomial_expansion", "special_identity", "product_power_distribution")
+                )
+                if power_like:
+                    remediation_candidates = [
+                        {
+                            "code": "signed_power_interpretation",
+                            "runtime_subskill": "signed_power_interpretation",
+                            "prereq_skill": "integer_arithmetic",
+                            "description": "?? (-a)^n ? -a^n ??????",
+                        },
+                        {
+                            "code": "same_base_multiplication_rule",
+                            "runtime_subskill": "same_base_multiplication_rule",
+                            "prereq_skill": "fraction_arithmetic",
+                            "description": "?????????????",
+                        },
+                        {
+                            "code": "power_of_power_rule",
+                            "runtime_subskill": "power_of_power_rule",
+                            "prereq_skill": "fraction_arithmetic",
+                            "description": "???????????",
+                        },
+                    ]
+                else:
+                    remediation_candidates = [
+                        {
+                            "code": "outer_minus_scope" if sign_scope_like else "like_term_combination",
+                            "runtime_subskill": "outer_minus_scope" if sign_scope_like else "like_term_combination",
+                            "prereq_skill": "linear_expression_arithmetic",
+                            "description": "???????????????",
+                        },
+                        {
+                            "code": "monomial_distribution" if sign_scope_like else "term_collection_with_constants",
+                            "runtime_subskill": "monomial_distribution" if sign_scope_like else "term_collection_with_constants",
+                            "prereq_skill": "linear_expression_arithmetic",
+                            "description": "??????????????",
+                        },
+                        {
+                            "code": "like_term_combination" if sign_scope_like else "add_sub",
+                            "runtime_subskill": "like_term_combination" if sign_scope_like else "add_sub",
+                            "prereq_skill": "linear_expression_arithmetic" if sign_scope_like else "integer_arithmetic",
+                            "description": "???????????????",
+                        },
+                    ]
                 candidate_source = "heuristic_fallback_candidates"
             remediation_candidate_labels = [
                 str(item.get("runtime_subskill") or item.get("diagnosis_label") or "").strip()
@@ -2365,7 +2479,11 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             and selected_agent_skill
             and selected_agent_skill != current_skill
         ):
-            cross_skill_pool = _apply_demo_safe_family_filter(load_catalog())
+            cross_skill_pool = _apply_demo_safe_family_filter(
+                load_catalog(),
+                mode=mode,
+                system_skill_id=system_skill_id,
+            )
             phase1_entries, subskill_filter_hit, fallback_to_skill_only = _filter_entries_for_agent_and_subskill(
                 cross_skill_pool,
                 selected_agent_skill=selected_agent_skill,
@@ -2474,7 +2592,19 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             if demo_override_reason:
                 policy_debug["demo_override_reason"] = demo_override_reason
             policy_debug["scenario_stage"] = scenario_stage
-        subskill_source = "route_override" if route_subskill_override else str(subskill_debug.get("mode") or "unknown")
+        entry_subskills = list(next_entry.subskill_nodes or [])
+        if entry_subskills and (not selected_subskill or selected_subskill not in entry_subskills):
+            policy_debug["family_subskill_alignment"] = {
+                "family_id": next_entry.family_id,
+                "before": selected_subskill,
+                "after": entry_subskills[0],
+                "entry_subskills": entry_subskills,
+            }
+            selected_subskill = entry_subskills[0]
+            decision_trace["selected_subskill"] = selected_subskill
+            subskill_source = "family_primary_subskill_override"
+        else:
+            subskill_source = "route_override" if route_subskill_override else str(subskill_debug.get("mode") or "unknown")
         print(
             "[adaptive_remediation_trace] "
             f"diag_error_concept={diagnosis.get('error_concept')} "

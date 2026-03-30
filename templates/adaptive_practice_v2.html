@@ -165,10 +165,19 @@
   <div class="shell">
     <div class="hero">
       <div>
-        <h1>{{ unit_name }}</h1>
+        <h1>
+          {{ unit_name }}｜
+          {% if mode == 'assessment' %}評量模式{% else %}學習模式{% endif %}
+        </h1>
         <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
       </div>
-      <div class="badge">{{ skill_id or 'all_catalog' }}</div>
+      <div class="badge" id="entryModeBadge">
+        {% if mode == 'assessment' %}
+          評量模式｜{{ unit_name }}
+        {% else %}
+          學習模式｜{{ unit_name }}
+        {% endif %}
+      </div>
     </div>
 
     <div class="top-grid">
@@ -552,6 +561,15 @@
       "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
       "\u006a\u0068_\u6578\u5b781\u4e0a_OperationsOnLinearExpressions": "\u4e00\u5143\u4e00\u6b21\u5f0f\u5316\u7c21",
     };
+    function updateEntryModeBadge() {
+      const node = document.getElementById("entryModeBadge");
+      if (!node) return;
+      const mode = String(state.mode || "teaching").toLowerCase();
+      const skillLabel = SKILL_UI_MAP[skillId] || skillId || "未指定單元";
+      node.textContent = mode === "assessment"
+        ? `自適應評量模式｜${skillLabel}`
+        : `自適應學習模式｜${skillLabel}`;
+    }
     const FAMILY_NAME_UI_MAP = {
       int_numberline_add_sub: "數線整數加減",
       int_flat_add_sub: "整數平面加減",
@@ -1200,6 +1218,7 @@
       state.displaySubskill = String(response?.display_subskill || "");
       state.displaySkill = String(response?.display_skill || "");
       state.mode = String(response?.mode || state.mode || adaptiveEntryMode || "teaching").toLowerCase();
+      updateEntryModeBadge();
       state.milestoneState = String(response?.milestone_state || "");
       state.localRemediationCompleted = normalizeBoolean(response?.local_remediation_completed, false);
       state.unitCompleted = normalizeBoolean(response?.unit_completed, false);
@@ -1324,6 +1343,7 @@
       state.displaySubskill = String(summary?.display_subskill || responseMeta?.display_subskill || state.detectedSubskill || "");
       state.displaySkill = String(summary?.display_skill || responseMeta?.display_skill || state.mainSkill || skillId || "");
       state.mode = String(summary?.mode || responseMeta?.mode || state.mode || adaptiveEntryMode || "teaching").toLowerCase();
+      updateEntryModeBadge();
       state.milestoneState = String(summary?.milestone_state || responseMeta?.milestone_state || "unit_completed");
       state.localRemediationCompleted = normalizeBoolean(
         summary?.local_remediation_completed,
@@ -1427,6 +1447,12 @@
       const badges = [];
       badges.push(`作答題數：${summary?.answered_steps ?? 0}`);
       badges.push(`最終 APR：${Math.round((summary?.final_apr ?? 0) * 100)}%`);
+      if (summary?.standardized_score !== undefined && summary?.standardized_score !== null) {
+        const standardizedScore = Number(summary.standardized_score);
+        if (Number.isFinite(standardizedScore)) {
+          badges.push(`評量分數：${standardizedScore.toFixed(1)} / 100`);
+        }
+      }
       if (Array.isArray(summary?.visited_families)) {
         badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
       }
@@ -1559,6 +1585,7 @@
     resizeCanvas();
     saveState();
     updateUndoRedoButtons();
+    updateEntryModeBadge();
     updateAdaptiveStatePanel();
     assistantSendBtn.disabled = true;
     assistantInput.disabled = true;

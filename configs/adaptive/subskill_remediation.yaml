@@ -1,4 +1,4 @@
-subskills:
+﻿subskills:
   int.sign_handling:
     domain: integer
     display_name: Sign Handling
@@ -19,6 +19,34 @@ subskills:
     domain: integer
     display_name: Bracket Scope
 
+  int.power_notation_basics:
+    domain: integer
+    display_name: Power Notation Basics
+
+  int.signed_power_interpretation:
+    domain: integer
+    display_name: Signed Power Interpretation
+
+  int.parenthesized_negative_base:
+    domain: integer
+    display_name: Parenthesized Negative Base
+
+  int.minus_outside_power:
+    domain: integer
+    display_name: Minus Outside Power
+
+  int.power_precedence_in_mixed_ops:
+    domain: integer
+    display_name: Power Precedence In Mixed Ops
+
+  int.signed_power_evaluation:
+    domain: integer
+    display_name: Signed Power Evaluation
+
+  int.mixed_power_arithmetic:
+    domain: integer
+    display_name: Mixed Power Arithmetic
+
   frac.add_sub:
     domain: fraction
     display_name: Fraction Addition and Subtraction
@@ -26,6 +54,26 @@ subskills:
   frac.divide:
     domain: fraction
     display_name: Fraction Division
+
+  frac.same_base_multiplication_rule:
+    domain: fraction
+    display_name: Same Base Multiplication Rule
+
+  frac.power_building_from_repetition:
+    domain: fraction
+    display_name: Power Building From Repetition
+
+  frac.power_of_power_rule:
+    domain: fraction
+    display_name: Power Of Power Rule
+
+  frac.product_power_distribution:
+    domain: fraction
+    display_name: Product Power Distribution
+
+  frac.fraction_power_distribution:
+    domain: fraction
+    display_name: Fraction Power Distribution
 
   lin.coefficient_sign_handling:
     domain: linear_expression
@@ -73,12 +121,27 @@ subskills:
       - int.bracket_scope
       - int.order_of_operations
 
+  poly.expand_monomial:
+    domain: polynomial
+    display_name: Expand Monomial
+    depends_on:
+      - int.power_notation_basics
+      - int.power_precedence_in_mixed_ops
+
   poly.expand_binomial:
     domain: polynomial
     display_name: Expand Binomial
     depends_on:
       - int.mul_div
       - int.order_of_operations
+      - frac.same_base_multiplication_rule
+
+  poly.special_identity:
+    domain: polynomial
+    display_name: Special Identity
+    depends_on:
+      - frac.power_of_power_rule
+      - frac.product_power_distribution
 
   poly.outer_minus_scope:
     domain: polynomial
@@ -116,6 +179,11 @@ diagnosis_map:
   polynomial_coefficient_arithmetic_error: lin.coefficient_sign_handling
   polynomial_mixed_simplify_transition_error: lin.nested_bracket_scope
   polynomial_family_isomorphism_confusion: lin.structure_isomorphism
+  power_sign_parentheses_confusion: int.signed_power_interpretation
+  power_precedence_confusion: int.power_precedence_in_mixed_ops
+  same_base_power_rule_error: frac.same_base_multiplication_rule
+  power_of_power_rule_error: frac.power_of_power_rule
+  product_power_distribution_error: frac.product_power_distribution
 
 remediation_map:
   lin.coefficient_sign_handling:
@@ -156,8 +224,14 @@ remediation_map:
   poly.sign_distribution:
     target: lin.monomial_distribution
 
+  poly.expand_monomial:
+    target: int.power_precedence_in_mixed_ops
+
   poly.expand_binomial:
-    target: int.mul_div
+    target: frac.same_base_multiplication_rule
+
+  poly.special_identity:
+    target: frac.power_of_power_rule
 
   poly.outer_minus_scope:
     target: lin.outer_minus_scope
@@ -167,5 +241,3 @@ remediation_map:
 
   poly.mixed_simplify_transition:
     target: lin.nested_bracket_scope
-
-

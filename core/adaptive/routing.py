@@ -76,6 +76,7 @@ ERROR_CONCEPT_TO_PREREQ: dict[str, dict[str, str]] = {
 ALLOWED_CROSS_SKILL_PATHS = {
     ("polynomial_arithmetic", "integer_arithmetic"),
     ("polynomial_arithmetic", "linear_expression_arithmetic"),
+    ("polynomial_arithmetic", "fraction_arithmetic"),
     ("fraction_arithmetic", "integer_arithmetic"),
 }
 

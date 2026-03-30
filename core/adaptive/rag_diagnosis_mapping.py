@@ -76,6 +76,31 @@ DEFAULT_CONCEPT_TO_PREREQ: dict[str, dict[str, Any]] = {
         "suggested_prereq_subskill": "structure_isomorphism",
         "concept_weight": 0.86,
     },
+    "power_sign_parentheses_confusion": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "signed_power_interpretation",
+        "concept_weight": 0.90,
+    },
+    "power_precedence_confusion": {
+        "suggested_prereq_skill": "integer_arithmetic",
+        "suggested_prereq_subskill": "power_precedence_in_mixed_ops",
+        "concept_weight": 0.88,
+    },
+    "same_base_power_rule_error": {
+        "suggested_prereq_skill": "fraction_arithmetic",
+        "suggested_prereq_subskill": "same_base_multiplication_rule",
+        "concept_weight": 0.90,
+    },
+    "power_of_power_rule_error": {
+        "suggested_prereq_skill": "fraction_arithmetic",
+        "suggested_prereq_subskill": "power_of_power_rule",
+        "concept_weight": 0.90,
+    },
+    "product_power_distribution_error": {
+        "suggested_prereq_skill": "fraction_arithmetic",
+        "suggested_prereq_subskill": "product_power_distribution",
+        "concept_weight": 0.90,
+    },
 }
 DEFAULT_SCORING: dict[str, float] = {
     "base": 0.25,

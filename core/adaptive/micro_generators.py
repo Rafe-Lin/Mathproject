@@ -266,6 +266,53 @@ def _integers_i8(entry: CatalogEntry) -> dict:
 
 
 
+def _integers_i9(entry: CatalogEntry) -> dict:
+    style = random.choice(["plain", "paren", "outside"])
+    base = random.choice([2, 3, 4, 5])
+    exponent = random.choice([2, 3])
+    if style == "plain":
+        question = f"請計算：$ {base}^{exponent} $"
+        answer = str(base ** exponent)
+        context = "先看底數與次方，再做乘方。"
+    elif style == "paren":
+        question = f"請計算：$ (-{base})^{exponent} $"
+        answer = str(((-base) ** exponent))
+        context = "負號在括號內，表示整個負數作為底數。"
+    else:
+        question = f"請計算：$ -{base}^{exponent} $"
+        answer = str(-(base ** exponent))
+        context = "負號在括號外，先做乘方，再套外面的負號。"
+    return {
+        "question_text": question,
+        "latex": question,
+        "answer": answer,
+        "correct_answer": answer,
+        "context_string": context,
+    }
+
+
+def _integers_i10(entry: CatalogEntry) -> dict:
+    if random.choice([True, False]):
+        a = random.choice([2, 3, 4, 5])
+        b = random.choice([2, 3, 4])
+        c = random.choice([2, 3, 4])
+        question = f"請計算：$ (-{a}^2) \\div {a} - {b}^{c} $"
+        answer = str((-(a ** 2)) // a - (b ** c))
+    else:
+        a = random.choice([2, 3, 4, 5, 8])
+        b = random.choice([2, 3, 4])
+        c = random.choice([2, 3, 4])
+        question = f"請計算：$ {a} - 2^{b} \\times [10 + (-{c}^{2})] $"
+        answer = str(a - (2 ** b) * (10 + (-(c ** 2))))
+    return {
+        "question_text": question,
+        "latex": question,
+        "answer": answer,
+        "correct_answer": answer,
+        "context_string": "乘方先算，再做乘除，最後加減。",
+    }
+
+
 INTEGER_GENERATORS: dict[str, Callable[[CatalogEntry], dict]] = {
 
     "I1": _integers_i1,
@@ -283,6 +330,10 @@ INTEGER_GENERATORS: dict[str, Callable[[CatalogEntry], dict]] = {
     "I7": _integers_i7,
 
     "I8": _integers_i8,
+
+    "I9": _integers_i9,
+
+    "I10": _integers_i10,
 
 }
 
@@ -601,6 +652,77 @@ def _fraction_f10(entry: CatalogEntry) -> dict:
 
 
 
+def _fraction_f11(entry: CatalogEntry) -> dict:
+    if random.choice([True, False]):
+        base = random.choice([2, 3, 4, 5, 6])
+        p = random.randint(1, 5)
+        q = random.randint(1, 5)
+        question = f"請填空：$ {base}^{p} \\times {base}^{q} = {base}^{{\\square}} $"
+    else:
+        num = random.choice([1, 2, 3, 4, 5])
+        den = random.choice([2, 3, 4, 5, 6])
+        p = random.randint(1, 4)
+        q = random.randint(1, 4)
+        question = f"請填空：$ (\\frac{{{num}}}{{{den}}})^{p} \\times (\\frac{{{num}}}{{{den}}})^{q} = (\\frac{{{num}}}{{{den}}})^{{\\square}} $"
+    answer = str(p + q)
+    return {
+        "question_text": question,
+        "latex": question,
+        "answer": answer,
+        "correct_answer": answer,
+        "context_string": "同底數相乘，指數相加。",
+    }
+
+
+def _fraction_f12(entry: CatalogEntry) -> dict:
+    if random.choice([True, False]):
+        base = random.choice([2, 3, 4, 5, 6])
+        p = random.randint(1, 5)
+        q = random.randint(1, 4)
+        question = f"請填空：$ ({base}^{p})^{q} = {base}^{{\\square}} $"
+    else:
+        num = random.choice([1, 2, 3, 4, 5])
+        den = random.choice([2, 3, 4, 5, 6])
+        p = random.randint(1, 4)
+        q = random.randint(1, 4)
+        question = f"請填空：$ [(\\frac{{{num}}}{{{den}}})^{p}]^{q} = (\\frac{{{num}}}{{{den}}})^{{\\square}} $"
+    answer = str(p * q)
+    return {
+        "question_text": question,
+        "latex": question,
+        "answer": answer,
+        "correct_answer": answer,
+        "context_string": "冪的冪，指數相乘。",
+    }
+
+
+def _fraction_f13(entry: CatalogEntry) -> dict:
+    if random.choice([True, False]):
+        a = random.choice([2, 3, 5, 7, 11])
+        b = random.choice([2, 3, 5, 7, 11])
+        n = random.randint(2, 5)
+        question = f"請填空：$ ({a}\\times {b})^{n} = {a}^{{\\square}} \\times {b}^{{\\square}} $"
+    else:
+        a_num = random.choice([1, 2, 3, 4])
+        a_den = random.choice([2, 3, 4, 5])
+        b_num = random.choice([1, 2, 3, 4])
+        b_den = random.choice([2, 3, 4, 5])
+        n = random.randint(2, 4)
+        question = (
+            "請填空："
+            f"$ (\\frac{{{a_num}}}{{{a_den}}}\\times\\frac{{{b_num}}}{{{b_den}}})^{n} "
+            f"= (\\frac{{{a_num}}}{{{a_den}}})^{{\\square}}\\times(\\frac{{{b_num}}}{{{b_den}}})^{{\\square}} $"
+        )
+    answer = str(n)
+    return {
+        "question_text": question,
+        "latex": question,
+        "answer": answer,
+        "correct_answer": answer,
+        "context_string": "積的冪可以分配到每個因數上。",
+    }
+
+
 NUMBER_GENERATORS: dict[str, Callable[[CatalogEntry], dict]] = {
 
     "F1": _fraction_f1,
@@ -622,6 +744,12 @@ NUMBER_GENERATORS: dict[str, Callable[[CatalogEntry], dict]] = {
     "F9": _fraction_f9,
 
     "F10": _fraction_f10,
+
+    "F11": _fraction_f11,
+
+    "F12": _fraction_f12,
+
+    "F13": _fraction_f13,
 
 }
 
@@ -703,6 +831,40 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             else:
                 parts.append(str(const))
         return " ".join(parts) if parts else "0"
+
+    def format_poly(coeffs: dict[int, int]) -> str:
+        terms: list[str] = []
+        for degree in sorted(coeffs.keys(), reverse=True):
+            coef = int(coeffs.get(degree, 0) or 0)
+            if coef == 0:
+                continue
+            if degree == 0:
+                core = str(abs(coef))
+            elif degree == 1:
+                core = "x" if abs(coef) == 1 else f"{abs(coef)}x"
+            else:
+                core = f"x^{degree}" if abs(coef) == 1 else f"{abs(coef)}x^{degree}"
+            sign = "-" if coef < 0 else "+"
+            if not terms:
+                terms.append(f"-{core}" if coef < 0 else core)
+            else:
+                terms.append(f"{sign} {core}")
+        return " ".join(terms) if terms else "0"
+
+    def poly_add(dst: dict[int, int], src: dict[int, int], scale: int = 1) -> None:
+        for degree, coef in src.items():
+            dst[degree] = int(dst.get(degree, 0) + scale * coef)
+            if dst[degree] == 0:
+                dst.pop(degree, None)
+
+    def poly_mul(a: dict[int, int], b: dict[int, int]) -> dict[int, int]:
+        out: dict[int, int] = {}
+        for d1, c1 in a.items():
+            for d2, c2 in b.items():
+                out[d1 + d2] = int(out.get(d1 + d2, 0) + c1 * c2)
+                if out[d1 + d2] == 0:
+                    out.pop(d1 + d2, None)
+        return out
 
     # Minimal no-dependency fallback for polynomial F1 so demo never drops to catalog_fallback.
     if fid == "F1":
@@ -873,21 +1035,99 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             expr = expand((x + a) * (x - a))
             q = f"請展開：$(x + {a})(x - {a})$"
     elif fid == "F7":
-        a, b, c = random.randint(2, 8), random.randint(1, 4), random.randint(1, 3)
-        expr = expand((a * x**c) / (b * x))
-        q = f"請化簡：$\\frac{{{a}x^{c}}}{{{b}x}}$"
+        # 單項式除法直接化簡
+        divisor_coef = random.randint(1, 4)
+        divisor_deg = random.randint(1, 2)
+        q_a = nz(-8, 8)
+        q_b = random.randint(-8, 8)
+        quotient = {1: q_a, 0: q_b}
+        divisor = {divisor_deg: divisor_coef}
+        dividend = poly_mul(quotient, divisor)
+        q = f"請化簡：$({format_poly(dividend)}) \\div ({format_poly(divisor)})$"
+        answer = format_poly(quotient)
+        exp = "各項係數分別相除，次方分別相減。"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "同底數相除時次方相減，係數要約分。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F8":
-        a, b = random.randint(1, 5), random.randint(-8, 8)
-        expr = expand((x + a) * (x + b))
-        q = f"請展開：$(x + {a})(x + {b})$"
+        # 單項式除法（商與餘數）
+        divisor_coef = random.randint(1, 4)
+        divisor_deg = random.randint(1, 2)
+        quotient = {1: nz(-6, 6), 0: random.randint(-6, 6)}
+        divisor = {divisor_deg: divisor_coef}
+        remainder_degree = 0 if divisor_deg == 1 else random.randint(0, 1)
+        remainder = {remainder_degree: nz(-5, 5)}
+        dividend = poly_mul(quotient, divisor)
+        poly_add(dividend, remainder, scale=1)
+        q = f"請求商與餘數：$({format_poly(dividend)}) \\div ({format_poly(divisor)})$"
+        answer = f"商：{format_poly(quotient)}，餘：{format_poly(remainder)}"
+        exp = "先做單項式除法得到商，再檢查餘式次數是否小於除式次數。"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "用『被除式 = 除式×商 + 餘式』檢查結果。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F9":
-        a, b = random.randint(1, 5), random.randint(-8, 8)
-        expr = expand((x + a) * (x + b))
-        q = f"請展開：$(x + {a})(x + {b})$"
+        # 多項式長除法（商與餘數）
+        divisor = {1: 1, 0: random.randint(-5, 5)}  # x + b
+        quotient = {2: nz(-3, 3), 1: random.randint(-6, 6), 0: random.randint(-6, 6)}
+        remainder = {0: random.randint(-4, 4)}
+        dividend = poly_mul(divisor, quotient)
+        poly_add(dividend, remainder, scale=1)
+        q = f"請用多項式長除法求商與餘數：$({format_poly(dividend)}) \\div ({format_poly(divisor)})$"
+        answer = f"商：{format_poly(quotient)}，餘：{format_poly(remainder)}"
+        exp = "每一步都用最高次項相除，寫出商，再回乘相減。"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "長除法重點是『最高次對齊』與『回乘相減』。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F10":
-        a, b = random.randint(1, 6), random.randint(1, 6)
-        expr = expand((x + a) * (x - b))
-        q = f"請展開並化簡：$(x + {a})(x - {b})$"
+        # 反推除法：已知除式、商、餘，求被除式
+        divisor = {1: 1, 0: random.randint(-4, 4)}
+        quotient = {1: nz(-5, 5), 0: random.randint(-5, 5)}
+        remainder = {0: random.randint(-3, 3)}
+        dividend = poly_mul(divisor, quotient)
+        poly_add(dividend, remainder, scale=1)
+        q = (
+            "已知除式、商與餘數，求被除式："
+            f"$\\text{{除式}}={format_poly(divisor)}$, "
+            f"$\\text{{商}}={format_poly(quotient)}$, "
+            f"$\\text{{餘}}={format_poly(remainder)}$。"
+        )
+        answer = format_poly(dividend)
+        exp = "用公式『被除式 = 除式×商 + 餘』直接重建。"
+        return {
+            "question_text": q,
+            "latex": q,
+            "answer": answer,
+            "correct_answer": answer,
+            "context_string": "先做除式乘商，再加上餘數。",
+            "explanation": exp,
+            "solution": exp,
+            "family_id": entry.family_id,
+            "subskill_nodes": list(entry.subskill_nodes),
+        }
     elif fid == "F11":
         a, b, c = random.randint(1, 5), random.randint(1, 5), random.randint(-5, 5)
         expr = expand((x + a) ** 2 + (x + b) * (x - b) + c * x)

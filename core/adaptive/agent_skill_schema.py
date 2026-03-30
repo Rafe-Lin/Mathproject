@@ -24,6 +24,13 @@ AGENT_SKILL_SUBSKILLS: Final[dict[str, list[str]]] = {
         "mixed_ops",
         "absolute_value",
         "parentheses",
+        "power_notation_basics",
+        "signed_power_interpretation",
+        "parenthesized_negative_base",
+        "minus_outside_power",
+        "power_precedence_in_mixed_ops",
+        "signed_power_evaluation",
+        "mixed_power_arithmetic",
     ],
     AGENT_SKILL_FRACTION_ARITHMETIC: [
         "proper_improper_fraction",
@@ -34,6 +41,11 @@ AGENT_SKILL_SUBSKILLS: Final[dict[str, list[str]]] = {
         "fraction_add_sub",
         "fraction_mul_div",
         "reciprocal",
+        "same_base_multiplication_rule",
+        "power_building_from_repetition",
+        "power_of_power_rule",
+        "product_power_distribution",
+        "fraction_power_distribution",
     ],
     AGENT_SKILL_RADICAL_ARITHMETIC: [
         "radical_simplify",
@@ -61,10 +73,10 @@ AGENT_SKILL_SUBSKILLS: Final[dict[str, list[str]]] = {
 }
 
 SYSTEM_SKILL_TO_AGENT_SKILL: Final[dict[str, str]] = {
-    "jh_數學1上_FourArithmeticOperationsOfIntegers": AGENT_SKILL_INTEGER_ARITHMETIC,
-    "jh_數學1上_FourArithmeticOperationsOfNumbers": AGENT_SKILL_FRACTION_ARITHMETIC,
-    "jh_數學2上_FourOperationsOfRadicals": AGENT_SKILL_RADICAL_ARITHMETIC,
-    "jh_數學2上_FourArithmeticOperationsOfPolynomial": AGENT_SKILL_POLYNOMIAL_ARITHMETIC,
+    "jh_??1?_FourArithmeticOperationsOfIntegers": AGENT_SKILL_INTEGER_ARITHMETIC,
+    "jh_??1?_FourArithmeticOperationsOfNumbers": AGENT_SKILL_FRACTION_ARITHMETIC,
+    "jh_??2?_FourOperationsOfRadicals": AGENT_SKILL_RADICAL_ARITHMETIC,
+    "jh_??2?_FourArithmeticOperationsOfPolynomial": AGENT_SKILL_POLYNOMIAL_ARITHMETIC,
 }
 
 
@@ -73,6 +85,14 @@ def resolve_agent_skill(system_skill_id: str) -> str | None:
     hit = SYSTEM_SKILL_TO_AGENT_SKILL.get(key)
     if hit:
         return hit
+    if key.endswith("FourArithmeticOperationsOfIntegers"):
+        return AGENT_SKILL_INTEGER_ARITHMETIC
+    if key.endswith("FourArithmeticOperationsOfNumbers"):
+        return AGENT_SKILL_FRACTION_ARITHMETIC
+    if key.endswith("FourOperationsOfRadicals"):
+        return AGENT_SKILL_RADICAL_ARITHMETIC
+    if key.endswith("FourArithmeticOperationsOfPolynomial"):
+        return AGENT_SKILL_POLYNOMIAL_ARITHMETIC
     if key.endswith("OperationsOnLinearExpressions"):
         return AGENT_SKILL_LINEAR_EXPRESSION_ARITHMETIC
     return None

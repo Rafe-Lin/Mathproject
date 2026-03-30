@@ -17,11 +17,33 @@ LINEAR_SUBSKILLS = {
     "fractional_expression_simplification",
 }
 
+INTEGER_POWER_SUBSKILLS = {
+    "power_notation_basics",
+    "signed_power_interpretation",
+    "parenthesized_negative_base",
+    "minus_outside_power",
+    "power_precedence_in_mixed_ops",
+    "signed_power_evaluation",
+    "mixed_power_arithmetic",
+}
+
+NUMBER_POWER_SUBSKILLS = {
+    "same_base_multiplication_rule",
+    "power_building_from_repetition",
+    "power_of_power_rule",
+    "product_power_distribution",
+    "fraction_power_distribution",
+}
+
 
 def _infer_candidate_skill(code: str) -> str:
     key = str(code or "").strip()
     if key in LINEAR_SUBSKILLS:
         return "linear_expression_arithmetic"
+    if key in NUMBER_POWER_SUBSKILLS:
+        return "fraction_arithmetic"
+    if key in INTEGER_POWER_SUBSKILLS:
+        return "integer_arithmetic"
     return "integer_arithmetic"
 
 

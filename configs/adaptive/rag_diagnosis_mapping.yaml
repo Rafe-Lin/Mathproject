@@ -1,4 +1,4 @@
-concept_to_prereq:
+﻿concept_to_prereq:
   negative_sign_handling:
     suggested_prereq_skill: integer_arithmetic
     suggested_prereq_subskill: signed_arithmetic
@@ -43,6 +43,26 @@ concept_to_prereq:
     suggested_prereq_skill: linear_expression_arithmetic
     suggested_prereq_subskill: structure_isomorphism
     concept_weight: 0.86
+  power_sign_parentheses_confusion:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: signed_power_interpretation
+    concept_weight: 0.90
+  power_precedence_confusion:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: power_precedence_in_mixed_ops
+    concept_weight: 0.88
+  same_base_power_rule_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: same_base_multiplication_rule
+    concept_weight: 0.90
+  power_of_power_rule_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: power_of_power_rule
+    concept_weight: 0.90
+  product_power_distribution_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: product_power_distribution
+    concept_weight: 0.90
   division_misconception:
     suggested_prereq_skill: integer_arithmetic
     suggested_prereq_subskill: division
@@ -57,5 +77,3 @@ scoring:
   retrieval_weight: 0.55
   concept_weight: 0.20
   unknown_concept_weight: 0.40
-
-

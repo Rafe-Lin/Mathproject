@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 import google.generativeai as genai
+from core.adaptive.catalog_loader import load_catalog
 
 try:
     import chromadb
@@ -51,43 +52,83 @@ def _parse_subskill_nodes(value: Any) -> list[str]:
 
 def _label_node(node: str) -> str:
     return {
-        "sign_handling": "正負號判讀",
-        "add_sub": "整數加減",
-        "mul_div": "整數乘除",
-        "mixed_ops": "四則混合",
-        "order_of_operations": "運算順序",
-        "absolute_value": "絕對值",
-        "conjugate_rationalize": "共軛有理化",
-        "divide_terms": "因式分解後約分",
-        "multiply_terms": "分子分母乘法",
+        "sign_handling": "sign handling",
+        "add_sub": "add/sub",
+        "mul_div": "mul/div",
+        "mixed_ops": "mixed operations",
+        "order_of_operations": "order of operations",
+        "absolute_value": "absolute value",
+        "bracket_scope": "bracket scope",
+        "power_notation_basics": "power notation basics",
+        "signed_power_interpretation": "signed power interpretation",
+        "parenthesized_negative_base": "parenthesized negative base",
+        "minus_outside_power": "minus outside power",
+        "power_precedence_in_mixed_ops": "power precedence in mixed ops",
+        "signed_power_evaluation": "signed power evaluation",
+        "mixed_power_arithmetic": "mixed power arithmetic",
+        "same_base_multiplication_rule": "same-base multiplication rule",
+        "power_building_from_repetition": "power from repetition",
+        "power_of_power_rule": "power of power rule",
+        "product_power_distribution": "product power distribution",
+        "fraction_power_distribution": "fraction power distribution",
+        "conjugate_rationalize": "conjugate rationalization",
+        "divide_terms": "divide terms",
+        "multiply_terms": "multiply terms",
     }.get(node, node.replace("_", " "))
 
 
 def _build_document_text(row: dict[str, Any]) -> str:
     nodes = _parse_subskill_nodes(row.get("subskill_nodes"))
-    node_text = "、".join(_label_node(node) for node in nodes) if nodes else ""
+    node_text = ", ".join(_label_node(node) for node in nodes) if nodes else ""
     parts = [
         row.get("skill_ch_name") or row.get("skill_name") or row.get("skill_id", ""),
     ]
     if row.get("family_name"):
-        parts.append(f"題型：{row['family_name']}")
+        parts.append(f"family: {row['family_name']}")
     if row.get("theme"):
-        parts.append(f"主題：{row['theme']}")
+        parts.append(f"theme: {row['theme']}")
     if node_text:
-        parts.append(f"子技能：{node_text}")
+        parts.append(f"subskills: {node_text}")
     if row.get("curriculum"):
-        parts.append(f"課綱：{row['curriculum']} {row.get('grade', '')}年級")
+        parts.append(f"curriculum: {row['curriculum']} {row.get('grade', '')}")
     if row.get("chapter"):
-        parts.append(f"章節：{row['chapter']}")
+        parts.append(f"chapter: {row['chapter']}")
     if row.get("section"):
-        parts.append(f"小節：{row['section']}")
+        parts.append(f"section: {row['section']}")
     if row.get("paragraph"):
-        parts.append(f"段落：{row['paragraph']}")
+        parts.append(f"paragraph: {row['paragraph']}")
     return " | ".join(str(part) for part in parts if str(part).strip())
+
+
+def _load_catalog_rows() -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    try:
+        for entry in load_catalog():
+            rows.append(
+                {
+                    "skill_id": entry.skill_id,
+                    "skill_ch_name": entry.skill_name,
+                    "skill_name": entry.skill_name,
+                    "family_id": entry.family_id,
+                    "family_name": entry.family_name,
+                    "theme": entry.theme,
+                    "subskill_nodes": list(entry.subskill_nodes or []),
+                    "curriculum": "junior_high",
+                    "grade": "",
+                    "chapter": "",
+                    "section": "",
+                    "paragraph": "",
+                }
+            )
+    except Exception:
+        return []
+    return rows
 
 
 def _load_bridge_rows(app) -> list[dict[str, Any]]:
     from models import db
+
+    rows_out: list[dict[str, Any]] = []
 
     if _table_exists(db, "skill_family_bridge"):
         rows = db.session.execute(
@@ -114,9 +155,9 @@ def _load_bridge_rows(app) -> list[dict[str, Any]]:
             """)
         ).mappings().all()
         if rows:
-            return [dict(row) for row in rows]
+            rows_out = [dict(row) for row in rows]
 
-    if _table_exists(db, "skills_info") and _table_exists(db, "skill_curriculum"):
+    if (not rows_out) and _table_exists(db, "skills_info") and _table_exists(db, "skill_curriculum"):
         rows = db.session.execute(
             db.text("""
                 SELECT DISTINCT
@@ -141,9 +182,22 @@ def _load_bridge_rows(app) -> list[dict[str, Any]]:
                 ORDER BY si.skill_id
             """)
         ).mappings().all()
-        return [dict(row) for row in rows]
+        rows_out = [dict(row) for row in rows]
 
-    return []
+    catalog_rows = _load_catalog_rows()
+    if not rows_out:
+        return catalog_rows
+
+    existing_keys = {
+        (str(r.get("skill_id") or "").strip(), str(r.get("family_id") or "").strip())
+        for r in rows_out
+    }
+    for row in catalog_rows:
+        key = (str(row.get("skill_id") or "").strip(), str(row.get("family_id") or "").strip())
+        if key in existing_keys:
+            continue
+        rows_out.append(row)
+    return rows_out
 
 
 def _index_documents(rows: list[dict[str, Any]]):

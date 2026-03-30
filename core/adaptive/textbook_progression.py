@@ -13,6 +13,7 @@ _CACHE: dict[str, dict[str, Any]] = {}
 DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
     "unit_skill_id": POLY_SKILL_ID,
     "mainline_sequence": ["F1", "F2", "F5", "F11"],
+    "assessment_sequence": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
     "families": {
         "F1": {
             "family_name": "poly_add_sub_flat",
@@ -61,6 +62,12 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
             "textbook_examples": ["P.36 例題1", "P.37 例題2", "P.38 例題3", "P.39 例題4"],
             "main_subskills": ["expand_binomial", "sign_distribution", "combine_like_terms"],
             "prerequisite_candidates": [
+                "power_notation_basics",
+                "signed_power_interpretation",
+                "power_precedence_in_mixed_ops",
+                "same_base_multiplication_rule",
+                "power_of_power_rule",
+                "product_power_distribution",
                 "mul_div",
                 "expand_structure",
                 "sign_handling",
@@ -85,6 +92,12 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
             "textbook_examples": ["P.47 例題10", "P.48 例題11", "P.50 自我評量5"],
             "main_subskills": ["expand_binomial", "combine_like_terms", "family_isomorphism"],
             "prerequisite_candidates": [
+                "power_notation_basics",
+                "signed_power_interpretation",
+                "power_precedence_in_mixed_ops",
+                "same_base_multiplication_rule",
+                "power_of_power_rule",
+                "product_power_distribution",
                 "nested_bracket_scope",
                 "structure_isomorphism",
                 "outer_minus_scope",
@@ -121,8 +134,9 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
         "optional_extension_families": ["F6", "F7", "F8", "F9", "F10"],
         "integrative_family_id": "F11",
         "assessment": {
-            "minimum_covered_core_families": 2,
-            "minimum_passed_core_families": 2,
+            "required_core_families": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
+            "minimum_covered_core_families": 8,
+            "minimum_passed_core_families": 8,
             "require_integrative_family_pass": False,
         },
         "teaching": {

@@ -132,6 +132,38 @@
             "整除判斷（要除得盡）",
             "結構辨識（換個樣子也一樣）"
           ]
+        },
+        "I9": {
+          "family_id": "I9",
+          "family_name_en": "int_power_sign_parentheses",
+          "label": "乘方、負號與括號",
+          "subskills": [
+            "power_notation_basics",
+            "signed_power_interpretation",
+            "parenthesized_negative_base",
+            "minus_outside_power"
+          ],
+          "subskill_labels": [
+            "乘方記法（底數與次方）",
+            "負數乘方判讀（括號內外）",
+            "負底數乘方（含括號）",
+            "外層負號與次方"
+          ]
+        },
+        "I10": {
+          "family_id": "I10",
+          "family_name_en": "int_power_mixed_evaluation",
+          "label": "乘方混合運算",
+          "subskills": [
+            "power_precedence_in_mixed_ops",
+            "signed_power_evaluation",
+            "mixed_power_arithmetic"
+          ],
+          "subskill_labels": [
+            "乘方優先順序",
+            "正負乘方值計算",
+            "乘方混合運算"
+          ]
         }
       },
       "subskills": {
@@ -174,6 +206,41 @@
           "label": "結構辨識（換個樣子也一樣）",
           "hint": "先看題型骨架，再套用同樣做法",
           "display_text": "偵測學習斷點：結構辨識（換個樣子也一樣）｜提示：先看題型骨架，再套用同樣做法"
+        },
+        "power_notation_basics": {
+          "label": "乘方記法（底數與次方）",
+          "hint": "先看底數是誰，再看幾次方。",
+          "display_text": "偵測學習斷點：乘方記法（底數與次方）｜提示：先看底數是誰，再看幾次方。"
+        },
+        "signed_power_interpretation": {
+          "label": "負數乘方判讀（括號內外）",
+          "hint": "(-a)^n 與 -a^n 意義不同。",
+          "display_text": "偵測學習斷點：負數乘方判讀（括號內外）｜提示：(-a)^n 與 -a^n 意義不同。"
+        },
+        "parenthesized_negative_base": {
+          "label": "負底數乘方（含括號）",
+          "hint": "負號在括號內，整體一起做次方。",
+          "display_text": "偵測學習斷點：負底數乘方（含括號）｜提示：負號在括號內，整體一起做次方。"
+        },
+        "minus_outside_power": {
+          "label": "外層負號與次方",
+          "hint": "先做次方，再處理外面的負號。",
+          "display_text": "偵測學習斷點：外層負號與次方｜提示：先做次方，再處理外面的負號。"
+        },
+        "power_precedence_in_mixed_ops": {
+          "label": "乘方優先順序",
+          "hint": "先次方，再乘除，最後加減。",
+          "display_text": "偵測學習斷點：乘方優先順序｜提示：先次方，再乘除，最後加減。"
+        },
+        "signed_power_evaluation": {
+          "label": "正負乘方值計算",
+          "hint": "先判斷符號位置，再算數值。",
+          "display_text": "偵測學習斷點：正負乘方值計算｜提示：先判斷符號位置，再算數值。"
+        },
+        "mixed_power_arithmetic": {
+          "label": "乘方混合運算",
+          "hint": "每一步都依運算順序完成。",
+          "display_text": "偵測學習斷點：乘方混合運算｜提示：每一步都依運算順序完成。"
         }
       }
     },
@@ -329,6 +396,43 @@
             "前後變化比較（先釐清基準）",
             "分配比較（同一份量再比較）"
           ]
+        },
+        "F11": {
+          "family_id": "F11",
+          "family_name_en": "power_same_base_multiply",
+          "label": "同底數相乘與指數相加",
+          "subskills": [
+            "same_base_multiplication_rule",
+            "power_building_from_repetition"
+          ],
+          "subskill_labels": [
+            "同底數相乘（指數相加）",
+            "重複乘法轉次方"
+          ]
+        },
+        "F12": {
+          "family_id": "F12",
+          "family_name_en": "power_of_power",
+          "label": "冪的冪",
+          "subskills": [
+            "power_of_power_rule"
+          ],
+          "subskill_labels": [
+            "冪的冪（指數相乘）"
+          ]
+        },
+        "F13": {
+          "family_id": "F13",
+          "family_name_en": "product_power_distribution",
+          "label": "積的冪",
+          "subskills": [
+            "product_power_distribution",
+            "fraction_power_distribution"
+          ],
+          "subskill_labels": [
+            "積的冪分配",
+            "分數積的冪分配"
+          ]
         }
       },
       "subskills": {
@@ -436,6 +540,31 @@
           "label": "分配比較（同一份量再比較）",
           "hint": "先確認比較的是不是同一份量",
           "display_text": "偵測學習斷點：分配比較（同一份量再比較）｜提示：先確認比較的是不是同一份量"
+        },
+        "same_base_multiplication_rule": {
+          "label": "同底數相乘（指數相加）",
+          "hint": "同底數相乘，指數直接相加。",
+          "display_text": "偵測學習斷點：同底數相乘（指數相加）｜提示：同底數相乘，指數直接相加。"
+        },
+        "power_building_from_repetition": {
+          "label": "重複乘法轉次方",
+          "hint": "觀察相同因數重複幾次。",
+          "display_text": "偵測學習斷點：重複乘法轉次方｜提示：觀察相同因數重複幾次。"
+        },
+        "power_of_power_rule": {
+          "label": "冪的冪（指數相乘）",
+          "hint": "外次方乘上內次方。",
+          "display_text": "偵測學習斷點：冪的冪（指數相乘）｜提示：外次方乘上內次方。"
+        },
+        "product_power_distribution": {
+          "label": "積的冪分配",
+          "hint": "把次方分配到每個因數。",
+          "display_text": "偵測學習斷點：積的冪分配｜提示：把次方分配到每個因數。"
+        },
+        "fraction_power_distribution": {
+          "label": "分數積的冪分配",
+          "hint": "分子分母都要同次方。",
+          "display_text": "偵測學習斷點：分數積的冪分配｜提示：分子分母都要同次方。"
         }
       }
     },
@@ -876,7 +1005,7 @@
           ],
           "subskill_labels": [
             "分式根式（分子分母分開看）",
-            "結構辨識（先看長相再下手）"
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
           ]
         },
         "p4b": {
@@ -902,7 +1031,7 @@
           ],
           "subskill_labels": [
             "分式根式（分子分母分開看）",
-            "結構辨識（先看長相再下手）"
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
           ]
         },
         "p4d": {
@@ -962,7 +1091,7 @@
             "同類項合併（長得一樣才能加減）",
             "根式乘法（根號內外分清楚）",
             "根式除法（先約再除）",
-            "結構辨識（先看長相再下手）"
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
           ]
         },
         "p7": {
@@ -1026,9 +1155,9 @@
           "display_text": "偵測學習斷點：共軛有理化（配對消根號）｜提示：看清共軛式，分母才能順利有理化"
         },
         "structure_isomorphism": {
-          "label": "結構辨識（先看長相再下手）",
-          "hint": "題目變形了，規則通常沒變",
-          "display_text": "偵測學習斷點：結構辨識（先看長相再下手）｜提示：題目變形了，規則通常沒變"
+          "label": "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+          "hint": "\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a",
+          "display_text": "偵測學習斷點：\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09｜提示：\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a"
         },
         "mixed_number_radical": {
           "label": "帶分數根式（整數部分別漏掉）",
@@ -1048,7 +1177,7 @@
             "coefficient_sign_handling"
           ],
           "subskill_labels": [
-            "係數與符號處理（先判斷正負）"
+            "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09"
           ]
         },
         "L2": {
@@ -1059,7 +1188,7 @@
             "like_term_combination"
           ],
           "subskill_labels": [
-            "同類項合併（變數相同才能併）"
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
           ]
         },
         "L3": {
@@ -1071,8 +1200,8 @@
             "like_term_combination"
           ],
           "subskill_labels": [
-            "代數項與常數分組（分開整理）",
-            "同類項合併（變數相同才能併）"
+            "\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09",
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
           ]
         },
         "L4": {
@@ -1083,7 +1212,7 @@
             "outer_minus_scope"
           ],
           "subskill_labels": [
-            "外層負號作用範圍（整包變號）"
+            "\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09"
           ]
         },
         "L5": {
@@ -1095,8 +1224,8 @@
             "coefficient_sign_handling"
           ],
           "subskill_labels": [
-            "單項分配到括號（每項都乘到）",
-            "係數與符號處理（先判斷正負）"
+            "\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09",
+            "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09"
           ]
         },
         "L6": {
@@ -1109,9 +1238,9 @@
             "like_term_combination"
           ],
           "subskill_labels": [
-            "巢狀括號範圍（由內往外）",
-            "結構辨識（先看長相再下手）",
-            "同類項合併（變數相同才能併）"
+            "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09",
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
           ]
         },
         "L7": {
@@ -1123,51 +1252,51 @@
             "nested_bracket_scope"
           ],
           "subskill_labels": [
-            "分式代數式化簡（先統一分母）",
-            "巢狀括號範圍（由內往外）"
+            "\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09",
+            "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09"
           ]
         }
       },
       "subskills": {
         "coefficient_sign_handling": {
-          "label": "係數與符號處理（先判斷正負）",
-          "hint": "先判斷係數正負，再做乘除或合併",
-          "display_text": "偵測學習斷點：係數與符號處理（先判斷正負）｜提示：先判斷係數正負，再做乘除或合併"
+          "label": "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09",
+          "hint": "\\u5148\\u5224\\u65b7\\u4fc2\\u6578\\u6b63\\u8ca0\\uff0c\\u518d\\u505a\\u4e58\\u9664\\u6216\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09｜提示：\\u5148\\u5224\\u65b7\\u4fc2\\u6578\\u6b63\\u8ca0\\uff0c\\u518d\\u505a\\u4e58\\u9664\\u6216\\u5408\\u4f75"
         },
         "like_term_combination": {
-          "label": "同類項合併（變數相同才能併）",
-          "hint": "確認變數與次方相同再合併",
-          "display_text": "偵測學習斷點：同類項合併（變數相同才能併）｜提示：確認變數與次方相同再合併"
+          "label": "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09",
+          "hint": "\\u78ba\\u8a8d\\u8b8a\\u6578\\u8207\\u6b21\\u65b9\\u76f8\\u540c\\u518d\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09｜提示：\\u78ba\\u8a8d\\u8b8a\\u6578\\u8207\\u6b21\\u65b9\\u76f8\\u540c\\u518d\\u5408\\u4f75"
         },
         "term_collection_with_constants": {
-          "label": "代數項與常數分組（分開整理）",
-          "hint": "先分代數項與常數項，再各自合併",
-          "display_text": "偵測學習斷點：代數項與常數分組（分開整理）｜提示：先分代數項與常數項，再各自合併"
+          "label": "\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09",
+          "hint": "\\u5148\\u5206\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u9805\\uff0c\\u518d\\u5404\\u81ea\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09｜提示：\\u5148\\u5206\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u9805\\uff0c\\u518d\\u5404\\u81ea\\u5408\\u4f75"
         },
         "outer_minus_scope": {
-          "label": "外層負號作用範圍（整包變號）",
-          "hint": "負號在括號前，括號內每一項都要變號",
-          "display_text": "偵測學習斷點：外層負號作用範圍（整包變號）｜提示：負號在括號前，括號內每一項都要變號"
+          "label": "\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09",
+          "hint": "\\u8ca0\\u865f\\u5728\\u62ec\\u865f\\u524d\\uff0c\\u62ec\\u865f\\u5167\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u8b8a\\u865f",
+          "display_text": "偵測學習斷點：\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09｜提示：\\u8ca0\\u865f\\u5728\\u62ec\\u865f\\u524d\\uff0c\\u62ec\\u865f\\u5167\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u8b8a\\u865f"
         },
         "monomial_distribution": {
-          "label": "單項分配到括號（每項都乘到）",
-          "hint": "分配時每一項都要乘上係數",
-          "display_text": "偵測學習斷點：單項分配到括號（每項都乘到）｜提示：分配時每一項都要乘上係數"
+          "label": "\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09",
+          "hint": "\\u5206\\u914d\\u6642\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u4e58\\u4e0a\\u4fc2\\u6578",
+          "display_text": "偵測學習斷點：\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09｜提示：\\u5206\\u914d\\u6642\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u4e58\\u4e0a\\u4fc2\\u6578"
         },
         "nested_bracket_scope": {
-          "label": "巢狀括號範圍（由內往外）",
-          "hint": "先算最內層括號，再逐層展開",
-          "display_text": "偵測學習斷點：巢狀括號範圍（由內往外）｜提示：先算最內層括號，再逐層展開"
+          "label": "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09",
+          "hint": "\\u5148\\u7b97\\u6700\\u5167\\u5c64\\u62ec\\u865f\\uff0c\\u518d\\u9010\\u5c64\\u5c55\\u958b",
+          "display_text": "偵測學習斷點：\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09｜提示：\\u5148\\u7b97\\u6700\\u5167\\u5c64\\u62ec\\u865f\\uff0c\\u518d\\u9010\\u5c64\\u5c55\\u958b"
         },
         "structure_isomorphism": {
-          "label": "結構辨識（先看長相再下手）",
-          "hint": "題目變形了，規則通常沒變",
-          "display_text": "偵測學習斷點：結構辨識（先看長相再下手）｜提示：題目變形了，規則通常沒變"
+          "label": "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+          "hint": "\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a",
+          "display_text": "偵測學習斷點：\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09｜提示：\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a"
         },
         "fractional_expression_simplification": {
-          "label": "分式代數式化簡（先統一分母）",
-          "hint": "先處理分母，再合併同類項",
-          "display_text": "偵測學習斷點：分式代數式化簡（先統一分母）｜提示：先處理分母，再合併同類項"
+          "label": "\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09",
+          "hint": "\\u5148\\u8655\\u7406\\u5206\\u6bcd\\uff0c\\u518d\\u5408\\u4f75\\u540c\\u985e\\u9805",
+          "display_text": "偵測學習斷點：\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09｜提示：\\u5148\\u8655\\u7406\\u5206\\u6bcd\\uff0c\\u518d\\u5408\\u4f75\\u540c\\u985e\\u9805"
         }
       }
     }

@@ -17,6 +17,7 @@ _MAX_ANSWER_LEN = 80
 _MAX_SUBSKILLS = 6
 _MAX_RECENT_RESULTS = 4
 _ROUTING_STATE_ALLOWLIST = {
+    "mode",
     "current_skill",
     "current_mode",
     "in_remediation",
@@ -81,7 +82,7 @@ def _slim_routing_state(raw: object) -> dict:
         if key not in raw:
             continue
         value = raw.get(key)
-        if key in {"current_skill", "origin_skill", "remediation_skill", "remediation_subskill", "origin_family", "scenario_stage", "current_mode", "milestone_event"}:
+        if key in {"mode", "current_skill", "origin_skill", "remediation_skill", "remediation_subskill", "origin_family", "scenario_stage", "current_mode", "milestone_event"}:
             slim[key] = _trim_text(value, max_len=96)
         elif key in {"in_remediation", "last_result", "return_to_mainline", "demo_start_forced", "demo_first_remediation_forced", "demo_first_return_forced", "milestone_flash_available", "unit_completed", "local_remediation_completed", "assessment_completed"}:
             slim[key] = bool(value)
