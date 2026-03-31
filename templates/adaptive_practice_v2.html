@@ -79,6 +79,10 @@
     .subskills span { padding:6px 10px; border-radius:999px; font-size:13px; background:#edf5ff; color:#245ea5; }
     .answer-box { display:grid; grid-template-columns:1fr 150px; gap:10px; margin-bottom:10px; }
     .answer-box input, .assistant-input input { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:16px; background:#fff; font-family:inherit; }
+    .answer-format-box { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:4px 0 12px; padding:10px 12px; border:1px solid #dce8f7; border-radius:12px; background:#f8fbff; color:#355072; font-size:13px; line-height:1.5; }
+    .answer-format-badge { display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; border:1px solid #c6dcfb; background:#eef5ff; color:#1f5da6; font-weight:700; font-size:12px; }
+    .answer-format-example { color:#4f6685; }
+    .answer-format-hint { margin-top:8px; padding:10px; background:#fff7e6; border-left:4px solid #faad14; font-size:13px; border-radius:8px; }
     .controls, .guide-buttons { display:flex; flex-wrap:wrap; gap:8px; }
     .canvas-tools { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; overflow-x:auto; overflow-y:hidden; padding-bottom:2px; }
     button { border:0; border-radius:12px; padding:10px 16px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
@@ -157,6 +161,34 @@
     .summary-card p { margin:6px 0; line-height:1.7; }
     .summary-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .summary-badges span { padding:6px 10px; border-radius:999px; background:#eef4fb; color:#31557d; font-size:13px; }
+    .diagnostic-report { display:none; margin-top:12px; }
+    .diagnostic-report.show { display:block; }
+    .diagnostic-dashboard { display:grid; gap:12px; }
+    .diag-card { background:#f8fafc; border-radius:16px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid #e2e8f0; }
+    .diag-summary { text-align:center; background:linear-gradient(135deg, #2f80ed, #27c3f3); color:#fff; border:0; }
+    .diag-summary h3 { margin:0 0 10px; font-size:20px; }
+    .diag-score { font-size:30px; font-weight:800; line-height:1.2; }
+    .diag-meta { margin-top:6px; font-size:14px; opacity:.95; }
+    .diag-card h4 { margin:0 0 10px; font-size:16px; color:#1e3a5f; }
+    .diag-bar-row { display:flex; align-items:flex-start; gap:10px; margin:10px 0; }
+    .diag-bar-row .label { width:210px; font-weight:700; color:#243b56; font-size:13px; line-height:1.4; }
+    .diag-bar-row .label small { display:block; font-weight:500; color:#5a6f88; font-size:11px; margin-top:2px; }
+    .diag-bar-row .pct { width:48px; text-align:right; color:#445a74; font-size:13px; }
+    .diag-bar { flex:1; height:10px; background:#d6dde6; border-radius:6px; overflow:hidden; }
+    .diag-fill { height:10px; border-radius:6px; }
+    .diag-breakpoint { background:#ffe9ea; border-left:6px solid #e11d48; }
+    .diag-breakpoint .big { font-size:28px; font-weight:800; color:#b91c1c; margin:6px 0 2px; }
+    .diag-flex { display:flex; gap:16px; }
+    .diag-col { flex:1; }
+    .diag-col p { margin:6px 0; color:#294460; font-size:14px; }
+    .diag-recommend { background:#e6f7ff; }
+    .diag-recommend p { margin:8px 0; color:#0f4c75; font-size:14px; }
+    .diag-trajectory { background:#f0f5ff; }
+    .diag-trajectory-line { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+    .traj-step { margin:0 2px; font-weight:700; color:#1f3f63; background:#fff; border:1px solid #d6e3f8; border-radius:10px; padding:6px 8px; min-width:72px; text-align:center; }
+    .traj-step small { display:block; margin-top:2px; font-size:10px; color:#666; font-weight:600; }
+    .arrow { color:#98a6ba; font-weight:700; }
+    @media (max-width:760px) { .diag-flex { flex-direction:column; } .diag-bar-row .label { width:140px; } }
     @media (max-width:1080px) { .top-grid, .bottom-grid { grid-template-columns:1fr; } .assistant-shell { position:static; } }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
   </style>
@@ -234,6 +266,7 @@
             <p id="summaryMessage"></p>
             <p id="summaryAction"></p>
             <div class="summary-badges" id="summaryBadges"></div>
+            <div class="diagnostic-report" id="diagnosticReportBox"></div>
           </div>
           <div class="question-box">
             <div class="question-family" id="questionFamily">Family: -</div>
@@ -242,8 +275,13 @@
             <div class="subskills" id="subskillsBox"></div>
           </div>
           <div class="answer-box">
-            <input id="answerInput" type="text" placeholder="請輸入你的答案，例如：-5/3 或 12" disabled>
+            <input id="answerInput" type="text" placeholder="請輸入你的答案" disabled>
             <button class="primary" id="submitBtn" disabled>送出答案</button>
+          </div>
+          <div class="answer-format-box" id="answerFormatBox">
+            <span class="answer-format-badge">答案格式提示</span>
+            <span class="answer-format-hint" id="answerFormatHintText">請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。</span>
+            <span class="answer-format-example" id="answerFormatExampleText">範例：-9 或 3x+1+5/(3x)</span>
           </div>
           <div class="controls">
             <button class="primary" id="bootstrapBtn">開始診斷</button>
@@ -643,6 +681,148 @@
         F13: "複合圖形應用",
       },
     };
+    const ANSWER_FORMAT_HINT_BY_FAMILY_NAME = {
+      poly_div_monomial_qr: {
+        hint: "請用代數式作答，分母含變數時請加括號",
+        example: "3x+1+5/(3x)",
+        placeholder: "例如：3x+1+5/(3x)",
+      },
+      poly_div_poly_qr: {
+        hint: "請依系統要求輸入商與餘數",
+        example: "Q=x+2, R=3",
+        placeholder: "例如：Q=x+2, R=3",
+      },
+      poly_div_reverse: {
+        hint: "請直接輸入被除式",
+        example: "4x^2-8x-6",
+        placeholder: "例如：4x^2-8x-6",
+      },
+      int_power_sign_parentheses: {
+        hint: "請直接輸入數值答案",
+        example: "-9",
+        placeholder: "例如：-9",
+      },
+      int_power_mixed_evaluation: {
+        hint: "請直接輸入數值答案",
+        example: "-9",
+        placeholder: "例如：-9",
+      },
+      power_same_base_multiply: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+      power_of_power: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+      product_power_distribution: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+    };
+    const ANSWER_FORMAT_HINT_BY_SKILL_FAMILY_ID = {
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F8": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_monomial_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_poly_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_reverse,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_sign_parentheses,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_mixed_evaluation,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F11": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_same_base_multiply,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F12": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_of_power,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F13": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.product_power_distribution,
+    };
+    const DEFAULT_ANSWER_FORMAT_HINT = {
+      hint: "請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。",
+      example: "-9 或 3x+1+5/(3x)",
+      placeholder: "請輸入你的答案，例如：-5/3 或 12",
+    };
+    const DEFAULT_HINT_BY_SKILL_TYPE = {
+      polynomial: {
+        hint: "請用多項式作答，注意同類項整理與正負號。",
+        example: "2x^2 + 3x + 5",
+        placeholder: "請輸入你的答案，例如: 2x^2 + 3x + 5",
+      },
+      fraction: {
+        hint: "請用分數格式作答，可用 / 表示分數。",
+        example: "3/4 或 -5/2",
+        placeholder: "例如: 3/4 或 -5/2",
+      },
+      integer: {
+        hint: "請直接輸入整數答案。",
+        example: "-12 或 25",
+        placeholder: "例如: -12 或 25",
+      },
+    };
+    function getAnswerFormatHint(family) {
+      const fid = String(family || "").trim();
+      if (fid === "F8") {
+        return "請以『商與餘數』表示，例如：3x+2 ... -3";
+      }
+      if (fid.startsWith("F")) {
+        return "請輸入多項式，例如：2x^2 + 3x + 5";
+      }
+      if (fid.startsWith("I")) {
+        return "請輸入整數，例如：-5 或 12";
+      }
+      return "";
+    }
+    function inferSkillTypeForHint(skillKey, familyId) {
+      const rawSkill = String(skillKey || "");
+      const rawFamily = String(familyId || "").trim();
+      if (rawSkill.includes("FourArithmeticOperationsOfPolynomial")) return "polynomial";
+      if (rawSkill.includes("FourArithmeticOperationsOfNumbers")) return "fraction";
+      if (rawSkill.includes("FourArithmeticOperationsOfIntegers")) return "integer";
+      if (rawSkill.includes("Radical")) return "radical";
+      if (rawFamily.startsWith("I")) return "integer";
+      if (rawFamily.startsWith("F")) return "polynomial";
+      return "generic";
+    }
+    function getAnswerPlaceholder(currentFamily, skillType, report) {
+      const family = String(currentFamily || "").trim();
+      const normalizedSkillType = String(
+        skillType
+        || report?.skill_type
+        || ""
+      ).trim().toLowerCase();
+
+      if (family === "F8" || family === "F9") {
+        return "請以『商與餘數』表示，例如：3x+2 ... -3";
+      }
+      if (normalizedSkillType === "polynomial") {
+        return "請輸入你的答案，例如：2x^2 + 3x + 5";
+      }
+      if (normalizedSkillType === "fraction") {
+        return "請輸入你的答案，例如：3/4 或 -5/2";
+      }
+      if (normalizedSkillType === "integer") {
+        return "請輸入你的答案，例如：-12 或 25";
+      }
+      if (normalizedSkillType === "radical") {
+        return "請輸入你的答案，例如：2√3 + √5";
+      }
+      return "請輸入你的答案";
+    }
+    function resolveAnswerFormatHint(skillKey, familyId, familyNameEn) {
+      const byName = ANSWER_FORMAT_HINT_BY_FAMILY_NAME[String(familyNameEn || "").trim()];
+      if (byName) return byName;
+      const composite = `${String(skillKey || "").trim()}:${String(familyId || "").trim()}`;
+      const exact = ANSWER_FORMAT_HINT_BY_SKILL_FAMILY_ID[composite];
+      if (exact) return exact;
+      const skillType = inferSkillTypeForHint(skillKey, familyId);
+      return DEFAULT_HINT_BY_SKILL_TYPE[skillType] || DEFAULT_ANSWER_FORMAT_HINT;
+    }
+    function updateAnswerFormatHint(skillKey, familyId, familyNameEn) {
+      const cfg = resolveAnswerFormatHint(skillKey, familyId, familyNameEn);
+      const familyHint = getAnswerFormatHint(familyId);
+      const skillType = inferSkillTypeForHint(skillKey, familyId);
+      setText("answerFormatHintText", familyHint || cfg.hint || DEFAULT_ANSWER_FORMAT_HINT.hint);
+      setText("answerFormatExampleText", `範例：${cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
+      if (answerInput) {
+        answerInput.placeholder = getAnswerPlaceholder(familyId, skillType, null);
+      }
+    }
     function getSubskillLabel(subskillKey) {
       if (!subskillKey) return "";
       const raw = String(subskillKey).trim();
@@ -1298,6 +1478,7 @@
       });
       updateOverview(response, q);
       updateAdaptiveStatePanel();
+      updateAnswerFormatHint(state.mainSkill || skillId, state.currentFamilyId, q.family_name || state.familyNameEn);
       const questionEl = document.getElementById("questionText");
       questionEl.textContent = state.currentQuestionText || "(no question)";
       setText("questionContext", state.currentContext);
@@ -1331,6 +1512,141 @@
       }
       setStatus(`已載入 Step ${response.step_number}，模式：${toLearningModeLabel(state.learningMode)}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
       typesetMath(questionEl);
+    }
+
+    function renderDiagnosticReport(report) {
+      const box = document.getElementById("diagnosticReportBox");
+      if (!box) return;
+      if (!report || typeof report !== "object") {
+        box.className = "diagnostic-report";
+        box.innerHTML = "";
+        return;
+      }
+      const familyResults = Array.isArray(report.family_results) ? report.family_results : [];
+      const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+      const weaknesses = Array.isArray(report.weaknesses) ? report.weaknesses : [];
+      const nextStepsRaw = Array.isArray(report.recommended_next_steps) ? report.recommended_next_steps : [];
+      const trajectory = Array.isArray(report.trajectory) ? report.trajectory : [];
+      const breakpointObj = (report.breakpoint && typeof report.breakpoint === "object") ? report.breakpoint : null;
+      const nextSteps = nextStepsRaw.map((step) => {
+        if (typeof step === "string") return step;
+        return String(step?.reason || step?.label_zh || step?.target_id || "").trim();
+      }).filter(Boolean);
+
+      const coreFamilyOrder = ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"];
+      const familyOrderMap = Object.fromEntries(coreFamilyOrder.map((fid, idx) => [fid, idx]));
+      const sortedFamilyResults = [...familyResults].sort((a, b) => {
+        const ai = familyOrderMap[String(a?.family_id || a?.family || "").trim()];
+        const bi = familyOrderMap[String(b?.family_id || b?.family || "").trim()];
+        const av = Number.isFinite(ai) ? ai : 999;
+        const bv = Number.isFinite(bi) ? bi : 999;
+        return av - bv;
+      });
+
+      const familyBars = sortedFamilyResults.slice(0, 10).map((row) => {
+        const familyCode = String(row?.family || row?.family_id || "-");
+        const family = escapeHtml(row?.label_zh || familyCode);
+        const desc = escapeHtml(row?.description_zh || "");
+        const accuracy = Number(row?.accuracy ?? 0);
+        const width = Math.max(0, Math.min(100, accuracy * 100));
+        const pct = `${Math.round(width)}%`;
+        const rawStatus = String(row?.status || "").trim();
+        let color = "#4CAF50";
+        if (rawStatus === "weak" || rawStatus === "breakpoint") color = "#ff4d4f";
+        else if (rawStatus === "incomplete") color = "#f0ad4e";
+        return `
+          <div class="diag-bar-row">
+            <span class="label">${family}${desc ? `<small>${desc}</small>` : ""}</span>
+            <div class="diag-bar">
+              <div class="diag-fill" style="width:${width}%; background:${color};"></div>
+            </div>
+            <span class="pct">${pct}</span>
+          </div>
+        `;
+      }).join("");
+
+      const reportScore = Number(report?.score);
+      const aprMastery = Number(report?.apr_mastery);
+      const skillType = String(report?.skill_type || "-");
+      const failedFamily = String(report?.failed_family || breakpointObj?.family || "-");
+      const breakpointReason = String(breakpointObj?.reason || "-");
+      const breakpointAccuracy = Number(breakpointObj?.accuracy ?? 0);
+      const breakpointLabel = String(breakpointObj?.label_zh || failedFamily);
+      const breakpointDesc = String(breakpointObj?.description_zh || "");
+      const breakpointCommonError = String(breakpointObj?.common_error_zh || breakpointReason);
+      const breakpointPrereq = Array.isArray(breakpointObj?.prerequisite_labels_zh) ? breakpointObj.prerequisite_labels_zh : [];
+      const breakpointPrereqText = breakpointPrereq.length ? breakpointPrereq.join("、") : "（無）";
+      const strengthsDisplay = Array.isArray(report?.strengths_zh) && report.strengths_zh.length ? report.strengths_zh : strengths;
+      const weaknessesDisplay = Array.isArray(report?.weaknesses_zh) && report.weaknesses_zh.length ? report.weaknesses_zh : weaknesses;
+      const strengthsHtml = (strengthsDisplay.length ? strengthsDisplay : ["-"]).map((s) => `<p>${escapeHtml(String(s))}</p>`).join("");
+      const weaknessesHtml = (weaknessesDisplay.length ? weaknessesDisplay : ["-"]).map((w) => `<p>${escapeHtml(String(w))}</p>`).join("");
+      const nextStepsHtml = (nextSteps.length ? nextSteps : ["建議回顧基礎概念"]).map((text, idx) => `<p>${idx + 1}. ${escapeHtml(String(text))}</p>`).join("");
+      const actionLabel = { stay: "", remediate: "↘補救", return: "↗返回" };
+      const trajectoryHtml = trajectory.map((step, i) => {
+        const icon = step?.is_correct ? "✔" : "❌";
+        const label = actionLabel[String(step?.action || "stay")] || "";
+        const family = escapeHtml(String(step?.family || "-"));
+        const arrow = i < trajectory.length - 1 ? `<span class="arrow">→</span>` : "";
+        return `
+          <span class="traj-step">
+            ${family} ${icon}
+            <small>${escapeHtml(label)}</small>
+          </span>
+          ${arrow}
+        `;
+      }).join("");
+
+      box.innerHTML = `
+        <div class="diagnostic-dashboard">
+          <div class="diag-card diag-summary">
+            <h3>學習評估總覽</h3>
+            <div class="diag-score">Score: ${Number.isFinite(reportScore) ? reportScore.toFixed(0) : "-"}</div>
+            <div class="diag-meta">APR: ${Number.isFinite(aprMastery) ? aprMastery.toFixed(2) : "-"}</div>
+            <div class="diag-meta">Skill: ${escapeHtml(skillType)}</div>
+          </div>
+
+          <div class="diag-card">
+            <h4>技能掌握度</h4>
+            ${familyBars}
+          </div>
+
+          ${breakpointObj ? `
+            <div class="diag-card diag-breakpoint">
+              <h4>學習卡點</h4>
+              <p class="big">${escapeHtml(breakpointLabel)}</p>
+              <p>你目前需要學會：${escapeHtml(breakpointDesc)}</p>
+              <p>正確率：${Number.isFinite(breakpointAccuracy) ? Math.round(breakpointAccuracy * 100) : 0}%</p>
+              <p>常見問題：${escapeHtml(breakpointCommonError)}</p>
+              <p>建議先補強：${escapeHtml(breakpointPrereqText)}</p>
+              <p>此技能為目前主要學習瓶頸</p>
+            </div>
+          ` : ""}
+
+          <div class="diag-card diag-flex">
+            <div class="diag-col">
+              <h4>強項</h4>
+              ${strengthsHtml}
+            </div>
+            <div class="diag-col">
+              <h4>弱項</h4>
+              ${weaknessesHtml}
+            </div>
+          </div>
+
+          ${trajectory.length ? `
+            <div class="diag-card diag-trajectory">
+              <h4>學習歷程（系統決策）</h4>
+              <div class="diag-trajectory-line">${trajectoryHtml}</div>
+            </div>
+          ` : ""}
+
+          <div class="diag-card diag-recommend">
+            <h4>建議學習路徑</h4>
+            ${nextStepsHtml}
+          </div>
+        </div>
+      `;
+      box.className = "diagnostic-report show";
     }
 
     function renderSummary(summary, responseMeta = {}) {
@@ -1457,6 +1773,7 @@
         badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
       }
       document.getElementById("summaryBadges").innerHTML = badges.map((item) => `<span>${item}</span>`).join("");
+      renderDiagnosticReport(responseMeta?.diagnostic_report || summary?.diagnostic_report || null);
       setFinishedState(true);
       setText("questionText", passed ? "你已完成本單元自適應診斷。" : "本次診斷已完成，請先看補強建議。");
       setText("questionContext", "");
@@ -1545,6 +1862,9 @@
             return;
           }
         renderQuestion(data);
+        if (data.answer_feedback) {
+          setStatus(String(data.answer_feedback));
+        }
         if (data.ppo_strategy === 3) {
           updateRagScopeBadge("review");
           await fetchHint();

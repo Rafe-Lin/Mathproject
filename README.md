@@ -236,3 +236,17 @@ By default, an episode is marked successful when:
 * the student has answered at least 2 consecutive polynomial questions correctly
 
 If success is not reached, the episode stops at `--max-steps`.
+
+## 如何使用 Codex（最小流程）
+
+1. 先 `audit`：先做一致性檢查，找斷點與風險，不先大改。
+2. 再 `patch`：每次只做一件事，採最小修改面。
+3. 每次修改後做最小驗證：確認影響範圍、關鍵輸出與 runtime 安全。
+4. 全程遵守 [AGENTS.md](AGENTS.md)。
+
+建議搭配 `docs/codex_prompts/` 的模板使用：
+- `audit_prompt.md`
+- `patch_prompt.md`
+- `debug_prompt.md`
+- `test_prompt.md`
+- `safe_patch_prompt.md`

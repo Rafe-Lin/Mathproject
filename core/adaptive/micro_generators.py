@@ -1003,6 +1003,33 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
     def signed_const(num: int) -> str:
         return f"+ {abs(num)}" if num >= 0 else f"- {abs(num)}"
 
+    def format_term(coef: int, variable: str = "x") -> str:
+        if coef == 1:
+            return f"{variable}"
+        if coef == -1:
+            return f"-{variable}"
+        return f"{coef}{variable}"
+
+    def format_expression(terms: list[tuple[int, str]]) -> str:
+        expr = ""
+        for coef, term_str in terms:
+            clean_term = str(term_str or "").strip()
+            if not clean_term:
+                continue
+            clean_term = clean_term.replace("+-", "-").replace("+ -", "- ").strip()
+            if coef >= 0:
+                if expr:
+                    expr += " + "
+                expr += clean_term.lstrip("+").strip()
+            else:
+                if expr:
+                    expr += " - "
+                    expr += clean_term.replace("-", "", 1).strip() if clean_term.startswith("-") else clean_term
+                else:
+                    expr += "-"
+                    expr += clean_term.replace("-", "", 1).strip() if clean_term.startswith("-") else clean_term
+        return expr or "0"
+
     if fid == "F1":
         a, c = [nz(-8, 8) for _ in range(2)]
         b, d = [random.randint(-8, 8) for _ in range(2)]
@@ -1131,7 +1158,13 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
     elif fid == "F11":
         a, b, c = random.randint(1, 5), random.randint(1, 5), random.randint(-5, 5)
         expr = expand((x + a) ** 2 + (x + b) * (x - b) + c * x)
-        q = f"請化簡：$(x + {a})^2 + (x + {b})(x - {b}) + {c}x$"
+        linear_term = format_term(c, "x")
+        display_expr = format_expression([
+            (1, f"(x + {a})^2"),
+            (1, f"(x + {b})(x - {b})"),
+            (c, linear_term),
+        ])
+        q = f"請化簡：${display_expr}$"
     elif fid == "F12":
         w, h = random.randint(2, 8), random.randint(2, 8)
         expr = expand((x + w) * (x + h))

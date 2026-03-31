@@ -145,6 +145,7 @@ def _build_payload(records: list[dict[str, Any]], template_map: dict[str, dict[s
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
+    # Keep UTF-8 + ensure_ascii=False so Chinese labels/hints remain human-readable.
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as fh:
         json.dump(payload, fh, ensure_ascii=False, indent=2)
@@ -152,6 +153,7 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def main() -> None:
+    # Pipeline: docs/*/skill_breakpoint_catalog.csv -> configs/skill_breakpoint_*.json
     records = _read_csv_records()
     template_map = _load_template_subskill_map()
     catalog_json, ui_map_json = _build_payload(records, template_map)

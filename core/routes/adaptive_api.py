@@ -6,7 +6,7 @@ import json
 from flask import jsonify, request, session
 from flask_login import current_user, login_required
 
-from core.adaptive.judge import judge_answer
+from core.adaptive.judge import judge_answer_with_feedback
 from . import practice_bp
 from core.adaptive.session_engine import get_rag_hint, submit_and_get_next
 
@@ -160,12 +160,20 @@ def adaptive_submit_and_get_next():
             payload["last_expected_answer"] = runtime.get("correct_answer", payload.get("last_expected_answer"))
             payload["last_question_text"] = runtime.get("question_text", payload.get("last_question_text"))
             if "user_answer" in payload and "is_correct" not in payload:
-                payload["is_correct"] = judge_answer(payload.get("user_answer"), runtime.get("correct_answer"))
+                judged = judge_answer_with_feedback(
+                    payload.get("user_answer"),
+                    runtime.get("correct_answer"),
+                    question_text=runtime.get("question_text", ""),
+                )
+                payload["is_correct"] = bool(judged.get("is_correct", False))
+                payload["answer_feedback"] = str(judged.get("feedback") or "")
             payload["last_user_answer"] = payload.get("user_answer", payload.get("last_user_answer"))
         else:
             payload["routing_state"] = _slim_routing_state(payload.get("routing_state"))
 
         response = submit_and_get_next(payload)
+        if payload.get("answer_feedback"):
+            response["answer_feedback"] = str(payload.get("answer_feedback"))
         next_session_id = response["session_id"]
         if response.get("completed"):
             runtime_store.pop(next_session_id, None)

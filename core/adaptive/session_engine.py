@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import importlib
@@ -6,6 +6,7 @@ import importlib.util
 import json
 import logging
 import os
+import re
 import sys
 import time
 import uuid
@@ -47,6 +48,7 @@ from .remediation_retriever import retrieve_remediation_candidates
 from .state_builder import build_agent_state
 from .subskill_ontology import normalize_runtime_subskill
 from .subskill_selector import load_family_subskill_map, select_subskill
+from .skill_diagnostic_labels import get_family_diagnostic_info
 from .textbook_progression import (
     get_completion_gate,
     get_next_family,
@@ -229,6 +231,7 @@ def _append_routing_timeline(
     *,
     step: int,
     current_skill: str,
+    current_family: str,
     selected_agent_skill: str | None,
     is_correct: bool | None,
     fail_streak: int,
@@ -247,6 +250,7 @@ def _append_routing_timeline(
         {
             "step": int(step),
             "current_skill": str(current_skill),
+            "current_family": str(current_family or ""),
             "selected_agent_skill": selected_agent_skill,
             "is_correct": is_correct,
             "fail_streak": int(fail_streak),
@@ -259,6 +263,7 @@ def _append_routing_timeline(
             "remediation_step_count": int(remediation_step_count),
             "bridge_active": bool(bridge_active),
             "final_route_reward": float(final_route_reward),
+            "timestamp": float(time.time()),
         }
     )
     routing_session["routing_timeline"] = timeline
@@ -642,7 +647,7 @@ def _looks_like_stub_question(payload: dict[str, Any] | None) -> bool:
 
 
 def _build_fallback_question(entry: CatalogEntry) -> dict[str, Any]:
-    question_text = f"請完成 {entry.family_id} 題型：{entry.family_name}"
+    question_text = f"請作答：{entry.family_id} {entry.family_name}"
     hint = "、".join(entry.subskill_nodes[:3])
     answer = f"{entry.family_id}_fallback"
     return {
@@ -651,7 +656,7 @@ def _build_fallback_question(entry: CatalogEntry) -> dict[str, Any]:
         "latex": question_text,
         "answer": answer,
         "correct_answer": answer,
-        "context_string": f"本題聚焦：{hint}",
+        "context_string": f"提示子技能：{hint}",
         "render_mode": "text",
     }
 
@@ -851,23 +856,23 @@ def _compute_frustration(previous_log: AdaptiveLearningLog | None, is_correct: b
 def _build_hint_html(nodes: list[str]) -> str:
     label_map = {
         "sign_handling": "正負號判讀",
-        "add_sub": "整數加減",
-        "mul_div": "整數乘除",
-        "mixed_ops": "四則混合運算",
+        "add_sub": "加減運算",
+        "mul_div": "乘除運算",
+        "mixed_ops": "混合運算",
         "absolute_value": "絕對值",
-        "parentheses": "括號運算",
-        "divide_terms": "分項整理",
-        "conjugate_rationalize": "分母有理化",
+        "parentheses": "括號處理",
+        "divide_terms": "逐項相除",
+        "conjugate_rationalize": "共軛有理化",
     }
     labels = [label_map.get(node, node.replace("_", " ")) for node in nodes]
     chips = "".join(f"<li>{label}</li>" for label in labels)
-    focus = "、".join(labels[:2]) if labels else "目前這一題"
+    focus = "、".join(labels[:2]) if labels else "核心子技能"
     return (
         "<div class='adaptive-hint'>"
-        f"<p><strong>系統提醒：</strong>你現在比較需要加強的是「{focus}」。</p>"
-        "<p>先不要急著算，先看清楚題目裡的數字、正負號和運算順序。</p>"
+        f"<p><strong>作答提示：</strong>先聚焦 {focus}，再逐步運算。</p>"
+        "<p>先確認符號與括號範圍，再處理乘除與加減順序，可降低失誤率。</p>"
         f"<ul>{chips}</ul>"
-        "<p>建議先把第一步寫出來，再決定要先算哪一部分。</p>"
+        "<p>若仍不穩定，建議先回到對應基礎子技能練習再回主線。</p>"
         "</div>"
     )
 
@@ -1044,7 +1049,7 @@ def _build_summary(
     standardized_score: float | None = None
     if (
         normalized_mode == "assessment"
-        and str(system_skill_id).strip() == "jh_數學2上_FourArithmeticOperationsOfPolynomial"
+        and str(system_skill_id).strip() == "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial"
     ):
         family_perf = stats.get("family_performance") if isinstance(stats, dict) else None
         if not isinstance(family_perf, dict):
@@ -1089,6 +1094,334 @@ def _build_summary(
         "visited_families": unique_families,
         "standardized_score": standardized_score,
         "standardized_score_percent": standardized_score,
+    }
+
+
+def _infer_skill_type(skill_id: str) -> str:
+    text = str(skill_id or "")
+    if "Polynomial" in text:
+        return "polynomial"
+    if "Radical" in text:
+        return "radical"
+    if "Fraction" in text or "Numbers" in text:
+        return "fraction"
+    if "Integer" in text or "Integers" in text:
+        return "integer"
+    return "generic"
+
+
+def _build_generic_family_results(
+    *,
+    skill_type: str,
+    family_perf: dict[str, Any],
+    family_name_map: dict[str, str],
+    preferred_order: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for family_id in (preferred_order or []):
+        fid = str(family_id or "").strip()
+        if fid and fid not in seen:
+            seen.add(fid)
+            ordered.append(fid)
+    for family_id in family_perf.keys():
+        fid = str(family_id or "").strip()
+        if fid and fid not in seen:
+            seen.add(fid)
+            ordered.append(fid)
+
+    out: list[dict[str, Any]] = []
+    for family_id in ordered:
+        slot = family_perf.get(family_id) if isinstance(family_perf.get(family_id), dict) else {}
+        attempts = int(slot.get("attempts", 0) or 0)
+        correct = int(slot.get("correct", 0) or 0)
+        accuracy = max(0.0, min(1.0, (float(correct) / float(attempts)) if attempts > 0 else 0.0))
+        if accuracy >= 0.7:
+            status = "mastered"
+        elif accuracy < 0.4:
+            status = "weak"
+        else:
+            status = "incomplete"
+        out.append(
+            {
+                "family": family_id,
+                "family_id": family_id,
+                "family_name": family_name_map.get(family_id) or family_id,
+                "label_zh": get_family_diagnostic_info(skill_type, family_id).get("label_zh") or family_name_map.get(family_id) or family_id,
+                "accuracy": round(accuracy, 4),
+                "attempts": attempts,
+                "mastery": round(accuracy, 4),
+                "mastery_percent": round(accuracy * 100.0, 1),
+                "status": status,
+                "visited": bool(attempts > 0),
+                "completed": bool(correct > 0),
+            }
+        )
+    return out
+
+
+def _detect_breakpoint(
+    *,
+    family_results: list[dict[str, Any]],
+    preferred_family: str = "",
+    fallback_reason: str = "low_accuracy",
+    breakpoint_subskill: str = "",
+    family_subskills_map: dict[str, list[str]] | None = None,
+) -> dict[str, Any]:
+    family_subskills_map = dict(family_subskills_map or {})
+    preferred = str(preferred_family or "").strip()
+    picked: dict[str, Any] | None = None
+
+    if preferred:
+        for row in family_results:
+            if str(row.get("family_id") or "").strip() == preferred:
+                picked = row
+                break
+    if picked is None:
+        for row in family_results:
+            if str(row.get("status") or "") == "weak" and int(row.get("attempts", 0) or 0) > 0:
+                picked = row
+                break
+    if picked is None:
+        for row in family_results:
+            if str(row.get("status") or "") == "weak":
+                picked = row
+                break
+    if picked is None:
+        return {}
+
+    family_id = str(picked.get("family_id") or "").strip()
+    return {
+        "family": family_id,
+        "family_id": family_id,
+        "label_zh": picked.get("label_zh") or family_id,
+        "reason": str(fallback_reason or "low_accuracy"),
+        "accuracy": float(picked.get("accuracy", 0.0) or 0.0),
+        "attempts": int(picked.get("attempts", 0) or 0),
+        "related_subskills": [x for x in [breakpoint_subskill] if str(x).strip()] or list(
+            family_subskills_map.get(family_id) or []
+        )[:3],
+    }
+
+
+def _skill_specific_recommendations(
+    *,
+    skill_type: str,
+    breakpoint_obj: dict[str, Any],
+    remediation_trace_ids: list[str],
+) -> list[str]:
+    if remediation_trace_ids:
+        return [f"建議先補強：{fid}" for fid in remediation_trace_ids[:3]]
+
+    if not breakpoint_obj:
+        return ["建議回顧基礎概念"]
+
+    family_id = str(breakpoint_obj.get("family") or breakpoint_obj.get("family_id") or "").strip()
+    if skill_type == "polynomial":
+        if family_id in {"F11", "F12"}:
+            return [
+                "建議先補強整數乘方（I9 / I10）",
+                "再練習乘方法則與分配律",
+                "最後回到多項式運算",
+            ]
+        return ["建議先補強目前卡住的 family，再回主線"]
+    if skill_type == "fraction":
+        return [
+            "建議先練習約分與通分",
+            "加強分數乘除法",
+            "再回到進階分數運算",
+        ]
+    if skill_type == "integer":
+        return [
+            "建議加強正負號處理",
+            "熟練四則運算順序",
+            "避免符號錯誤",
+        ]
+    return ["建議回顧基礎概念"]
+
+
+def _build_learning_trajectory(timeline: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    rows = _normalize_routing_timeline(timeline)
+    out: list[dict[str, Any]] = []
+    for row in rows[-10:]:
+        action_raw = str(row.get("ppo_action") or "").strip().lower()
+        if action_raw == "remediate":
+            action = "remediate"
+        elif action_raw == "return":
+            action = "return"
+        else:
+            action = "stay"
+        family = str(row.get("current_family") or row.get("selected_family_id") or "").strip()
+        out.append(
+            {
+                "family": family or "-",
+                "skill": str(row.get("current_skill") or row.get("selected_agent_skill") or "").strip(),
+                "is_correct": bool(row.get("is_correct")) if row.get("is_correct") is not None else False,
+                "action": action,
+                "timestamp": float(row.get("timestamp", 0.0) or 0.0),
+            }
+        )
+    return out
+
+
+def _build_diagnostic_report(
+    *,
+    system_skill_id: str,
+    unit_name: str,
+    mode: str,
+    summary: dict[str, Any],
+    completion_stats: dict[str, Any] | None,
+    family_name_by_id: dict[str, str] | None = None,
+    family_subskills_by_id: dict[str, list[str]] | None = None,
+    breakpoint_family_id: str = "",
+    breakpoint_subskill: str = "",
+    breakpoint_concept: str = "",
+    remediation_trace: list[str] | None = None,
+    routing_timeline: list[dict[str, Any]] | None = None,
+) -> dict[str, Any] | None:
+    normalized_mode = _normalize_mode(mode)
+    if normalized_mode != "assessment":
+        return None
+
+    family_name_map = dict(family_name_by_id or {})
+    family_subskills_map = dict(family_subskills_by_id or {})
+    stats = dict(completion_stats or {})
+    family_perf = stats.get("family_performance") if isinstance(stats.get("family_performance"), dict) else {}
+    remediation_trace_ids = [str(x).strip() for x in (remediation_trace or []) if str(x).strip()]
+    skill_type = _infer_skill_type(system_skill_id)
+
+    preferred_order = [
+        str(x).strip()
+        for x in (stats.get("required_core_families") or [])
+        if str(x).strip()
+    ]
+    if not preferred_order and skill_type == "polynomial":
+        preferred_order = list(ASSESSMENT_POLY_STANDARDIZED_CORE_FAMILIES)
+
+    family_results = _build_generic_family_results(
+        skill_type=skill_type,
+        family_perf=family_perf,
+        family_name_map=family_name_map,
+        preferred_order=preferred_order,
+    )
+    for row in family_results:
+        family_id = str(row.get("family_id") or "").strip()
+        info = get_family_diagnostic_info(skill_type, family_id)
+        row["label_zh"] = info.get("label_zh") or row.get("label_zh") or family_id
+        row["description_zh"] = info.get("description_zh") or ""
+        row["common_error_zh"] = info.get("common_error_zh") or ""
+        row["prerequisite_ids"] = list(info.get("prerequisite_ids") or [])
+        row["prerequisite_labels_zh"] = list(info.get("prerequisite_labels_zh") or [])
+        row["subskills"] = list(info.get("subskills") or row.get("subskills") or [])
+        row["subskills_zh"] = list(info.get("subskills_zh") or [])
+
+    stop_reason = str(summary.get("assessment_stop_reason") or stats.get("assessment_stop_reason") or "").strip()
+    preferred_breakpoint = str(breakpoint_family_id or "").strip() or str(summary.get("display_family") or "").strip()
+    breakpoint_obj = _detect_breakpoint(
+        family_results=family_results,
+        preferred_family=preferred_breakpoint,
+        fallback_reason=breakpoint_concept or "low_accuracy",
+        breakpoint_subskill=breakpoint_subskill,
+        family_subskills_map=family_subskills_map,
+    )
+    bp_family = str(breakpoint_obj.get("family") or "").strip()
+    if bp_family and breakpoint_obj:
+        bp_info = get_family_diagnostic_info(skill_type, bp_family)
+        breakpoint_obj["label_zh"] = bp_info.get("label_zh") or breakpoint_obj.get("label_zh") or bp_family
+        breakpoint_obj["description_zh"] = bp_info.get("description_zh") or ""
+        breakpoint_obj["common_error_zh"] = bp_info.get("common_error_zh") or breakpoint_obj.get("reason") or ""
+        breakpoint_obj["prerequisite_ids"] = list(bp_info.get("prerequisite_ids") or [])
+        breakpoint_obj["prerequisite_labels_zh"] = list(bp_info.get("prerequisite_labels_zh") or [])
+        breakpoint_obj["subskills_zh"] = list(bp_info.get("subskills_zh") or [])
+        if not breakpoint_obj.get("related_subskills"):
+            breakpoint_obj["related_subskills"] = list(bp_info.get("subskills") or [])[:3]
+
+    # Upgrade weak status to breakpoint for the chosen row.
+    for row in family_results:
+        if bp_family and str(row.get("family_id") or "").strip() == bp_family and float(row.get("accuracy", 0.0) or 0.0) < 0.4:
+            row["status"] = "breakpoint"
+
+    strengths = [str(row.get("family_id")) for row in family_results if str(row.get("status")) == "mastered"]
+    weaknesses = [str(row.get("family_id")) for row in family_results if str(row.get("status")) != "mastered"]
+    strengths_zh = [str(row.get("label_zh") or row.get("family_id")) for row in family_results if str(row.get("status")) == "mastered"]
+    weaknesses_zh = [str(row.get("label_zh") or row.get("family_id")) for row in family_results if str(row.get("status")) != "mastered"]
+    completed_families = list(strengths)
+    failed_family = bp_family
+
+    final_apr = float(summary.get("final_apr", 0.0) or 0.0)
+    apr_mastery = round(max(0.0, min(1.0, final_apr)), 4)
+    apr_percent = round(apr_mastery * 100.0, 1)
+    standardized_score_raw = summary.get("standardized_score")
+    if standardized_score_raw is None:
+        standardized_score = apr_percent
+    else:
+        try:
+            standardized_score = round(float(standardized_score_raw), 1)
+        except Exception:
+            standardized_score = apr_percent
+    score = int(round(max(0.0, min(100.0, standardized_score))))
+
+    if standardized_score >= 85.0:
+        overall_level = "high"
+    elif standardized_score >= 60.0:
+        overall_level = "medium"
+    else:
+        overall_level = "needs_improvement"
+    completion_status = "assessment_completed"
+    if stop_reason == "stable_breakpoint_detected":
+        completion_status = "stable_breakpoint_detected"
+    elif stop_reason == "completed_all_core_families":
+        completion_status = "completed_all_core_families"
+
+    recommended_step_texts = _skill_specific_recommendations(
+        skill_type=skill_type,
+        breakpoint_obj=breakpoint_obj,
+        remediation_trace_ids=remediation_trace_ids,
+    )
+    recommended_next_steps: list[dict[str, Any]] = []
+    for idx, text in enumerate(recommended_step_texts, start=1):
+        target_id = ""
+        m = re.search(r"(F\d+|I\d+)", text)
+        if m:
+            target_id = m.group(1)
+        target_type = "family" if target_id.startswith("F") else ("bridge_family" if target_id.startswith("I") else "skill")
+        recommended_next_steps.append(
+            {
+                "priority": idx,
+                "target_type": target_type,
+                "target_id": target_id,
+                "label_zh": (get_family_diagnostic_info(skill_type, target_id).get("label_zh") if target_id else "") or target_id or "摮貊?頝臬?",
+                "reason": text,
+            }
+        )
+
+    return {
+        "skill_type": skill_type,
+        "score": score,
+        "apr_mastery": apr_mastery,
+        "completed_families": completed_families,
+        "failed_family": failed_family,
+        "family_results": family_results,
+        "breakpoint": breakpoint_obj,
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "strengths_zh": strengths_zh,
+        "weaknesses_zh": weaknesses_zh,
+        "recommended_next_steps": recommended_next_steps,
+        "trajectory": _build_learning_trajectory(routing_timeline),
+        # backward-compatible fields
+        "system_skill_id": system_skill_id,
+        "unit_name": unit_name,
+        "mode": normalized_mode,
+        "overall": {
+            "standardized_score": standardized_score,
+            "apr_percent": apr_percent,
+            "completion_status": completion_status,
+            "assessment_stop_reason": stop_reason,
+            "overall_level": overall_level,
+            "overall_summary": f"score={score}/100, apr={apr_percent:.1f}%, level={overall_level}",
+        },
+        "breakpoints": [breakpoint_obj] if breakpoint_obj else [],
     }
 
 
@@ -1303,6 +1636,17 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
     )
     if not entries:
         raise ValueError("No catalog entries available for the requested adaptive scope")
+    family_name_by_id = {
+        str(entry.family_id).strip(): str(entry.family_name).strip()
+        for entry in entries
+        if str(entry.family_id).strip()
+    }
+    family_subskills_by_id = {
+        str(entry.family_id).strip(): [str(node).strip() for node in (entry.subskill_nodes or []) if str(node).strip()]
+        for entry in entries
+        if str(entry.family_id).strip()
+    }
+    unit_name = str(payload.get("unit_name") or (entries[0].skill_name if entries else "") or "").strip()
     allowed_demo_families_display = (
         sorted({str(entry.family_id) for entry in entries if str(entry.family_id).strip()})
         if ADAPTIVE_USE_FULL_CATALOG
@@ -1482,7 +1826,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
     if textbook_cfg:
         routing_session["return_mastery_threshold"] = return_mastery_threshold
         routing_session["return_mastery_with_recent_correct_threshold"] = return_mastery_with_recent_correct_threshold
-    if system_skill_id == "jh_數學1上_FourArithmeticOperationsOfIntegers":
+    if system_skill_id == "jh_?詨飛1銝FourArithmeticOperationsOfIntegers":
         allowed_agent_skills = ["integer_arithmetic"]
     if not allowed_agent_skills:
         print(
@@ -1685,6 +2029,21 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                 "assessment_stop_reason": str(completion_eval.get("assessment_stop_reason", "")),
             }
         )
+        diagnostic_report = _build_diagnostic_report(
+            system_skill_id=system_skill_id,
+            unit_name=unit_name,
+            mode=mode,
+            summary=summary,
+            completion_stats=completion_eval,
+            family_name_by_id=family_name_by_id,
+            family_subskills_by_id=family_subskills_by_id,
+            remediation_trace=[
+                str((item or {}).get("selected_family_id") or "").strip()
+                for item in (routing_timeline or [])
+                if isinstance(item, dict) and str((item or {}).get("selected_family_id") or "").strip()
+            ],
+            routing_timeline=routing_timeline,
+        )
         return {
             "session_id": session_id,
             "step_number": requested_step,
@@ -1697,6 +2056,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             "new_question_data": {},
             "completed": True,
             "summary": summary,
+            "diagnostic_report": diagnostic_report,
             "routing_state": routing_session,
             "routing_summary": routing_summary,
             "routing_timeline": routing_timeline,
@@ -1964,10 +2324,10 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                     "breakpoint_family": current_family_for_progression or _normalize_family_id(payload.get("last_family_id")),
                     "breakpoint_subskill": breakpoint_subskill,
                     "breakpoint_concept": breakpoint_concept,
-                    "learning_recommendation": "已偵測到本單元學習斷點，建議改進入 teaching 模式補強。",
-                    "title": "評量完成：已偵測學習斷點",
-                    "message": "已偵測到穩定斷點，這是評量模式的停止點，系統不會進入補救支線。",
-                    "next_action": "建議切換到 teaching 模式，針對斷點進行補救後再回主線。",
+                    "learning_recommendation": "建議先補強卡點子技能，再回主線練習。",
+                    "title": "學習健檢：已偵測到穩定卡點",
+                    "message": "系統已完成評量並找到主要卡點，建議先進入教學練習補強後再回測。",
+                    "next_action": "建議切換到 teaching 模式，先補強目前卡點再回主線。",
                     "milestone_state": "assessment_breakpoint_detected",
                     "display_mode": "completed",
                     "display_family": current_family_for_progression or _normalize_family_id(payload.get("last_family_id")),
@@ -1981,6 +2341,24 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                     "learning_mode": "main",
                 }
             )
+            diagnostic_report = _build_diagnostic_report(
+                system_skill_id=system_skill_id,
+                unit_name=unit_name,
+                mode=mode,
+                summary=summary,
+                completion_stats=completion_eval,
+                family_name_by_id=family_name_by_id,
+                family_subskills_by_id=family_subskills_by_id,
+                breakpoint_family_id=current_family_for_progression or _normalize_family_id(payload.get("last_family_id")),
+                breakpoint_subskill=breakpoint_subskill,
+                breakpoint_concept=breakpoint_concept,
+                remediation_trace=[
+                    str((item or {}).get("selected_family_id") or "").strip()
+                    for item in (routing_timeline or [])
+                    if isinstance(item, dict) and str((item or {}).get("selected_family_id") or "").strip()
+                ],
+                routing_timeline=routing_timeline,
+            )
             return {
                 "session_id": session_id,
                 "step_number": requested_step,
@@ -1993,6 +2371,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                 "new_question_data": {},
                 "completed": True,
                 "summary": summary,
+                "diagnostic_report": diagnostic_report,
                 "routing_state": routing_session,
                 "routing_summary": routing_summary,
                 "routing_timeline": routing_timeline,
@@ -2127,6 +2506,12 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
                             "prereq_skill": "fraction_arithmetic",
                             "description": "???????????",
                         },
+                        {
+                            "code": "product_power_distribution",
+                            "runtime_subskill": "product_power_distribution",
+                            "prereq_skill": "fraction_arithmetic",
+                            "description": "????????",
+                        },
                     ]
                 else:
                     remediation_candidates = [
@@ -2253,6 +2638,7 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
             routing_session,
             step=next_step_number,
             current_skill=current_skill,
+            current_family=current_family_for_progression,
             selected_agent_skill=selected_agent_skill,
             is_correct=last_is_correct,
             fail_streak=fail_streak,
@@ -3009,3 +3395,4 @@ def get_rag_hint(
         question_text=question_text,
         unit_skill_ids=unit_skill_ids,
     )
+

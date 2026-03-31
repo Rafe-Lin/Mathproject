@@ -50,6 +50,18 @@ def _parse_subskill_nodes(value: Any) -> list[str]:
     return [item.strip() for item in text.replace(",", ";").split(";") if item.strip()]
 
 
+def _to_chroma_metadata_value(value: Any) -> str | int | float | bool:
+    if isinstance(value, (str, int, float, bool)):
+        return value
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return json.dumps(value, ensure_ascii=False)
+    if isinstance(value, dict):
+        return json.dumps(value, ensure_ascii=False)
+    return str(value)
+
+
 def _label_node(node: str) -> str:
     return {
         "sign_handling": "sign handling",
@@ -242,7 +254,7 @@ def _index_documents(rows: list[dict[str, Any]]):
         documents.append(doc_text)
         doc_id = f"{skill_id}:{family_id}" if family_id else skill_id
         ids.append(doc_id)
-        metadatas.append({
+        metadata_raw = {
             "skill_id": skill_id,
             "family_id": family_id,
             "family_name": row.get("family_name"),
@@ -252,7 +264,8 @@ def _index_documents(rows: list[dict[str, Any]]):
             "chapter": row.get("chapter"),
             "section": row.get("section"),
             "skill_ch_name": row.get("skill_ch_name"),
-        })
+        }
+        metadatas.append({k: _to_chroma_metadata_value(v) for k, v in metadata_raw.items()})
 
     if not documents:
         print("[RAG] No documents to index.")
