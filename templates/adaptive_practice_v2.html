@@ -733,14 +733,14 @@
     };
     const ANSWER_FORMAT_HINT_BY_FAMILY_NAME = {
       poly_div_monomial_qr: {
-        hint: "請用代數式作答，分母含變數時請加括號",
-        example: "3x+1+5/(3x)",
-        placeholder: "例如：3x+1+5/(3x)",
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
+        example: "",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
       },
       poly_div_poly_qr: {
-        hint: "請依系統要求輸入商與餘數",
-        example: "Q=x+2, R=3",
-        placeholder: "例如：Q=x+2, R=3",
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
+        example: "",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
       },
       poly_div_reverse: {
         hint: "請直接輸入被除式",
@@ -807,8 +807,8 @@
     };
     function getAnswerFormatHint(family) {
       const fid = String(family || "").trim();
-      if (fid === "F8") {
-        return "請以『商與餘數』表示，例如：3x+2 ... -3";
+      if (fid === "F8" || fid === "F9") {
+        return "請以「商與餘數」表示，例如：3x+2 ... -3";
       }
       if (fid.startsWith("F")) {
         return "請輸入多項式，例如：2x^2 + 3x + 5";
@@ -867,8 +867,14 @@
       const cfg = resolveAnswerFormatHint(skillKey, familyId, familyNameEn);
       const familyHint = getAnswerFormatHint(familyId);
       const skillType = inferSkillTypeForHint(skillKey, familyId);
-      setText("answerFormatHintText", familyHint || cfg.hint || DEFAULT_ANSWER_FORMAT_HINT.hint);
-      setText("answerFormatExampleText", `範例：${cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
+      const fid = String(familyId || "").trim();
+      if (fid === "F8" || fid === "F9") {
+        setText("answerFormatHintText", "請以「商與餘數」表示，例如：3x+2 ... -3");
+        setText("answerFormatExampleText", "");
+      } else {
+        setText("answerFormatHintText", familyHint || cfg.hint || DEFAULT_ANSWER_FORMAT_HINT.hint);
+        setText("answerFormatExampleText", `範例：${cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
+      }
       if (answerInput) {
         answerInput.placeholder = getAnswerPlaceholder(familyId, skillType, null);
       }

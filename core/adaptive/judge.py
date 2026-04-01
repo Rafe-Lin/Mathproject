@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from fractions import Fraction
@@ -98,8 +98,8 @@ def _normalize_math_text(value: object) -> str:
         .replace("\\right", "")
         .replace("{", "")
         .replace("}", "")
-        .replace("×", "*")
-        .replace("÷", "/")
+        .replace("?", "*")
+        .replace("繩", "/")
         .lower()
     )
     text = _repair_ambiguous_fraction_denominator(text)
@@ -108,7 +108,7 @@ def _normalize_math_text(value: object) -> str:
 
 
 def _as_fraction(value: str) -> Fraction | None:
-    cleaned = value.replace("－", "-").replace("／", "/")
+    cleaned = value.replace("−", "-").replace("÷", "/")
     try:
         return Fraction(cleaned)
     except Exception:
@@ -198,13 +198,11 @@ def _normalize_qr_input(value: object) -> str:
     text = _to_halfwidth(str(value or "")).strip()
     text = (
         text.replace(" ", "")
+        .replace("：", ":")
         .replace("，", ",")
         .replace("；", ";")
-        .replace("：", ":")
-        .replace("＝", "=")
+        .replace("商式", "商")
         .replace("餘式", "餘")
-        .replace("余", "餘")
-        .replace("…", "...")
     )
     return text
 
@@ -218,19 +216,19 @@ def _parse_quotient_remainder(value: object) -> tuple[str, str] | None:
     if "..." in text:
         parts = text.split("...", 1)
         if len(parts) == 2 and parts[0] and parts[1]:
-            return parts[0], parts[1]
+            return parts[0].strip(), parts[1].strip()
 
-    # 2) labeled form: 商=-3x-2,餘=-1 / 商:-3x-2;餘:-1
-    m = re.match(r"^商[:=]?(.+?)[,;]餘[:=]?(.+)$", text)
+    # 2) labeled form: 商:-3x-2,餘:-1 / 商=-3x-2;餘=-1
+    m = re.match(r"^商\s*[:=]\s*(.+?)\s*[,;]\s*餘\s*[:=]\s*(.+)$", text)
     if m:
-        return m.group(1), m.group(2)
+        return m.group(1).strip(), m.group(2).strip()
 
     # 3) tuple form: (-3x-2,-1)
     if text.startswith("(") and text.endswith(")") and "," in text:
-        inner = text[1:-1]
-        left, right = inner.split(",", 1)
-        if left and right:
-            return left, right
+        body = text[1:-1]
+        parts = body.split(",", 1)
+        if len(parts) == 2 and parts[0] and parts[1]:
+            return parts[0].strip(), parts[1].strip()
 
     return None
 
@@ -239,8 +237,8 @@ def _extract_divisor_from_question(question_text: object) -> str:
     text = _normalize_qr_input(question_text)
     if not text:
         return ""
-    # Handles forms like: (...)\div(3x) or (...)÷(3x)
-    m = re.search(r"(?:\\div|÷)\(([^()]+)\)", text)
+    # Handles forms like: (...)\div(3x) or (...)繩(3x)
+    m = re.search(r"(?:\\div|繩)\(([^()]+)\)", text)
     if m:
         return m.group(1)
     return ""
@@ -265,25 +263,8 @@ def judge_answer_with_feedback(
             result["is_correct"] = _symbolic_equal(uq, cq) and _symbolic_equal(ur, cr)
             return result
 
-        # Math-equivalent fallback: user enters single expression q + r/divisor.
-        divisor = _extract_divisor_from_question(question_text)
-        if divisor:
-            user_expr = _as_symbolic_tolerant(user_answer)
-            q_expr = _as_symbolic_tolerant(cq)
-            r_expr = _as_symbolic_tolerant(cr)
-            d_expr = _as_symbolic_tolerant(divisor)
-            if user_expr is not None and q_expr is not None and r_expr is not None and d_expr is not None:
-                try:
-                    from sympy import simplify
-                    expected_expr = q_expr + (r_expr / d_expr)
-                    if simplify(user_expr - expected_expr) == 0:
-                        result["is_correct"] = True
-                        result["feedback"] = "你的答案在數學上正確，但本題需以商與餘數格式表示"
-                        return result
-                except Exception:
-                    pass
-
         result["is_correct"] = False
+        result["feedback"] = "你的答案可能在數學上接近正確，但本題需用『商與餘數』格式表示，例如：3x+2 ... -3"
         return result
 
     result["is_correct"] = judge_answer(user_answer, correct_answer)
@@ -330,3 +311,4 @@ def judge_answer(user_answer: object, correct_answer: object) -> bool:
             pass
 
     return False
+
