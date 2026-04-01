@@ -251,7 +251,7 @@ class Config:
             'description': 'Legacy Mathproject coder preset',
         },
         'gemini-1.5-flash-legacy': {
-            'provider': 'gemini',
+            'provider': 'google',
             'model': 'gemini-1.5-flash',
             'temperature': 0.3,
             'max_tokens': 2048,

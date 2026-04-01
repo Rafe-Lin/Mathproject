@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
@@ -35,9 +35,35 @@
     .top-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-bottom:14px; align-items:stretch; }
     .top-grid .panel { min-width:0; }
     .top-grid .panel h2 { font-size:18px; }
-    .bottom-grid { display:grid; grid-template-columns:minmax(0,1.85fr) minmax(280px,.75fr); gap:14px; align-items:start; }
-    .left-stack, .assistant-shell { display:grid; gap:16px; }
-    .assistant-shell { position:sticky; top:14px; }
+    .page-layout {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .top-layout {
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .top-left {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      min-width:0;
+    }
+    .top-right {
+      display:flex;
+      height:100%;
+      min-width:0;
+    }
+    .bottom-layout {
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .bottom-left, .bottom-right { min-width:0; }
     .meta { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
     .chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
     .chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
@@ -109,6 +135,7 @@
     .assistant-banner { padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#f5f8fd; font-size:14px; line-height:1.65; color:#334155; }
     .assistant-banner.review { background:var(--hint-bg); border-color:var(--hint-line); color:#784c00; box-shadow:0 10px 24px rgba(243,201,118,.18); }
     .hint-box { min-height:160px; padding:14px; border:1px solid var(--hint-line); border-radius:14px; background:var(--hint-bg); line-height:1.75; color:#5b4516; }
+    .ai-assistant-panel .hint-box { margin-top: 12px; }
     .adaptive-hint { display:flex; flex-direction:column; gap:10px; }
     .adaptive-hint .hint-title { font-size:18px; font-weight:700; color:#7a4c00; }
     .adaptive-hint .hint-chip { display:inline-block; margin:4px 6px 0 0; padding:6px 10px; border-radius:999px; background:#fff5d9; border:1px solid #f0cf7a; color:#8a5b00; font-size:12px; line-height:1.4; }
@@ -137,9 +164,20 @@
     .nav-chip span { font-size:18px; font-weight:700; }
     .nav-panel { display:flex; flex-direction:column; justify-content:space-between; }
     .nav-panel .nav-kpis { grid-template-columns:1fr; }
-    .assistant-shell .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
     .assistant-card.idle { opacity:.92; }
     .assistant-card.review { border-color:#f0d39a; box-shadow:0 0 0 4px rgba(245, 158, 11, 0.18), 0 18px 44px rgba(18,44,99,.08); }
+    .question-section,
+    .ai-assistant-panel,
+    .scratchpad-section,
+    .adaptive-state-panel,
+    .question-json-panel { width:100%; }
+    .ai-assistant-panel {
+      border-color:var(--hint-line);
+      background:linear-gradient(180deg, #fffdf6 0%, #fff7e8 100%);
+      flex:1;
+      height:100%;
+    }
     .adaptive-state-panel { border-color:#cfe0f5; background:linear-gradient(180deg, #fbfdff 0%, #f4f9ff 100%); }
     .adaptive-state-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
     .adaptive-state-item { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#ffffff; }
@@ -189,7 +227,12 @@
     .traj-step small { display:block; margin-top:2px; font-size:10px; color:#666; font-weight:600; }
     .arrow { color:#98a6ba; font-weight:700; }
     @media (max-width:760px) { .diag-flex { flex-direction:column; } .diag-bar-row .label { width:140px; } }
-    @media (max-width:1080px) { .top-grid, .bottom-grid { grid-template-columns:1fr; } .assistant-shell { position:static; } }
+    @media (max-width:1080px) {
+      .top-grid { grid-template-columns:1fr; }
+      .top-layout, .bottom-layout { grid-template-columns:1fr; }
+      .top-right { height:auto; }
+      .ai-assistant-panel { height:auto; }
+    }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
   </style>
 </head>
@@ -257,154 +300,161 @@
       </section>
     </div>
 
-    <div class="bottom-grid">
-      <div class="left-stack">
-        <section class="panel">
-          <h2>題目與作答</h2>
-          <div class="summary-card" id="summaryCard">
-            <h3 id="summaryTitle">本次診斷完成</h3>
-            <p id="summaryMessage"></p>
-            <p id="summaryAction"></p>
-            <div class="summary-badges" id="summaryBadges"></div>
-            <div class="diagnostic-report" id="diagnosticReportBox"></div>
-          </div>
-          <div class="question-box">
-            <div class="question-family" id="questionFamily">Family: -</div>
-            <div class="question-text" id="questionText">按下「開始診斷」後載入第一題。</div>
-            <div class="question-context" id="questionContext"></div>
-            <div class="subskills" id="subskillsBox"></div>
-          </div>
-          <div class="answer-box">
-            <input id="answerInput" type="text" placeholder="請輸入你的答案" disabled>
-            <button class="primary" id="submitBtn" disabled>送出答案</button>
-          </div>
-          <div class="answer-format-box" id="answerFormatBox">
-            <span class="answer-format-badge">答案格式提示</span>
-            <span class="answer-format-hint" id="answerFormatHintText">請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。</span>
-            <span class="answer-format-example" id="answerFormatExampleText">範例：-9 或 3x+1+5/(3x)</span>
-          </div>
-          <div class="controls">
-            <button class="primary" id="bootstrapBtn">開始診斷</button>
-            <button class="secondary" id="hintBtn" disabled>查看補救提示</button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="workspace-header">
-            <div>
-              <h2 style="margin:0 0 6px;">手寫計算紙</h2>
-              <p>把中間步驟寫出來，比較不會把所有運算都塞在腦中。你也可以把白板送給 AI 幫你檢查。</p>
+    <div class="page-layout">
+      <div class="top-layout">
+        <div class="top-left">
+          <section class="panel question-section">
+            <h2>題目與作答</h2>
+            <div class="summary-card" id="summaryCard">
+              <h3 id="summaryTitle">本次診斷完成</h3>
+              <p id="summaryMessage"></p>
+              <p id="summaryAction"></p>
+              <div class="summary-badges" id="summaryBadges"></div>
+              <div class="diagnostic-report" id="diagnosticReportBox"></div>
             </div>
-          </div>
-          <div class="canvas-tools">
-            <button class="tool-btn active" id="penToolBtn" type="button" title="畫筆" aria-label="畫筆">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
-            </button>
-            <button class="tool-btn" id="eraserToolBtn" type="button" title="橡皮擦" aria-label="橡皮擦">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21 10.6-10.6a2 2 0 0 0 0-2.8l-2.6-2.6a2 2 0 0 0-2.8 0L1.6 15.6a2 2 0 0 0 0 2.8L4.2 21"/><path d="M22 21H7"/></svg>
-            </button>
-            <button class="tool-btn active" id="blackInkBtn" type="button" title="黑筆"><span class="color-dot" style="background:#1f2937;"></span></button>
-            <button class="tool-btn" id="blueInkBtn" type="button" title="藍筆"><span class="color-dot" style="background:#1565c0;"></span></button>
-            <button class="tool-btn" id="redInkBtn" type="button" title="紅筆"><span class="color-dot" style="background:#dc2626;"></span></button>
-            <button class="tool-btn" id="greenInkBtn" type="button" title="綠筆"><span class="color-dot" style="background:#16a34a;"></span></button>
-            <div class="tool-sep"></div>
-            <div class="pen-width-wrap"><span>筆寬</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
-            <div class="tool-sep"></div>
-            <button class="tool-btn" id="undoBtn" type="button" title="上一步" aria-label="上一步">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
-            </button>
-            <button class="tool-btn" id="redoBtn" type="button" title="下一步" aria-label="下一步">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
-            </button>
-            <button class="tool-btn" id="clearCanvasBtn" type="button" title="清空白板" aria-label="清空白板">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
-            </button>
-            <button class="warning" id="analyzeCanvasBtn" type="button">AI 檢查手寫</button>
-          </div>
-          <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
-        </section>
+            <div class="question-box">
+              <div class="question-family" id="questionFamily">Family: -</div>
+              <div class="question-text" id="questionText">按下「開始診斷」後載入第一題。</div>
+              <div class="question-context" id="questionContext"></div>
+              <div class="subskills" id="subskillsBox"></div>
+            </div>
+            <div class="answer-box">
+              <input id="answerInput" type="text" placeholder="請輸入你的答案" disabled>
+              <button class="primary" id="submitBtn" disabled>送出答案</button>
+            </div>
+            <div class="answer-format-box" id="answerFormatBox">
+              <span class="answer-format-badge">答案格式提示</span>
+              <span class="answer-format-hint" id="answerFormatHintText">請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。</span>
+              <span class="answer-format-example" id="answerFormatExampleText">範例：-9 或 3x+1+5/(3x)</span>
+            </div>
+            <div class="controls">
+              <button class="primary" id="bootstrapBtn">開始診斷</button>
+              <button class="secondary" id="hintBtn" disabled>查看補救提示</button>
+            </div>
+          </section>
+
+          <section class="panel scratchpad-section">
+            <div class="workspace-header">
+              <div>
+                <h2 style="margin:0 0 6px;">手寫計算紙</h2>
+                <p>把中間步驟寫出來，比較不會把所有運算都塞在腦中。你也可以把白板送給 AI 幫你檢查。</p>
+              </div>
+            </div>
+            <div class="canvas-tools">
+              <button class="tool-btn active" id="penToolBtn" type="button" title="畫筆" aria-label="畫筆">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              <button class="tool-btn" id="eraserToolBtn" type="button" title="橡皮擦" aria-label="橡皮擦">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21 10.6-10.6a2 2 0 0 0 0-2.8l-2.6-2.6a2 2 0 0 0-2.8 0L1.6 15.6a2 2 0 0 0 0 2.8L4.2 21"/><path d="M22 21H7"/></svg>
+              </button>
+              <button class="tool-btn active" id="blackInkBtn" type="button" title="黑筆"><span class="color-dot" style="background:#1f2937;"></span></button>
+              <button class="tool-btn" id="blueInkBtn" type="button" title="藍筆"><span class="color-dot" style="background:#1565c0;"></span></button>
+              <button class="tool-btn" id="redInkBtn" type="button" title="紅筆"><span class="color-dot" style="background:#dc2626;"></span></button>
+              <button class="tool-btn" id="greenInkBtn" type="button" title="綠筆"><span class="color-dot" style="background:#16a34a;"></span></button>
+              <div class="tool-sep"></div>
+              <div class="pen-width-wrap"><span>筆寬</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" id="undoBtn" type="button" title="上一步" aria-label="上一步">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
+              </button>
+              <button class="tool-btn" id="redoBtn" type="button" title="下一步" aria-label="下一步">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
+              </button>
+              <button class="tool-btn" id="clearCanvasBtn" type="button" title="清空白板" aria-label="清空白板">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
+              </button>
+              <button class="warning" id="analyzeCanvasBtn" type="button">AI 檢查手寫</button>
+            </div>
+            <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
+          </section>
+        </div>
+
+        <div class="top-right">
+          <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
+            <div class="assistant-title">AI 助教（這題專用）</div>
+            <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
+            <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
+            <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+            <div style="height:10px;"></div>
+            <div class="guide-buttons">
+              <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
+              <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+              <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+            </div>
+            <div style="height:10px;"></div>
+            <div class="assistant-input">
+              <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+              <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
+            </div>
+            <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
+          </section>
+        </div>
       </div>
 
-      <div class="assistant-shell">
-        <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
-          <h2>自適應決策狀態</h2>
-          <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程。</p>
-          <div class="adaptive-state-grid">
-            <div class="adaptive-state-item">
-              <strong>目前模式（主線 / 補救 / 返回）</strong>
-              <div id="adaptiveModeValue">尚未開始</div>
+      <div class="bottom-layout">
+        <div class="bottom-left">
+          <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
+            <h2>自適應決策狀態</h2>
+            <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程。</p>
+            <div class="adaptive-state-grid">
+              <div class="adaptive-state-item">
+                <strong>目前模式（主線 / 補救 / 返回）</strong>
+                <div id="adaptiveModeValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>主技能（Main Skill）</strong>
+                <div id="mainSkillValue">待載入</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>PPO 路由動作</strong>
+                <div id="ppoActionValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>目前題型 family</strong>
+                <div id="familyValue">待載入</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>偵測斷點子技能</strong>
+                <div id="detectedSubskillValue">尚未偵測</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>補救技能（Skill）</strong>
+                <div id="remediationSkillValue">尚未進入補救</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>補救子技能（Subskill）</strong>
+                <div id="remediationSubskillValue">尚未進入補救</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>切換原因（為何切換）</strong>
+                <div id="switchReasonValue">無</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>返回主線狀態</strong>
+                <div id="returnStateValue">尚未判定</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>學習進度里程碑</strong>
+                <div id="milestoneValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item" style="grid-column:1 / -1;">
+                <strong>決策說明（Explanation）</strong>
+                <div id="adaptiveRationaleValue">尚未開始診斷，系統尚未做路由決策。</div>
+              </div>
             </div>
-            <div class="adaptive-state-item">
-              <strong>主技能（Main Skill）</strong>
-              <div id="mainSkillValue">待載入</div>
+            <div class="return-celebration" id="returnCelebration">
+              <div>✨ 已完成本輪補救，成功返回主線</div>
+              <div>你已補回這個知識斷點，接下來系統會繼續檢核本單元其他核心題型。</div>
             </div>
-            <div class="adaptive-state-item">
-              <strong>PPO 路由動作</strong>
-              <div id="ppoActionValue">尚未開始</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>目前題型 family</strong>
-              <div id="familyValue">待載入</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>偵測斷點子技能</strong>
-              <div id="detectedSubskillValue">尚未偵測</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>補救技能（Skill）</strong>
-              <div id="remediationSkillValue">尚未進入補救</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>補救子技能（Subskill）</strong>
-              <div id="remediationSubskillValue">尚未進入補救</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>切換原因（為何切換）</strong>
-              <div id="switchReasonValue">無</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>返回主線狀態</strong>
-              <div id="returnStateValue">尚未判定</div>
-            </div>
-            <div class="adaptive-state-item">
-              <strong>學習進度里程碑</strong>
-              <div id="milestoneValue">尚未開始</div>
-            </div>
-            <div class="adaptive-state-item" style="grid-column:1 / -1;">
-              <strong>決策說明（Explanation）</strong>
-              <div id="adaptiveRationaleValue">尚未開始診斷，系統尚未做路由決策。</div>
-            </div>
-          </div>
-          <div class="return-celebration" id="returnCelebration">
-            <div>✨ 已完成本輪補救，成功返回主線</div>
-            <div>你已補回這個知識斷點，接下來系統會繼續檢核本單元其他核心題型。</div>
-          </div>
-        </section>
+          </section>
+        </div>
 
-        <section class="panel assistant-card idle" id="assistantCard">
-          <div class="assistant-title">AI 助教（這題專用）</div>
-          <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
-          <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
-          <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
-          <div style="height:12px;"></div>
-          <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
-          <div style="height:10px;"></div>
-          <div class="guide-buttons">
-            <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
-            <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
-            <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
-          </div>
-          <div style="height:10px;"></div>
-          <div class="assistant-input">
-            <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
-            <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>目前題目 JSON 摘要</h2>
-          <pre class="json-box" id="jsonBox"></pre>
-        </section>
+        <div class="bottom-right">
+          <section class="panel question-json-panel">
+            <h2>目前題目 JSON 摘要</h2>
+            <pre class="json-box" id="jsonBox"></pre>
+          </section>
+        </div>
       </div>
     </div>
 </div>
@@ -1263,6 +1313,19 @@
       if (snapshot) restoreFromDataUrl(snapshot); else clearCanvas(false);
     }
     function clearCanvas(resetHistory = true) { ctx.clearRect(0, 0, canvas.width, canvas.height); if (resetHistory) { undoStack = []; redoStack = []; saveState(); } }
+    function isCanvasBlank() {
+      try {
+        const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = image.data;
+        for (let i = 3; i < pixels.length; i += 4) {
+          if (pixels[i] !== 0) return false;
+        }
+        return true;
+      } catch (err) {
+        console.error("isCanvasBlank failed:", err);
+        return false;
+      }
+    }
     function getPointerPos(event) { const rect = canvas.getBoundingClientRect(); const point = event.touches && event.touches[0] ? event.touches[0] : event; return { x: point.clientX - rect.left, y: point.clientY - rect.top }; }
     function setPenStyle() { ctx.lineWidth = isErasing ? 24 : currentWidth; ctx.strokeStyle = isErasing ? "#ffffff" : currentColor; ctx.lineCap = "round"; ctx.lineJoin = "round"; }
     function startDraw(event) { event.preventDefault(); isDrawing = true; const pos = getPointerPos(event); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); setPenStyle(); saveState(); }
@@ -1337,7 +1400,14 @@
     async function analyzeHandwriting() {
       if (!state.currentQuestionText) { setStatus("請先開始診斷，再進行手寫檢查。"); return; }
       try {
+        if (isCanvasBlank()) {
+          setStatus("白板目前是空白的，請先寫下解題步驟再送出 AI 檢查。");
+          await addMessage("bot", "我目前看不到你的手寫步驟，請先在白板寫一點內容後再檢查。");
+          return;
+        }
         const imageDataUrl = canvas.toDataURL("image/png");
+        console.log("handwriting image length =", imageDataUrl.length);
+        console.log("handwriting prefix =", imageDataUrl.slice(0, 80));
         await addMessage("user", "請幫我檢查我白板上的手寫步驟。");
         const thinking = await addMessage("bot", "正在分析你的手寫內容...");
         const response = await fetch("/analyze_handwriting", {
@@ -1345,16 +1415,41 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             image_data_url: imageDataUrl,
+            image_base64: imageDataUrl,
+            handwriting_image: imageDataUrl,
+            scratchpad_image: imageDataUrl,
+            session_id: state.sessionId,
             question_text: state.currentQuestionText,
             question_context: state.currentContext,
             family_id: state.currentFamilyId,
             subskill_nodes: state.currentSubskills,
           })
         });
-        const data = await response.json();
+        const rawText = await response.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (parseErr) {
+          console.error("analyze_handwriting parse error:", parseErr, rawText?.slice?.(0, 300));
+          throw parseErr;
+        }
+        if (data && data.success === false) {
+          setMessageContent(
+            thinking,
+            "目前無法辨識你的手寫內容，請確認筆跡清楚或再試一次"
+          );
+          await typesetMath(thinking);
+          scrollChatToBottom();
+          return;
+        }
+        if (!response.ok) {
+          console.error("analyze_handwriting non-OK:", response.status, data);
+          throw new Error(data?.reply || data?.error || `handwriting api failed (${response.status})`);
+        }
         setMessageContent(thinking, summarizeHandwritingResult(data));
         await typesetMath(thinking);
       } catch (err) {
+        console.error("analyzeHandwriting failed:", err);
         await addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
       }
     }

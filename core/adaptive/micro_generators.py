@@ -832,6 +832,37 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
                 parts.append(str(const))
         return " ".join(parts) if parts else "0"
 
+    def format_factor_x_plus_const(k: int) -> str:
+        if k == 0:
+            return "x"
+        if k > 0:
+            return f"x + {k}"
+        return f"x - {abs(k)}"
+
+    def combine_add_expr(left: str, right: str) -> str:
+        l = str(left or "").strip() or "0"
+        r = str(right or "").strip() or "0"
+        if l == "0":
+            return r
+        if r == "0":
+            return l
+        if r.startswith("-"):
+            return f"{l} - {r[1:].strip()}"
+        return f"{l} + {r}"
+
+    def negate_expr(expr: str) -> str:
+        clean = str(expr or "").strip() or "0"
+        if clean == "0":
+            return "0"
+        if clean.startswith("-"):
+            body = clean[1:].strip()
+            if " " in body:
+                return f"-({clean})"
+            return body or "0"
+        if " " in clean:
+            return f"-({clean})"
+        return f"-{clean}"
+
     def format_poly(coeffs: dict[int, int]) -> str:
         terms: list[str] = []
         for degree in sorted(coeffs.keys(), reverse=True):
@@ -926,7 +957,10 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             return " ".join(items) if items else "0"
 
         answer = poly_linear(coef_x, const)
-        q = f"請化簡：-( {a}x {'+' if b >= 0 else '-'} {abs(b)} ) + ( {c}x - {abs(d)} )"
+        left_inner = format_linear(a, b)
+        right_inner = format_linear(c, -d)
+        q_expr = combine_add_expr(negate_expr(left_inner), right_inner)
+        q = f"請化簡：{q_expr}"
         exp = "先把負號分配進去，再合併同類項。"
         return {
             "question": q,
@@ -969,7 +1003,7 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
             return " ".join(parts) if parts else "0"
 
         answer = poly_quadratic(1, bx, c0)
-        q = f"請展開：(x {'+' if a >= 0 else '-'} {abs(a)})(x {'+' if b >= 0 else '-'} {abs(b)})"
+        q = f"請展開：({format_factor_x_plus_const(a)})({format_factor_x_plus_const(b)})"
         exp = "用分配律把每一項都乘到，再合併同類項。"
         return {
             "question": q,
@@ -993,7 +1027,7 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
 
     def signed_term(coef: int, suffix: str = "") -> str:
         if coef == 0:
-            return "0"
+            return ""
         if coef == 1 and suffix:
             return suffix
         if coef == -1 and suffix:
@@ -1001,9 +1035,13 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
         return f"{coef}{suffix}"
 
     def signed_const(num: int) -> str:
+        if num == 0:
+            return ""
         return f"+ {abs(num)}" if num >= 0 else f"- {abs(num)}"
 
     def format_term(coef: int, variable: str = "x") -> str:
+        if coef == 0:
+            return ""
         if coef == 1:
             return f"{variable}"
         if coef == -1:
@@ -1013,10 +1051,15 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
     def format_expression(terms: list[tuple[int, str]]) -> str:
         expr = ""
         for coef, term_str in terms:
+            if coef == 0:
+                continue
             clean_term = str(term_str or "").strip()
             if not clean_term:
                 continue
+            if clean_term in {"0", "+0", "-0", "+ 0", "- 0"}:
+                continue
             clean_term = clean_term.replace("+-", "-").replace("+ -", "- ").strip()
+            clean_term = clean_term.replace("(+", "(").replace("+)", ")")
             if coef >= 0:
                 if expr:
                     expr += " + "
@@ -1034,12 +1077,16 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
         a, c = [nz(-8, 8) for _ in range(2)]
         b, d = [random.randint(-8, 8) for _ in range(2)]
         expr = (a * x + b) + (c * x + d)
-        q = f"請化簡：$({signed_term(a, 'x')} {signed_const(b)}) + ({signed_term(c, 'x')} {signed_const(d)})$"
+        left = format_linear(a, b)
+        right = format_linear(c, d)
+        q = f"請化簡：${combine_add_expr(left, right)}$"
     elif fid == "F2":
         a, c = [nz(-6, 6) for _ in range(2)]
         b, d = [random.randint(-6, 6) for _ in range(2)]
         expr = -(a * x + b) + (c * x - d)
-        q = f"請化簡：$-( {signed_term(a, 'x')} {signed_const(b)} ) + ( {signed_term(c, 'x')} - {abs(d)} )$"
+        left_inner = format_linear(a, b)
+        right_inner = format_linear(c, -d)
+        q = f"請化簡：${combine_add_expr(negate_expr(left_inner), right_inner)}$"
     elif fid == "F3":
         k, m, n = random.randint(2, 6), random.randint(-6, 6), nz(-6, 6)
         expr = k * (x + m) - n * x
@@ -1052,7 +1099,7 @@ def _poly_generator(entry: CatalogEntry) -> dict | None:
     elif fid == "F5":
         a, b = random.randint(-6, 6), random.randint(-6, 6)
         expr = expand((x + a) * (x + b))
-        q = f"請展開：$(x + {a})(x + {b})$"
+        q = f"請展開：$({format_factor_x_plus_const(a)})({format_factor_x_plus_const(b)})$"
     elif fid == "F6":
         a = random.randint(1, 6)
         if random.choice([True, False]):

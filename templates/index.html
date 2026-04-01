@@ -2693,6 +2693,21 @@
                             msg.classList.remove('latest');
                         });
 
+                        if (data && data.success === false) {
+                            const failMsg = document.createElement('div');
+                            failMsg.className = 'bot-message latest';
+                            failMsg.textContent = '目前無法辨識你的手寫內容，請確認筆跡清楚或再試一次';
+                            failMsg.style.whiteSpace = 'pre-wrap';
+                            failMsg.style.wordBreak = 'break-word';
+                            chatHistory.appendChild(failMsg);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+                            resultDisplay.textContent = '';
+                            resultDisplay.className = '';
+                            const suggestionDivEarly = document.getElementById('prerequisite-suggestion');
+                            if (suggestionDivEarly) suggestionDivEarly.style.display = 'none';
+                            return;
+                        }
+
                         const msg = document.createElement('div');
                         msg.className = 'bot-message latest';  // 標記為最新
                         msg.innerHTML = data.reply || '無回應';

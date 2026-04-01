@@ -534,7 +534,7 @@ def get_ai_client(role='default'):
     safety_settings = role_config.get('safety_settings')
 
     # 2. 智慧派發 (Smart Dispatch)
-    if provider in ['google', 'gemini']:
+    if provider in ('google', 'gemini'):
         try:
             return GoogleAIClient(model_name, temperature, max_tokens=max_tokens, safety_settings=safety_settings)
         except ValueError as e:
