@@ -226,37 +226,6 @@
     .traj-step { margin:0 2px; font-weight:700; color:#1f3f63; background:#fff; border:1px solid #d6e3f8; border-radius:10px; padding:6px 8px; min-width:72px; text-align:center; }
     .traj-step small { display:block; margin-top:2px; font-size:10px; color:#666; font-weight:600; }
     .arrow { color:#98a6ba; font-weight:700; }
-    .diagnostic-report-card { display:grid; gap:14px; }
-    .diagnostic-summary-card { border-radius:16px; padding:16px; background:linear-gradient(135deg, #2f80ed, #27c3f3); color:#fff; }
-    .diagnostic-summary-card h3 { margin:0 0 10px; font-size:22px; }
-    .diagnostic-summary-metrics { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
-    .diagnostic-summary-metrics .metric { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.22); border-radius:12px; padding:10px; }
-    .diagnostic-summary-metrics .metric strong { display:block; font-size:12px; opacity:.95; margin-bottom:4px; }
-    .diagnostic-summary-metrics .metric span { font-size:18px; font-weight:800; }
-    .diagnostic-summary-note { margin-top:10px; font-size:14px; line-height:1.6; background:rgba(255,255,255,.12); border-radius:10px; padding:8px 10px; }
-    .diagnostic-section-title { margin:0 0 8px; font-size:18px; font-weight:800; color:#1e3a5f; }
-    .skill-legend { font-size:13px; color:#5c6b7e; margin-bottom:10px; }
-    .skill-group { margin-bottom:18px; }
-    .skill-group-title { font-size:14px; font-weight:800; margin:0 0 8px; color:#26415f; }
-    .skill-item { border:1px solid #e3e9f2; border-radius:12px; padding:10px 12px; margin-bottom:10px; background:#fff; }
-    .skill-item-header { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-    .skill-item-title { font-size:15px; font-weight:700; color:#1f3046; }
-    .skill-item-percent { min-width:56px; text-align:right; font-size:14px; font-weight:800; color:#334155; }
-    .skill-item-subtitle { margin:3px 0 8px; font-size:13px; color:#6b7280; }
-    .skill-progress { height:10px; background:#edf2f7; border-radius:999px; overflow:hidden; }
-    .skill-progress-fill { height:100%; border-radius:999px; transition:width .25s ease; }
-    .skill-strong .skill-progress-fill { background:#7cc08a; opacity:.75; }
-    .skill-mid .skill-progress-fill { background:#f0ad4e; }
-    .skill-weak .skill-progress-fill { background:#d9534f; }
-    .skill-mid .skill-item-title,
-    .skill-weak .skill-item-title { font-weight:800; }
-    .breakpoint-card { border-radius:16px; padding:16px; background:#fff1f2; border:1px solid #fecdd3; border-left:6px solid #dc2626; }
-    .breakpoint-title { margin:0 0 8px; font-size:16px; font-weight:800; color:#991b1b; }
-    .breakpoint-card .name { font-size:30px; font-weight:900; color:#b91c1c; line-height:1.2; margin:4px 0 8px; }
-    .breakpoint-card p { margin:6px 0; color:#7f1d1d; font-size:14px; line-height:1.6; }
-    .learning-path-card { border-radius:16px; padding:16px; border:1px solid #d9e8ff; background:#eef6ff; }
-    .learning-path-card h4 { margin:0 0 8px; font-size:16px; color:#0f4c75; }
-    .learning-path-step { margin:6px 0; font-size:14px; color:#1f3b57; line-height:1.6; font-weight:600; }
     @media (max-width:760px) { .diag-flex { flex-direction:column; } .diag-bar-row .label { width:140px; } }
     @media (max-width:1080px) {
       .top-grid { grid-template-columns:1fr; }
@@ -272,16 +241,16 @@
     <div class="hero">
       <div>
         <h1>
-          {{ unit_name }}嚚?
-          {% if mode == 'assessment' %}閰?璅∪?{% else %}摮貊?璅∪?{% endif %}
+          {{ unit_name }}｜
+          {% if mode == 'assessment' %}評量模式{% else %}學習模式{% endif %}
         </h1>
-        <p>銝憿舐內 Local APR ???亥?頝∴?銝撌血靽?憿??蝑??神閮?蝝??喳? PPO ??Review 鋆?蝑?批 RAG ?拇?隞????/p>
+        <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
       </div>
       <div class="badge" id="entryModeBadge">
         {% if mode == 'assessment' %}
-          閰?璅∪?嚚{ unit_name }}
+          評量模式｜{{ unit_name }}
         {% else %}
-          摮貊?璅∪?嚚{ unit_name }}
+          學習模式｜{{ unit_name }}
         {% endif %}
       </div>
     </div>
@@ -293,40 +262,40 @@
             <div class="apr-ring" id="aprRing">
               <div class="apr-core">
                 <strong id="aprPercent">45%</strong>
-                <span>?摨?/span>
+                <span>掌握度</span>
               </div>
             </div>
             <div class="overview-copy">
-              <h2>?砍?飛蝧???/h2>
-              <p>蝟餌絞??雿?雿?銵函隤踵憿????∪漲頞?嚗誨銵其?撠?凝??質?蝛拙???/p>
+              <h2>本單元學習導航</h2>
+              <p>系統會依你的作答表現調整題型。掌握度越高，代表你對目前微技能越穩定。</p>
             </div>
           </div>
-          <div class="soft-badge" id="familyBadge">敺格??踝?敺那??/div>
+          <div class="soft-badge" id="familyBadge">微技能：待診斷</div>
         </div>
         <div class="meta">
-          <div class="chip"><strong>?桀?憿?</strong><div class="value" id="stepValue">0</div></div>
-          <div class="chip"><strong>?急??</strong><div class="value" id="frustrationValue">0</div></div>
+          <div class="chip"><strong>目前題號</strong><div class="value" id="stepValue">0</div></div>
+          <div class="chip"><strong>挫折指數</strong><div class="value" id="frustrationValue">0</div></div>
         </div>
-        <div class="strategy-badge" id="strategyBadge">? ?嗅?蝑嚗蝝Ｘ??/div>
+        <div class="strategy-badge" id="strategyBadge">🟢 當前策略：探索新知</div>
         <div style="height:8px;"></div>
-        <div class="status" id="statusText">撠????/div>
+        <div class="status" id="statusText">尚未啟動。</div>
       </section>
 
       <section class="panel nav-panel">
         <div>
-          <h2>蝟餌絞撠???/h2>
-          <p class="panel-note">蝟餌絞???找????∪漲??蝑”?橘?瘙箏??曉閬蝝Ｘ?乓雁??蝺湛????鋆??飛??/p>
+          <h2>系統導航狀態</h2>
+          <p class="panel-note">系統會依照你的掌握度與作答表現，決定現在要探索新知、維持熟練，或切換到補救教學。</p>
         </div>
         <div class="nav-kpis">
-          <div class="nav-chip"><strong>?桀?蝑</strong><span id="strategyMini">?Ｙ揣</span></div>
-          <div class="nav-chip"><strong>??甈⊥</strong><span id="frustrationMini">0</span></div>
+          <div class="nav-chip"><strong>目前策略</strong><span id="strategyMini">探索</span></div>
+          <div class="nav-chip"><strong>連錯次數</strong><span id="frustrationMini">0</span></div>
         </div>
       </section>
 
       <section class="panel">
-        <h2>??蝎曄?頠楚??/h2>
+        <h2>動態精熟軌跡圖</h2>
         <div class="trajectory-board" id="trajectoryBox">
-          <div class="trajectory-empty">撠閮箸頠楚??憪那?瑕?嚗ㄐ??憿舐內 Local APR 霈?嚗蒂璅? PPO ?臬? Review??/div>
+          <div class="trajectory-empty">尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>
         </div>
       </section>
     </div>
@@ -335,9 +304,9 @@
       <div class="top-layout">
         <div class="top-left">
           <section class="panel question-section">
-            <h2>憿??蝑?/h2>
+            <h2>題目與作答</h2>
             <div class="summary-card" id="summaryCard">
-              <h3 id="summaryTitle">?祆活閮箸摰?</h3>
+              <h3 id="summaryTitle">本次診斷完成</h3>
               <p id="summaryMessage"></p>
               <p id="summaryAction"></p>
               <div class="summary-badges" id="summaryBadges"></div>
@@ -345,56 +314,56 @@
             </div>
             <div class="question-box">
               <div class="question-family" id="questionFamily">Family: -</div>
-              <div class="question-text" id="questionText">????憪那?瑯?頛蝚砌?憿?/div>
+              <div class="question-text" id="questionText">按下「開始診斷」後載入第一題。</div>
               <div class="question-context" id="questionContext"></div>
               <div class="subskills" id="subskillsBox"></div>
             </div>
             <div class="answer-box">
-              <input id="answerInput" type="text" placeholder="隢撓?乩???獢? disabled>
-              <button class="primary" id="submitBtn" disabled>?蝑?</button>
+              <input id="answerInput" type="text" placeholder="請輸入你的答案" disabled>
+              <button class="primary" id="submitBtn" disabled>送出答案</button>
             </div>
             <div class="answer-format-box" id="answerFormatBox">
-              <span class="answer-format-badge">蝑??澆??內</span>
-              <span class="answer-format-hint" id="answerFormatHintText">隢撓?交摮貊?獢??隢 /嚗誨?詨?撱箄降?冽??郁蝢押?/span>
-              <span class="answer-format-example" id="answerFormatExampleText">蝭?嚗?9 ??3x+1+5/(3x)</span>
+              <span class="answer-format-badge">答案格式提示</span>
+              <span class="answer-format-hint" id="answerFormatHintText">請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。</span>
+              <span class="answer-format-example" id="answerFormatExampleText">範例：-9 或 3x+1+5/(3x)</span>
             </div>
             <div class="controls">
-              <button class="primary" id="bootstrapBtn">??閮箸</button>
-              <button class="secondary" id="hintBtn" disabled>?亦?鋆??內</button>
+              <button class="primary" id="bootstrapBtn">開始診斷</button>
+              <button class="secondary" id="hintBtn" disabled>查看補救提示</button>
             </div>
           </section>
 
           <section class="panel scratchpad-section">
             <div class="workspace-header">
               <div>
-                <h2 style="margin:0 0 6px;">?神閮?蝝?/h2>
-                <p>?葉?郊撽神?箔?嚗?頛??????蝞憛?虫葉??銋隞交??賣?策 AI 撟思?瑼Ｘ??/p>
+                <h2 style="margin:0 0 6px;">手寫計算紙</h2>
+                <p>把中間步驟寫出來，比較不會把所有運算都塞在腦中。你也可以把白板送給 AI 幫你檢查。</p>
               </div>
             </div>
             <div class="canvas-tools">
-              <button class="tool-btn active" id="penToolBtn" type="button" title="?怎?" aria-label="?怎?">
+              <button class="tool-btn active" id="penToolBtn" type="button" title="畫筆" aria-label="畫筆">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
               </button>
-              <button class="tool-btn" id="eraserToolBtn" type="button" title="璈∠?? aria-label="璈∠??>
+              <button class="tool-btn" id="eraserToolBtn" type="button" title="橡皮擦" aria-label="橡皮擦">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21 10.6-10.6a2 2 0 0 0 0-2.8l-2.6-2.6a2 2 0 0 0-2.8 0L1.6 15.6a2 2 0 0 0 0 2.8L4.2 21"/><path d="M22 21H7"/></svg>
               </button>
-              <button class="tool-btn active" id="blackInkBtn" type="button" title="暺?"><span class="color-dot" style="background:#1f2937;"></span></button>
-              <button class="tool-btn" id="blueInkBtn" type="button" title="??"><span class="color-dot" style="background:#1565c0;"></span></button>
-              <button class="tool-btn" id="redInkBtn" type="button" title="蝝?"><span class="color-dot" style="background:#dc2626;"></span></button>
-              <button class="tool-btn" id="greenInkBtn" type="button" title="蝬?"><span class="color-dot" style="background:#16a34a;"></span></button>
+              <button class="tool-btn active" id="blackInkBtn" type="button" title="黑筆"><span class="color-dot" style="background:#1f2937;"></span></button>
+              <button class="tool-btn" id="blueInkBtn" type="button" title="藍筆"><span class="color-dot" style="background:#1565c0;"></span></button>
+              <button class="tool-btn" id="redInkBtn" type="button" title="紅筆"><span class="color-dot" style="background:#dc2626;"></span></button>
+              <button class="tool-btn" id="greenInkBtn" type="button" title="綠筆"><span class="color-dot" style="background:#16a34a;"></span></button>
               <div class="tool-sep"></div>
-              <div class="pen-width-wrap"><span>蝑祝</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
+              <div class="pen-width-wrap"><span>筆寬</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
               <div class="tool-sep"></div>
-              <button class="tool-btn" id="undoBtn" type="button" title="銝?甇? aria-label="銝?甇?>
+              <button class="tool-btn" id="undoBtn" type="button" title="上一步" aria-label="上一步">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
               </button>
-              <button class="tool-btn" id="redoBtn" type="button" title="銝?甇? aria-label="銝?甇?>
+              <button class="tool-btn" id="redoBtn" type="button" title="下一步" aria-label="下一步">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
               </button>
-              <button class="tool-btn" id="clearCanvasBtn" type="button" title="皜征?賣" aria-label="皜征?賣">
+              <button class="tool-btn" id="clearCanvasBtn" type="button" title="清空白板" aria-label="清空白板">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
               </button>
-              <button class="warning" id="analyzeCanvasBtn" type="button">AI 瑼Ｘ?神</button>
+              <button class="warning" id="analyzeCanvasBtn" type="button">AI 檢查手寫</button>
             </div>
             <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
           </section>
@@ -402,22 +371,22 @@
 
         <div class="top-right">
           <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
-            <div class="assistant-title">AI ?拇?嚗?撠嚗?/div>
-            <div class="assistant-rag-scope" id="ragScopeBadge">RAG 敶梢蝭?嚗?渲???蝷箝I ?拇?????撖急炎?交?閬?/div>
-            <div class="assistant-banner" id="assistantBanner">?撌勗?憿停憟賬????冽??????芣??其??∩?嚗?蝟餌絞?文??閬???嚗???頝喳靘?????/div>
-            <div class="chat-history" id="chatHistory"><div class="msg bot">雿末嚗??舫?憿? AI ?拇?????葉?敺??撘?????嚗?銝??湔??敺?獢??箔???/div></div>
+            <div class="assistant-title">AI 助教（這題專用）</div>
+            <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
+            <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
+            <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
             <div style="height:10px;"></div>
             <div class="guide-buttons">
-              <button type="button" data-guide="隢?葉????孵????????芯???敹萸?>?敹?敹?/button>
-              <button type="button" data-guide="銝??湔蝯衣?獢??芣?蝷箸?銝?甇亥府??暻潦?>?內銝?甇?/button>
-              <button type="button" data-guide="????憿?摰寞??舐??航炊??>???暺?/button>
+              <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
+              <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+              <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
             </div>
             <div style="height:10px;"></div>
             <div class="assistant-input">
-              <input id="assistantInput" type="text" placeholder="?芸??祇??賊???嚗?憒??洵銝甇亥府??隞暻潘?">
-              <button class="success" id="assistantSendBtn" type="button">閰Ｗ??拇?</button>
+              <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+              <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
             </div>
-            <div class="hint-box" id="hintBox">?ㄐ?＊蝷粹?憿?鋆??內?蝟餌絞? Review嚗??蝪∪銝剜???雿????敹萸?/div>
+            <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
           </section>
         </div>
       </div>
@@ -425,64 +394,64 @@
       <div class="bottom-layout">
         <div class="bottom-left">
           <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
-            <h2>?芷?捱蝑???/h2>
-            <p class="panel-note">?ㄐ??頂蝯梁??銝餌???賬?????摮??賣暺??嫣噶撅內?芷?捱蝑?蝔?/p>
+            <h2>自適應決策狀態</h2>
+            <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程。</p>
             <div class="adaptive-state-grid">
               <div class="adaptive-state-item">
-                <strong>?桀?璅∪?嚗蜓蝺?/ 鋆? / 餈?嚗?/strong>
-                <div id="adaptiveModeValue">撠??</div>
+                <strong>目前模式（主線 / 補救 / 返回）</strong>
+                <div id="adaptiveModeValue">尚未開始</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>銝餅??踝?Main Skill嚗?/strong>
-                <div id="mainSkillValue">敺???/div>
+                <strong>主技能（Main Skill）</strong>
+                <div id="mainSkillValue">待載入</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>PPO 頝舐??</strong>
-                <div id="ppoActionValue">撠??</div>
+                <strong>PPO 路由動作</strong>
+                <div id="ppoActionValue">尚未開始</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>?桀?憿? family</strong>
-                <div id="familyValue">敺???/div>
+                <strong>目前題型 family</strong>
+                <div id="familyValue">待載入</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>?菜葫?琿?摮???/strong>
-                <div id="detectedSubskillValue">撠?菜葫</div>
+                <strong>偵測斷點子技能</strong>
+                <div id="detectedSubskillValue">尚未偵測</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>鋆???踝?Skill嚗?/strong>
-                <div id="remediationSkillValue">撠?脣鋆?</div>
+                <strong>補救技能（Skill）</strong>
+                <div id="remediationSkillValue">尚未進入補救</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>鋆?摮??踝?Subskill嚗?/strong>
-                <div id="remediationSubskillValue">撠?脣鋆?</div>
+                <strong>補救子技能（Subskill）</strong>
+                <div id="remediationSubskillValue">尚未進入補救</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>????嚗雿???</strong>
-                <div id="switchReasonValue">??/div>
+                <strong>切換原因（為何切換）</strong>
+                <div id="switchReasonValue">無</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>餈?銝餌????/strong>
-                <div id="returnStateValue">撠?文?</div>
+                <strong>返回主線狀態</strong>
+                <div id="returnStateValue">尚未判定</div>
               </div>
               <div class="adaptive-state-item">
-                <strong>摮貊??脣漲??蝣?/strong>
-                <div id="milestoneValue">撠??</div>
+                <strong>學習進度里程碑</strong>
+                <div id="milestoneValue">尚未開始</div>
               </div>
               <div class="adaptive-state-item" style="grid-column:1 / -1;">
-                <strong>瘙箇?隤芣?嚗xplanation嚗?/strong>
-                <div id="adaptiveRationaleValue">撠??閮箸嚗頂蝯勗??芸?頝舐瘙箇???/div>
+                <strong>決策說明（Explanation）</strong>
+                <div id="adaptiveRationaleValue">尚未開始診斷，系統尚未做路由決策。</div>
               </div>
             </div>
             <div class="return-celebration" id="returnCelebration">
-              <div>??撌脣??頛芾?????餈?銝餌?</div>
-              <div>雿歇鋆??霅暺??乩?靘頂蝯望?蝜潛?瑼Ｘ?砍?隞敹???/div>
+              <div>✨ 已完成本輪補救，成功返回主線</div>
+              <div>你已補回這個知識斷點，接下來系統會繼續檢核本單元其他核心題型。</div>
             </div>
           </section>
         </div>
 
         <div class="bottom-right">
           <section class="panel question-json-panel">
-            <h2>?桀?憿 JSON ??</h2>
+            <h2>目前題目 JSON 摘要</h2>
             <pre class="json-box" id="jsonBox"></pre>
           </section>
         </div>
@@ -580,15 +549,15 @@
     let redoStack = [];
 
     function strategyName(code) { const map = {0:"0 Max-Fisher",1:"1 ZPD",2:"2 Diversity",3:"3 Review"}; return map[code] || String(code); }
-    function strategyLabel(code) { const map = {0:"?憭扯?閮蝝?,1:"餈?澆??",2:"憭見?璅?,3:"閫敹菔???}; return map[code] || String(code); }
+    function strategyLabel(code) { const map = {0:"最大資訊探索",1:"近側發展區",2:"多樣化抽樣",3:"觀念補救"}; return map[code] || String(code); }
     function strategyBadgeText(code) {
       const map = {
-        0: "? ?嗅?蝑嚗蝝Ｘ??,
-        1: "? ?嗅?蝑嚗??渡撅?,
-        2: "? ?嗅?蝑嚗?璅?璅?,
-        3: "?儭??嗅?蝑嚗?敹菔???,
+        0: "🟢 當前策略：探索新知",
+        1: "🔵 當前策略：近側發展",
+        2: "🟣 當前策略：多樣抽樣",
+        3: "🛡️ 當前策略：觀念補救",
       };
-      return map[code] || `蝑嚗?{code}`;
+      return map[code] || `策略：${code}`;
     }
     function setText(id, text) {
       const node = document.getElementById(id);
@@ -607,63 +576,63 @@
       const badge = document.getElementById("ragScopeBadge");
       if (!badge) return;
       const map = {
-        idle: "RAG 敶梢蝭?嚗?渲???蝷箝?撖急炎?交?閬?,
-        review: "RAG 撌脣??剁??曉??策雿?????蝷?,
-        active: "RAG ?桀??芸蔣?踹?渲???蝷綽?銝??寡?憿?祈澈",
-        done: "RAG 撌脩???雿隞亦?蝮賜?嚗??銴??詨?敺格???,
+        idle: "RAG 影響範圍：右側補救提示、手寫檢查摘要",
+        review: "RAG 已啟用：現在會優先給你這題的補救提示",
+        active: "RAG 目前只影響右側補救提示，不會改變題目本身",
+        done: "RAG 已結束：你可以看總結，或回頭複習相同微技能",
       };
       badge.textContent = map[mode] || map.idle;
     }
     const SUBSKILL_UI_MAP = {
-      sign_handling: { label: "甇????????皜迤鞎?", hint: "鞎???皜??捱摰??芷?蝞? },
-      add_sub: { label: "????嚗??渡???嚗?, hint: "??撘??渡?憟踝?????" },
-      mul_div: { label: "?湔銋嚗迤鞎?閬?嚗?, hint: "??瑟迤鞎???銋憭批?" },
-      order_of_operations: { label: "????嚗?銋敺?皜?", hint: "??銋嚗???蝞?皜? },
-      bracket_scope: { label: "?祈?蝭?嚗蝯?韏瑞?嚗?, hint: "?餅?????渡??狐敶梢" },
-      absolute_value: { label: "蝯??潭?敹蛛?? 0 憭?嚗?, hint: "蝯??澆?之撠?銝?甇???? },
-      exact_divisibility: { label: "?湧?斗嚗??文??∴?", hint: "?支????銝?湧" },
-      isomorphic_structure: { label: "蝯?颲刻?嚗??見摮?銝璅??", hint: "??憿?撉冽嚗?憟?見??" },
-      proper_improper_fraction: { label: "???貉????賂???????嚗?, hint: "????瘥狐憭改???皜?" },
-      mixed_numbers: { label: "撣嗅??豢?蝞??湔???詨???嚗?, hint: "撣嗅??詨??末嚗????ａ?蝞? },
-      sign_normalization: { label: "?甇?????蝚西??曉??ｇ?", hint: "甇????蝯曹?雿蔭嚗?頛???" },
-      decimal_to_fraction_exact_conversion: { label: "撠???賂??神?嗾??撟橘?", hint: "??撠雿嚗??孵神???? },
-      simplest_form_reduction: { label: "蝝??蝪∴?????銝韏瑞?嚗?, hint: "?敺?瑼Ｘ銝甈∴??賭??賢?蝝?" },
-      equivalent_fraction_scaling: { label: "蝑澆??賂????????歹?", hint: "????閬?韏瑁?嚗潭?銝?" },
-      reciprocal_transform: { label: "?璁艙嚗?銝?隤選?", hint: "?支誑?????啣" },
-      preserve_value_invariance: { label: "??潔?霈?銝韏瑟憭抒葬撠?", hint: "?芾????嚗??詨潔???" },
-      positive_fraction_comparison: { label: "甇???豢?頛?????嚗?, hint: "??銝???????頛? },
-      negative_fraction_comparison: { label: "鞎??豢?頛?頞?頞?嚗?, hint: "鞎??豢?頛?嚗?瘜冽??孵??詨?" },
-      mixed_number_comparison: { label: "撣嗅??豢?頛????湔?典?嚗?, hint: "???湔?典?嚗?瘥??賊?? },
-      multiply: { label: "?銋?嚗?蝝???嚗?, hint: "?賢?蝝?撠勗?蝝??銋? },
-      divide: { label: "??斗?嚗銋嚗?, hint: "?斗?????嚗?閮?" },
-      nested_parentheses: { label: "?祈????嚗?蝞?嚗?, hint: "???祈?鋆∴??????? },
-      decimal_fraction_mixed_arithmetic: { label: "撠?瘛瑕?蝞??絞銝敶Ｗ?嚗?, hint: "撠???詨?蝯曹?嚗???" },
-      telescoping_products: { label: "???蝝?嚗?敺漱??嚗?, hint: "???賜????曉靘? },
-      remaining_amount: { label: "?拚???閫?????其?憭?嚗?, hint: "??皜??拐?????臬銝?典?" },
-      container_weight: { label: "摰孵??撌殷?蝮賡??征?嗅???", hint: "???箏摰寧?捆?剁???頛? },
-      before_after_ratio: { label: "??霈?瘥?嚗????箸?嚗?, hint: "?????撟曉?銋嗾" },
-      share_comparison: { label: "??瘥?嚗?銝隞賡???頛?", hint: "?Ⅱ隤?頛??臭??臬?銝隞賡?" },
-      normalize_terms: { label: "???渡?嚗??朣?", hint: "??????憟踝?閮?瘥?蝛? },
-      combine_like_terms: { label: "????雿蛛??瑕?銝璅???賢?皜?", hint: "?芣?????嚗??賜?亙?雿? },
-      sign_distribution: { label: "蝚西???嚗?銝?閬“?堆?", hint: "鞎?銋脣嚗?銝?閬??? },
-      expand_monomial: { label: "?桅?撘?瘜?靽摮??質?銋?", hint: "瘥??閬??堆?甈⊥銋?憿? },
-      expand_binomial: { label: "憭?撘???瘥??質?銋嚗?, hint: "撅???閬?銋遙雿??? },
-      special_identity: { label: "銋??砍?嚗??砍?銋??泵??", hint: "憟撘?嚗??銝璅??? },
-      long_division: { label: "?琿瘜郊撽?撠?甈⊥嚗?, hint: "瘥?甇仿閬?朣?擃活?? },
-      quotient_remainder_format: { label: "??擗?銵函內嚗神摰嚗?, hint: "???豢?嚗???撘閬神皜?" },
-      reverse_division_reconstruction: { label: "??斗?嚗??擗???嚗?, hint: "??文?銋?嚗???撘???" },
-      geometry_formula: { label: "撟曆??砍??嚗?皜撖祇?靽?", hint: "??箏撘ㄐ瘥?畾萎誨銵其?暻? },
-      composite_region_modeling: { label: "銴??耦?圾嚗?憛??蔥嚗?, hint: "???陛?桀?敶ｇ?????獢? },
-      family_isomorphism: { label: "憿?蝯?颲刻?嚗?憿銝???嚗?, hint: "憿霈見摮???撉冽?航銝璅? },
-      unknown_target_preservation: { label: "?芰撘??????芰??銋暹楊嚗?, hint: "蝘駁??渡??????芰憭?撘?摰" },
-      simplify: { label: "?孵??陛嚗??曉??典像?對?", hint: "?寡??批??曇?靘??" },
-      multiply_terms: { label: "?孵?銋?嚗?憭?皜?嚗?, hint: "??皜??寡?憭??寡??批??訾?" },
-      divide_terms: { label: "?孵??斗?嚗?蝝??歹?", hint: "?賢?蝝???嚗???銝????? },
-      distribute: { label: "??敺?瘥??閬?嚗?, hint: "銋脫??嚗?銝?銝瞍? },
-      binomial_expand: { label: "??????批??質?蝞?", hint: "撅????嚗???蝛閬“?? },
-      conjugate_rationalize: { label: "?梯???????瘨??", hint: "???梯?撘????????? },
-      fractional_radical: { label: "???孵?嚗?摮?瘥???嚗?, hint: "?????韏瑕?暹?嚗??惜?? },
-      mixed_number_radical: { label: "撣嗅??豢撘??湔?典??交???", hint: "撣嗅??豢撘???賊??韏瑞?" },      structure_isomorphism: { label: "\u7d50\u69cb\u8fa8\u8b58\uff08\u5148\u770b\u9577\u76f8\u518d\u4e0b\u624b\uff09", hint: "\u984c\u76ee\u8b8a\u5f62\u4e86\uff0c\u898f\u5247\u901a\u5e38\u6c92\u8b8a" },
+      sign_handling: { label: "正負號規則（先分清正負）", hint: "負號先看清，再決定往哪邊算" },
+      add_sub: { label: "加減運算（先整理再算）", hint: "先把式子整理好，再做加減" },
+      mul_div: { label: "整數乘除（正負號規則）", hint: "先判斷正負，再算乘除大小" },
+      order_of_operations: { label: "運算順序（先乘除後加減）", hint: "先做乘除，再回來算加減" },
+      bracket_scope: { label: "括號範圍（整組一起看）", hint: "去括號前先看整組受誰影響" },
+      absolute_value: { label: "絕對值概念（看離 0 多遠）", hint: "絕對值只看大小，不看正負號" },
+      exact_divisibility: { label: "整除判斷（要除得盡）", hint: "除之前先看能不能整除" },
+      isomorphic_structure: { label: "結構辨識（換個樣子也一樣）", hint: "先看題型骨架，再套用同樣做法" },
+      proper_improper_fraction: { label: "真分數與假分數（先看分子分母）", hint: "分子和分母誰大，先分清楚" },
+      mixed_numbers: { label: "帶分數換算（整數和分數分開看）", hint: "帶分數先換好，再做後面運算" },
+      sign_normalization: { label: "分數正負號整理（符號放前面）", hint: "正負號先統一位置，比較不會亂" },
+      decimal_to_fraction_exact_conversion: { label: "小數換分數（先寫成幾分之幾）", hint: "先看小數位數，再改寫成分數" },
+      simplest_form_reduction: { label: "約成最簡（分子分母一起約）", hint: "最後再檢查一次，能不能再約分" },
+      equivalent_fraction_scaling: { label: "等值分數（分子分母同乘除）", hint: "分子分母要一起變，值才不變" },
+      reciprocal_transform: { label: "倒數概念（上下對調）", hint: "除以分數時，先想到倒數" },
+      preserve_value_invariance: { label: "分數值不變（一起放大縮小）", hint: "只要同乘同除，分數值不會變" },
+      positive_fraction_comparison: { label: "正分數比較（先通分再比）", hint: "分母不同時，先通分再比較" },
+      negative_fraction_comparison: { label: "負分數比較（越負越小）", hint: "負分數比較時，要注意方向相反" },
+      mixed_number_comparison: { label: "帶分數比較（先比整數部分）", hint: "先比整數部分，再比分數部分" },
+      multiply: { label: "分數乘法（先約分再乘）", hint: "能先約分就先約，再相乘" },
+      divide: { label: "分數除法（改乘倒數）", hint: "除法先改成乘倒數，再計算" },
+      nested_parentheses: { label: "括號分數運算（先算括號內）", hint: "先算括號裡，再處理外面" },
+      decimal_fraction_mixed_arithmetic: { label: "小數分數混合算（先統一形式）", hint: "小數和分數先統一，再運算" },
+      telescoping_products: { label: "連鎖約分（前後交叉看）", hint: "前後能約的先找出來" },
+      remaining_amount: { label: "剩餘量理解（先看用了多少）", hint: "先分清楚剩下和用掉的是哪一部分" },
+      container_weight: { label: "容器重量差（總量和空瓶分開）", hint: "先分出內容物和容器，再比較" },
+      before_after_ratio: { label: "前後變化比較（先釐清基準）", hint: "先看前後各是幾分之幾" },
+      share_comparison: { label: "分配比較（同一份量再比較）", hint: "先確認比較的是不是同一份量" },
+      normalize_terms: { label: "項的整理（先排整齊）", hint: "先把同類項排好，計算比較穩" },
+      combine_like_terms: { label: "同類項合併（長得一樣才能加減）", hint: "只有同類的項，才能直接合併" },
+      sign_distribution: { label: "符號分配（每一項都要顧到）", hint: "負號乘進去，每一項都要變號" },
+      expand_monomial: { label: "單項式乘法（係數字母都要乘）", hint: "每一項都要乘到，次方也要顧" },
+      expand_binomial: { label: "多項式展開（每項都要乘到）", hint: "展開時不要漏乘任何一項" },
+      special_identity: { label: "乘法公式（套公式也要看符號）", hint: "套公式前，先看是不是標準型" },
+      long_division: { label: "長除法步驟（對齊次方）", hint: "每一步都要對齊最高次項" },
+      quotient_remainder_format: { label: "商與餘式表示（寫完整）", hint: "有餘數時，商和餘式都要寫清楚" },
+      reverse_division_reconstruction: { label: "反推除法（用商和餘式還原）", hint: "先用除式乘商，再把餘式加回來" },
+      geometry_formula: { label: "幾何公式應用（看清長寬關係）", hint: "先找出公式裡每一段代表什麼" },
+      composite_region_modeling: { label: "複合圖形拆解（分塊再合併）", hint: "先拆成簡單圖形，再組回答案" },
+      family_isomorphism: { label: "題型結構辨識（換題皮不換做法）", hint: "題目變樣子，做法骨架可能一樣" },
+      unknown_target_preservation: { label: "未知式保留（先把未知量留乾淨）", hint: "移項整理時，先把未知多項式留完整" },
+      simplify: { label: "根式化簡（先找完全平方）", hint: "根號內先找能開出來的因數" },
+      multiply_terms: { label: "根式乘法（根號內外分清楚）", hint: "先分清楚根號外和根號內再相乘" },
+      divide_terms: { label: "根式除法（先約再除）", hint: "能先約的先約，再看要不要有理化" },
+      distribute: { label: "分配律（每一項都要乘）", hint: "乘進括號時，每一項都不能漏" },
+      binomial_expand: { label: "雙括號展開（內外都要算）", hint: "展開雙括號時，四個乘積都要顧到" },
+      conjugate_rationalize: { label: "共軛有理化（配對消根號）", hint: "看清共軛式，分母才能順利有理化" },
+      fractional_radical: { label: "分式根式（分子分母分開看）", hint: "分式和根號一起出現時，先分層看" },
+      mixed_number_radical: { label: "帶分數根式（整數部分別漏掉）", hint: "帶分數根式要把整數部分一起算" },      structure_isomorphism: { label: "\u7d50\u69cb\u8fa8\u8b58\uff08\u5148\u770b\u9577\u76f8\u518d\u4e0b\u624b\uff09", hint: "\u984c\u76ee\u8b8a\u5f62\u4e86\uff0c\u898f\u5247\u901a\u5e38\u6c92\u8b8a" },
       coefficient_sign_handling: { label: "\u4fc2\u6578\u8207\u7b26\u865f\u8655\u7406\uff08\u5148\u5224\u65b7\u6b63\u8ca0\uff09", hint: "\u5148\u5224\u65b7\u4fc2\u6578\u6b63\u8ca0\uff0c\u518d\u505a\u4e58\u9664\u6216\u5408\u4f75" },
       like_term_combination: { label: "\u540c\u985e\u9805\u5408\u4f75\uff08\u8b8a\u6578\u76f8\u540c\u624d\u80fd\u4f75\uff09", hint: "\u78ba\u8a8d\u8b8a\u6578\u8207\u6b21\u65b9\u76f8\u540c\u518d\u5408\u4f75" },
       term_collection_with_constants: { label: "\u4ee3\u6578\u9805\u8207\u5e38\u6578\u5206\u7d44\uff08\u5206\u958b\u6574\u7406\uff09", hint: "\u5148\u5206\u4ee3\u6578\u9805\u8207\u5e38\u6578\u9805\uff0c\u518d\u5404\u81ea\u5408\u4f75" },
@@ -671,181 +640,181 @@
       monomial_distribution: { label: "\u55ae\u9805\u5206\u914d\u5230\u62ec\u865f\uff08\u6bcf\u9805\u90fd\u4e58\u5230\uff09", hint: "\u5206\u914d\u6642\u6bcf\u4e00\u9805\u90fd\u8981\u4e58\u4e0a\u4fc2\u6578" },
       nested_bracket_scope: { label: "\u5de2\u72c0\u62ec\u865f\u7bc4\u570d\uff08\u7531\u5167\u5f80\u5916\uff09", hint: "\u5148\u7b97\u6700\u5167\u5c64\u62ec\u865f\uff0c\u518d\u9010\u5c64\u5c55\u958b" },
       fractional_expression_simplification: { label: "\u5206\u5f0f\u4ee3\u6578\u5f0f\u5316\u7c21\uff08\u5148\u7d71\u4e00\u5206\u6bcd\uff09", hint: "\u5148\u8655\u7406\u5206\u6bcd\uff0c\u518d\u5408\u4f75\u540c\u985e\u9805" },      mixed_ops: { label: "\u56db\u5247\u6df7\u5408\u904b\u7b97\uff08\u5148\u770b\u9806\u5e8f\uff09", hint: "\u5148\u4e58\u9664\u5f8c\u52a0\u6e1b\uff0c\u9806\u5e8f\u4e0d\u8981\u4e82" },
-      parentheses: { label: "?祈???嚗?蝞ㄐ?ｇ?", hint: "????嚗?敺憭?" },
+      parentheses: { label: "括號運算（先算裡面）", hint: "先處理括號內，再往外算" },
     };
     const SKILL_UI_MAP = {
-      "jh_?詨飛1銝FourArithmeticOperationsOfIntegers": "?湔????",
-      "jh_?詨飛1銝FourArithmeticOperationsOfNumbers": "?????",
-      "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial": "憭?撘???蝞?,
-      "jh_?詨飛2銝FourOperationsOfRadicals": "?孵?????",
+      "jh_數學1上_FourArithmeticOperationsOfIntegers": "整數四則運算",
+      "jh_數學1上_FourArithmeticOperationsOfNumbers": "分數四則運算",
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": "多項式四則運算",
+      "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
       "\u006a\u0068_\u6578\u5b781\u4e0a_OperationsOnLinearExpressions": "\u4e00\u5143\u4e00\u6b21\u5f0f\u5316\u7c21",
     };
     function updateEntryModeBadge() {
       const node = document.getElementById("entryModeBadge");
       if (!node) return;
       const mode = String(state.mode || "teaching").toLowerCase();
-      const skillLabel = SKILL_UI_MAP[skillId] || skillId || "?芣?摰??;
+      const skillLabel = SKILL_UI_MAP[skillId] || skillId || "未指定單元";
       node.textContent = mode === "assessment"
-        ? `?芷???芋撘?${skillLabel}`
-        : `?芷?飛蝧芋撘?${skillLabel}`;
+        ? `自適應評量模式｜${skillLabel}`
+        : `自適應學習模式｜${skillLabel}`;
     }
     const FAMILY_NAME_UI_MAP = {
-      int_numberline_add_sub: "?貊??湔??",
-      int_flat_add_sub: "?湔撟喲??",
-      int_flat_mul_div_exact: "?湔銋嚗?歹?",
-      int_flat_mixed_four_ops: "?湔??瘛瑕?",
-      int_bracket_mixed: "?湔?祈?瘛瑕?",
-      int_abs_value: "?湔蝯???,
-      int_division_exact_nested: "?湔撌Ｙ??斗?",
-      int_composite_structure: "?湔蝬?蝯?憿?,
-      "Fraction Simplification": "??陛",
-      "Equivalent Fraction Fill-Blank": "蝑澆??詨‵蝛?,
-      "Preserve-Value Fraction Invariance": "?潔?霈??貉???,
-      "Fraction Comparison": "?憭批?瘥?",
-      "Fraction Add/Subtract": "???",
-      "Fraction Multiply": "?銋?",
-      "Fraction Divide": "??斗?",
-      "Fraction Mixed Four Operations": "???瘛瑕?",
-      "Decimal-Fraction Mixed Evaluation": "撠?瘛瑕?閮?",
-      "Fraction Word Problems": "??憿?,
-      poly_add_sub_flat: "撟喲憭?撘?皜?,
-      poly_add_sub_nested: "撌Ｙ?憭?撘?皜?,
-      poly_add_sub_unknown: "?急?亙?憭?撘?皜?,
-      poly_mul_monomial: "?桅?撘?憭?撘?,
-      poly_mul_poly: "憭?撘?瘜???,
-      poly_mul_special_identity: "銋??砍?",
-      poly_div_monomial_eval: "?桅?撘瘜?亙?蝪?,
-      poly_div_monomial_qr: "?桅?撘瘜???擗?嚗?,
-      poly_div_poly_qr: "憭?撘?斗?嚗???撘?",
-      poly_div_reverse: "??斗?",
-      poly_mixed_simplify: "蝬??陛",
-      poly_geom_formula_direct: "撟曆??砍??",
-      poly_geom_region_composite: "銴??耦?",
-      p0_simplify: "?孵??陛",
-      p1_add_sub: "蝝撘?皜?,
-      p1b_add_sub_bracket: "?祈??孵???",
-      p1c_mixed_frac_rad_add_sub: "??孵???",
-      p2a_mult_direct: "?孵??湔銋?",
-      p2b_mult_distrib: "?孵???銋?",
-      p2c_mult_binomial: "?孵????瘜?,
-      p2d_perfect_square: "摰撟單?砍?",
-      p2e_diff_of_squares: "撟單撌桀撘?,
-      p2f_int_mult_rad: "?湔銋撘?,
-      p2g_rad_mult_frac: "?孵?銋?撘?,
-      p2h_frac_mult_rad: "??銋撘?,
-      p3a_div_expr: "?孵??斗?嚗撘?",
-      p3b_div_simple: "?孵??斗?嚗???嚗?,
-      p3c_div_direct: "?孵??湔?斗?",
-      p4_frac_mult: "???孵?銋?",
-      p4b_frac_rad_div: "???孵??斗?",
-      p4c_nested_frac_chain: "撌Ｙ??????",
-      p4d_frac_rad_div_mixed: "???孵?瘛瑕??斗?",
-      p5a_conjugate_int: "?梯??????湔嚗?,
-      p5b_conjugate_rad: "?梯??????孵?嚗?,
-      p6_combo: "?孵?蝬?憿?,
-      p7_mixed_rad_add: "撣嗅??豢撘?皜?,
+      int_numberline_add_sub: "數線整數加減",
+      int_flat_add_sub: "整數平面加減",
+      int_flat_mul_div_exact: "整數乘除（整除）",
+      int_flat_mixed_four_ops: "整數四則混合",
+      int_bracket_mixed: "整數括號混合",
+      int_abs_value: "整數絕對值",
+      int_division_exact_nested: "整數巢狀除法",
+      int_composite_structure: "整數綜合結構題",
+      "Fraction Simplification": "分數化簡",
+      "Equivalent Fraction Fill-Blank": "等值分數填空",
+      "Preserve-Value Fraction Invariance": "值不變分數轉換",
+      "Fraction Comparison": "分數大小比較",
+      "Fraction Add/Subtract": "分數加減",
+      "Fraction Multiply": "分數乘法",
+      "Fraction Divide": "分數除法",
+      "Fraction Mixed Four Operations": "分數四則混合",
+      "Decimal-Fraction Mixed Evaluation": "小數分數混合計算",
+      "Fraction Word Problems": "分數應用題",
+      poly_add_sub_flat: "平面多項式加減",
+      poly_add_sub_nested: "巢狀多項式加減",
+      poly_add_sub_unknown: "含未知式多項式加減",
+      poly_mul_monomial: "單項式乘多項式",
+      poly_mul_poly: "多項式乘法展開",
+      poly_mul_special_identity: "乘法公式",
+      poly_div_monomial_eval: "單項式除法直接化簡",
+      poly_div_monomial_qr: "單項式除法（商與餘式）",
+      poly_div_poly_qr: "多項式長除法（商與餘式）",
+      poly_div_reverse: "反推除法",
+      poly_mixed_simplify: "綜合化簡",
+      poly_geom_formula_direct: "幾何公式應用",
+      poly_geom_region_composite: "複合圖形應用",
+      p0_simplify: "根式化簡",
+      p1_add_sub: "純根式加減",
+      p1b_add_sub_bracket: "括號根式加減",
+      p1c_mixed_frac_rad_add_sub: "分數根式加減",
+      p2a_mult_direct: "根式直接乘法",
+      p2b_mult_distrib: "根式分配乘法",
+      p2c_mult_binomial: "根式雙括號乘法",
+      p2d_perfect_square: "完全平方公式",
+      p2e_diff_of_squares: "平方差公式",
+      p2f_int_mult_rad: "整數乘根式",
+      p2g_rad_mult_frac: "根式乘分式",
+      p2h_frac_mult_rad: "分式乘根式",
+      p3a_div_expr: "根式除法（整式）",
+      p3b_div_simple: "根式除法（有理化）",
+      p3c_div_direct: "根式直接除法",
+      p4_frac_mult: "分式根式乘法",
+      p4b_frac_rad_div: "分式根式除法",
+      p4c_nested_frac_chain: "巢狀分式連鎖",
+      p4d_frac_rad_div_mixed: "分式根式混合除法",
+      p5a_conjugate_int: "共軛有理化（整數）",
+      p5b_conjugate_rad: "共軛有理化（根式）",
+      p6_combo: "根式綜合題",
+      p7_mixed_rad_add: "帶分數根式加減",
     };
     const SKILL_FAMILY_ID_UI_MAP = {
-      "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial": {
-        F1: "撟喲憭?撘?皜?,
-        F2: "撌Ｙ?憭?撘?皜?,
-        F3: "?急?亙?憭?撘?皜?,
-        F4: "?桅?撘?憭?撘?,
-        F5: "憭?撘?瘜???,
-        F6: "銋??砍?",
-        F7: "?桅?撘瘜?亙?蝪?,
-        F8: "?桅?撘瘜???擗?嚗?,
-        F9: "憭?撘?斗?嚗???撘?",
-        F10: "??斗?",
-        F11: "蝬??陛",
-        F12: "撟曆??砍??",
-        F13: "銴??耦?",
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+        F1: "平面多項式加減",
+        F2: "巢狀多項式加減",
+        F3: "含未知式多項式加減",
+        F4: "單項式乘多項式",
+        F5: "多項式乘法展開",
+        F6: "乘法公式",
+        F7: "單項式除法直接化簡",
+        F8: "單項式除法（商與餘式）",
+        F9: "多項式長除法（商與餘式）",
+        F10: "反推除法",
+        F11: "綜合化簡",
+        F12: "幾何公式應用",
+        F13: "複合圖形應用",
       },
     };
     const ANSWER_FORMAT_HINT_BY_FAMILY_NAME = {
       poly_div_monomial_qr: {
-        hint: "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3",
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
         example: "",
-        placeholder: "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
       },
       poly_div_poly_qr: {
-        hint: "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3",
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
         example: "",
-        placeholder: "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
       },
       poly_div_reverse: {
-        hint: "隢?亥撓?亥◤?文?",
+        hint: "請直接輸入被除式",
         example: "4x^2-8x-6",
-        placeholder: "靘?嚗?x^2-8x-6",
+        placeholder: "例如：4x^2-8x-6",
       },
       int_power_sign_parentheses: {
-        hint: "隢?亥撓?交?潛?獢?,
+        hint: "請直接輸入數值答案",
         example: "-9",
-        placeholder: "靘?嚗?9",
+        placeholder: "例如：-9",
       },
       int_power_mixed_evaluation: {
-        hint: "隢?亥撓?交?潛?獢?,
+        hint: "請直接輸入數值答案",
         example: "-9",
-        placeholder: "靘?嚗?9",
+        placeholder: "例如：-9",
       },
       power_same_base_multiply: {
-        hint: "隢憛怠?",
+        hint: "請只填入指數",
         example: "7",
-        placeholder: "靘?嚗?",
+        placeholder: "例如：7",
       },
       power_of_power: {
-        hint: "隢憛怠?",
+        hint: "請只填入指數",
         example: "7",
-        placeholder: "靘?嚗?",
+        placeholder: "例如：7",
       },
       product_power_distribution: {
-        hint: "隢憛怠?",
+        hint: "請只填入指數",
         example: "7",
-        placeholder: "靘?嚗?",
+        placeholder: "例如：7",
       },
     };
     const ANSWER_FORMAT_HINT_BY_SKILL_FAMILY_ID = {
-      "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial:F8": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_monomial_qr,
-      "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial:F9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_poly_qr,
-      "jh_?詨飛2銝FourArithmeticOperationsOfPolynomial:F10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_reverse,
-      "jh_?詨飛1銝FourArithmeticOperationsOfIntegers:I9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_sign_parentheses,
-      "jh_?詨飛1銝FourArithmeticOperationsOfIntegers:I10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_mixed_evaluation,
-      "jh_?詨飛1銝FourArithmeticOperationsOfNumbers:F11": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_same_base_multiply,
-      "jh_?詨飛1銝FourArithmeticOperationsOfNumbers:F12": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_of_power,
-      "jh_?詨飛1銝FourArithmeticOperationsOfNumbers:F13": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.product_power_distribution,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F8": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_monomial_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_poly_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_reverse,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_sign_parentheses,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_mixed_evaluation,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F11": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_same_base_multiply,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F12": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_of_power,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F13": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.product_power_distribution,
     };
     const DEFAULT_ANSWER_FORMAT_HINT = {
-      hint: "隢撓?交摮貊?獢??隢 /嚗誨?詨?撱箄降?冽??郁蝢押?,
-      example: "-9 ??3x+1+5/(3x)",
-      placeholder: "隢撓?乩???獢?靘?嚗?5/3 ??12",
+      hint: "請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。",
+      example: "-9 或 3x+1+5/(3x)",
+      placeholder: "請輸入你的答案，例如：-5/3 或 12",
     };
     const DEFAULT_HINT_BY_SKILL_TYPE = {
       polynomial: {
-        hint: "隢憭?撘?蝑?瘜冽??????甇????,
+        hint: "請用多項式作答，注意同類項整理與正負號。",
         example: "2x^2 + 3x + 5",
-        placeholder: "隢撓?乩???獢?靘?: 2x^2 + 3x + 5",
+        placeholder: "請輸入你的答案，例如: 2x^2 + 3x + 5",
       },
       fraction: {
-        hint: "隢??澆?雿?嚗??/ 銵函內???,
-        example: "3/4 ??-5/2",
-        placeholder: "靘?: 3/4 ??-5/2",
+        hint: "請用分數格式作答，可用 / 表示分數。",
+        example: "3/4 或 -5/2",
+        placeholder: "例如: 3/4 或 -5/2",
       },
       integer: {
-        hint: "隢?亥撓?交?貊?獢?,
-        example: "-12 ??25",
-        placeholder: "靘?: -12 ??25",
+        hint: "請直接輸入整數答案。",
+        example: "-12 或 25",
+        placeholder: "例如: -12 或 25",
       },
     };
     function getAnswerFormatHint(family) {
       const fid = String(family || "").trim();
       if (fid === "F8" || fid === "F9") {
-        return "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3";
+        return "請以「商與餘數」表示，例如：3x+2 ... -3";
       }
       if (fid.startsWith("F")) {
-        return "隢撓?亙???嚗?憒?2x^2 + 3x + 5";
+        return "請輸入多項式，例如：2x^2 + 3x + 5";
       }
       if (fid.startsWith("I")) {
-        return "隢撓?交?賂?靘?嚗?5 ??12";
+        return "請輸入整數，例如：-5 或 12";
       }
       return "";
     }
@@ -869,21 +838,21 @@
       ).trim().toLowerCase();
 
       if (family === "F8" || family === "F9") {
-        return "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3";
+        return "請以『商與餘數』表示，例如：3x+2 ... -3";
       }
       if (normalizedSkillType === "polynomial") {
-        return "隢撓?乩???獢?靘?嚗?x^2 + 3x + 5";
+        return "請輸入你的答案，例如：2x^2 + 3x + 5";
       }
       if (normalizedSkillType === "fraction") {
-        return "隢撓?乩???獢?靘?嚗?/4 ??-5/2";
+        return "請輸入你的答案，例如：3/4 或 -5/2";
       }
       if (normalizedSkillType === "integer") {
-        return "隢撓?乩???獢?靘?嚗?12 ??25";
+        return "請輸入你的答案，例如：-12 或 25";
       }
       if (normalizedSkillType === "radical") {
-        return "隢撓?乩???獢?靘?嚗??? + ??";
+        return "請輸入你的答案，例如：2√3 + √5";
       }
-      return "隢撓?乩???獢?;
+      return "請輸入你的答案";
     }
     function resolveAnswerFormatHint(skillKey, familyId, familyNameEn) {
       const byName = ANSWER_FORMAT_HINT_BY_FAMILY_NAME[String(familyNameEn || "").trim()];
@@ -900,11 +869,11 @@
       const skillType = inferSkillTypeForHint(skillKey, familyId);
       const fid = String(familyId || "").trim();
       if (fid === "F8" || fid === "F9") {
-        setText("answerFormatHintText", "隢誑?????詻”蝷綽?靘?嚗?x+2 ... -3");
+        setText("answerFormatHintText", "請以「商與餘數」表示，例如：3x+2 ... -3");
         setText("answerFormatExampleText", "");
       } else {
         setText("answerFormatHintText", familyHint || cfg.hint || DEFAULT_ANSWER_FORMAT_HINT.hint);
-        setText("answerFormatExampleText", `蝭?嚗?{cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
+        setText("answerFormatExampleText", `範例：${cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
       }
       if (answerInput) {
         answerInput.placeholder = getAnswerPlaceholder(familyId, skillType, null);
@@ -922,7 +891,7 @@
       const raw = String(subskillKey).trim();
       if (SUBSKILL_UI_MAP[raw]?.hint) return SUBSKILL_UI_MAP[raw].hint;
       const shortKey = raw.includes(".") ? raw.split(".").pop() : raw;
-      return SUBSKILL_UI_MAP[shortKey]?.hint || "??????賜?閬???璆?;
+      return SUBSKILL_UI_MAP[shortKey]?.hint || "先把這個子技能的規則看清楚。";
     }
     function toFriendlySubskillLabel(code) {
       if (!code) return "";
@@ -935,18 +904,18 @@
     }
     function toLearningModeLabel(mode) {
       const map = {
-        main: "銝餅??賢飛蝧葉",
-        remediation: "?蔭摮??質??葉",
-        returned: "撌脰??蜓???,
-        "": "撠??",
+        main: "主技能學習中",
+        remediation: "前置子技能補救中",
+        returned: "已返回主技能",
+        "": "尚未開始",
       };
       return map[normalizeLearningMode(mode)] || map[""];
     }
     function toLearningModeBadgeLabel(mode) {
       const map = {
-        main: "銝餌?",
-        remediation: "鋆?",
-        returned: "餈?",
+        main: "主線",
+        remediation: "補救",
+        returned: "返回",
       };
       return map[normalizeLearningMode(mode)] || map.main;
     }
@@ -1023,10 +992,10 @@
     }
     function toRouteActionLabel(action) {
       const map = {
-        stay: "stay嚗雁??蜓蝺?",
-        remediate: "remediate嚗??亥??楝蝺?",
-        return: "return嚗??蜓蝺?",
-        "": "撠??",
+        stay: "stay（維持目前主線）",
+        remediate: "remediate（切入補救路線）",
+        return: "return（返回主線）",
+        "": "尚未開始",
       };
       return map[normalizeRouteAction(action)] || map[""];
     }
@@ -1066,13 +1035,13 @@
     }
     function milestoneLabel(value) {
       const map = {
-        remediation_in_progress: "鋆?銝?,
-        remediation_returned_success: "撌脰??蜓蝺?,
-        unit_completed: "?砍????,
-        mainline_progress: "銝餌?摮貊?銝?,
-        assessment_in_progress: "閰?銝?,
-        assessment_breakpoint_detected: "撌脣皜砍飛蝧暺?,
-        assessment_completed: "閰?摰?",
+        remediation_in_progress: "補救中",
+        remediation_returned_success: "已補回主線",
+        unit_completed: "本單元完成",
+        mainline_progress: "主線學習中",
+        assessment_in_progress: "評量中",
+        assessment_breakpoint_detected: "已偵測學習斷點",
+        assessment_completed: "評量完成",
       };
       return map[deriveMilestoneStateFromState()] || map.mainline_progress;
     }
@@ -1102,52 +1071,52 @@
       const skill = String(skillKey || "").trim();
       const byName = FAMILY_NAME_UI_MAP[nameEn];
       const bySkillId = SKILL_FAMILY_ID_UI_MAP[skill]?.[id];
-      if (byName && id) return `${id}嚚?{byName}`;
-      if (bySkillId && id) return `${id}嚚?{bySkillId}`;
+      if (byName && id) return `${id}｜${byName}`;
+      if (bySkillId && id) return `${id}｜${bySkillId}`;
       if (byName) return byName;
-      return id || nameEn || "敺???;
+      return id || nameEn || "待載入";
     }
     function buildAdaptiveRationale() {
       const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
-      if (!hasStarted) return "撠??閮箸嚗頂蝯勗??芸?頝舐瘙箇???;
+      if (!hasStarted) return "尚未開始診斷，系統尚未做路由決策。";
       if (state.mode === "assessment") {
         const milestone = deriveMilestoneStateFromState();
         if (milestone === "assessment_breakpoint_detected") {
-          return "閰?璅∪?撌脣皜砍蝛拙?摮貊??琿?嚗遣霅啣???teaching 璅∪?鋆撥敺???閰???;
+          return "評量模式已偵測到穩定學習斷點，建議切換 teaching 模式補強後再回來評量。";
         }
         if (milestone === "assessment_completed") {
-          return "閰?璅∪?撌脣??敹??炎?賂?撌脩??桀?蝎曄?摨西?摮貊?撱箄降??;
+          return "評量模式已完成核心題型檢核，已產生本單元精熟度與學習建議。";
         }
-        return "?桀??箄??芋撘?蝟餌絞?芣炎?訾蜓蝺敹???銝??鋆??舐???;
+        return "目前為評量模式，系統只檢核主線核心題型，不會切入補救支線。";
       }
       if (state.isCompleted || normalizeDisplayMode(state.displayMode) === "completed") {
-        const mainSkillDone = state.mainSkillLabel || toSkillLabel(state.displaySkill || state.mainSkill) || "?砍??;
-        const familyDone = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "銝餌? family";
-        return `?祆活閮箸撌脣???蝯??銝餌???{mainSkillDone} / ${familyDone}??銝?憿舐內鋆?銝剔??;
+        const mainSkillDone = state.mainSkillLabel || toSkillLabel(state.displaySkill || state.mainSkill) || "本單元";
+        const familyDone = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "主線 family";
+        return `本次診斷已完成。最終停留於主線「${mainSkillDone} / ${familyDone}」，不再顯示補救中狀態。`;
       }
       if (deriveMilestoneStateFromState() === "remediation_returned_success") {
-        return "撌脣??頛芾??蒂??餈?銝餌?嚗銝?蝟餌絞?匱蝥炎?豢?桀??嗡??詨?憿???;
+        return "已完成本輪補救並成功返回主線；接下來系統會繼續檢核本單元其他核心題型。";
       }
       const mode = normalizeLearningMode(state.learningMode);
       const route = normalizeRouteAction(state.ppoRouteAction);
-      const mainSkill = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "銝餅???;
-      const family = state.currentFamilyLabel || state.currentFamilyId || "?桀? family";
-      const breakpoint = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "敺摰????;
-      const remSkill = state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "鋆????;
-      const remSub = getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "鋆?摮???;
+      const mainSkill = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "主技能";
+      const family = state.currentFamilyLabel || state.currentFamilyId || "目前 family";
+      const breakpoint = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "待判定子技能";
+      const remSkill = state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "補救技能";
+      const remSub = getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "補救子技能";
       if (state.isRemediationCandidate) {
-        return `蝟餌絞?菜葫?唬??航?∪??{breakpoint}??銝??撌脣停蝺?雿頛?PPO ????${toRouteActionLabel(route)}嚗??蝬剜?銝餌???{family}?;
+        return `系統偵測到你可能卡在「${breakpoint}」，且補救候選已就緒；但本輪 PPO 動作為 ${toRouteActionLabel(route)}，目前仍維持主線「${family}」。`;
       }
       if (mode === "returned" || state.hasReturnedToMain) {
-        return `PPO ????${toRouteActionLabel(route)}嚗歇摰?鋆?銝西???{mainSkill}???桀?憿??箝?{family}?;
+        return `PPO 動作為 ${toRouteActionLabel(route)}，已完成補救並返回「${mainSkill}」，目前題型為「${family}」。`;
       }
       if (state.isRemediationActive || mode === "remediation") {
-        return `PPO ????${toRouteActionLabel(route)}嚗頂蝯勗摰暺??{breakpoint}???桀??脣??{remSkill}????摮??踝?${remSub}嚗;
+        return `PPO 動作為 ${toRouteActionLabel(route)}，系統判定斷點在「${breakpoint}」，目前進入「${remSkill}」補救（子技能：${remSub}）。`;
       }
       if (state.returnReady) {
-        return `?桀?隞銝餌???{mainSkill}??憿??箝?{family}?頂蝯勗歇?文?????隞塚??航?銝?甇亙??蜓蝺帘摰毀蝧;
+        return `目前仍在主線「${mainSkill}」，題型為「${family}」。系統已判定達返回條件，可視下一步切回主線穩定練習。`;
       }
-      return `?桀?蝬剜?銝餌???{mainSkill}??憿??箝?{family}?PO ????${toRouteActionLabel(route)}嚗?芸??亥??;
+      return `目前維持主線「${mainSkill}」，題型為「${family}」。PPO 動作為 ${toRouteActionLabel(route)}，暫未切入補救。`;
     }
     function updateAdaptiveStatePanel() {
       const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
@@ -1157,42 +1126,42 @@
       const showRemediationByDisplay = !showCompleted && displayMode === "remediation";
       const milestoneState = deriveMilestoneStateFromState();
       const modeLabel = showCompleted
-        ? "?祆活閮箸摰?"
+        ? "本次診斷完成"
         : (milestoneState === "remediation_returned_success"
-          ? "撌脰??蜓蝺?
+          ? "已補回主線"
         : (showMainlineByDisplay
-          ? "銝餅??賢飛蝧葉"
-          : (showRemediationByDisplay ? "?蔭摮??質??葉" : (hasStarted ? toLearningModeLabel(state.learningMode) : "撠??"))));
-      const mainSkillText = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "敺???;
-      const familyText = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "敺???;
+          ? "主技能學習中"
+          : (showRemediationByDisplay ? "前置子技能補救中" : (hasStarted ? toLearningModeLabel(state.learningMode) : "尚未開始"))));
+      const mainSkillText = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入";
+      const familyText = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "待載入";
       const detectedText = showCompleted
-        ? (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "撌脣???)
-        : (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "撠?菜葫");
+        ? (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "已完成")
+        : (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "尚未偵測");
       const assessmentMode = state.mode === "assessment";
       const remediationText = assessmentMode
-        ? "閰?璅∪?銝脰??蝺?
+        ? "評量模式不進補救支線"
         : ((showCompleted || showMainlineByDisplay)
-        ? "?桀??箔蜓蝺???
+        ? "目前為主線狀態"
         : (state.isRemediationActive
-        ? (state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "敺???)
+        ? (state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待載入")
         : (state.isRemediationCandidate
-          ? `撱箄降鋆??嚗?{state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "敺摰?}`
-          : "撠?脣鋆?")));
+          ? `建議補救候選：${state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待判定"}`
+          : "尚未進入補救")));
       const remediationSubskillText = assessmentMode
-        ? "隢?摰?銝餌?閮箸嚗?靘遣霅啣???摮豢芋撘?
+        ? "請先完成主線診斷，再依建議切換教學模式"
         : ((showCompleted || showMainlineByDisplay)
-        ? "?桀??∟??脰?銝?
+        ? "目前無補救進行中"
         : (state.isRemediationActive
-        ? (getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "敺???)
+        ? (getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待載入")
         : (state.isRemediationCandidate
-          ? `?菜葫?琿?嚗?{getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "敺摰?}`
-          : "撠?脣鋆?")));
-      const switchReasonText = state.switchReason || "??;
+          ? `偵測斷點：${getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待判定"}`
+          : "尚未進入補救")));
+      const switchReasonText = state.switchReason || "無";
       const returnText = showCompleted
-        ? (state.hasReturnedToMain ? "撌脣?銝餌?敺??? : "撌脣???)
-        : (state.hasReturnedToMain ? "撌脰??蜓??? : (state.returnReady ? "撌脤?餈?璇辣" : "撠????隞?));
-      const ppoActionText = hasStarted ? toRouteActionLabel(state.ppoRouteAction) : "撠??";
-      setText("adaptiveModeValue", modeLabel || "撠??");
+        ? (state.hasReturnedToMain ? "已回主線後完成" : "已完成")
+        : (state.hasReturnedToMain ? "已返回主技能" : (state.returnReady ? "已達返回條件" : "尚未達返回條件"));
+      const ppoActionText = hasStarted ? toRouteActionLabel(state.ppoRouteAction) : "尚未開始";
+      setText("adaptiveModeValue", modeLabel || "尚未開始");
       setText("mainSkillValue", mainSkillText);
       setText("ppoActionValue", ppoActionText);
       setText("familyValue", familyText);
@@ -1200,7 +1169,7 @@
       setText("remediationSkillValue", remediationText);
       setText("remediationSubskillValue", remediationSubskillText);
       setText("switchReasonValue", switchReasonText);
-      setText("returnStateValue", state.stepNumber > 0 ? returnText : "撠?文?");
+      setText("returnStateValue", state.stepNumber > 0 ? returnText : "尚未判定");
       const milestoneEl = document.getElementById("milestoneValue");
       if (milestoneEl) {
         milestoneEl.className = milestoneClass(milestoneState);
@@ -1217,13 +1186,13 @@
     function resetChatHistory() {
       const box = document.getElementById("chatHistory");
       if (!box) return;
-      box.innerHTML = '<div class="msg bot">雿末嚗??舫?憿? AI ?拇????撌勗?憿????冽???????嚗?銝??湔??獢??箔???/div>';
+      box.innerHTML = '<div class="msg bot">你好，我是這一題的 AI 助教。你先自己做題，我會在旁邊提醒你重點，但不會直接把答案講出來。</div>';
       scrollChatToBottom();
     }
     function resetHintBox() {
       const box = document.getElementById("hintBox");
       if (!box) return;
-      box.innerHTML = "?ㄐ?＊蝷粹?憿?鋆??內?蝟餌絞? Review嚗??蝪∪銝剜???雿????敹萸?;
+      box.innerHTML = "這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。";
     }
     function escapeHtml(text) {
       return String(text ?? "")
@@ -1248,19 +1217,19 @@
     function summarizeHandwritingResult(data) {
       const messages = [];
       if (data && data.correct === true) {
-        messages.push("??????撖怠摰嫣?嚗?憿?閮??孵?憭扯甇?Ⅱ??);
+        messages.push("我看過你的手寫內容了，這一題的計算方向大致正確。");
       } else if (data && data.is_process_correct === true) {
-        messages.push("雿?甇仿??孵?憭扯甇?Ⅱ嚗?瑼Ｘ?敺???蝞?瘝?蝞???);
+        messages.push("你的步驟方向大致正確，再檢查最後一個計算有沒有算準。");
       } else {
-        messages.push("??????撖怠摰嫣?嚗?憿?銝??亥?敺銝???);
+        messages.push("我看過你的手寫內容了，這一題先不要急著往下算。");
       }
 
       if (Array.isArray(data?.focus_points) && data.focus_points.length) {
-        messages.push(`??交炎?伐?${data.focus_points.join("??)}?);
+        messages.push(`先特別檢查：${data.focus_points.join("、")}。`);
       } else if (Array.isArray(data?.subskill_labels) && data.subskill_labels.length) {
-        messages.push(`??交炎?伐?${data.subskill_labels.join("??)}?);
+        messages.push(`先特別檢查：${data.subskill_labels.join("、")}。`);
       } else {
-        messages.push("?炎?乩?????皜??詨??泵????????);
+        messages.push("先檢查你有沒有看清楚數字、符號和運算順序。");
       }
 
       if (typeof data?.reply === "string" && data.reply.trim()) {
@@ -1282,7 +1251,7 @@
       setText("stepValue", String(response.step_number));
       setText("frustrationValue", String(response.frustration_index));
       setText("frustrationMini", String(response.frustration_index));
-      setText("familyBadge", `敺格??踝?${response.target_family_id || "敺那??}`);
+      setText("familyBadge", `微技能：${response.target_family_id || "待診斷"}`);
       setText("strategyMini", strategyLabel(response.ppo_strategy));
       const strategyBadge = document.getElementById("strategyBadge");
       if (strategyBadge) {
@@ -1290,7 +1259,7 @@
         strategyBadge.classList.toggle("review", response.ppo_strategy === 3);
       }
       if (q && q.family_name) {
-        setText("questionFamily", `Family: ${response.target_family_id} 繚 ${q.family_name}`);
+        setText("questionFamily", `Family: ${response.target_family_id} · ${q.family_name}`);
       } else {
         setText("questionFamily", `Family: ${response.target_family_id || "-"}`);
       }
@@ -1316,16 +1285,16 @@
     function renderTrajectory() {
       const box = document.getElementById("trajectoryBox");
       if (!state.history.length) {
-        box.innerHTML = "<div class='trajectory-empty'>撠閮箸頠楚??憪那?瑕?嚗ㄐ??憿舐內 Local APR 霈?嚗蒂璅? PPO ?臬? Review??/div>";
+        box.innerHTML = "<div class='trajectory-empty'>尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>";
         return;
       }
       box.innerHTML = state.history.map((item) => {
         const width = Math.max(4, Math.min(100, Math.round(item.current_apr * 100)));
         const reviewClass = item.ppo_strategy === 3 ? "strategy-tag review-active" : "strategy-tag";
-        const reviewText = item.completed ? "摰?" : (item.ppo_strategy === 3 ? "? Review" : strategyName(item.ppo_strategy));
+        const reviewText = item.completed ? "完成" : (item.ppo_strategy === 3 ? "🛡 Review" : strategyName(item.ppo_strategy));
         const modeClass = toLearningModeBadgeClass(item.learning_mode);
         const modeText = toLearningModeBadgeLabel(item.learning_mode);
-        const stepLabel = item.completed ? `Step ${item.step_number}嚗???` : `Step ${item.step_number}`;
+        const stepLabel = item.completed ? `Step ${item.step_number}（結束）` : `Step ${item.step_number}`;
         return `<div class="track-row"><div>${stepLabel}</div><div class="bar"><div class="threshold"></div><div class="fill" style="width:${width}%"></div></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span>${Math.round(item.current_apr * 100)}%</span><span class="${reviewClass}">${reviewText}</span><span class="${modeClass}">${modeText}</span></div></div>`;
       }).join("");
       requestAnimationFrame(() => {
@@ -1394,23 +1363,23 @@
         if (!response.ok) throw new Error(data.error || "rag hint failed");
         const hintBox = document.getElementById("hintBox");
         const focusSubskill = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || (state.currentSubskills[0] ? getSubskillLabel(state.currentSubskills[0]) : "");
-        const focusPrefix = state.isRemediationActive ? "?桀?鋆???" : "蝟餌絞?菜葫?琿?";
-        const focusHtml = focusSubskill ? `<div class="hint-focus">${focusPrefix}嚗?{escapeHtml(focusSubskill)}</div>` : "";
+        const focusPrefix = state.isRemediationActive ? "目前補救重點" : "系統偵測斷點";
+        const focusHtml = focusSubskill ? `<div class="hint-focus">${focusPrefix}：${escapeHtml(focusSubskill)}</div>` : "";
         hintBox.innerHTML = `${focusHtml}${data.hint_html || ""}`;
         await typesetMath(hintBox);
         if (data.hint_summary) {
-          addMessage("bot", `????嚗?{data.hint_summary}?);
+          addMessage("bot", `這題先看：${data.hint_summary}。`);
         } else if (Array.isArray(data.subskill_labels) && data.subskill_labels.length) {
-          addMessage("bot", `????????嚗?{data.subskill_labels.join("??)}?);
+          addMessage("bot", `這題先看這些重點：${data.subskill_labels.join("、")}。`);
         }
         scrollChatToBottom();
         return data;
       }
 
     async function askTutor(question, sourceLabel = "user") {
-      if (!state.currentQuestionText) { setStatus("隢???閮箸嚗?雿輻 AI ?拇???); return; }
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再使用 AI 助教。"); return; }
       await addMessage(sourceLabel === "user" ? "user" : "bot", question);
-      const thinking = await addMessage("bot", "AI ?拇?甇??渡??內...");
+      const thinking = await addMessage("bot", "AI 助教正在整理提示...");
       try {
         const response = await fetch("/chat_ai", {
           method: "POST",
@@ -1425,28 +1394,28 @@
           })
         });
         const data = await response.json();
-        setMessageContent(thinking, (data.reply || "?炎?仿??桃?璇辣??蝞?摨?).trim());
+        setMessageContent(thinking, (data.reply || "先檢查題目的條件與運算順序。").trim());
         await typesetMath(thinking);
         scrollChatToBottom();
       } catch (err) {
-        setMessageContent(thinking, "?桀??拇??急?瘝??渡??箸?內嚗?瑼Ｘ雿銝??鈭?憿??詨?閫敹萸?);
+        setMessageContent(thinking, "目前助教暫時沒有整理出新提示，先檢查你是不是抓對了這一題的核心觀念。");
         scrollChatToBottom();
       }
     }
 
     async function analyzeHandwriting() {
-      if (!state.currentQuestionText) { setStatus("隢???閮箸嚗??脰??神瑼Ｘ??); return; }
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再進行手寫檢查。"); return; }
       try {
         if (isCanvasBlank()) {
-          setStatus("?賣?桀??舐征?賜?嚗??神銝圾憿郊撽?? AI 瑼Ｘ??);
-          await addMessage("bot", "???銝雿??神甇仿?嚗???賣撖思?暺摰孵??炎?乓?);
+          setStatus("白板目前是空白的，請先寫下解題步驟再送出 AI 檢查。");
+          await addMessage("bot", "我目前看不到你的手寫步驟，請先在白板寫一點內容後再檢查。");
           return;
         }
         const imageDataUrl = canvas.toDataURL("image/png");
         console.log("handwriting image length =", imageDataUrl.length);
         console.log("handwriting prefix =", imageDataUrl.slice(0, 80));
-        await addMessage("user", "隢鼠?炎?交??賣銝??神甇仿???);
-        const thinking = await addMessage("bot", "甇???雿??神?批捆...");
+        await addMessage("user", "請幫我檢查我白板上的手寫步驟。");
+        const thinking = await addMessage("bot", "正在分析你的手寫內容...");
         const response = await fetch("/analyze_handwriting", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1473,7 +1442,7 @@
         if (data && data.success === false) {
           setMessageContent(
             thinking,
-            "?桀??⊥?颲刻?雿??神?批捆嚗?蝣箄?蝑楚皜???閰虫?甈?
+            "目前無法辨識你的手寫內容，請確認筆跡清楚或再試一次"
           );
           await typesetMath(thinking);
           scrollChatToBottom();
@@ -1487,7 +1456,7 @@
         await typesetMath(thinking);
       } catch (err) {
         console.error("analyzeHandwriting failed:", err);
-        await addMessage("bot", "?桀??⊥????神?批捆嚗??臭誑???喳鋆??內嚗?瑼Ｘ雿?蝚砌?甇乓?);
+        await addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
       }
     }
 
@@ -1544,7 +1513,7 @@
       const inferredMode = inferLearningModeFromResponse(response, previousMode);
       const primarySubskill = String(response.detected_subskill_node || state.currentSubskills[0] || state.detectedSubskill || "");
       state.mainSkill = String(response.main_skill || state.mainSkill || skillId || "");
-      state.mainSkillLabel = String(response.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "敺???);
+      state.mainSkillLabel = String(response.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
       state.currentFamilyLabel = resolveFamilyLabel({
         skillKey: response.main_skill || state.mainSkill || skillId,
         familyId: state.currentFamilyId,
@@ -1552,7 +1521,7 @@
         backendFamilyLabel: response.target_family_label,
       });
       state.detectedSubskill = primarySubskill;
-      state.detectedSubskillLabel = String(response.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || "撠?菜葫");
+      state.detectedSubskillLabel = String(response.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || "尚未偵測");
       state.remediationSkill = String(response.remediation_skill || state.remediationSkill || "");
       state.remediationSkillLabel = String(
         response.remediation_skill_label
@@ -1593,13 +1562,13 @@
       if (response.switch_reason) {
         state.switchReason = String(response.switch_reason);
       } else if (state.isRemediationActive || state.learningMode === "remediation") {
-        state.switchReason = previousMode === "remediation" ? (state.switchReason || "?桀?蝬剜?鋆?璅∪?嚗?蝥?撘瑕?蝵桀????) : "?菜葫?啣?蝵格??賭?頞喉?撌脣?????;
+        state.switchReason = previousMode === "remediation" ? (state.switchReason || "目前維持補救模式，持續加強前置子技能") : "偵測到前置技能不足，已切換補救";
       } else if (state.isRemediationCandidate) {
-        state.switchReason = "?菜葫?啗???瘙?雿頛芯?蝬剜?銝餌?";
+        state.switchReason = "偵測到補救需求，但本輪仍維持主線";
       } else if (state.learningMode === "returned") {
-        state.switchReason = "鋆??餈?璇辣嚗歇?銝餅???;
+        state.switchReason = "補救達到返回條件，已回到主技能";
       } else {
-        state.switchReason = "??;
+        state.switchReason = "無";
       }
       state.history.push({
         step_number: response.step_number,
@@ -1624,58 +1593,26 @@
       resetChatHistory();
       resetHintBox();
       if (state.mode === "assessment" && deriveMilestoneStateFromState() === "assessment_breakpoint_detected") {
-        setAssistantBanner("撌脣皜砍?砍?飛蝧暺?撱箄降????teaching 璅∪?鋆撥敺???閰???, true);
+        setAssistantBanner("已偵測到本單元學習斷點，建議切換到 teaching 模式補強後再回來評量。", true);
       } else if (state.mode === "assessment") {
-        setAssistantBanner("?桀??箄??芋撘?蝟餌絞??蝥炎?訾蜓蝺敹???銝??鋆??舐???, false);
+        setAssistantBanner("目前為評量模式：系統會持續檢核主線核心題型，不會切入補救支線。", false);
       } else if (deriveMilestoneStateFromState() === "remediation_returned_success") {
-        setAssistantBanner("??撌脣??頛芾?????餈?銝餌??銝?蝟餌絞?匱蝥炎?豢?桀??嗡??詨?憿???, false);
+        setAssistantBanner("✨ 已完成本輪補救，成功返回主線。接下來系統會繼續檢核本單元其他核心題型。", false);
       } else if (state.learningMode === "returned") {
-        setAssistantBanner(`雿歇摰???{state.detectedSubskillLabel || "?蔭摮???}????蝟餌絞?曉撣嗡??銝餅??賬?{state.mainSkillLabel || "銝餅???}?, false);
+        setAssistantBanner(`你已完成「${state.detectedSubskillLabel || "前置子技能"}」補救，系統現在帶你回到主技能「${state.mainSkillLabel || "主技能"}」。`, false);
       } else if (state.isRemediationActive || state.learningMode === "remediation") {
         if (previousMode !== "remediation") {
-          setAssistantBanner(`蝟餌絞?菜葫雿??具?{state.detectedSubskillLabel || "?蔭閫敹?}??撌脣????{state.remediationSkillLabel || "鋆????}?脰?鋆??, true);
+          setAssistantBanner(`系統偵測你目前卡在「${state.detectedSubskillLabel || "前置觀念"}」，已切換到「${state.remediationSkillLabel || "補救技能"}」進行補救。`, true);
         } else {
-          setAssistantBanner(`?桀??毀??{state.remediationSkillLabel || state.detectedSubskillLabel || "鋆?摮???}????憿?????∩???寡身閮??, true);
+          setAssistantBanner(`目前先練「${state.remediationSkillLabel || state.detectedSubskillLabel || "補救子技能"}」，這一題是針對剛才卡住的地方設計的。`, true);
         }
       } else if (state.isRemediationCandidate) {
-        setAssistantBanner(`蝟餌絞?菜葫雿?賢?具?{state.detectedSubskillLabel || "?蔭閫敹?}???亙?蝥?蝥?臬??鋆?嚗頛芸?蝬剜?銝餌?憿??, false);
+        setAssistantBanner(`系統偵測你可能卡在「${state.detectedSubskillLabel || "前置觀念"}」，若後續持續出錯將切入補救；本輪先維持主線題型。`, false);
       } else {
-        setAssistantBanner("雿隞亙??芸楛閫????雿????喲??內嚗??湔????憿?銝?甇乓?, false);
+        setAssistantBanner("你可以先自己解題。若有卡住，再看右邊提示，或直接問我這一題的下一步。", false);
       }
-      setStatus(`撌脰???Step ${response.step_number}嚗芋撘?${toLearningModeLabel(state.learningMode)}嚗??伐?${strategyName(response.ppo_strategy)}嚗atency=${response.execution_latency}ms`);
+      setStatus(`已載入 Step ${response.step_number}，模式：${toLearningModeLabel(state.learningMode)}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
       typesetMath(questionEl);
-    }
-
-    function getSkillLevelClass(score) {
-      if (score < 40) return "skill-weak";
-      if (score < 80) return "skill-mid";
-      return "skill-strong";
-    }
-
-    function groupSkills(items) {
-      const grouped = { basic: [], structure: [], advanced: [] };
-      items.forEach((item) => {
-        const name = String(item.display_name || "");
-        if (name.includes("加減") || name.includes("乘法") || name.includes("基礎") || name.includes("直接化簡")) grouped.basic.push(item);
-        else if (name.includes("巢狀") || name.includes("展開") || name.includes("化簡") || name.includes("整理") || name.includes("商與餘式")) grouped.structure.push(item);
-        else grouped.advanced.push(item);
-      });
-      return grouped;
-    }
-
-    function renderSkillItem(item) {
-      const score = Number(item.score || 0);
-      const levelClass = getSkillLevelClass(score);
-      return `
-        <div class="skill-item ${levelClass}">
-          <div class="skill-item-header">
-            <div class="skill-item-title">${escapeHtml(item.display_name)}</div>
-            <div class="skill-item-percent">${score}%</div>
-          </div>
-          <div class="skill-item-subtitle">${escapeHtml(item.subtitle)}</div>
-          <div class="skill-progress"><div class="skill-progress-fill" style="width:${score}%"></div></div>
-        </div>
-      `;
     }
 
     function renderDiagnosticReport(report) {
@@ -1686,23 +1623,16 @@
         box.innerHTML = "";
         return;
       }
-
       const familyResults = Array.isArray(report.family_results) ? report.family_results : [];
-      const strengths = Array.isArray(report.strengths_zh) && report.strengths_zh.length ? report.strengths_zh : (Array.isArray(report.strengths) ? report.strengths : []);
-      const weaknesses = Array.isArray(report.weaknesses_zh) && report.weaknesses_zh.length ? report.weaknesses_zh : (Array.isArray(report.weaknesses) ? report.weaknesses : []);
+      const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+      const weaknesses = Array.isArray(report.weaknesses) ? report.weaknesses : [];
       const nextStepsRaw = Array.isArray(report.recommended_next_steps) ? report.recommended_next_steps : [];
+      const trajectory = Array.isArray(report.trajectory) ? report.trajectory : [];
       const breakpointObj = (report.breakpoint && typeof report.breakpoint === "object") ? report.breakpoint : null;
-
-      const skillLabelMapping = {
-        F1: { name: "平面多項式加減", subtitle: "同類項合併" },
-        F2: { name: "巢狀多項式加減", subtitle: "去括號與變號" },
-        F5: { name: "多項式乘法展開", subtitle: "分配律" },
-        F11: { name: "綜合化簡", subtitle: "式子整理" },
-        F7: { name: "單項式除法直接化簡", subtitle: "係數與次方" },
-        F8: { name: "單項式除法（商與餘式）", subtitle: "商與餘數" },
-        F9: { name: "多項式長除法", subtitle: "長除法步驟" },
-        F10: { name: "反推除法", subtitle: "反向結構" },
-      };
+      const nextSteps = nextStepsRaw.map((step) => {
+        if (typeof step === "string") return step;
+        return String(step?.reason || step?.label_zh || step?.target_id || "").trim();
+      }).filter(Boolean);
 
       const coreFamilyOrder = ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"];
       const familyOrderMap = Object.fromEntries(coreFamilyOrder.map((fid, idx) => [fid, idx]));
@@ -1714,93 +1644,112 @@
         return av - bv;
       });
 
-      const skillItems = sortedFamilyResults.slice(0, 10).map((row) => {
-        const familyCode = String(row?.family || row?.family_id || "-").trim();
-        const mapped = skillLabelMapping[familyCode] || null;
-        const displayName = mapped?.name || String(row?.label_zh || familyCode || "-");
-        const subtitle = String(row?.description_zh || "").trim() || mapped?.subtitle || "重點技巧";
-        const score = Math.round(Math.max(0, Math.min(100, Number(row?.accuracy ?? 0) * 100)));
-        return { familyCode, display_name: displayName, subtitle, score };
-      });
-
-      const groupedSkills = groupSkills(skillItems);
-      const groupTitles = {
-        basic: "🟢 基礎運算",
-        structure: "🔵 結構操作",
-        advanced: "🔴 進階技巧",
-      };
-
-      const skillGroupsHtml = ["basic", "structure", "advanced"].map((key) => {
-        const rows = groupedSkills[key] || [];
-        if (!rows.length) return "";
-        return `<div class="skill-group"><div class="skill-group-title">${groupTitles[key]}</div>${rows.map(renderSkillItem).join("")}</div>`;
+      const familyBars = sortedFamilyResults.slice(0, 10).map((row) => {
+        const familyCode = String(row?.family || row?.family_id || "-");
+        const family = escapeHtml(row?.label_zh || familyCode);
+        const desc = escapeHtml(row?.description_zh || "");
+        const accuracy = Number(row?.accuracy ?? 0);
+        const width = Math.max(0, Math.min(100, accuracy * 100));
+        const pct = `${Math.round(width)}%`;
+        const rawStatus = String(row?.status || "").trim();
+        let color = "#4CAF50";
+        if (rawStatus === "weak" || rawStatus === "breakpoint") color = "#ff4d4f";
+        else if (rawStatus === "incomplete") color = "#f0ad4e";
+        return `
+          <div class="diag-bar-row">
+            <span class="label">${family}${desc ? `<small>${desc}</small>` : ""}</span>
+            <div class="diag-bar">
+              <div class="diag-fill" style="width:${width}%; background:${color};"></div>
+            </div>
+            <span class="pct">${pct}</span>
+          </div>
+        `;
       }).join("");
 
       const reportScore = Number(report?.score);
       const aprMastery = Number(report?.apr_mastery);
       const skillType = String(report?.skill_type || "-");
-      const summaryLine = breakpointObj ? "目前已找到主要卡點，建議先補強後再回主線。" : "目前整體表現穩定，可依建議路徑持續提升。";
-
-      const breakpointLabel = String(breakpointObj?.label_zh || report?.failed_family || "-");
-      const breakpointDesc = String(breakpointObj?.description_zh || "此技能在本次診斷中表現偏弱。");
+      const failedFamily = String(report?.failed_family || breakpointObj?.family || "-");
+      const breakpointReason = String(breakpointObj?.reason || "-");
       const breakpointAccuracy = Number(breakpointObj?.accuracy ?? 0);
-      const breakpointCommonError = String(breakpointObj?.common_error_zh || "步驟轉換時容易遺漏關鍵條件。");
+      const breakpointLabel = String(breakpointObj?.label_zh || failedFamily);
+      const breakpointDesc = String(breakpointObj?.description_zh || "");
+      const breakpointCommonError = String(breakpointObj?.common_error_zh || breakpointReason);
       const breakpointPrereq = Array.isArray(breakpointObj?.prerequisite_labels_zh) ? breakpointObj.prerequisite_labels_zh : [];
       const breakpointPrereqText = breakpointPrereq.length ? breakpointPrereq.join("、") : "（無）";
-
-      const pathSteps = nextStepsRaw.map((step) => {
-        if (typeof step === "string") return step;
-        return String(step?.reason || step?.label_zh || step?.target_id || "").trim();
-      }).filter(Boolean);
-      const learningPathHtml = (pathSteps.length ? pathSteps : [
-        "先練習目前卡點對應的 family 題型。",
-        "穩定後回到主線，再做一次同類題型。",
-        "最後進行一次綜合檢核，確認可穩定作答。"
-      ]).map((text, idx) => `<div class="learning-path-step">${idx + 1}. ${escapeHtml(String(text))}</div>`).join("");
-
-      const strengthsHtml = (strengths.length ? strengths : ["目前無明顯優勢標記"]).map((s) => `<p>${escapeHtml(String(s))}</p>`).join("");
-      const weaknessesHtml = (weaknesses.length ? weaknesses : ["目前無弱點標記"]).map((w) => `<p>${escapeHtml(String(w))}</p>`).join("");
+      const strengthsDisplay = Array.isArray(report?.strengths_zh) && report.strengths_zh.length ? report.strengths_zh : strengths;
+      const weaknessesDisplay = Array.isArray(report?.weaknesses_zh) && report.weaknesses_zh.length ? report.weaknesses_zh : weaknesses;
+      const strengthsHtml = (strengthsDisplay.length ? strengthsDisplay : ["-"]).map((s) => `<p>${escapeHtml(String(s))}</p>`).join("");
+      const weaknessesHtml = (weaknessesDisplay.length ? weaknessesDisplay : ["-"]).map((w) => `<p>${escapeHtml(String(w))}</p>`).join("");
+      const nextStepsHtml = (nextSteps.length ? nextSteps : ["建議回顧基礎概念"]).map((text, idx) => `<p>${idx + 1}. ${escapeHtml(String(text))}</p>`).join("");
+      const actionLabel = { stay: "", remediate: "↘補救", return: "↗返回" };
+      const trajectoryHtml = trajectory.map((step, i) => {
+        const icon = step?.is_correct ? "✔" : "❌";
+        const label = actionLabel[String(step?.action || "stay")] || "";
+        const family = escapeHtml(String(step?.family || "-"));
+        const arrow = i < trajectory.length - 1 ? `<span class="arrow">→</span>` : "";
+        return `
+          <span class="traj-step">
+            ${family} ${icon}
+            <small>${escapeHtml(label)}</small>
+          </span>
+          ${arrow}
+        `;
+      }).join("");
 
       box.innerHTML = `
-        <div class="diagnostic-report-card">
-          <div class="diagnostic-summary-card">
-            <h3>學習評估報告</h3>
-            <div class="diagnostic-summary-metrics">
-              <div class="metric"><strong>Score</strong><span>${Number.isFinite(reportScore) ? reportScore.toFixed(0) : "-"}</span></div>
-              <div class="metric"><strong>APR</strong><span>${Number.isFinite(aprMastery) ? aprMastery.toFixed(2) : "-"}</span></div>
-              <div class="metric"><strong>Skill</strong><span>${escapeHtml(skillType)}</span></div>
-            </div>
-            <div class="diagnostic-summary-note">${summaryLine}</div>
+        <div class="diagnostic-dashboard">
+          <div class="diag-card diag-summary">
+            <h3>學習評估總覽</h3>
+            <div class="diag-score">Score: ${Number.isFinite(reportScore) ? reportScore.toFixed(0) : "-"}</div>
+            <div class="diag-meta">APR: ${Number.isFinite(aprMastery) ? aprMastery.toFixed(2) : "-"}</div>
+            <div class="diag-meta">Skill: ${escapeHtml(skillType)}</div>
           </div>
 
           <div class="diag-card">
-            <div class="diagnostic-section-title">技能掌握度</div>
-            <div class="skill-legend">綠＝已穩定　橘＝需加強　紅＝尚未掌握</div>
-            ${skillGroupsHtml}
+            <h4>技能掌握度</h4>
+            ${familyBars}
           </div>
 
-          <div class="breakpoint-card">
-            <div class="breakpoint-title">目前主要卡點</div>
-            <div class="name">${escapeHtml(breakpointLabel)}</div>
-            <p>說明：${escapeHtml(breakpointDesc)}</p>
-            <p>正確率：${Number.isFinite(breakpointAccuracy) ? Math.round(breakpointAccuracy * 100) : 0}%</p>
-            <p>常見問題：${escapeHtml(breakpointCommonError)}</p>
-            <p>建議先補哪個前置概念：${escapeHtml(breakpointPrereqText)}</p>
-          </div>
+          ${breakpointObj ? `
+            <div class="diag-card diag-breakpoint">
+              <h4>學習卡點</h4>
+              <p class="big">${escapeHtml(breakpointLabel)}</p>
+              <p>你目前需要學會：${escapeHtml(breakpointDesc)}</p>
+              <p>正確率：${Number.isFinite(breakpointAccuracy) ? Math.round(breakpointAccuracy * 100) : 0}%</p>
+              <p>常見問題：${escapeHtml(breakpointCommonError)}</p>
+              <p>建議先補強：${escapeHtml(breakpointPrereqText)}</p>
+              <p>此技能為目前主要學習瓶頸</p>
+            </div>
+          ` : ""}
 
           <div class="diag-card diag-flex">
-            <div class="diag-col"><h4>目前強項</h4>${strengthsHtml}</div>
-            <div class="diag-col"><h4>目前弱項</h4>${weaknessesHtml}</div>
+            <div class="diag-col">
+              <h4>強項</h4>
+              ${strengthsHtml}
+            </div>
+            <div class="diag-col">
+              <h4>弱項</h4>
+              ${weaknessesHtml}
+            </div>
           </div>
 
-          <div class="learning-path-card">
+          ${trajectory.length ? `
+            <div class="diag-card diag-trajectory">
+              <h4>學習歷程（系統決策）</h4>
+              <div class="diag-trajectory-line">${trajectoryHtml}</div>
+            </div>
+          ` : ""}
+
+          <div class="diag-card diag-recommend">
             <h4>建議學習路徑</h4>
-            ${learningPathHtml}
+            ${nextStepsHtml}
           </div>
         </div>
       `;
       box.className = "diagnostic-report show";
     }
+
     function renderSummary(summary, responseMeta = {}) {
       const card = document.getElementById("summaryCard");
       const passed = Boolean(summary && summary.passed);
@@ -1828,7 +1777,7 @@
       state.assessmentStopReason = String(summary?.assessment_stop_reason || responseMeta?.assessment_stop_reason || "");
       state.learningMode = normalizeLearningMode(summary?.learning_mode || state.learningMode || "");
       state.mainSkill = String(summary?.main_skill || state.mainSkill || skillId || "");
-      state.mainSkillLabel = String(summary?.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "敺???);
+      state.mainSkillLabel = String(summary?.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
       state.currentFamilyLabel = resolveFamilyLabel({
         skillKey: summary?.main_skill || state.mainSkill || skillId,
         familyId: summary?.target_family_id || state.currentFamilyId,
@@ -1836,7 +1785,7 @@
         backendFamilyLabel: summary?.target_family_label || state.currentFamilyLabel,
       });
       state.detectedSubskill = String(summary?.detected_subskill_node || state.detectedSubskill || "");
-      state.detectedSubskillLabel = String(summary?.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "撠?菜葫");
+      state.detectedSubskillLabel = String(summary?.detected_subskill_label || getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "尚未偵測");
       state.remediationSkill = String(summary?.remediation_skill || state.remediationSkill || "");
       state.remediationSkillLabel = String(
         summary?.remediation_skill_label
@@ -1907,48 +1856,48 @@
       setText("stepValue", String(summary?.answered_steps ?? state.stepNumber));
       setText("frustrationValue", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
       setText("frustrationMini", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
-      setText("strategyMini", passed ? "摰?" : strategyLabel(state.ppoStrategy));
-      setText("familyBadge", `敺格??踝?${summary?.visited_families?.slice(-1)[0] || state.currentFamilyId || "敺那??}`);
-      setText("summaryTitle", summary?.title || "?祆活閮箸摰?");
+      setText("strategyMini", passed ? "完成" : strategyLabel(state.ppoStrategy));
+      setText("familyBadge", `微技能：${summary?.visited_families?.slice(-1)[0] || state.currentFamilyId || "待診斷"}`);
+      setText("summaryTitle", summary?.title || "本次診斷完成");
       setText("summaryMessage", summary?.message || "");
       setText("summaryAction", summary?.next_action || "");
       const badges = [];
-      badges.push(`雿?憿嚗?{summary?.answered_steps ?? 0}`);
-      badges.push(`?蝯?APR嚗?{Math.round((summary?.final_apr ?? 0) * 100)}%`);
+      badges.push(`作答題數：${summary?.answered_steps ?? 0}`);
+      badges.push(`最終 APR：${Math.round((summary?.final_apr ?? 0) * 100)}%`);
       if (summary?.standardized_score !== undefined && summary?.standardized_score !== null) {
         const standardizedScore = Number(summary.standardized_score);
         if (Number.isFinite(standardizedScore)) {
-          badges.push(`閰??嚗?{standardizedScore.toFixed(1)} / 100`);
+          badges.push(`評量分數：${standardizedScore.toFixed(1)} / 100`);
         }
       }
       if (Array.isArray(summary?.visited_families)) {
-        badges.push(`瘨? family嚗?{summary.visited_families.filter(Boolean).join("??) || "-"}`);
+        badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
       }
       document.getElementById("summaryBadges").innerHTML = badges.map((item) => `<span>${item}</span>`).join("");
       renderDiagnosticReport(responseMeta?.diagnostic_report || summary?.diagnostic_report || null);
       setFinishedState(true);
-      setText("questionText", passed ? "雿歇摰??砍??拇?閮箸?? : "?祆活閮箸撌脣???隢???撘瑕遣霅啜?);
+      setText("questionText", passed ? "你已完成本單元自適應診斷。" : "本次診斷已完成，請先看補強建議。");
       setText("questionContext", "");
       const subskillsBox = document.getElementById("subskillsBox");
       if (subskillsBox) subskillsBox.innerHTML = "";
-      setStatus(`?祆活閮箸撌脩??芋撘?${toLearningModeLabel(state.learningMode)}`);
+      setStatus(`本次診斷已結束。模式：${toLearningModeLabel(state.learningMode)}`);
       if (state.mode === "assessment" && state.assessmentCompleted && state.assessmentStopReason === "stable_breakpoint_detected") {
-        setAssistantBanner("撌脣皜砍?砍?帘摰暺遣霅啣???teaching 璅∪?嚗?撠暺???賡脰?鋆撥??, true);
+        setAssistantBanner("已偵測到本單元穩定斷點。建議切換 teaching 模式，針對斷點子技能進行補強。", true);
       } else if (state.mode === "assessment" && state.assessmentCompleted) {
-        setAssistantBanner("閰?璅∪?摰?嚗歇???詨?憿?瑼Ｘ嚗頂蝯勗歇?Ｗ蝎曄?摨西?摮貊?撱箄降??, false);
+        setAssistantBanner("評量模式完成：已通過核心題型檢核，系統已產出精熟度與學習建議。", false);
       } else if (state.unitCompleted) {
-        setAssistantBanner("?? ?祆活閮箸摰?嚗歇??桀??格????臭誑?脣銝??桀?嚗??銴?撘梢???, false);
+        setAssistantBanner("🎉 本次診斷完成：已達本單元目標。你可以進入下一單元，或回頭複習弱點。", false);
       } else if (state.localRemediationCompleted) {
-        setAssistantBanner("??撌脣??頛芾??蒂餈?銝餌?嚗頂蝯望?蝜潛?瑼Ｘ?砍?敹???, false);
+        setAssistantBanner("✅ 已完成本輪補救並返回主線，系統會繼續檢核本單元核心題型。", false);
       } else {
-        setAssistantBanner(passed ? "??歇蝬?璅????臭誑??銝??桀?嚗???銝甈∪?撘瑯? : "?活閮箸撌脩??????蝷綽????剛?撘瑕?憿???, !passed);
+        setAssistantBanner(passed ? "這個單元已經達標了。你可以先換下一單元，或再做一次加強。" : "這次診斷已結束。先看右邊提示，再回頭補強同類題型。", !passed);
       }
       updateRagScopeBadge("done");
     }
 
     bootstrapBtn.addEventListener("click", async () => {
       try {
-        setStatus("甇?撱箇?閮箸 session...");
+        setStatus("正在建立診斷 session...");
         state.history = [];
         state.learningMode = "main";
         state.mainSkill = "";
@@ -1990,13 +1939,13 @@
         const data = await postAdaptive({ ...basePayload, step_number: 0 });
         document.getElementById("summaryCard").className = "summary-card";
         renderQuestion(data);
-      } catch (err) { setStatus(`??憭望?嚗?{err.message}`); }
+      } catch (err) { setStatus(`啟動失敗：${err.message}`); }
     });
 
       submitBtn.addEventListener("click", async () => {
         try {
           const answer = answerInput.value.trim();
-          if (!answer) { setStatus("隢?頛詨蝑???); return; }
+          if (!answer) { setStatus("請先輸入答案。"); return; }
           const data = await postAdaptive({ ...basePayload, session_id: state.sessionId, step_number: state.stepNumber, user_answer: answer });
           if (data.completed) {
             state.history.push({
@@ -2020,17 +1969,17 @@
         if (data.ppo_strategy === 3) {
           updateRagScopeBadge("review");
           await fetchHint();
-          addMessage("bot", "?歇蝬??找??桀??∩??凝??踝??渡??箄???蝷箝???渲牧???岫銝?憿?);
+          addMessage("bot", "我已經依照你目前卡住的微技能，整理出補救提示。先看右側說明，再試下一題。");
         } else {
           updateRagScopeBadge("active");
         }
-      } catch (err) { setStatus(`?漱憭望?嚗?{err.message}`); }
+      } catch (err) { setStatus(`提交失敗：${err.message}`); }
     });
 
     answerInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); submitBtn.click(); } });
-    hintBtn.addEventListener("click", async () => { try { updateRagScopeBadge("review"); await fetchHint(); setAssistantBanner("雿歇??隢?鋆??內????芸????祇??賊???subskill 蝯血?內??, true); setStatus("撌脰??亥???蝷箝?); } catch (err) { setStatus(`?內頛憭望?嚗?{err.message}`); } });
+    hintBtn.addEventListener("click", async () => { try { updateRagScopeBadge("review"); await fetchHint(); setAssistantBanner("你已手動請求補救提示。助教會優先針對本題相關的 subskill 給出提示。", true); setStatus("已載入補救提示。"); } catch (err) { setStatus(`提示載入失敗：${err.message}`); } });
     document.querySelectorAll("[data-guide]").forEach((btn) => btn.addEventListener("click", async () => { await askTutor(btn.dataset.guide, "user"); }));
-    assistantSendBtn.addEventListener("click", async () => { const question = assistantInput.value.trim(); if (!question) { setStatus("隢撓?乩??喳??拇???憿?); return; } assistantInput.value = ""; await askTutor(question, "user"); });
+    assistantSendBtn.addEventListener("click", async () => { const question = assistantInput.value.trim(); if (!question) { setStatus("請輸入你想問助教的問題。"); return; } assistantInput.value = ""; await askTutor(question, "user"); });
     assistantInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); assistantSendBtn.click(); } });
     analyzeCanvasBtn.addEventListener("click", analyzeHandwriting);
 
