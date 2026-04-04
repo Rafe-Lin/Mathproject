@@ -183,6 +183,7 @@ from core.ai_client import call_ai
 from core.adaptive.judge import (
     judge_answer_with_feedback,
     _as_symbolic_tolerant,
+    _normalize_math_text,
     _parse_quotient_remainder,
     _symbolic_equal,
     _extract_divisor_from_question,
@@ -720,6 +721,277 @@ def _handwriting_infer_error_mechanism(user_segment, expected_answer, family_id,
     return "unknown"
 
 
+_POLY_REFINE_TARGET_FAMILIES = frozenset(
+    {
+        "F1",
+        "F2",
+        "F11",
+        "poly_add_sub_flat",
+        "poly_add_sub_nested",
+        "poly_mixed_simplify",
+    }
+)
+
+
+def _poly_refine_poly_in_x(expr: object):
+    """Return sympy Poly in x, or None."""
+    try:
+        from sympy import Poly, Symbol, expand
+
+        x = Symbol("x")
+        su = _as_symbolic_tolerant(expr)
+        if su is None:
+            return None
+        return Poly(expand(su), x)
+    except Exception:
+        return None
+
+
+def _poly_refine_degree_coeff_dict(poly) -> dict | None:
+    if poly is None:
+        return None
+    try:
+        return {int(k[0]): v for k, v in poly.as_dict().items()}
+    except Exception:
+        return None
+
+
+def _poly_refine_expr_has_x(expr: object) -> bool:
+    try:
+        from sympy import Symbol, expand
+
+        x = Symbol("x")
+        su = _as_symbolic_tolerant(expr)
+        if su is not None:
+            return expand(su).has(x)
+    except Exception:
+        pass
+    return "x" in _normalize_math_text(expr)
+
+
+def _poly_refine_expected_has_no_x(expected_answer: object) -> bool:
+    try:
+        from sympy import Symbol, expand
+
+        x = Symbol("x")
+        se = _as_symbolic_tolerant(expected_answer)
+        if se is not None:
+            return not expand(se).has(x)
+    except Exception:
+        pass
+    return "x" not in _normalize_math_text(expected_answer)
+
+
+def _question_has_opposite_linear_x_terms(question_text: object) -> bool:
+    """True when question text shows at least one pair of x-terms that can cancel (e.g. 6x and -6x)."""
+    t = _normalize_math_text(question_text)
+    if "x" not in t:
+        return False
+    # _normalize_math_text inserts implicit '*' (6x -> 6*x); allow optional * before x
+    pairs = re.findall(r"([+-]?)(\d*)\*?x", t)
+    coeffs: list[int] = []
+    for sign, digs in pairs:
+        v = int(digs) if digs else 1
+        if sign == "-":
+            v = -v
+        coeffs.append(v)
+    if len(coeffs) < 2:
+        return False
+    for i in range(len(coeffs)):
+        for j in range(i + 1, len(coeffs)):
+            if coeffs[i] + coeffs[j] == 0:
+                return True
+    return False
+
+
+def _poly_refine_global_sign_flip(user_txt: object, exp_txt: object) -> bool:
+    try:
+        from sympy import expand, simplify
+
+        su = _as_symbolic_tolerant(user_txt)
+        se = _as_symbolic_tolerant(exp_txt)
+        if su is None or se is None:
+            return False
+        return simplify(expand(su) + expand(se)) == 0
+    except Exception:
+        return False
+
+
+def _poly_refine_all_coeffs_negated(d_exp: dict, d_usr: dict) -> bool:
+    if not d_exp or set(d_exp) != set(d_usr):
+        return False
+    try:
+        from sympy import simplify
+
+        for d in d_exp:
+            if simplify(d_usr[d] + d_exp[d]) != 0:
+                return False
+        return True
+    except Exception:
+        return False
+
+
+def _f11_question_suggests_expansion(question_text: object) -> bool:
+    qt = str(question_text or "")
+    if "(" in qt or ")" in qt:
+        return True
+    t = _normalize_math_text(qt)
+    return "^2" in t or "²" in qt or "**2" in t
+
+
+def _refine_polynomial_unknown_mechanism(
+    family_id,
+    recognized_expression,
+    final_expression,
+    expected_answer,
+    question_text,
+):
+    """
+    When generic handwriting inference yields unknown, narrow F1/F2/F11 errors using
+    deterministic checks on expressions and question text (no LLM).
+    Returns dict with error_mechanism, main_issue, step_focus or None.
+    """
+    fid = str(family_id or "").strip()
+    if fid not in _POLY_REFINE_TARGET_FAMILIES:
+        return None
+
+    rec = str(recognized_expression or "").strip()
+    fin = str(final_expression or "").strip()
+    exp = str(expected_answer or "").strip()
+    qt = str(question_text or "").strip()
+
+    if not exp:
+        return None
+
+    d_exp = _poly_refine_degree_coeff_dict(_poly_refine_poly_in_x(exp))
+    d_fin = _poly_refine_degree_coeff_dict(_poly_refine_poly_in_x(fin))
+    d_rec = _poly_refine_degree_coeff_dict(_poly_refine_poly_in_x(rec))
+
+    # Prefer final line for "student answer" structure checks; fall back to full OCR.
+    d_usr = d_fin if d_fin is not None else d_rec
+
+    if fid in ("F1", "poly_add_sub_flat"):
+        # A1: constant expected but work still shows x, and question has cancellable x-terms
+        if (
+            _poly_refine_expected_has_no_x(exp)
+            and (_poly_refine_expr_has_x(fin) or _poly_refine_expr_has_x(rec))
+            and _question_has_opposite_linear_x_terms(qt)
+        ):
+            return {
+                "error_mechanism": "combine_error",
+                "step_focus": "like_terms",
+                "main_issue": "同類項合併錯誤，請先檢查可互相抵消的項是否已正確消去。",
+            }
+        # A2: same set of term degrees but wrong coefficients -> combine
+        if (
+            d_exp is not None
+            and d_usr is not None
+            and set(d_exp) == set(d_usr)
+            and d_exp
+            and not _poly_refine_all_coeffs_negated(d_exp, d_usr)
+            and any(d_exp[k] != d_usr[k] for k in d_exp)
+        ):
+            return {
+                "error_mechanism": "combine_error",
+                "step_focus": "like_terms",
+                "main_issue": "同類項合併錯誤，請再檢查可合併項的係數加減。",
+            }
+
+    if fid in ("F2", "poly_add_sub_nested"):
+        if "(" not in qt and ")" not in qt:
+            return None
+        # B2: missing term degrees after expansion vs expected
+        if (
+            d_exp is not None
+            and d_usr is not None
+            and set(d_usr) < set(d_exp)
+            and set(d_exp)
+        ):
+            return {
+                "error_mechanism": "structure_error",
+                "step_focus": "bracket_scope",
+                "main_issue": "去括號或重寫式子的結構有誤，請先確認每一項是否都有正確保留下來。",
+            }
+        # B1: sign distribution / global flip
+        if _handwriting_has_unflipped_negative_parenthesis(qt, rec) or _handwriting_has_unflipped_negative_parenthesis(
+            qt, fin
+        ):
+            return {
+                "error_mechanism": "sign_error",
+                "step_focus": "sign_distribution",
+                "main_issue": "去括號時的正負號處理有誤，請檢查括號前符號是否正確分配到每一項。",
+            }
+        chk_u, chk_e = (fin or rec), exp
+        if _poly_refine_global_sign_flip(chk_u, chk_e):
+            return {
+                "error_mechanism": "sign_error",
+                "step_focus": "sign_distribution",
+                "main_issue": "去括號時的正負號處理有誤，請檢查括號前符號是否正確分配到每一項。",
+            }
+        if (
+            d_exp is not None
+            and d_usr is not None
+            and set(d_exp) == set(d_usr)
+            and d_exp
+            and _poly_refine_all_coeffs_negated(d_exp, d_usr)
+        ):
+            return {
+                "error_mechanism": "sign_error",
+                "step_focus": "sign_distribution",
+                "main_issue": "去括號時的正負號處理有誤，請檢查括號前符號是否正確分配到每一項。",
+            }
+
+    if fid in ("F11", "poly_mixed_simplify"):
+        # C2: expansion context but student polynomial is missing expected degrees
+        if (
+            _f11_question_suggests_expansion(qt)
+            and d_exp is not None
+            and d_usr is not None
+            and set(d_usr) < set(d_exp)
+            and set(d_exp)
+        ):
+            return {
+                "error_mechanism": "structure_error",
+                "step_focus": "expansion_structure",
+                "main_issue": "展開或重寫式子的結構有誤，請先確認每個括號中的項是否都有正確處理。",
+            }
+        # C1: same term structure, coefficient merge wrong
+        if (
+            d_exp is not None
+            and d_usr is not None
+            and set(d_exp) == set(d_usr)
+            and d_exp
+            and not _poly_refine_all_coeffs_negated(d_exp, d_usr)
+            and any(d_exp[k] != d_usr[k] for k in d_exp)
+        ):
+            return {
+                "error_mechanism": "combine_error",
+                "step_focus": "simplify_combine",
+                "main_issue": "展開後的同類項整理有誤，請重新檢查哪些項可以合併。",
+            }
+        # C3: sign flip on matched terms
+        if (
+            d_exp is not None
+            and d_usr is not None
+            and set(d_exp) == set(d_usr)
+            and d_exp
+            and _poly_refine_all_coeffs_negated(d_exp, d_usr)
+        ):
+            return {
+                "error_mechanism": "sign_error",
+                "step_focus": "expansion_sign",
+                "main_issue": "展開後的正負號處理有誤，請重新檢查負號或減號是否有正確套用到各項。",
+            }
+        if _poly_refine_global_sign_flip(fin or rec, exp):
+            return {
+                "error_mechanism": "sign_error",
+                "step_focus": "expansion_sign",
+                "main_issue": "展開後的正負號處理有誤，請重新檢查負號或減號是否有正確套用到各項。",
+            }
+
+    return None
+
+
 def _handwriting_structured_analysis(recognized_expression, expected_answer, question_text, family_id):
     exp = (expected_answer or "").strip()
     qt = (question_text or "").strip()
@@ -805,6 +1077,18 @@ def _handwriting_structured_analysis(recognized_expression, expected_answer, que
             main_issue = ERROR_MECHANISM_FEEDBACK.get(
                 mechanism, ERROR_MECHANISM_FEEDBACK["unknown"]
             )
+
+        if str(mechanism or "").strip() == "unknown" and status in (
+            "incorrect",
+            "partially_correct",
+        ):
+            refined = _refine_polynomial_unknown_mechanism(
+                fid, ua_full, final_expr, exp, qt
+            )
+            if refined:
+                mechanism = refined["error_mechanism"]
+                main_issue = refined["main_issue"]
+                step_focus = str(refined.get("step_focus") or "")
 
     base.update(
         {
