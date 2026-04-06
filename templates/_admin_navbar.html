@@ -38,6 +38,9 @@
             onmouseover="this.style.background='#e74c3c'" onmouseout="this.style.background='none'">🤖 AI 參數</a>
         {% endif %}
 
+        <a href="{{ url_for('practice.similar_questions') }}"
+            style="padding: 6px 8px; border-radius: 4px; font-size: 1.1rem; white-space: nowrap;"
+            onmouseover="this.style.background='#8e44ad'" onmouseout="this.style.background='none'">🧩 類題練習</a>
         <a href="{{ url_for('logout') }}"
             style="margin-left: 15px; color: #aaa; font-size: 1.1rem; white-space: nowrap;">登出</a>
     </div>

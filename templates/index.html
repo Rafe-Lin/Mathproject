@@ -271,6 +271,40 @@
             border: 1px solid #f5b7b1;
         }
 
+        .similar-toolbar,
+        .similar-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .similar-toolbar {
+            margin-bottom: 10px;
+        }
+
+        .similar-chip {
+            background: #eef6ff;
+            color: #2c5282;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        .similar-preview-box {
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #dbe4ee;
+            border-radius: 10px;
+            color: #2c3e50;
+            font-size: 0.92em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
         /* === [Phase 6] Prerequisite Suggestion === */
         #prerequisite-suggestion {
             margin-top: 15px;
@@ -1063,6 +1097,7 @@
 </head>
 
 <body>
+    {% set is_similar_practice = practice_mode == 'similar_practice' %}
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">自適應性教學系統練習</div>
@@ -1076,12 +1111,14 @@
                 <h1 id="skill-title"> {{
                     skill_ch_name
                     }}
-
+                    {% if not is_similar_practice %}
                     ({{
                     skill_id|replace('_', ' ')|title
-                    }}) <span id="level-indicator"
+                    }})
+                    {% endif %}
+                    <span id="level-indicator"
                         style="background: #1abc9c; color: white; padding: 4px 10px; font-size: 0.7em; border-radius: 12px; vertical-align: middle;">等級：1</span><span
-                        id="streak-counter">連續答對：0</span></h1>
+                        id="streak-counter"{% if is_similar_practice %} style="display:none;"{% endif %}>連續答對：0</span></h1>
                 <!-- 新增：難度選擇器 -->
                 <!-- 新增：難度選擇器 -->
                 <div class="level-selector">
@@ -1107,10 +1144,22 @@
 
                     <!-- NEW: Upload Question Button -->
                     <button id="upload-question-btn" class="level-button"
-                        style="background-color: #9b59b6; color: white; margin-left: 10px;">
+                        style="background-color: #9b59b6; color: white; margin-left: 10px;{% if is_similar_practice %} display: none;{% endif %}">
                         <i class="fas fa-camera"></i> 上傳題目
                     </button>
                     <input type="file" id="question-image-uploader" accept="image/*" style="display: none;">
+
+                    {% if is_similar_practice %}
+                    <button id="similar-upload-btn" class="level-button"
+                        style="background-color: #8e44ad; color: white; margin-left: 10px;">
+                        <i class="fas fa-image"></i> 上傳題目照片
+                    </button>
+                    <button id="similar-show-answer-btn" class="level-button"
+                        style="background-color: #16a085; color: white; display: none;">顯示答案</button>
+                    <button id="similar-reset-btn" class="level-button"
+                        style="background-color: #7f8c8d; color: white;">重新上傳</button>
+                    <input type="file" id="similar-image-uploader" accept="image/*" style="display: none;">
+                    {% endif %}
 
                 </div>
                 <!-- 修改後的版面：問題和示意圖並排 -->
@@ -1118,8 +1167,18 @@
                 <div class="question-content" id="question-container">
                     <div id="question-text"></div>
                 </div>
+                {% if is_similar_practice %}
+                <div class="similar-toolbar">
+                    <div id="similar-status-chip" class="similar-chip">請先上傳題目照片</div>
+                    <div id="similar-skill-chip" class="similar-chip" style="display:none;"></div>
+                    <div id="similar-fixes-chip" class="similar-chip" style="display:none;"></div>
+                </div>
+                <div class="similar-meta">
+                    <div id="similar-ocr-preview" class="similar-preview-box" style="display:none;"></div>
+                </div>
+                {% endif %}
                 <div class="input-group"><input type="text" id="answer-input" placeholder="輸入答案..."><button
-                        id="submit-button">提交</button></div>
+                        id="submit-button">{{ '檢查答案' if is_similar_practice else '提交' }}</button></div>
                 <div id="result-display"></div>
 
                 <!-- [Phase 6] Prerequisite Suggestion Card -->
@@ -1608,7 +1667,20 @@
         let isInitialQuestionLoaded = false;
 
         // 將後端資料傳給 JS
+        const PRACTICE_MODE = {{ (practice_mode or 'standard') | tojson | safe }};
         const PREREQ_SKILLS = {{ prereq_skills | tojson | safe }};
+        const SIMILAR_DEFAULT_MODEL = 'qwen3-vl-8b';
+        const similarPracticeState = {
+            imageData: '',
+            ocrText: '',
+            jsonSpec: null,
+            skillId: '',
+            answer: '',
+            filePath: '',
+            answerVisible: false,
+            hasQuestion: false,
+            fixes: 0,
+        };
 
         // === DOM 載入完成 ===
         window.addEventListener('DOMContentLoaded', () => {
@@ -1640,11 +1712,14 @@
             setupSubmit();
             setupDiagramButton(); // 新增：初始化繪圖按鈕
             setupImageModal(); // 新增：初始化圖片放大功能
-
-            // 修正：不再直接呼叫 loadQuestion()。
-            // MathJax 準備好後會自動呼叫它。
-            // 如果 MathJax 因故未執行，提供一個備用方案。
-            setTimeout(ensureInitialLoad, 1000); // 1秒後檢查
+            if (PRACTICE_MODE === 'similar_practice') {
+                initializeSimilarPractice();
+            } else {
+                // 修正：不再直接呼叫 loadQuestion()。
+                // MathJax 準備好後會自動呼叫它。
+                // 如果 MathJax 因故未執行，提供一個備用方案。
+                setTimeout(ensureInitialLoad, 1000); // 1秒後檢查
+            }
 
             // 視窗大小改變時重新調整字體
             let resizeTimer;
@@ -1661,6 +1736,262 @@
             if (!isInitialQuestionLoaded) {
                 loadQuestion();
             }
+        }
+
+        function updateSimilarStatus(message, tone = 'info') {
+            const chip = document.getElementById('similar-status-chip');
+            if (!chip) return;
+            chip.textContent = message;
+            const styles = {
+                info: { bg: '#eef6ff', color: '#2c5282', border: '#bfdbfe' },
+                success: { bg: '#ecfdf3', color: '#166534', border: '#bbf7d0' },
+                warn: { bg: '#fff7ed', color: '#9a3412', border: '#fed7aa' },
+                error: { bg: '#fef2f2', color: '#991b1b', border: '#fecaca' },
+            };
+            const style = styles[tone] || styles.info;
+            chip.style.background = style.bg;
+            chip.style.color = style.color;
+            chip.style.borderColor = style.border;
+        }
+
+        function getCurrentQuestionPlainText() {
+            const questionDiv = document.getElementById('question-text');
+            return questionDiv ? (questionDiv.innerText || questionDiv.textContent || '').trim() : '';
+        }
+
+        function resetSimilarAnswerState() {
+            similarPracticeState.answerVisible = false;
+            const answerInputEl = document.getElementById('answer-input');
+            const showAnswerBtn = document.getElementById('similar-show-answer-btn');
+            if (answerInputEl) answerInputEl.value = '';
+            if (showAnswerBtn) showAnswerBtn.style.display = similarPracticeState.hasQuestion ? 'inline-block' : 'none';
+        }
+
+        function renderSimilarQuestion(problem, answer) {
+            if (!questionText) return;
+            questionText.innerHTML = problem || '<span style="color:#7f8c8d;">尚未生成類題</span>';
+            similarPracticeState.answer = String(answer || '').trim();
+            similarPracticeState.hasQuestion = Boolean(problem);
+            resetSimilarAnswerState();
+            renderMathContent(questionText);
+            autoResizeQuestionFont();
+        }
+
+        function initializeSimilarPractice() {
+            const levelIndicatorEl = document.getElementById('level-indicator');
+            const nextBtn = document.getElementById('next-question-btn');
+            const resultBox = document.getElementById('result-display');
+            const answerInputEl = document.getElementById('answer-input');
+            const ocrPreview = document.getElementById('similar-ocr-preview');
+
+            if (levelIndicatorEl) levelIndicatorEl.textContent = '模式：類題練習';
+            if (nextBtn) nextBtn.disabled = true;
+            if (answerInputEl) answerInputEl.placeholder = '先作答，再按「檢查答案」';
+            if (resultBox) {
+                resultBox.textContent = '上傳題目照片後，系統會先辨識原題，再生成類似題。';
+                resultBox.className = '';
+            }
+            if (ocrPreview) {
+                ocrPreview.style.display = 'block';
+                ocrPreview.textContent = '尚未辨識原題';
+            }
+            renderSimilarQuestion(
+                '<div style="color:#64748b;">請從上方點選「上傳題目照片」，系統會先辨識原題，再生成類似題。</div>',
+                ''
+            );
+            setupSimilarPracticeControls();
+        }
+
+        function setupSimilarPracticeControls() {
+            const uploadBtn = document.getElementById('similar-upload-btn');
+            const uploader = document.getElementById('similar-image-uploader');
+            const showAnswerBtn = document.getElementById('similar-show-answer-btn');
+            const resetBtn = document.getElementById('similar-reset-btn');
+
+            if (uploadBtn && uploader) {
+                uploadBtn.addEventListener('click', () => uploader.click());
+                uploader.addEventListener('change', async (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    try {
+                        updateSimilarStatus('正在辨識原題並生成類題...', 'warn');
+                        await startSimilarPracticeFromFile(file);
+                    } catch (err) {
+                        console.error('Similar practice upload failed:', err);
+                        updateSimilarStatus('類題生成失敗', 'error');
+                        if (resultDisplay) {
+                            resultDisplay.textContent = `生成失敗：${err.message}`;
+                            resultDisplay.className = 'incorrect';
+                        }
+                    } finally {
+                        uploader.value = '';
+                    }
+                });
+            }
+
+            if (showAnswerBtn) {
+                showAnswerBtn.addEventListener('click', () => {
+                    if (!similarPracticeState.answer) {
+                        showCustomAlert('目前沒有可顯示的答案。');
+                        return;
+                    }
+                    similarPracticeState.answerVisible = true;
+                    if (resultDisplay) {
+                        resultDisplay.textContent = `答案：${similarPracticeState.answer}`;
+                        resultDisplay.className = 'correct';
+                    }
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    similarPracticeState.imageData = '';
+                    similarPracticeState.ocrText = '';
+                    similarPracticeState.jsonSpec = null;
+                    similarPracticeState.skillId = '';
+                    similarPracticeState.answer = '';
+                    similarPracticeState.filePath = '';
+                    similarPracticeState.answerVisible = false;
+                    similarPracticeState.hasQuestion = false;
+                    similarPracticeState.fixes = 0;
+                    const skillChip = document.getElementById('similar-skill-chip');
+                    const fixesChip = document.getElementById('similar-fixes-chip');
+                    const ocrPreview = document.getElementById('similar-ocr-preview');
+                    const nextBtn = document.getElementById('next-question-btn');
+                    if (skillChip) skillChip.style.display = 'none';
+                    if (fixesChip) fixesChip.style.display = 'none';
+                    if (ocrPreview) ocrPreview.textContent = '尚未辨識原題';
+                    if (nextBtn) nextBtn.disabled = true;
+                    if (resultDisplay) {
+                        resultDisplay.textContent = '已重置，請重新上傳題目照片。';
+                        resultDisplay.className = '';
+                    }
+                    updateSimilarStatus('請先上傳題目照片', 'info');
+                    renderSimilarQuestion(
+                        '<div style="color:#64748b;">請重新上傳題目照片，系統會產生新的類似題流程。</div>',
+                        ''
+                    );
+                });
+            }
+        }
+
+        function readFileAsDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('圖片讀取失敗'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function startSimilarPracticeFromFile(file) {
+            const imageDataUrl = await readFileAsDataUrl(file);
+            similarPracticeState.imageData = imageDataUrl;
+
+            const classifyRes = await fetch('/api/classify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image_data: imageDataUrl })
+            });
+            const classifyData = await classifyRes.json();
+            if (!classifyRes.ok || classifyData.success === false) {
+                throw new Error(classifyData.error || 'OCR 辨識失敗');
+            }
+
+            const ocrText = (classifyData.ocr_text || '').trim();
+            const skillId = (classifyData.skill_id || '').trim();
+            if (!ocrText) {
+                throw new Error('未能從圖片辨識出題目內容');
+            }
+
+            similarPracticeState.ocrText = ocrText;
+            similarPracticeState.skillId = skillId;
+            similarPracticeState.jsonSpec = classifyData.json_spec || {};
+
+            const ocrPreview = document.getElementById('similar-ocr-preview');
+            const skillChip = document.getElementById('similar-skill-chip');
+            if (ocrPreview) {
+                ocrPreview.style.display = 'block';
+                ocrPreview.textContent = `原題辨識結果：\n${ocrText}`;
+                renderMathContent(ocrPreview);
+            }
+            if (skillChip && skillId) {
+                skillChip.style.display = 'inline-flex';
+                skillChip.textContent = `技能：${skillId}`;
+            }
+
+            const generateRes = await fetch('/api/generate_live', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: ocrText,
+                    ablation_mode: false,
+                    model_id: SIMILAR_DEFAULT_MODEL,
+                    skill_id: skillId,
+                    json_spec: similarPracticeState.jsonSpec
+                })
+            });
+            const generateData = await generateRes.json();
+            if (!generateRes.ok || generateData.error) {
+                throw new Error(generateData.error || '類題生成失敗');
+            }
+
+            similarPracticeState.filePath = generateData.file_path || '';
+            similarPracticeState.fixes = generateData.fixes || 0;
+            renderSimilarQuestion(generateData.problem || '', generateData.answer || '');
+
+            const fixesChip = document.getElementById('similar-fixes-chip');
+            if (fixesChip) {
+                fixesChip.style.display = 'inline-flex';
+                fixesChip.textContent = `修正次數：${similarPracticeState.fixes}`;
+            }
+
+            const nextBtn = document.getElementById('next-question-btn');
+            if (nextBtn) nextBtn.disabled = !similarPracticeState.filePath;
+
+            if (resultDisplay) {
+                resultDisplay.textContent = '類似題已生成，請先作答，再按「檢查答案」或「顯示答案」。';
+                resultDisplay.className = '';
+            }
+            updateSimilarStatus('類題已生成，可以開始練習', 'success');
+        }
+
+        async function loadNextSimilarQuestion() {
+            if (!similarPracticeState.filePath) {
+                showCustomAlert('請先上傳題目照片並完成第一次類題生成。');
+                return;
+            }
+
+            updateSimilarStatus('正在生成下一題類似題...', 'warn');
+            const nextRes = await fetch('/api/run_generated_code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file_path: similarPracticeState.filePath,
+                    next_question: true,
+                    skill_id: similarPracticeState.skillId,
+                    ocr_text: similarPracticeState.ocrText,
+                    json_spec: similarPracticeState.jsonSpec,
+                    healer_trace: {
+                        regex_fixes: similarPracticeState.fixes || 0,
+                        ast_fixes: 0
+                    }
+                })
+            });
+            const nextData = await nextRes.json();
+            if (!nextRes.ok || nextData.error) {
+                throw new Error(nextData.error || '下一題生成失敗');
+            }
+
+            if (nextData.file_path) {
+                similarPracticeState.filePath = nextData.file_path;
+            }
+            renderSimilarQuestion(nextData.problem || '', nextData.answer || '');
+            if (resultDisplay) {
+                resultDisplay.textContent = '已生成下一題，請繼續作答。';
+                resultDisplay.className = '';
+            }
+            updateSimilarStatus('下一題已生成', 'success');
         }
 
         // === 新增：渲染 Follow-up Prompts (動態建議 - 蘇格拉底式) ===
@@ -2130,7 +2461,27 @@
 
         // === 新增：難度選擇器 ===
         function setupLevelSelector() {
-            document.querySelectorAll('.level-button').forEach(button => {
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+            if (nextQuestionBtn) {
+                nextQuestionBtn.addEventListener('click', async () => {
+                    if (PRACTICE_MODE === 'similar_practice') {
+                        try {
+                            await loadNextSimilarQuestion();
+                        } catch (err) {
+                            console.error('載入類題下一題失敗:', err);
+                            updateSimilarStatus('下一題生成失敗', 'error');
+                            if (resultDisplay) {
+                                resultDisplay.textContent = `下一題生成失敗：${err.message}`;
+                                resultDisplay.className = 'incorrect';
+                            }
+                        }
+                        return;
+                    }
+                    loadQuestion();
+                });
+            }
+
+            document.querySelectorAll('.level-button[data-level]').forEach(button => {
                 button.addEventListener('click', () => {
                     const level = parseInt(button.dataset.level, 10);
                     if (Number.isNaN(level) || level < 1) {
@@ -2171,6 +2522,9 @@
 
         // === 出題 ===
         function getSkillId() {
+            if (PRACTICE_MODE === 'similar_practice' && similarPracticeState.skillId) {
+                return similarPracticeState.skillId;
+            }
             // 從 URL 路徑 /practice/skill_id 中提取 skill_id
             const pathParts = window.location.pathname.split('/');
             const skillIdFromPath = pathParts[pathParts.length - 1];
@@ -2440,6 +2794,29 @@
             }
 
             submitBtn.onclick = () => {
+                if (PRACTICE_MODE === 'similar_practice') {
+                    const userAnswer = (answerInput.value || '').trim();
+                    const expectedAnswer = (similarPracticeState.answer || '').trim();
+                    if (!similarPracticeState.hasQuestion) {
+                        resultDisplay.textContent = '請先上傳題目照片並生成類題。';
+                        resultDisplay.className = 'incorrect';
+                        return;
+                    }
+                    if (!userAnswer) {
+                        resultDisplay.textContent = '請先輸入答案。';
+                        resultDisplay.className = 'incorrect';
+                        return;
+                    }
+                    const normalizedUser = userAnswer.replace(/\s+/g, '');
+                    const normalizedExpected = expectedAnswer.replace(/\s+/g, '');
+                    const isCorrect = normalizedExpected && normalizedUser === normalizedExpected;
+                    resultDisplay.textContent = isCorrect
+                        ? '答對了！可以按「下一題」繼續練習。'
+                        : '目前答案不正確，可以再試一次或按「顯示答案」。';
+                    resultDisplay.className = isCorrect ? 'correct' : 'incorrect';
+                    return;
+                }
+
                 if (isProcessing) return;
                 isProcessing = true;
                 submitBtn.disabled = true;

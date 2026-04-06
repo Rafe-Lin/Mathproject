@@ -196,7 +196,25 @@ def practice(skill_id):
                            skill_id=skill_id,
                            skill_ch_name=skill_ch_name,
                            prereq_skills=prereq_skills,
-                           tutor_model_name=tutor_model_name)
+                           tutor_model_name=tutor_model_name,
+                           practice_mode='standard')
+
+
+@practice_bp.route('/practice/similar_questions')
+@login_required
+def similar_questions():
+    """進入類題練習模式，保留既有 index 版型與聊天/手寫互動。"""
+    tutor_config = Config.MODEL_ROLES.get('tutor', {})
+    tutor_model_name = tutor_config.get('model', 'unknown')
+
+    return render_template(
+        'index.html',
+        skill_id='similar_questions',
+        skill_ch_name='類題練習',
+        prereq_skills=[],
+        tutor_model_name=tutor_model_name,
+        practice_mode='similar_practice',
+    )
 
 @practice_bp.route('/get_adaptive_question', methods=['GET'])
 @login_required
