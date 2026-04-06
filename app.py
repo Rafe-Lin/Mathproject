@@ -139,6 +139,13 @@ def create_app():
     app.register_blueprint(core_bp)
     app.register_blueprint(practice_bp) # 註冊練習用的 blueprint，沒有前綴
     app.register_blueprint(live_show_bp) # 註冊科展展演用的 blueprint
+
+    # [模擬學生 API] 註冊模擬學生 blueprint（本地開發用）
+    try:
+        from Simulated_student.sim_api import sim_bp
+        app.register_blueprint(sim_bp)
+    except ImportError:
+        pass  # Simulated_student 套件未安裝時不影響主程式
     
     # [隱藏路由清單輸出] 暫時註解掉以減少干擾
     # print("--- 目前系統註冊的所有路由清單 ---")
