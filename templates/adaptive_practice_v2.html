@@ -1876,7 +1876,18 @@
       document.getElementById("summaryBadges").innerHTML = badges.map((item) => `<span>${item}</span>`).join("");
       renderDiagnosticReport(responseMeta?.diagnostic_report || summary?.diagnostic_report || null);
       setFinishedState(true);
-      setText("questionText", passed ? "你已完成本單元自適應診斷。" : "本次診斷已完成，請先看補強建議。");
+      const polyTeachingSkill = String(skillId || state.mainSkill || "").includes("FourArithmeticOperationsOfPolynomial");
+      const midPolyTeaching = !passed && state.mode === "teaching" && polyTeachingSkill;
+      setText(
+        "questionText",
+        passed
+          ? (state.mode === "teaching" && polyTeachingSkill
+            ? (summary?.message || "你已完成本單元多項式教學主線（含 F10 除法原理回推）。")
+            : "你已完成本單元自適應診斷。")
+          : (midPolyTeaching
+            ? (summary?.message || "主線進行中，請繼續下一個核心題型（長除法 F9 → 反推除法 F10）。")
+            : "本次診斷已完成，請先看補強建議。"),
+      );
       setText("questionContext", "");
       const subskillsBox = document.getElementById("subskillsBox");
       if (subskillsBox) subskillsBox.innerHTML = "";

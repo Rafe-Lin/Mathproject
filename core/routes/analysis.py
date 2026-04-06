@@ -1122,7 +1122,7 @@ def _handwriting_family_meta(family_id):
         "F3": ("多項式乘以單項式", "分配律與係數次方正確分配"),
         "F5": ("多項式乘法展開", "每一項都要完整分配相乘"),
         "F9": ("多項式長除法（商餘）", "長除法對齊、乘回與相減"),
-        "F11": ("多項式除以單項式", "各項分別相除並化簡"),
+        "F11": ("多項式綜合化簡", "包含展開、乘法公式與同類項合併的混合型化簡"),
     }
     return mapping.get(fid, ("多項式題", "依題意完成整理、化簡與等值轉換"))
 
@@ -1618,6 +1618,21 @@ def chat_ai():
 
     full_question_context = question_text if question_text else (current.get("question") or question_context)
     structured_analysis = _tutor_extract_structured_analysis(data)
+    _raw_ha = data.get("handwriting_analysis") if isinstance(data, dict) else None
+    _has_handwriting = isinstance(_raw_ha, dict) and bool(_raw_ha)
+    _sa_empty = (
+        str(structured_analysis.get("status") or "") == "unknown"
+        and not str(structured_analysis.get("main_issue") or "").strip()
+        and str(structured_analysis.get("error_mechanism") or "") == "unknown"
+    )
+    if not _has_handwriting and _sa_empty:
+        current_app.logger.info("[chat_ai] skipped due to empty structured_analysis")
+        return jsonify(
+            {
+                "reply": "我目前還沒有足夠的分析結果 👉 請先按「AI檢查手寫」或送出答案，我再幫你更精準地找錯誤！",
+                "follow_up_prompts": [],
+            }
+        )
     structured_summary = (
         f"status={structured_analysis.get('status','unknown')}; "
         f"main_issue={structured_analysis.get('main_issue','')}; "

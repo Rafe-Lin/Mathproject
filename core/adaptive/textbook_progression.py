@@ -12,7 +12,7 @@ _CACHE: dict[str, dict[str, Any]] = {}
 
 DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
     "unit_skill_id": POLY_SKILL_ID,
-    "mainline_sequence": ["F1", "F2", "F5", "F11"],
+    "mainline_sequence": ["F1", "F2", "F5", "F11", "F9", "F10"],
     "assessment_sequence": ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"],
     "families": {
         "F1": {
@@ -125,8 +125,28 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
                 "combine_after_distribution": "分配律後續合併流程卡住，無法完成整理。",
                 "expand_structure": "需要先展開再化簡時，展開架構掌握不足。",
             },
-            "next_on_success": None,
+            "next_on_success": "F9",
             "fallback_on_repeat_failure": "F5",
+        },
+        "F9": {
+            "family_name": "poly_div_poly_qr",
+            "difficulty_level": 5,
+            "textbook_examples": [],
+            "main_subskills": ["quotient_remainder_format"],
+            "prerequisite_candidates": [],
+            "prerequisite_candidate_descriptions": {},
+            "next_on_success": "F10",
+            "fallback_on_repeat_failure": "F11",
+        },
+        "F10": {
+            "family_name": "poly_div_reverse",
+            "difficulty_level": 6,
+            "textbook_examples": [],
+            "main_subskills": ["reverse_division_reconstruction"],
+            "prerequisite_candidates": [],
+            "prerequisite_candidate_descriptions": {},
+            "next_on_success": None,
+            "fallback_on_repeat_failure": "F9",
         },
     },
     "completion_gate": {
@@ -140,9 +160,11 @@ DEFAULT_POLY_PROGRESSION: dict[str, Any] = {
             "require_integrative_family_pass": False,
         },
         "teaching": {
-            "minimum_covered_core_families": 4,
-            "minimum_passed_core_families": 3,
+            "required_core_families": ["F1", "F2", "F5", "F11", "F9", "F10"],
+            "minimum_covered_core_families": 6,
+            "minimum_passed_core_families": 6,
             "require_integrative_family_pass": True,
+            "integrative_family_id": "F10",
         },
     },
 }

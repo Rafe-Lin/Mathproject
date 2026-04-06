@@ -5,6 +5,8 @@ mainline_sequence:
   - F2
   - F5
   - F11
+  - F9
+  - F10
 assessment_sequence:
   - F1
   - F2
@@ -135,8 +137,28 @@ families:
       add_sub: "add/sub instability"
       combine_after_distribution: "post-distribution combine instability"
       expand_structure: "expansion structure instability"
-    next_on_success: null
+    next_on_success: F9
     fallback_on_repeat_failure: F5
+
+  F9:
+    family_name: poly_div_poly_qr
+    textbook_section: "1-3 polynomial mul/div"
+    difficulty_level: 5
+    main_subskills: [quotient_remainder_format]
+    prerequisite_candidates: []
+    prerequisite_candidate_descriptions: {}
+    next_on_success: F10
+    fallback_on_repeat_failure: F11
+
+  F10:
+    family_name: poly_div_reverse
+    textbook_section: "1-3 polynomial mul/div"
+    difficulty_level: 6
+    main_subskills: [reverse_division_reconstruction]
+    prerequisite_candidates: []
+    prerequisite_candidate_descriptions: {}
+    next_on_success: null
+    fallback_on_repeat_failure: F9
 
 progression_rules:
   success_to_next_after_n_correct: 1
@@ -154,9 +176,11 @@ completion_gate:
     minimum_passed_core_families: 8
     require_integrative_family_pass: false
   teaching:
-    minimum_covered_core_families: 4
-    minimum_passed_core_families: 3
+    required_core_families: [F1, F2, F5, F11, F9, F10]
+    minimum_covered_core_families: 6
+    minimum_passed_core_families: 6
     require_integrative_family_pass: true
+    integrative_family_id: F10
 
 remediation_rules:
   enabled: true

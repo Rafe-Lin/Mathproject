@@ -111,6 +111,19 @@ DEMO_ALLOWED_FAMILY_IDS: set[str] = {
 DEMO_SCENARIO_PRIMARY_START = "F1"
 DEMO_SCENARIO_REMEDIATION_ENTRY = "I1"
 
+# Teaching-mode terminal family (not assessment). Polynomial主線終點為 F10（反推除法）。
+TEACHING_TERMINAL_FAMILY_BY_SKILL_SUFFIX: dict[str, str] = {
+    "FourArithmeticOperationsOfPolynomial": "F10",
+}
+
+
+def _teaching_terminal_family_id(system_skill_id: str) -> str | None:
+    sid = str(system_skill_id or "").strip()
+    for suffix, fid in TEACHING_TERMINAL_FAMILY_BY_SKILL_SUFFIX.items():
+        if sid.endswith(suffix):
+            return fid
+    return None
+
 
 def _normalize_family_id(value: Any) -> str:
     if value is None:
@@ -465,6 +478,10 @@ def _apply_demo_safe_family_filter(
         normalized_mode == "assessment"
         and str(system_skill_id or "").strip().endswith("FourArithmeticOperationsOfPolynomial")
     )
+    is_poly_teaching = (
+        normalized_mode == "teaching"
+        and str(system_skill_id or "").strip().endswith("FourArithmeticOperationsOfPolynomial")
+    )
     kept: list[CatalogEntry] = []
     removed: list[str] = []
     for entry in entries:
@@ -472,6 +489,8 @@ def _apply_demo_safe_family_filter(
         allowed = DEMO_SAFE_FAMILIES_BY_AGENT_SKILL.get(agent_skill)
         if is_poly_assessment and agent_skill == "polynomial_arithmetic":
             allowed = ASSESSMENT_POLY_FAMILY_IDS
+        elif is_poly_teaching and agent_skill == "polynomial_arithmetic":
+            allowed = {"F1", "F2", "F5", "F11", "F9", "F10"}
         if allowed is None:
             kept.append(entry)
             continue
@@ -977,6 +996,9 @@ def _evaluate_unit_completion(
             if str(x).strip()
         ]
     integrative_family_id = str(completion_gate.get("integrative_family_id") or "F11").strip()
+    mode_integrative = mode_gate.get("integrative_family_id") if isinstance(mode_gate, dict) else None
+    if mode_integrative:
+        integrative_family_id = str(mode_integrative).strip()
     if normalized_mode == "assessment":
         default_min_cover = min(2, len(required_core)) if required_core else 1
         default_min_pass = min(2, len(required_core)) if required_core else 1
@@ -1010,6 +1032,16 @@ def _evaluate_unit_completion(
         completion_reason = "unit_completion_waiting_core_mastery"
     else:
         completion_reason = "unit_completion_waiting_integrative_family"
+
+    term_fid = _teaching_terminal_family_id(system_skill_id)
+    if normalized_mode == "teaching" and term_fid and unit_completed:
+        cur = _normalize_family_id(current_family_id)
+        if cur != term_fid or last_is_correct is not True:
+            unit_completed = False
+            if cur != term_fid:
+                completion_reason = "teaching_waiting_terminal_family"
+            else:
+                completion_reason = "teaching_waiting_terminal_family_correct"
 
     return {
         "unit_completed": unit_completed,
@@ -1066,17 +1098,30 @@ def _build_summary(
         if mastery_values:
             standardized_score = round((sum(mastery_values) / float(len(mastery_values))) * 100.0, 1)
     if passed:
-        title = "本單元診斷完成"
-        message = "你已完成本單元的核心題型檢核，整體掌握度表現穩定。"
-        next_action = "可進入下一個單元，或回頭加強尚未達到滿分的題型。"
+        if normalized_mode == "teaching" and _infer_skill_type(system_skill_id) == "polynomial":
+            title = "本單元教學完成"
+            message = (
+                "你已完成多項式 teaching 主線至 F10「除法原理回推（反推除法）」，"
+                "歷程包含綜合化簡、長除法與反推除法核心題型。"
+            )
+            next_action = "可進入下一單元，或針對長除法／反推除法再加強練習。"
+        else:
+            title = "本單元診斷完成"
+            message = "你已完成本單元的核心題型檢核，整體掌握度表現穩定。"
+            next_action = "可進入下一個單元，或回頭加強尚未達到滿分的題型。"
     elif local_remediation_completed:
         title = "補救完成，已返回主線"
         message = "你已完成這段補救練習，並回到主線繼續作答。"
         next_action = "建議繼續完成本單元診斷，確認補強後是否穩定掌握。"
     else:
-        title = "本次診斷已完成，請先看補強建議。"
-        message = "系統已根據你的作答表現整理出目前的學習卡點與掌握情況。"
-        next_action = "建議先補強診斷書中的弱項，再回來完成主線題型。"
+        if normalized_mode == "teaching" and _infer_skill_type(system_skill_id) == "polynomial":
+            title = "主線進行中"
+            message = "已完成目前階段；接下來將進入多項式長除法（F9）與除法原理回推／反推除法（F10）。"
+            next_action = "請繼續作答，朝教學終點 F10 前進。"
+        else:
+            title = "本次診斷已完成，請先看補強建議。"
+            message = "系統已根據你的作答表現整理出目前的學習卡點與掌握情況。"
+            next_action = "建議先補強診斷書中的弱項，再回來完成主線題型。"
 
     return {
         "passed": passed,
@@ -1647,11 +1692,12 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         if str(entry.family_id).strip()
     }
     unit_name = str(payload.get("unit_name") or (entries[0].skill_name if entries else "") or "").strip()
-    allowed_demo_families_display = (
-        sorted({str(entry.family_id) for entry in entries if str(entry.family_id).strip()})
-        if ADAPTIVE_USE_FULL_CATALOG
-        else sorted(DEMO_ALLOWED_FAMILY_IDS)
-    )
+    _fam_from_entries = sorted({str(entry.family_id) for entry in entries if str(entry.family_id).strip()})
+    if ADAPTIVE_USE_FULL_CATALOG:
+        allowed_demo_families_display = _fam_from_entries
+    else:
+        # 反映 demo_safe 過濾後實際可用 families（如 polynomial teaching 含 F9/F10）
+        allowed_demo_families_display = _fam_from_entries or sorted(DEMO_ALLOWED_FAMILY_IDS)
 
     if not system_skill_id:
         system_skill_id = str(entries[0].skill_id if entries else "").strip()

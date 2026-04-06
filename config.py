@@ -228,9 +228,28 @@ class Config:
             },
             'description': 'Qwen3.5-4B (Text-Only, Lightweight)'
         },
+
+        # 9. Gemma 4 e4b IT (Local) [2026-04 unified single-model integration test]
+        'gemma4-e4b': {
+            'provider': 'local',
+            'model': 'gemma4:e4b-it-q4_K_M',
+            'temperature': 0.1,
+            'max_tokens': 2048,
+            'extra_body': {
+                'num_ctx': 4096,
+                'num_gpu': -1,
+                'num_thread': 8,
+                'keep_alive': "30m",
+                'top_k': 20,
+                'top_p': 0.9,
+                'repeat_penalty': 1.1,
+            },
+            'description': 'Gemma 4 e4b IT q4_K_M (Local Unified Test)'
+        },
     }
 
     # ???身隞?Ⅳ??璅∪? Preset Key嚗耨?寞迨??臬????
+    # [rollback] 原本：DEFAULT_CODER_PRESET = 'gemma4-e4b'
     DEFAULT_CODER_PRESET = 'qwen3-vl-8b'
 
     # Preserve Mathproject's original model options so they remain easy to
@@ -262,6 +281,8 @@ class Config:
     # ??蝟餌絞閫?晷
     # ? Web 隞?身雿輻?身摰?
     # 瘜冽?嚗un_experiment.py ?瑁????撥?嗉??ㄐ??'coder'
+
+    # coder / tutor / classifier / default / vision_analyzer 統一為 CODER_PRESETS['qwen3-vl-8b']（各 role 有 gemma4-e4b rollback 註解）。
     MODEL_ROLES = {
         'architect': {
             'provider': 'google',
@@ -274,7 +295,10 @@ class Config:
         # 'coder': CODER_PRESETS['qwen3-8b'], 
 
         # ?身撌亦?撣思??臭誑?湔?郊?? VL ?嚗???閫隞?Ⅳ??
-        'coder': CODER_PRESETS['qwen3-vl-8b'],  # [2026-03-11] ?Ｗ儔雿輻蝯曹? VL ?嗆?
+        # [rollback] coder 原本：CODER_PRESETS['qwen3-vl-8b']  # [2026-03-11] ?Ｗ儔雿輻蝯曹? VL ?嗆?
+        # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
+        'coder': CODER_PRESETS['qwen3-vl-8b'],
+        # 'coder': CODER_PRESETS['gemma4-e4b'],
         # 'coder': CODER_PRESETS['qwen3-vl-4b'],
         # 'coder': CODER_PRESETS['qwen3.5-4b'],
                 
@@ -291,27 +315,29 @@ class Config:
         #     'temperature': 0.3,
         #     'max_tokens': 2048,
         # },
+        # [rollback] tutor 原本：CODER_PRESETS['qwen3-vl-8b']
+        # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
         'tutor': CODER_PRESETS['qwen3-vl-8b'],
         
         # 撠?閬箏??敺?Gemini ???典?? Qwen3-VL
+        # [rollback] vision_analyzer 原本：CODER_PRESETS['qwen3-vl-8b']
+        # [rollback] vision_analyzer 改回 qwen3-vl-8b（Gemma 在手寫 OCR 不穩）
+        # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
         'vision_analyzer': CODER_PRESETS['qwen3-vl-8b'],
+        # 'vision_analyzer': CODER_PRESETS['gemma4-e4b'],
 
         # 'vision_analyzer': {
         #     'provider': 'gemini', 
         #     'model': 'gemini-2.5-flash' 
         # },
 
-        'classifier': {
-            'provider': 'google',
-            'model': 'gemini-2.5-flash',
-            'temperature': 0.3,
-            'max_tokens': 500
-        },
+        # [rollback] classifier 原本：provider 'google', model 'gemini-2.5-flash', temperature 0.3, max_tokens 500
+        # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
+        'classifier': CODER_PRESETS['qwen3-vl-8b'],
 
-        'default': {
-            'provider': 'local',
-            'model': 'qwen3-14b-nothink:latest'
-        }
+        # [rollback] default 原本：provider 'local', model 'qwen3-14b-nothink:latest'
+        # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
+        'default': CODER_PRESETS['qwen3-vl-8b'],
     }
 
     LEGACY_MODEL_ROLES = {
