@@ -1,0 +1,1069 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "幾何與測量",
+    "l2_unit": "第3章_三角形與多邊形",
+    "l2_unit_id": "JH_GEO_TRI_POLY"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_GEO",
+      "level": "L1",
+      "name": "幾何與測量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_GEO_TRI_POLY",
+      "level": "L2",
+      "name": "第3章_三角形與多邊形",
+      "parent_id": "L1_JH_GEO"
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01",
+      "level": "L3",
+      "name": "角的分類與多邊形內外角",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "本單元介紹角的種類、兩角關係（互餘、互補、對頂角），並探討三角形及n邊形的內角和與外角和定理，以及正n邊形的內外角計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_a",
+      "level": "L4",
+      "name": "角的種類",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "認識銳角、直角、鈍角、平角、周角等不同種類的角。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_b",
+      "level": "L4",
+      "name": "兩角關係 (互餘、互補、對頂角)",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "理解互餘、互補、對頂角的定義與性質，並能應用於計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_c",
+      "level": "L4",
+      "name": "三角形內角和定理",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "理解三角形內角和為180度的定理，並能應用於計算未知角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_d",
+      "level": "L4",
+      "name": "三角形外角和定理",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "理解三角形外角和為360度的定理，以及外角等於不相鄰兩內角和的性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_e",
+      "level": "L4",
+      "name": "n邊形內角和定理",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "理解n邊形內角和公式 (n-2)×180度，並能應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_f",
+      "level": "L4",
+      "name": "正n邊形內外角",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "計算正n邊形每個內角和外角的度數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_01_g",
+      "level": "L4",
+      "name": "多邊形外角定義",
+      "parent_id": "JH_GEO_TRI_POLY_L3_01",
+      "description": "認識凸多邊形與凹多邊形，並理解多邊形外角的定義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02",
+      "level": "L3",
+      "name": "尺規作圖",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "學習使用直尺和圓規進行等線段、等角、中垂線、角平分線、過線上一點作垂線、過線外一點作垂線等基本幾何作圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_a",
+      "level": "L4",
+      "name": "尺規作圖的意義",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "理解尺規作圖的定義與限制，僅使用直尺（不帶刻度）和圓規。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_b",
+      "level": "L4",
+      "name": "等線段作圖",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規複製已知線段的長度，或作兩線段的和與差。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_c",
+      "level": "L4",
+      "name": "等角作圖",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規複製已知角度，或作兩角的和與差。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_d",
+      "level": "L4",
+      "name": "中垂線作圖",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規作圖畫出線段的中垂線，並找出線段中點。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_e",
+      "level": "L4",
+      "name": "角平分線作圖",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規作圖畫出角的平分線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_f",
+      "level": "L4",
+      "name": "過線上一點作垂線",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規作圖過已知直線上的一點作該直線的垂線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_02_g",
+      "level": "L4",
+      "name": "過線外一點作垂線",
+      "parent_id": "JH_GEO_TRI_POLY_L3_02",
+      "description": "利用尺規作圖過已知直線外的一點作該直線的垂線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03",
+      "level": "L3",
+      "name": "三角形全等性質",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "本單元介紹三角形全等的意義，並學習SSS、SAS、ASA、AAS、RHS等全等判別性質，同時理解SSA和AAA不全等的情況。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_a",
+      "level": "L4",
+      "name": "三角形全等的意義",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解全等圖形的定義，知道全等三角形的對應邊相等、對應角相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_b",
+      "level": "L4",
+      "name": "SSS全等性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解並應用SSS（邊-邊-邊）全等性質判斷三角形全等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_c",
+      "level": "L4",
+      "name": "SAS全等性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解並應用SAS（邊-角-邊）全等性質判斷三角形全等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_d",
+      "level": "L4",
+      "name": "SSA不全等",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解SSA（邊-邊-角）不能作為全等性質的理由。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_e",
+      "level": "L4",
+      "name": "RHS全等性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解並應用RHS（直角-斜邊-邊）全等性質判斷直角三角形全等。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_f",
+      "level": "L4",
+      "name": "ASA全等性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解並應用ASA（角-邊-角）全等性質判斷三角形全等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_g",
+      "level": "L4",
+      "name": "AAS全等性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解並應用AAS（角-角-邊）全等性質判斷三角形全等。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_03_h",
+      "level": "L4",
+      "name": "AAA不全等",
+      "parent_id": "JH_GEO_TRI_POLY_L3_03",
+      "description": "理解AAA（角-角-角）不能作為全等性質的理由。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04",
+      "level": "L3",
+      "name": "中垂線與角平分線的性質",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "本單元探討中垂線與角平分線的性質，包括點到線段兩端點距離相等、點到角兩邊距離相等，以及其判別方法。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04_a",
+      "level": "L4",
+      "name": "中垂線性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_04",
+      "description": "理解線段中垂線上任一點到線段兩端點的距離相等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04_b",
+      "level": "L4",
+      "name": "中垂線判別性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_04",
+      "description": "理解若一點到線段兩端點的距離相等，則此點在該線段的中垂線上。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04_c",
+      "level": "L4",
+      "name": "角平分線性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_04",
+      "description": "理解角平分線上任一點到角兩邊的距離相等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04_d",
+      "level": "L4",
+      "name": "角平分線判別性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_04",
+      "description": "理解若一點到角兩邊的距離相等，則此點在該角的角平分線上。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_04_e",
+      "level": "L4",
+      "name": "中垂線與角平分線性質的綜合應用",
+      "parent_id": "JH_GEO_TRI_POLY_L3_04",
+      "description": "綜合應用中垂線與角平分線的性質解決幾何問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_05",
+      "level": "L3",
+      "name": "等腰三角形性質",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "本單元學習等腰三角形的性質，包括兩底角相等、頂角平分線為底邊中垂線，並探討其判別方法與應用。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_05_a",
+      "level": "L4",
+      "name": "等腰三角形性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_05",
+      "description": "理解等腰三角形的兩底角相等，以及頂角平分線、底邊中線、底邊高線三線合一的性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_05_b",
+      "level": "L4",
+      "name": "等腰三角形判別性質",
+      "parent_id": "JH_GEO_TRI_POLY_L3_05",
+      "description": "理解若三角形有兩個內角相等，則此三角形為等腰三角形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_05_c",
+      "level": "L4",
+      "name": "等腰三角形性質的應用",
+      "parent_id": "JH_GEO_TRI_POLY_L3_05",
+      "description": "應用等腰三角形的性質與判別解決幾何問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06",
+      "level": "L3",
+      "name": "三角形邊角關係",
+      "parent_id": "JH_GEO_TRI_POLY",
+      "description": "本單元探討三角形三邊長關係、大角對大邊與大邊對大角，並學習畢氏定理及其應用，以及特殊直角三角形的邊長關係。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_a",
+      "level": "L4",
+      "name": "三角形三邊長關係",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "理解三角形任意兩邊之和大於第三邊，任意兩邊之差小於第三邊。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_b",
+      "level": "L4",
+      "name": "三線段構成三角形的條件",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "判斷給定三線段是否能構成一個三角形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_c",
+      "level": "L4",
+      "name": "三角形大角對大邊、大邊對大角",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "理解三角形中大角對大邊、大邊對大角的性質。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_d",
+      "level": "L4",
+      "name": "畢氏定理",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "理解畢氏定理（勾股弦定理）的內容，即直角三角形兩股平方和等於斜邊平方。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_e",
+      "level": "L4",
+      "name": "畢氏定理的應用",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "應用畢氏定理計算直角三角形的未知邊長。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_TRI_POLY_L3_06_f",
+      "level": "L4",
+      "name": "特殊直角三角形的邊長關係",
+      "parent_id": "JH_GEO_TRI_POLY_L3_06",
+      "description": "認識並應用特殊直角三角形（如30-60-90、45-45-90）的邊長比例關係。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_GEO",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_GEO",
+      "to_id": "JH_GEO_TRI_POLY",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_h",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY",
+      "to_id": "JH_GEO_TRI_POLY_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01",
+      "to_id": "JH_GEO_TRI_POLY_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02",
+      "to_id": "JH_GEO_TRI_POLY_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03",
+      "to_id": "JH_GEO_TRI_POLY_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04",
+      "to_id": "JH_GEO_TRI_POLY_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05",
+      "to_id": "JH_GEO_TRI_POLY_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_f",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_f",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_h",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_b",
+      "type": "prerequisite",
+      "reason": "理解角的概念是學習兩角關係的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "type": "prerequisite",
+      "reason": "理解角的概念是學習三角形內角和的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_d",
+      "type": "prerequisite",
+      "reason": "三角形內角和定理是理解外角和定理的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "type": "prerequisite",
+      "reason": "n邊形內角和可分解為多個三角形內角和"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_f",
+      "type": "prerequisite",
+      "reason": "正n邊形是n邊形的一種特殊情況"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_01_g",
+      "type": "prerequisite",
+      "reason": "理解多邊形內角和後，再定義外角"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "type": "prerequisite",
+      "reason": "尺規作圖的意義是等線段作圖的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "type": "prerequisite",
+      "reason": "尺規作圖的意義是等角作圖的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "type": "prerequisite",
+      "reason": "中垂線作圖需要等線段作圖來畫弧"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_e",
+      "type": "prerequisite",
+      "reason": "角平分線作圖需要等角作圖來畫弧"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_f",
+      "type": "prerequisite",
+      "reason": "中垂線作圖是過線上一點作垂線的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_02_g",
+      "type": "prerequisite",
+      "reason": "中垂線作圖是過線外一點作垂線的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "type": "prerequisite",
+      "reason": "理解全等概念是學習SSS全等性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "type": "prerequisite",
+      "reason": "尺規作圖構造三角形是理解SSS全等性質的輔助"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "type": "prerequisite",
+      "reason": "理解全等概念是學習SAS全等性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "type": "prerequisite",
+      "reason": "尺規作圖構造線段是理解SAS全等性質的輔助"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "type": "prerequisite",
+      "reason": "尺規作圖構造角度是理解SAS全等性質的輔助"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_d",
+      "type": "prerequisite",
+      "reason": "理解SAS全等性質後對比SSA不全等的情況"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "type": "prerequisite",
+      "reason": "SSS全等性質是RHS全等性質證明中的一個步驟"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "type": "prerequisite",
+      "reason": "畢氏定理用於RHS全等性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "type": "prerequisite",
+      "reason": "理解全等概念是學習ASA全等性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "type": "prerequisite",
+      "reason": "尺規作圖構造線段是理解ASA全等性質的輔助"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "type": "prerequisite",
+      "reason": "尺規作圖構造角度是理解ASA全等性質的輔助"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_f",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "type": "prerequisite",
+      "reason": "AAS全等性質可由ASA全等性質和三角形內角和定理推導"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "type": "prerequisite",
+      "reason": "三角形內角和定理是AAS全等性質推導的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_03_h",
+      "type": "prerequisite",
+      "reason": "理解全等概念是理解AAA不全等的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "type": "prerequisite",
+      "reason": "中垂線作圖是理解中垂線性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "type": "prerequisite",
+      "reason": "SSS全等性質用於中垂線性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "type": "prerequisite",
+      "reason": "中垂線性質是判別性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "type": "prerequisite",
+      "reason": "RHS全等性質用於中垂線判別性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_02_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "type": "prerequisite",
+      "reason": "角平分線作圖是理解角平分線性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "type": "prerequisite",
+      "reason": "AAS全等性質用於角平分線性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "type": "prerequisite",
+      "reason": "角平分線性質是判別性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_e",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "type": "prerequisite",
+      "reason": "RHS全等性質用於角平分線判別性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要理解中垂線性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要理解中垂線判別性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要理解角平分線性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_04_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_04_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要理解角平分線判別性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "type": "prerequisite",
+      "reason": "SSS全等性質用於等腰三角形性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "type": "prerequisite",
+      "reason": "三角形內角和定理是理解等腰三角形性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "type": "prerequisite",
+      "reason": "等腰三角形性質是判別性質的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_03_g",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "type": "prerequisite",
+      "reason": "AAS全等性質用於等腰三角形判別性質的證明"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_c",
+      "type": "prerequisite",
+      "reason": "應用需要理解等腰三角形性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_05_b",
+      "to_id": "JH_GEO_TRI_POLY_L3_05_c",
+      "type": "prerequisite",
+      "reason": "應用需要理解等腰三角形判別性質"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_b",
+      "type": "prerequisite",
+      "reason": "三邊長關係是構成三角形條件的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_c",
+      "type": "prerequisite",
+      "reason": "理解邊長關係是學習大角對大邊的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_01_c",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_c",
+      "type": "prerequisite",
+      "reason": "三角形內角和定理是理解大角對大邊的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_a",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "type": "prerequisite",
+      "reason": "理解邊長關係是學習畢氏定理的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_e",
+      "type": "prerequisite",
+      "reason": "畢氏定理是其應用的基礎"
+    },
+    {
+      "from_id": "JH_GEO_TRI_POLY_L3_06_d",
+      "to_id": "JH_GEO_TRI_POLY_L3_06_f",
+      "type": "prerequisite",
+      "reason": "特殊直角三角形是畢氏定理的特例"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 45,
+    "total_edges": 129,
+    "l3_count": 6,
+    "l4_count": 36,
+    "l4_avg_per_l3": 6.0
+  }
+}

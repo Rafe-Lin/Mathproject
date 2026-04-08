@@ -1,0 +1,1112 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "數與量",
+    "l2_unit": "第2章_平方根與畢氏定理",
+    "l2_unit_id": "JH_NUM_SQRT"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_SQRT",
+      "level": "L2",
+      "name": "第2章_平方根與畢氏定理",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01",
+      "level": "L3",
+      "name": "平方根的意義",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "介紹平方根的由來與基本概念，透過正方形面積與邊長的關係，引導學生理解平方根的意義，並探討其數值特性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_a",
+      "level": "L4",
+      "name": "平方根概念的建立",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "透過正方形面積與邊長的關係，引入平方根的概念，例如面積為1、4、9的正方形，其邊長分別為1、2、3。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_b",
+      "level": "L4",
+      "name": "面積為2和5的正方形邊長探索",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "透過拼圖與面積計算，探索面積為2和5的正方形邊長，並初步認識其數值特性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_c",
+      "level": "L4",
+      "name": "邊長不是整數、有限小數或分數的證明",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "透過逐步逼近和分數的性質，證明面積為2的正方形邊長m不是整數、有限位小數或分數，引出無理數的概念。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_d",
+      "level": "L4",
+      "name": "√a的定義 (a>0)",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "定義符號「√a」來表示面積為a的正方形邊長，並說明其讀法，例如√2讀作「根號二」。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_e",
+      "level": "L4",
+      "name": "根號值的比較 (√a > √b if a > b)",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "說明若a>b>0，則√a > √b，並應用此性質比較不同根號數的大小關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_01_f",
+      "level": "L4",
+      "name": "(√a)²=a的性質",
+      "parent_id": "JH_NUM_SQRT_L3_01",
+      "description": "說明面積為a的正方形，其邊長為√a，因此(√a)²=a，並透過練習加深理解。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02",
+      "level": "L3",
+      "name": "√a^2 的值",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習如何計算形如√a^2的數值，並認識完全平方數及其應用。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02_a",
+      "level": "L4",
+      "name": "完全平方數的定義與判斷",
+      "parent_id": "JH_NUM_SQRT_L3_02",
+      "description": "定義若一個正整數是另一個整數的平方，就稱這個數為完全平方數，並提供1~625的完全平方數表。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02_b",
+      "level": "L4",
+      "name": "利用完全平方數求√a^2的值",
+      "parent_id": "JH_NUM_SQRT_L3_02",
+      "description": "說明若a為正數，則√a^2=a，並應用此性質計算完全平方數的平方根，例如√49=7。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02_c",
+      "level": "L4",
+      "name": "利用標準分解式求√a的值",
+      "parent_id": "JH_NUM_SQRT_L3_02",
+      "description": "當無法直接看出一個數是否為另一個數的平方時，可利用標準分解式和指數律來求其值，例如√784。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02_d",
+      "level": "L4",
+      "name": "小數與分數的√a值計算",
+      "parent_id": "JH_NUM_SQRT_L3_02",
+      "description": "應用√a^2=a的性質，計算小數和分數的平方根，例如√(9/25)和√1.69。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_02_e",
+      "level": "L4",
+      "name": "√a^2 = a (a>0) 的性質",
+      "parent_id": "JH_NUM_SQRT_L3_02",
+      "description": "總結對於一個正數a，√a^2=a的性質，這是計算平方根的基礎。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03",
+      "level": "L3",
+      "name": "利用十分逼近法求值",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習如何使用十分逼近法估算含有根號的數值，並將其四捨五入到指定的小數位數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_a",
+      "level": "L4",
+      "name": "十分逼近法的原理",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "利用若b<a則√b<√a的性質，透過逐步縮小範圍來估算無理數的近似值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_b",
+      "level": "L4",
+      "name": "估算√a的整數部分",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "找出√a介於哪兩個相鄰整數之間，以確定其整數部分，例如√3介於1和2之間。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_c",
+      "level": "L4",
+      "name": "估算√a的一位小數部分",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "將整數區間分成10等分，找出√a介於哪兩個相鄰一位小數之間，例如√3介於1.7和1.8之間。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_d",
+      "level": "L4",
+      "name": "估算√a的二位小數部分",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "將一位小數區間再分成10等分，找出√a介於哪兩個相鄰二位小數之間，例如√3介於1.73和1.74之間。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_e",
+      "level": "L4",
+      "name": "將√a的值四捨五入到指定位數",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "根據十分逼近法得到的近似值，應用四捨五入法將√a的值取到小數點後指定位數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_03_f",
+      "level": "L4",
+      "name": "在數線上標示√a的近似位置",
+      "parent_id": "JH_NUM_SQRT_L3_03",
+      "description": "利用十分逼近法估算出的近似值，在數線上標示出√a的大概位置。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04",
+      "level": "L3",
+      "name": "利用計算機求值",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習如何使用計算機的√鍵來求取平方根的近似值，並將結果四捨五入到指定位數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04_a",
+      "level": "L4",
+      "name": "計算機√鍵操作說明",
+      "parent_id": "JH_NUM_SQRT_L3_04",
+      "description": "說明計算機上√鍵的功能及操作步驟，例如先按SHIFT再按x²鍵。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04_b",
+      "level": "L4",
+      "name": "利用計算機求整數的√a近似值",
+      "parent_id": "JH_NUM_SQRT_L3_04",
+      "description": "使用計算機計算整數的平方根近似值，例如√2的近似值。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04_c",
+      "level": "L4",
+      "name": "利用計算機求小數的√a近似值",
+      "parent_id": "JH_NUM_SQRT_L3_04",
+      "description": "使用計算機計算小數的平方根近似值，例如√2.6的近似值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04_d",
+      "level": "L4",
+      "name": "利用計算機求分數的√a近似值",
+      "parent_id": "JH_NUM_SQRT_L3_04",
+      "description": "使用計算機計算分數的平方根近似值，例如√(5/7)的近似值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_04_e",
+      "level": "L4",
+      "name": "將計算機結果四捨五入到指定位數",
+      "parent_id": "JH_NUM_SQRT_L3_04",
+      "description": "將計算機顯示的平方根近似值，根據四捨五入法取到小數點後指定位數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05",
+      "level": "L3",
+      "name": "平方根的意義",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "深入探討平方根的定義，包括正平方根、負平方根以及0的平方根，並理解負數沒有平方根。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05_a",
+      "level": "L4",
+      "name": "正數的平方根 (±√a)",
+      "parent_id": "JH_NUM_SQRT_L3_05",
+      "description": "說明對於正數a，其平方根有兩個，分別為正平方根√a和負平方根-√a，可合併記為±√a。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05_b",
+      "level": "L4",
+      "name": "0的平方根",
+      "parent_id": "JH_NUM_SQRT_L3_05",
+      "description": "說明0的平方根只有一個，即0。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05_c",
+      "level": "L4",
+      "name": "負數沒有平方根",
+      "parent_id": "JH_NUM_SQRT_L3_05",
+      "description": "解釋因為任何非0的數的平方皆為正數，所以負數沒有平方根。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05_d",
+      "level": "L4",
+      "name": "求給定數的平方根",
+      "parent_id": "JH_NUM_SQRT_L3_05",
+      "description": "應用平方根的定義，求出給定正數、分數或小數的平方根。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_05_e",
+      "level": "L4",
+      "name": "根據平方根定義解方程式",
+      "parent_id": "JH_NUM_SQRT_L3_05",
+      "description": "應用平方根的定義，解出含有平方根概念的簡單方程式，例如若-5是2x-1的負平方根，求x。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06",
+      "level": "L3",
+      "name": "根式運算的基本性質",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "介紹根式的定義、表示方法以及乘除運算的基本性質，為後續的根式四則運算奠定基礎。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06_a",
+      "level": "L4",
+      "name": "根式的定義與表示",
+      "parent_id": "JH_NUM_SQRT_L3_06",
+      "description": "定義含有根號的算式為根式，並說明根式在乘法和除法中的表示方法，例如3×√5可寫成3√5。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06_b",
+      "level": "L4",
+      "name": "根式的乘法性質 (a√b = a√b)",
+      "parent_id": "JH_NUM_SQRT_L3_06",
+      "description": "說明若a≠0, b≥0，則a×√b=a√b，並應用此性質進行根式乘法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06_c",
+      "level": "L4",
+      "name": "根式的乘法運算 (√a × √b = √ab)",
+      "parent_id": "JH_NUM_SQRT_L3_06",
+      "description": "說明若a≥0, b≥0，則√a×√b=√ab，並應用此性質進行根式乘法運算，例如√2×√3=√6。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06_d",
+      "level": "L4",
+      "name": "根式的除法性質 (√b ÷ a = √b/a)",
+      "parent_id": "JH_NUM_SQRT_L3_06",
+      "description": "說明若a≠0, b≥0，則√b÷a=√b/a (或1/a × √b)，並應用此性質進行根式除法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_06_e",
+      "level": "L4",
+      "name": "根式的除法運算 (√a ÷ √b = √(a/b))",
+      "parent_id": "JH_NUM_SQRT_L3_06",
+      "description": "說明若a≥0, b>0，則√a÷√b=√(a/b)，並應用此性質進行根式除法運算，例如√35÷√5=√7。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07",
+      "level": "L3",
+      "name": "最簡根式與有理化",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習最簡根式的定義、判斷與化簡方法，以及分母有理化的技巧，使根式表達更為簡潔。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07_a",
+      "level": "L4",
+      "name": "最簡根式的定義與判斷",
+      "parent_id": "JH_NUM_SQRT_L3_07",
+      "description": "定義最簡根式為a√b的形式，其中b為正整數且其標準分解式中質因數次數皆為1，並學習判斷根式是否為最簡形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07_b",
+      "level": "L4",
+      "name": "將根號內有完全平方因數的根式化簡",
+      "parent_id": "JH_NUM_SQRT_L3_07",
+      "description": "針對根號內的數其標準分解式中有質因數次數大於1的情形，將完全平方因數提出根號外，化簡為最簡根式，例如√18=3√2。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07_c",
+      "level": "L4",
+      "name": "分母有理化的意義與方法 (單項根式)",
+      "parent_id": "JH_NUM_SQRT_L3_07",
+      "description": "定義分母有理化為將分母化為不帶有根號的過程，並學習透過擴分將分母為單項根式的根式有理化，例如2/√10。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07_d",
+      "level": "L4",
+      "name": "將根號內為分數或小數的根式化簡",
+      "parent_id": "JH_NUM_SQRT_L3_07",
+      "description": "針對根號內的數為分數或小數的情形，先將其化為分數，再利用分母有理化化簡為最簡根式，例如√0.8。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_07_e",
+      "level": "L4",
+      "name": "化簡為最簡根式的綜合應用",
+      "parent_id": "JH_NUM_SQRT_L3_07",
+      "description": "綜合運用各種化簡技巧，將不同形式的根式化簡為最簡根式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08",
+      "level": "L3",
+      "name": "根式的四則運算",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習根式的加減乘除四則運算，包括同類方根的合併、先化簡再運算以及利用乘法公式進行根式運算和分母有理化。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_a",
+      "level": "L4",
+      "name": "同類方根的定義與判斷",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "定義當兩個或兩個以上的根式化為最簡根式後，若根號內的數b相同，則稱它們是同類方根，並學習判斷。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_b",
+      "level": "L4",
+      "name": "同類方根的加減運算",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "說明根式的加減運算如同類項合併，將同類方根的係數相加減，例如2√3+3√3=5√3。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_c",
+      "level": "L4",
+      "name": "先化簡再進行根式的加減運算",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "當根式不是最簡形式時，需先將各項化為最簡根式，再進行同類方根的加減運算，例如3√2+√8。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_d",
+      "level": "L4",
+      "name": "根式的四則混合運算",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "學習根式的加減乘除混合運算，並遵守先乘方後乘除、再加減的運算順序。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_e",
+      "level": "L4",
+      "name": "利用乘法公式進行根式運算 (平方差、和平方)",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "應用乘法公式，例如平方差公式(a-b)(a+b)=a²-b²和和平方公式(a+b)²=a²+2ab+b²，簡化根式運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_08_f",
+      "level": "L4",
+      "name": "利用乘法公式將分母有理化 (雙項根式)",
+      "parent_id": "JH_NUM_SQRT_L3_08",
+      "description": "當分母為雙項根式時，利用平方差公式將分母有理化，例如1/(√3-√2)。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09",
+      "level": "L3",
+      "name": "發現畢氏定理",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "透過歷史背景和圖形探索，引導學生發現直角三角形三邊長的特殊關係，並認識畢氏定理的數學表達。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_a",
+      "level": "L4",
+      "name": "直角三角形的定義 (斜邊、股)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "定義直角三角形、斜邊和股，並介紹等腰直角三角形。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_b",
+      "level": "L4",
+      "name": "畢氏定理的歷史背景 (古埃及操繩師)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "介紹古埃及操繩師利用繩圈製作直角三角形的歷史，引導學生思考其原理。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_c",
+      "level": "L4",
+      "name": "透過面積關係探索畢氏定理 (P+Q=R)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "透過在直角三角形三邊上繪製正方形，觀察兩股上正方形面積和等於斜邊上正方形面積的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_d",
+      "level": "L4",
+      "name": "趙爽證明法 (面積分解)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "透過將四個相同的直角三角形和一個小正方形組成一個大正方形，推導出c²=a²+b²。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_e",
+      "level": "L4",
+      "name": "畢氏定理的數學表達 (c²=a²+b²)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "總結畢氏定理的數學表達：設一直角三角形斜邊長為c，兩股長分別為a和b，則c²=a²+b²。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_09_f",
+      "level": "L4",
+      "name": "畢氏定理的名稱由來 (畢達哥拉斯、勾股弦)",
+      "parent_id": "JH_NUM_SQRT_L3_09",
+      "description": "介紹畢氏定理又稱畢達哥拉斯定理、勾股弦定理或商高定理的歷史背景。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10",
+      "level": "L3",
+      "name": "畢氏定理的應用",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習畢氏定理在幾何圖形和實際問題中的應用，包括求邊長、高、面積以及解決生活中的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_a",
+      "level": "L4",
+      "name": "求直角三角形的第三邊長",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "應用畢氏定理，已知直角三角形的兩邊長，求出第三邊長。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_b",
+      "level": "L4",
+      "name": "複合圖形中直角三角形邊長的計算",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "在複合圖形中，識別直角三角形並應用畢氏定理計算未知邊長。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_c",
+      "level": "L4",
+      "name": "直角三角形斜邊上的高計算",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "應用畢氏定理和面積公式，計算直角三角形斜邊上的高。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_d",
+      "level": "L4",
+      "name": "等腰三角形的高與面積計算",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "應用畢氏定理計算等腰三角形底邊上的高，進而計算其面積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_e",
+      "level": "L4",
+      "name": "正三角形的高與面積公式",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "推導並應用正三角形的高(√3/2)a和面積(√3/4)a²公式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_f",
+      "level": "L4",
+      "name": "長方形對角線的應用",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "應用畢氏定理計算長方形的對角線長度，解決實際問題，例如手機螢幕尺寸比較。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_10_g",
+      "level": "L4",
+      "name": "梯子問題 (實際應用)",
+      "parent_id": "JH_NUM_SQRT_L3_10",
+      "description": "應用畢氏定理解決梯子斜靠牆壁，當梯頂或梯腳移動時，另一端移動距離的問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11",
+      "level": "L3",
+      "name": "直角坐標平面上兩點的距離公式",
+      "parent_id": "JH_NUM_SQRT",
+      "description": "學習如何在直角坐標平面上計算任意兩點之間的距離，並理解其與畢氏定理的關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11_a",
+      "level": "L4",
+      "name": "水平線或鉛垂線上兩點的距離",
+      "parent_id": "JH_NUM_SQRT_L3_11",
+      "description": "說明當兩點在同一水平線或鉛垂線上時，其距離可透過坐標差的絕對值計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11_b",
+      "level": "L4",
+      "name": "利用畢氏定理推導兩點距離公式",
+      "parent_id": "JH_NUM_SQRT_L3_11",
+      "description": "透過在直角坐標平面上構造直角三角形，利用畢氏定理推導出任意兩點間的距離公式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11_c",
+      "level": "L4",
+      "name": "直角坐標平面上兩點距離公式 (AB = √((x1-x2)² + (y1-y2)²))",
+      "parent_id": "JH_NUM_SQRT_L3_11",
+      "description": "總結直角坐標平面上任意兩點A(x1,y1)和B(x2,y2)的距離公式AB = √((x1-x2)² + (y1-y2)²)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11_d",
+      "level": "L4",
+      "name": "計算任意兩點間的距離",
+      "parent_id": "JH_NUM_SQRT_L3_11",
+      "description": "應用兩點距離公式，計算直角坐標平面上任意兩點之間的距離。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SQRT_L3_11_e",
+      "level": "L4",
+      "name": "距離公式的應用 (如航行問題)",
+      "parent_id": "JH_NUM_SQRT_L3_11",
+      "description": "將距離公式應用於實際問題，例如計算航行後兩點之間的直線距離。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_NUM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_NUM",
+      "to_id": "JH_NUM_SQRT",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_01_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_03_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_04_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_05_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_06_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_06_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_08_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_09_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_10_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT",
+      "to_id": "JH_NUM_SQRT_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_11",
+      "to_id": "JH_NUM_SQRT_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_11",
+      "to_id": "JH_NUM_SQRT_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_11",
+      "to_id": "JH_NUM_SQRT_L3_11_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_11",
+      "to_id": "JH_NUM_SQRT_L3_11_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_11",
+      "to_id": "JH_NUM_SQRT_L3_11_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_03",
+      "to_id": "JH_NUM_SQRT_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_04",
+      "to_id": "JH_NUM_SQRT_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_05",
+      "to_id": "JH_NUM_SQRT_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_10",
+      "to_id": "JH_NUM_SQRT_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_02",
+      "type": "prerequisite",
+      "reason": "理解平方根的意義是學習計算√a^2值的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_03",
+      "type": "prerequisite",
+      "reason": "理解平方根的意義和比較大小是學習十分逼近法的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_04",
+      "type": "prerequisite",
+      "reason": "理解平方根的意義是學習使用計算機求平方根的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_05",
+      "type": "prerequisite",
+      "reason": "初步理解平方根的意義是深入學習平方根定義的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_02",
+      "to_id": "JH_NUM_SQRT_L3_05",
+      "type": "prerequisite",
+      "reason": "理解√a^2的值是深入學習平方根定義的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_06",
+      "type": "prerequisite",
+      "reason": "理解平方根的意義是學習根式運算基本性質的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_07",
+      "type": "prerequisite",
+      "reason": "掌握根式的乘除運算是學習最簡根式與有理化的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_06",
+      "to_id": "JH_NUM_SQRT_L3_08",
+      "type": "prerequisite",
+      "reason": "掌握根式的基本運算性質是進行根式四則運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_07",
+      "to_id": "JH_NUM_SQRT_L3_08",
+      "type": "prerequisite",
+      "reason": "掌握最簡根式與有理化是進行根式四則運算的關鍵前置知識。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_01",
+      "to_id": "JH_NUM_SQRT_L3_09",
+      "type": "prerequisite",
+      "reason": "理解正方形面積與邊長的關係是透過面積探索畢氏定理的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_10",
+      "type": "prerequisite",
+      "reason": "理解畢氏定理是應用畢氏定理解決問題的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_08",
+      "to_id": "JH_NUM_SQRT_L3_10",
+      "type": "prerequisite",
+      "reason": "掌握根式運算能力是應用畢氏定理進行計算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_SQRT_L3_09",
+      "to_id": "JH_NUM_SQRT_L3_11",
+      "type": "prerequisite",
+      "reason": "理解畢氏定理是推導直角坐標平面上兩點距離公式的基礎。"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 75,
+    "total_edges": 97,
+    "l3_count": 11,
+    "l4_count": 61,
+    "l4_avg_per_l3": 5.545454545454546
+  }
+}

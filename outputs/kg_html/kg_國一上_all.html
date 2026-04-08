@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知識圖譜 - 國一上</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-card strong {
+            display: block;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-card span {
+            font-size: 1.5rem;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        /* SVG 容器 */
+        #graph {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        /* 節點樣式 */
+        .node {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .node:hover {
+            stroke-width: 3px;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .node.L0 { fill: #E8F4F8; }
+        .node.L1 { fill: #B3D9E8; }
+        .node.L2 { fill: #7AB3D1; }
+        .node.L3 { fill: #4A7BA7; }
+        .node.L4 { fill: #1D3557; }
+
+        /* 連接線樣式 */
+        .link {
+            stroke: #999;
+            stroke-width: 1.5px;
+            stroke-opacity: 0.6;
+        }
+
+        .link.highlighted {
+            stroke: #ff6b6b;
+            stroke-width: 3px;
+            stroke-opacity: 1;
+        }
+
+        /* 文字 */
+        .node-label {
+            font-size: 11px;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: #fff;
+            font-weight: 500;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .legend {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #999;
+        }
+
+        .legend-item span {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 控制面板 */
+        .controls {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .controls button:hover {
+            background: #2980b9;
+        }
+
+        .controls button.active {
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>知識圖譜 - 國一上</h1>
+            <p>生成於 2026-04-07</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <strong>節點總數</strong>
+                    <span id="total-nodes">176</span>
+                </div>
+                <div class="stat-card">
+                    <strong>連接總數</strong>
+                    <span id="total-links">174</span>
+                </div>
+                <div class="stat-card">
+                    <strong>難度分佈</strong>
+                    <span id="difficulty-summary"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="zoom-in">放大</button>
+            <button id="zoom-out">縮小</button>
+            <button id="reset-view">重置視圖</button>
+            <button id="toggle-labels">切換標籤</button>
+        </div>
+
+        <svg id="graph" width="100%" height="800"></svg>
+
+        <div class="legend">
+            <h3>難度分佈</h3>
+            <div id="difficulty-chart" style="display: flex; gap: 15px; flex-wrap: wrap;"></div>
+        </div>
+
+        <div class="legend">
+            <h3>階級說明 (Level Legend)</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #E8F4F8;"></div>
+                    <span>L0: 教育階段</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #B3D9E8;"></div>
+                    <span>L1: 領域</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #7AB3D1;"></div>
+                    <span>L2: 單元</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #4A7BA7;"></div>
+                    <span>L3: 主題</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #1D3557;"></div>
+                    <span>L4: 次主題</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // 圖譜資料
+        const graphData = {
+  "nodes": [
+    {
+      "id": "L0_UNK",
+      "level": "L0",
+      "name": "JH",
+      "parent_id": null
+    },
+    {
+      "id": "L1_UNK_UNK",
+      "level": "L1",
+      "name": "NUM",
+      "parent_id": "L0_UNK"
+    },
+    {
+      "id": "JH_NUM_INT_NL",
+      "level": "L2",
+      "name": "整數與數線",
+      "parent_id": "L1_UNK_UNK"
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01",
+      "level": "L3",
+      "name": "正負數的意義與表示",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解正負數在日常生活中表示相反量的應用，並學習使用正負符號來表示這些量。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_a",
+      "level": "L4",
+      "name": "正負數在日常生活中的應用",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "說明正負數在日常生活中表示相反量的應用，如東邊與西邊、進步與退步、賺與賠等。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_b",
+      "level": "L4",
+      "name": "以正負符號表示相反的量",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "學習如何使用「+」和「-」符號來表示具有相反意義的量，並透過實例進行練習。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02",
+      "level": "L3",
+      "name": "正數、負數與0的定義",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解正數、負數和0的各自定義與表示方式，並區分0的特殊性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_a",
+      "level": "L4",
+      "name": "正數的定義與表示",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "定義正數為大於0的數，並學習其表示方式，如+2.2、+5等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_b",
+      "level": "L4",
+      "name": "負數的定義與表示",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "定義負數為小於0的數，並學習其表示方式，如-8.3、-2等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_c",
+      "level": "L4",
+      "name": "0的特性",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "理解0既不是正數也不是負數的特性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03",
+      "level": "L3",
+      "name": "性質符號與運算符號的區分",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "區分「+」和「-」作為性質符號和運算符號的不同意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_a",
+      "level": "L4",
+      "name": "性質符號的意義",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "理解「+」和「-」作為性質符號時，表示數的正負屬性，並學習正數可省略「+」號。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_b",
+      "level": "L4",
+      "name": "運算符號的意義",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "理解「+」和「-」作為運算符號時，表示加法和減法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04",
+      "level": "L3",
+      "name": "同號數與異號數的定義",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數與異號數的定義，並能辨識不同類型的數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_a",
+      "level": "L4",
+      "name": "同號數的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "定義同號數為性質符號相同的數，並透過實例理解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_b",
+      "level": "L4",
+      "name": "異號數的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "定義異號數為性質符號相異的數，並透過實例理解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05",
+      "level": "L3",
+      "name": "整數的分類",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數的分類，包括正整數、負整數和0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05_a",
+      "level": "L4",
+      "name": "正整數與自然數",
+      "parent_id": "JH_NUM_INT_NL_L3_05",
+      "description": "定義正整數為1、2、3、4...等數，並理解其與自然數的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05_b",
+      "level": "L4",
+      "name": "負整數",
+      "parent_id": "JH_NUM_INT_NL_L3_05",
+      "description": "定義負整數為-1、-2、-3、-4...等數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05_c",
+      "level": "L4",
+      "name": "整數的組成",
+      "parent_id": "JH_NUM_INT_NL_L3_05",
+      "description": "理解整數由正整數、0和負整數共同組成。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06",
+      "level": "L3",
+      "name": "數線的構成要素",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習數線的三個基本構成要素：原點、正向和單位長。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_a",
+      "level": "L4",
+      "name": "原點",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "定義數線上的基準點為原點，通常以「O」點表示，代表數字0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_b",
+      "level": "L4",
+      "name": "正向",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "定義數線右邊為正向，並以箭頭表示方向。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_c",
+      "level": "L4",
+      "name": "單位長",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "定義數線上適當的長度為單位長，且在同一條數線上長度需相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_d",
+      "level": "L4",
+      "name": "數線的繪製",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "學習如何繪製數線，並在原點左右兩側標記整數點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07",
+      "level": "L3",
+      "name": "數線上整數點的標記",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習如何在數線上表示點的坐標，以及標記已知整數坐標的點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_a",
+      "level": "L4",
+      "name": "點的坐標表示",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "學習如何將數線上的點以坐標形式表示，如A(2)表示A點的坐標為2。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_b",
+      "level": "L4",
+      "name": "已知坐標標記點",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "學習如何在數線上標記已知整數坐標的點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08",
+      "level": "L3",
+      "name": "數線上小數與分數點的標記",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習如何在數線上標記小數與分數點，包括正負數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_a",
+      "level": "L4",
+      "name": "正分數與正小數的標記",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "學習如何在數線上標記正分數與正小數點，需將單位長等分成更小的長度。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_b",
+      "level": "L4",
+      "name": "負分數與負小數的標記",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "學習如何在數線上標記負分數與負小數點，需將單位長等分成更小的長度。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09",
+      "level": "L3",
+      "name": "數的大小比較原則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解數線位置與數值大小的關係，並學習正數、負數和0之間的大小比較原則。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_a",
+      "level": "L4",
+      "name": "數線位置與大小關係",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解數線上任意兩點，右邊的點所表示的數比左邊的大。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_b",
+      "level": "L4",
+      "name": "正數、負數與0的大小關係",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解負數<0<正數的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_c",
+      "level": "L4",
+      "name": "負數與負數的大小比較",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "學習如何比較兩個負數的大小，例如-4 < -3。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10",
+      "level": "L3",
+      "name": "兩數關係與大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習數線上兩點位置與其坐標大小關係，並理解三一律。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_a",
+      "level": "L4",
+      "name": "A在B右邊則a>b",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解數線上點A在點B右邊時，其坐標a大於b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_b",
+      "level": "L4",
+      "name": "A在B左邊則a<b",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解數線上點A在點B左邊時，其坐標a小於b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_c",
+      "level": "L4",
+      "name": "A與B重合則a=b",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解數線上點A與點B重合時，其坐標a等於b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_d",
+      "level": "L4",
+      "name": "三一律",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解對於任意兩數a、b，其大小關係a>b、a<b、a=b三者恰有一種成立。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11",
+      "level": "L3",
+      "name": "遞移律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習數的大小關係中的遞移律，並能應用於比較三個數的大小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_a",
+      "level": "L4",
+      "name": "若a>b且b>c則a>c",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "理解若a大於b且b大於c，則a大於c的遞移關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_b",
+      "level": "L4",
+      "name": "若a<b且b<c則a<c",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "理解若a小於b且b小於c，則a小於c的遞移關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_c",
+      "level": "L4",
+      "name": "若a=b且b=c則a=c",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "理解若a等於b且b等於c，則a等於c的遞移關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12",
+      "level": "L3",
+      "name": "相反數的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習相反數的數線定義、數值定義及其相關性質，包括0的相反數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_a",
+      "level": "L4",
+      "name": "相反數的數線定義",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "定義相反數為數線上與原點距離相等且位於原點左右兩側的兩個數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_b",
+      "level": "L4",
+      "name": "相反數的數值定義",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "理解相反數的數字部分相同，但性質符號不同(0除外)。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_c",
+      "level": "L4",
+      "name": "a的相反數為-a",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "理解任意數a的相反數為-a。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_d",
+      "level": "L4",
+      "name": "負負得正",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "理解- (-a) = a 的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_e",
+      "level": "L4",
+      "name": "0的相反數",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "理解0的相反數是0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13",
+      "level": "L3",
+      "name": "絕對值的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習絕對值的數線定義、數值定義及其非負性，並能找出絕對值小於某數的所有整數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_a",
+      "level": "L4",
+      "name": "絕對值的數線定義",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "定義數線上點A(a)與原點的距離為a的絕對值，以|a|表示。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_b",
+      "level": "L4",
+      "name": "絕對值的數值定義",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解絕對值為不看性質符號，只看數字部分的值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_c",
+      "level": "L4",
+      "name": "絕對值的非負性",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解一個數的絕對值一定是0或正數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_d",
+      "level": "L4",
+      "name": "相反數的絕對值相等",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解互為相反數的兩數，其絕對值相等，即|a|=|-a|。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_e",
+      "level": "L4",
+      "name": "求絕對值小於某數的所有整數",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "學習如何找出絕對值小於某數的所有整數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14",
+      "level": "L3",
+      "name": "絕對值與負數大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用絕對值來比較負數的大小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_a",
+      "level": "L4",
+      "name": "負數絕對值愈大其值愈小",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "理解負數的絕對值愈大，其值愈小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_b",
+      "level": "L4",
+      "name": "利用絕對值比較負數大小",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "學習如何利用絕對值來比較負數的大小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15",
+      "level": "L3",
+      "name": "數線上兩點的距離",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習數線上兩點距離的定義、計算公式，並能應用於已知距離求點坐標。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15_a",
+      "level": "L4",
+      "name": "距離的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_15",
+      "description": "定義數線上兩點A(a)、B(b)之間的距離為這兩點所表示的兩數之差的絕對值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15_b",
+      "level": "L4",
+      "name": "距離的計算公式",
+      "parent_id": "JH_NUM_INT_NL_L3_15",
+      "description": "學習計算數線上兩點A(a)、B(b)的距離AB = |a-b| = |b-a|。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15_c",
+      "level": "L4",
+      "name": "已知距離求點坐標",
+      "parent_id": "JH_NUM_INT_NL_L3_15",
+      "description": "學習在已知數線上兩點距離的情況下，求其中一點的可能坐標。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16",
+      "level": "L3",
+      "name": "線段的中點",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習數線上線段中點的定義與坐標計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_a",
+      "level": "L4",
+      "name": "中點的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "定義數線上兩點A、B之間，若點C在A、B之間且C到A、B距離相等，則C為A、B的中點。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_b",
+      "level": "L4",
+      "name": "中點坐標的計算",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "學習如何計算數線上兩點的中點坐標。",
+      "difficulty": 3
+    },
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS",
+      "level": "L2",
+      "name": "分數的運算",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01",
+      "level": "L3",
+      "name": "因數與倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解因數與倍數的定義，包含正負整數的推廣。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_a",
+      "level": "L4",
+      "name": "正因數與正倍數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "透過a÷b=c或a=b×c理解b,c是a的因數，a是b,c的倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_b",
+      "level": "L4",
+      "name": "因數與倍數推廣到負整數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解若b是a的正因數，則-b也是a的負因數；a與-a的因數相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_c",
+      "level": "L4",
+      "name": "國中階段因數與倍數的預設",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "國中階段若無特別指明，因數指正因數，倍數指正倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_d",
+      "level": "L4",
+      "name": "1和0的因數與倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解1是任何整數的因數，任何整數是1的倍數；0不是任何整數的因數，0是任何非零整數的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_e",
+      "level": "L4",
+      "name": "找出一個數的所有因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "將一個數寫成a×b的形式，並由小到大列出所有因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_f",
+      "level": "L4",
+      "name": "應用因數配對關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "根據因數由小到大排列的特性，利用配對關係找出未知數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02",
+      "level": "L3",
+      "name": "常用倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習2、5、4、9、3、11的倍數判別法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_a",
+      "level": "L4",
+      "name": "2和5的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "判斷一個數的個位數字是否為0,2,4,6,8 (2的倍數) 或0,5 (5的倍數)。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_b",
+      "level": "L4",
+      "name": "4的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "判斷一個數的末兩位數是否為00或4的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_c",
+      "level": "L4",
+      "name": "9的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "判斷一個數的各位數字和是否為9的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_d",
+      "level": "L4",
+      "name": "3的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "判斷一個數的各位數字和是否為3的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_e",
+      "level": "L4",
+      "name": "11的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "判斷一個數的奇數位數字和與偶數位數字和的差是否為11的倍數或0。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03",
+      "level": "L3",
+      "name": "質數與合數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解質數、合數的定義，並判斷一個數是質數或合數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_a",
+      "level": "L4",
+      "name": "質數與合數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "大於1的整數，除了1和本身以外沒有其他因數為質數；有其他因數為合數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_b",
+      "level": "L4",
+      "name": "1、2、4的特殊性",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "1不是質數也不是合數；2是最小的質數，也是質數中唯一的偶數；4是最小的合數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_c",
+      "level": "L4",
+      "name": "判斷質數與合數的方法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "判斷一個正整數是否為質數或合數，只需檢查小於該數的質數是否為其因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_d",
+      "level": "L4",
+      "name": "質數篩檢法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "利用篩檢法找出某個範圍內的質數 (1到100)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_04",
+      "level": "L3",
+      "name": "質數與合數的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用質數與合數的概念解決矩形拼排問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_04_a",
+      "level": "L4",
+      "name": "矩形拼排與因數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_04",
+      "description": "理解矩形面積=長×寬，可將n分解成兩個因數的乘積來判斷可拼出幾種不同形狀的矩形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05",
+      "level": "L3",
+      "name": "質因數與標準分解式",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解質因數、質因數分解與標準分解式的定義與方法。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05_a",
+      "level": "L4",
+      "name": "質因數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_05",
+      "description": "因數中也是質數的數稱為質因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05_b",
+      "level": "L4",
+      "name": "質因數分解",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_05",
+      "description": "利用短除法將合數分解成質因數的連乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05_c",
+      "level": "L4",
+      "name": "標準分解式",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_05",
+      "description": "將質因數分解寫成指數形式，並將相異質因數由小排到大。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_06",
+      "level": "L3",
+      "name": "質因數分解的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用質因數分解解決實際問題，如生日日期或密碼設定。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_06_a",
+      "level": "L4",
+      "name": "應用質因數分解解決問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_06",
+      "description": "將一個數分解成多個因數的乘積，並根據題目條件組合這些因數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07",
+      "level": "L3",
+      "name": "公因數與最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解公因數與最大公因數的定義，並學習找出它們的方法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_a",
+      "level": "L4",
+      "name": "公因數與最大公因數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "共同的因數稱為公因數；公因數中最大的數稱為最大公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_b",
+      "level": "L4",
+      "name": "公因數與最大公因數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "所有的公因數也都是最大公因數的因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_c",
+      "level": "L4",
+      "name": "互質的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "若兩個整數的最大公因數為1，則稱這兩個整數互質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08",
+      "level": "L3",
+      "name": "利用短除法求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用短除法求兩個或三個整數的最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08_a",
+      "level": "L4",
+      "name": "兩個數的短除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_08",
+      "description": "利用短除法找出兩個整數的公因數，直到沒有共同質因數為止，所有公因數的乘積即為最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08_b",
+      "level": "L4",
+      "name": "三個數的短除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_08",
+      "description": "利用短除法找出三個整數的公因數，直到沒有共同質因數為止，所有公因數的乘積即為最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08_c",
+      "level": "L4",
+      "name": "逐步求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_08",
+      "description": "先求其中兩個數的最大公因數，再將結果與第三個數求最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09",
+      "level": "L3",
+      "name": "利用標準分解式求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用標準分解式求幾個整數的最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_a",
+      "level": "L4",
+      "name": "判斷因數關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "判斷一個整數是否為另一個整數的因數，可透過除法或質因數分解比較。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_b",
+      "level": "L4",
+      "name": "透過指數判別因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "若A的質因數都是B的質因數，且A的每個質因數的次方小於或等於B相同質因數的次方，則A是B的因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_c",
+      "level": "L4",
+      "name": "利用標準分解式求最大公因數的方法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "列出共同質因數，每個共同質因數取次方最小者，然後再相乘。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10",
+      "level": "L3",
+      "name": "公倍數與最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解公倍數與最小公倍數的定義，並學習找出它們的方法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10_a",
+      "level": "L4",
+      "name": "公倍數與最小公倍數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_10",
+      "description": "共同的倍數稱為公倍數；公倍數中最小的數稱為最小公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10_b",
+      "level": "L4",
+      "name": "公倍數與最小公倍數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_10",
+      "description": "所有的公倍數也都是最小公倍數的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11",
+      "level": "L3",
+      "name": "利用短除法求最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用短除法求兩個或三個整數的最小公倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_a",
+      "level": "L4",
+      "name": "兩個數的短除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "利用短除法找出兩個整數的公因數，直到沒有共同質因數為止，所有公因數與最下面一層數的連乘積即為最小公倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_b",
+      "level": "L4",
+      "name": "三個數的短除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "利用短除法找出三個整數的公因數，接著除以三數中任兩數的公因數，直到三數中任兩數都沒有共同質因數為止，所有除過的因數與最下面一層三個數的連乘積即為最小公倍數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12",
+      "level": "L3",
+      "name": "利用標準分解式求最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用標準分解式求幾個整數的最小公倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12_a",
+      "level": "L4",
+      "name": "透過指數判別倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_12",
+      "description": "若B的質因數包含了A中所有的質因數，且B的質因數次方大於或等於A相同質因數的次方，則B是A的倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12_b",
+      "level": "L4",
+      "name": "利用標準分解式求最小公倍數的方法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_12",
+      "description": "列出所有質因數，每個質因數取次方最大者，然後再相乘。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_13",
+      "level": "L3",
+      "name": "最大公因數與最小公倍數的乘積",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解任意兩正整數的最大公因數與最小公倍數的乘積就是兩正整數的乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_13_a",
+      "level": "L4",
+      "name": "兩數乘積與GCD、LCM的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_13",
+      "description": "(a,b) × [a,b] = a × b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14",
+      "level": "L3",
+      "name": "最大公因數的應用問題",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用最大公因數解決分裝、分組等問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14_a",
+      "level": "L4",
+      "name": "分裝問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_14",
+      "description": "將不同數量的物品分成相同數量的組，求最多可分幾組或每組數量。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14_b",
+      "level": "L4",
+      "name": "間隔問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_14",
+      "description": "在一定長度或周長上設置等間隔的物件，求最大間隔或物件數量。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15",
+      "level": "L3",
+      "name": "最小公倍數的應用問題",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用最小公倍數解決週期性、同時發生等問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15_a",
+      "level": "L4",
+      "name": "週期性問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_15",
+      "description": "找出多個事件同時發生的最短時間間隔。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15_b",
+      "level": "L4",
+      "name": "圖形拼合問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_15",
+      "description": "將不同尺寸的圖形拼合成一個更大的正方形或長方形，求最小邊長或面積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16",
+      "level": "L3",
+      "name": "最簡分數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解負分數的表示法、等值分數與最簡分數的定義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_a",
+      "level": "L4",
+      "name": "負分數的表示法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "理解負分數可表示為 -a/b, a/-b, -a/-b 等形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_b",
+      "level": "L4",
+      "name": "等值分數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "分子和分母同時乘以或除以一個不為0的整數，所得分數與原分數值相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_c",
+      "level": "L4",
+      "name": "最簡分數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "當一個分數的分子和分母互質時，這個分數就稱為最簡分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_d",
+      "level": "L4",
+      "name": "化為最簡分數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "將分數的分子和分母同時除以它們的最大公因數，得到最簡分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_17",
+      "level": "L3",
+      "name": "分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習正分數的比較大小，包含通分、通分子。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_17_a",
+      "level": "L4",
+      "name": "正分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_17",
+      "description": "透過通分 (化為同分母) 或通分子 (化為同分子) 比較分數大小。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_17_b",
+      "level": "L4",
+      "name": "負分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_17",
+      "description": "負分數的比較大小，可先比較其絕對值，絕對值愈大，其值愈小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18",
+      "level": "L3",
+      "name": "分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數的加減運算規則，包含同分母、異分母與負分數的加減。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_a",
+      "level": "L4",
+      "name": "同分母分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "分母不變，分子直接相加或相減。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_b",
+      "level": "L4",
+      "name": "異分母分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "先通分化成相同分母後，再進行分子加減。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_c",
+      "level": "L4",
+      "name": "負分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "負分數的加減運算遵循整數的加減運算規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_d",
+      "level": "L4",
+      "name": "異分母負分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "異分母負分數的加減，需先通分再依整數加減規則計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19",
+      "level": "L3",
+      "name": "分數的去括號規則",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數運算中的去括號規則，並應用交換律與結合律。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19_a",
+      "level": "L4",
+      "name": "去括號規則",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_19",
+      "description": "應用 -(a+b)=-a-b 和 -(a-b)=-a+b 規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_20",
+      "level": "L3",
+      "name": "帶分數的加減運算",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習帶分數的加減運算，可化為假分數或分開整數與分數部分計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_20_a",
+      "level": "L4",
+      "name": "帶分數化為假分數運算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_20",
+      "description": "將帶分數化為假分數後再進行加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_20_b",
+      "level": "L4",
+      "name": "分開整數與分數部分運算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_20",
+      "description": "將帶分數的整數部分與分數部分分開計算，再合併結果。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21",
+      "level": "L3",
+      "name": "分數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數的乘法運算規則，包含真分數、假分數、帶分數與負分數的乘法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_a",
+      "level": "L4",
+      "name": "真分數與假分數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "分子相乘作新分子，分母相乘作新分母。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_b",
+      "level": "L4",
+      "name": "帶分數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "先將帶分數化成假分數，再進行乘法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_c",
+      "level": "L4",
+      "name": "負分數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "同號相乘為正，異號相乘為負。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_d",
+      "level": "L4",
+      "name": "分數乘法的約分",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "在分數乘法中，可先約分再乘，或先乘再約分。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_e",
+      "level": "L4",
+      "name": "多個分數連乘的符號判斷",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "偶數個負數相乘為正，奇數個負數相乘為負。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_f",
+      "level": "L4",
+      "name": "分數乘法的交換律與結合律",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "分數乘法具有交換律與結合律。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22",
+      "level": "L3",
+      "name": "分數的倒數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解倒數的定義，並找出一個數的倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22_a",
+      "level": "L4",
+      "name": "倒數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_22",
+      "description": "將分數的分子和分母對調所得的新分數稱為原分數的倒數；兩數互為倒數則乘積為1。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22_b",
+      "level": "L4",
+      "name": "找出一個數的倒數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_22",
+      "description": "找出正分數、帶分數、負分數、整數的倒數；0沒有倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23",
+      "level": "L3",
+      "name": "分數的除法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數的除法運算規則，包含帶分數與負分數的除法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_a",
+      "level": "L4",
+      "name": "分數除法的規則",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "除以一個不為0的分數，等於乘以這個分數的倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_b",
+      "level": "L4",
+      "name": "帶分數的除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "先將帶分數化為假分數，再進行除法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_c",
+      "level": "L4",
+      "name": "負分數的除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "同號相除為正，異號相除為負。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24",
+      "level": "L3",
+      "name": "分數的四則混合運算",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數的四則混合運算，應用運算規則與分配律。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_a",
+      "level": "L4",
+      "name": "分數四則運算的順序",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "遵循先乘除後加減，有括號先算括號內的規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_b",
+      "level": "L4",
+      "name": "分數四則運算的分配律",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "應用乘法對加減法的分配律簡化計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25",
+      "level": "L3",
+      "name": "分數的四則運算應用問題",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用分數的四則運算解決實際問題，如重量、容量計算。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25_a",
+      "level": "L4",
+      "name": "應用分數四則運算解決問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_25",
+      "description": "根據題目情境列出分數算式並計算。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_26",
+      "level": "L3",
+      "name": "數的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "理解分數與小數的乘方表示法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_26_a",
+      "level": "L4",
+      "name": "分數與小數的乘方表示",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_26",
+      "description": "將相同分數或小數連乘記為乘方形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27",
+      "level": "L3",
+      "name": "乘方的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習比較分數乘方的大小，根據底數大於1或小於1判斷。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27_a",
+      "level": "L4",
+      "name": "底數大於1時的乘方比較",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_27",
+      "description": "當底數a>1時，n愈大，a^n的值愈大。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27_b",
+      "level": "L4",
+      "name": "底數小於1時的乘方比較",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_27",
+      "description": "當底數0<a<1時，n愈大，a^n的值愈小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_28",
+      "level": "L3",
+      "name": "含乘方的分數四則運算",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習含有乘方的分數四則運算，遵循先乘方再乘除後加減的順序。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_28_a",
+      "level": "L4",
+      "name": "含有乘方的分數四則運算順序",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_28",
+      "description": "進行含有乘方的四則運算時，乘方的部分要先計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29",
+      "level": "L3",
+      "name": "指數律",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習底數相同的乘方相乘、相除，以及乘方的乘方、兩數相乘的乘方等指數律。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_a",
+      "level": "L4",
+      "name": "底數相同的乘方相乘",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "a^m × a^n = a^(m+n)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_b",
+      "level": "L4",
+      "name": "底數相同的乘方相除",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "a^m ÷ a^n = a^(m-n) (m ≥ n)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_c",
+      "level": "L4",
+      "name": "乘方的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "(a^m)^n = a^(m×n)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_d",
+      "level": "L4",
+      "name": "兩數相乘的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "(a × b)^m = a^m × b^m。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_e",
+      "level": "L4",
+      "name": "指數為0的意義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "若a是不為0的數，則a^0=1。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_30",
+      "level": "L3",
+      "name": "指數律的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用指數律簡化含有乘方的分數四則運算。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_30_a",
+      "level": "L4",
+      "name": "綜合應用指數律",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_30",
+      "description": "綜合運用多個指數律簡化複雜的乘方運算。",
+      "difficulty": 4
+    }
+  ],
+  "links": [
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_03",
+      "target": "JH_NUM_FRAC_OPS_L3_03_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_11",
+      "target": "JH_NUM_INT_NL_L3_11_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_06",
+      "target": "JH_NUM_FRAC_OPS_L3_06_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_09"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_09"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_20"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_18",
+      "target": "JH_NUM_FRAC_OPS_L3_18_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_24",
+      "target": "JH_NUM_FRAC_OPS_L3_24_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_08"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_17",
+      "target": "JH_NUM_FRAC_OPS_L3_17_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_f"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_28",
+      "target": "JH_NUM_FRAC_OPS_L3_28_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_29",
+      "target": "JH_NUM_FRAC_OPS_L3_29_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_02",
+      "target": "JH_NUM_FRAC_OPS_L3_02_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_27"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_e"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_30",
+      "target": "JH_NUM_FRAC_OPS_L3_30_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_22"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_12",
+      "target": "JH_NUM_FRAC_OPS_L3_12_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_08",
+      "target": "JH_NUM_FRAC_OPS_L3_08_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_14",
+      "target": "JH_NUM_INT_NL_L3_14_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_23"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_30"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_14"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_13",
+      "target": "JH_NUM_FRAC_OPS_L3_13_a"
+    },
+    {
+      "source": "L0_JH",
+      "target": "L1_JH_NUM"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_08",
+      "target": "JH_NUM_FRAC_OPS_L3_08_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_09",
+      "target": "JH_NUM_FRAC_OPS_L3_09_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_07",
+      "target": "JH_NUM_FRAC_OPS_L3_07_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_10",
+      "target": "JH_NUM_FRAC_OPS_L3_10_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_04"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_16",
+      "target": "JH_NUM_FRAC_OPS_L3_16_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_16",
+      "target": "JH_NUM_FRAC_OPS_L3_16_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_28"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_24",
+      "target": "JH_NUM_FRAC_OPS_L3_24_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_05",
+      "target": "JH_NUM_FRAC_OPS_L3_05_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_10",
+      "target": "JH_NUM_FRAC_OPS_L3_10_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_15",
+      "target": "JH_NUM_INT_NL_L3_15_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_07"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_f"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_04",
+      "target": "JH_NUM_INT_NL_L3_04_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_25"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_23",
+      "target": "JH_NUM_FRAC_OPS_L3_23_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_04",
+      "target": "JH_NUM_FRAC_OPS_L3_04_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_26",
+      "target": "JH_NUM_FRAC_OPS_L3_26_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_07",
+      "target": "JH_NUM_FRAC_OPS_L3_07_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_03",
+      "target": "JH_NUM_INT_NL_L3_03_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_18",
+      "target": "JH_NUM_FRAC_OPS_L3_18_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_23",
+      "target": "JH_NUM_FRAC_OPS_L3_23_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_27",
+      "target": "JH_NUM_FRAC_OPS_L3_27_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_29",
+      "target": "JH_NUM_FRAC_OPS_L3_29_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_19"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_19",
+      "target": "JH_NUM_FRAC_OPS_L3_19_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_11",
+      "target": "JH_NUM_FRAC_OPS_L3_11_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_02"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_09",
+      "target": "JH_NUM_FRAC_OPS_L3_09_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_17",
+      "target": "JH_NUM_FRAC_OPS_L3_17_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_02",
+      "target": "JH_NUM_INT_NL_L3_02_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_02",
+      "target": "JH_NUM_INT_NL_L3_02_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_15",
+      "target": "JH_NUM_FRAC_OPS_L3_15_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_01"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_05",
+      "target": "JH_NUM_INT_NL_L3_05_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_10"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_26"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_05",
+      "target": "JH_NUM_INT_NL_L3_05_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_24"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_10"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_14",
+      "target": "JH_NUM_FRAC_OPS_L3_14_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_29",
+      "target": "JH_NUM_FRAC_OPS_L3_29_e"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_16",
+      "target": "JH_NUM_FRAC_OPS_L3_16_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_02",
+      "target": "JH_NUM_INT_NL_L3_02_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_20",
+      "target": "JH_NUM_FRAC_OPS_L3_20_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_05",
+      "target": "JH_NUM_INT_NL_L3_05_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_11"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_04"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_22",
+      "target": "JH_NUM_FRAC_OPS_L3_22_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_02",
+      "target": "JH_NUM_FRAC_OPS_L3_02_e"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_05",
+      "target": "JH_NUM_FRAC_OPS_L3_05_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_17"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_21"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_c"
+    },
+    {
+      "source": "L0_UNK",
+      "target": "L1_UNK_UNK"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_15",
+      "target": "JH_NUM_FRAC_OPS_L3_15_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_16"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_18",
+      "target": "JH_NUM_FRAC_OPS_L3_18_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_03",
+      "target": "JH_NUM_FRAC_OPS_L3_03_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_11",
+      "target": "JH_NUM_INT_NL_L3_11_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_16"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_14",
+      "target": "JH_NUM_INT_NL_L3_14_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_02",
+      "target": "JH_NUM_FRAC_OPS_L3_02_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_12"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_15",
+      "target": "JH_NUM_INT_NL_L3_15_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_22",
+      "target": "JH_NUM_FRAC_OPS_L3_22_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_02",
+      "target": "JH_NUM_FRAC_OPS_L3_02_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_14"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_05"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_29",
+      "target": "JH_NUM_FRAC_OPS_L3_29_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_03",
+      "target": "JH_NUM_FRAC_OPS_L3_03_d"
+    },
+    {
+      "source": "L1_JH_NUM",
+      "target": "JH_NUM_FRAC_OPS"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_12"
+    },
+    {
+      "source": "L1_UNK_UNK",
+      "target": "JH_NUM_INT_NL"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_04",
+      "target": "JH_NUM_INT_NL_L3_04_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_13"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_11",
+      "target": "JH_NUM_INT_NL_L3_11_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_11",
+      "target": "JH_NUM_FRAC_OPS_L3_11_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_02",
+      "target": "JH_NUM_FRAC_OPS_L3_02_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_02"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_16",
+      "target": "JH_NUM_FRAC_OPS_L3_16_d"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_08"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_e"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_01",
+      "target": "JH_NUM_FRAC_OPS_L3_01_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_09",
+      "target": "JH_NUM_FRAC_OPS_L3_09_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_11"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_05"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_03"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_05",
+      "target": "JH_NUM_FRAC_OPS_L3_05_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_25",
+      "target": "JH_NUM_FRAC_OPS_L3_25_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_14",
+      "target": "JH_NUM_FRAC_OPS_L3_14_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_27",
+      "target": "JH_NUM_FRAC_OPS_L3_27_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_12",
+      "target": "JH_NUM_FRAC_OPS_L3_12_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_18"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_06"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_08",
+      "target": "JH_NUM_FRAC_OPS_L3_08_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_29"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_03"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_20",
+      "target": "JH_NUM_FRAC_OPS_L3_20_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_13"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_15",
+      "target": "JH_NUM_INT_NL_L3_15_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_06"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_07"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_b"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS",
+      "target": "JH_NUM_FRAC_OPS_L3_15"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_23",
+      "target": "JH_NUM_FRAC_OPS_L3_23_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_29",
+      "target": "JH_NUM_FRAC_OPS_L3_29_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_15"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_21",
+      "target": "JH_NUM_FRAC_OPS_L3_21_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_03",
+      "target": "JH_NUM_FRAC_OPS_L3_03_a"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_07",
+      "target": "JH_NUM_FRAC_OPS_L3_07_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_01"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_03",
+      "target": "JH_NUM_INT_NL_L3_03_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_c"
+    },
+    {
+      "source": "JH_NUM_FRAC_OPS_L3_18",
+      "target": "JH_NUM_FRAC_OPS_L3_18_d"
+    }
+  ]
+};
+        const difficultyDist = {
+  "2": 87,
+  "1": 4,
+  "3": 72,
+  "4": 7
+};
+
+        // 初始化
+        const width = document.getElementById('graph').clientWidth || 1600;
+        const height = 800;
+
+        // 創建 SVG
+        const svg = d3.select('#graph')
+            .attr('width', width)
+            .attr('height', height);
+
+        const g = svg.append('g');
+
+        // 創建力導向圖
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force('link', d3.forceLink(graphData.links)
+                .id(d => d.id)
+                .distance(50)
+                .strength(0.5))
+            .force('charge', d3.forceManyBody().strength(-100))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collide', d3.forceCollide(30));
+
+        // 繪製連接線
+        const links = g.selectAll('.link')
+            .data(graphData.links)
+            .enter()
+            .append('line')
+            .attr('class', 'link')
+            .attr('stroke', d => {
+                const sourceLevel = graphData.nodes.find(n => n.id === d.source.id)?.level;
+                const targetLevel = graphData.nodes.find(n => n.id === d.target.id)?.level;
+                return '#ccc';
+            });
+
+        // 繪製節點
+        const nodes = g.selectAll('.node')
+            .data(graphData.nodes)
+            .enter()
+            .append('circle')
+            .attr('class', d => 'node ' + d.level)
+            .attr('r', d => {
+                const sizeMap = {'L0': 25, 'L1': 22, 'L2': 20, 'L3': 18, 'L4': 15};
+                return sizeMap[d.level] || 20;
+            })
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended))
+            .on('mouseover', showTooltip)
+            .on('mouseout', hideTooltip);
+
+        // 添加標籤
+        const labels = g.selectAll('.node-label')
+            .data(graphData.nodes)
+            .enter()
+            .append('text')
+            .attr('class', 'node-label')
+            .attr('dy', '0.3em')
+            .text(d => d.name)
+            .style('font-size', d => {
+                const sizeMap = {'L0': '10px', 'L1': '9px', 'L2': '8px', 'L3': '7px', 'L4': '6px'};
+                return sizeMap[d.level] || '8px';
+            });
+
+        // Tooltip
+        const tooltip = document.getElementById('tooltip');
+
+        function showTooltip(event, d) {
+            tooltip.innerHTML = `
+                <strong>${d.name}</strong><br/>
+                ID: ${d.id}<br/>
+                Level: ${d.level}
+                ${d.description ? '<br/><br/>' + d.description : ''}
+                ${d.difficulty ? '<br/><br/>難度: ' + d.difficulty : ''}
+            `;
+            tooltip.classList.add('visible');
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        // 拖拽事件
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // 更新位置
+        simulation.on('tick', () => {
+            links
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            nodes
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y);
+
+            labels
+                .attr('x', d => d.x)
+                .attr('y', d => d.y);
+        });
+
+        // 縮放控制
+        let currentScale = 1;
+        
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            currentScale *= 1.2;
+            g.attr('transform', `scale(${currentScale})`);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            currentScale /= 1.2;
+            g.attr('transform', `scale(${currentScale})`);
+        });
+
+        document.getElementById('reset-view').addEventListener('click', () => {
+            currentScale = 1;
+            g.attr('transform', 'scale(1)');
+        });
+
+        // 標籤切換
+        let labelsVisible = true;
+        document.getElementById('toggle-labels').addEventListener('click', function() {
+            labelsVisible = !labelsVisible;
+            labels.style('opacity', labelsVisible ? 1 : 0);
+            this.classList.toggle('active', labelsVisible);
+        });
+
+        // 生成難度分佈圖表
+        const diffChart = document.getElementById('difficulty-chart');
+        const diffSummary = document.getElementById('difficulty-summary');
+        let diffSummaryText = '';
+        
+        for (const [difficulty, count] of Object.entries(difficultyDist).sort()) {
+            const bar = document.createElement('div');
+            bar.style.display = 'flex';
+            bar.style.alignItems = 'center';
+            bar.style.gap = '8px';
+            bar.innerHTML = `
+                <span style="min-width: 40px;">難度 ${difficulty}:</span>
+                <div style="background: #3498db; height: 20px; width: ${Math.max(count * 5, 50)}px; border-radius: 3px;"></div>
+                <span>${count} 個</span>
+            `;
+            diffChart.appendChild(bar);
+            diffSummaryText += (diffSummaryText ? ', ' : '') + `難度${difficulty}: ${count}`;
+        }
+        diffSummary.textContent = diffSummaryText;
+    </script>
+</body>
+</html>

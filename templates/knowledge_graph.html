@@ -1,10 +1,10 @@
 <!--
 =============================================================================
 模組名稱 (Module Name): templates/knowledge_graph.html
-功能說明 (Description): 知識圖譜視覺化頁面
+功能說明 (Description): 知識圖譜視覺化頁面（基於 JSON 文件）
 後端呼叫 (Backend Call): core/routes/knowledge_graph.py -> knowledge_graph
-版本資訊 (Version): V1.0
-更新日期 (Date): 2026-01-31
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-04-07
 維護團隊 (Maintainer): Math AI Project Team
 =============================================================================
 -->
@@ -338,30 +338,15 @@
             <div class="card-body">
                 <div class="filter-controls">
                     <div class="filter-group">
-                        <label>課程類型</label>
-                        <select id="curriculum-select" onchange="onCurriculumChange()">
-                            <option value="">請選擇...</option>
-                            <option value="junior_high">國中</option>
-                            <option value="general">普高</option>
-                            <option value="vocational">技高</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
                         <label>年級</label>
-                        <select id="grade-select" onchange="onGradeChange()" disabled>
-                            <option value="">請選擇...</option>
+                        <select id="grade-select" onchange="onGradeChange()">
+                            <option value="">請選擇年級...</option>
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>冊別</label>
-                        <select id="volume-select" onchange="onVolumeChange()" disabled>
-                            <option value="">請選擇...</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>章節</label>
-                        <select id="chapter-select" onchange="onChapterChange()" disabled>
-                            <option value="">請選擇...</option>
+                        <label>單元</label>
+                        <select id="unit-select">
+                            <option value="">全部單元</option>
                         </select>
                     </div>
                     <div class="filter-group" style="margin-top: 20px;">
@@ -376,16 +361,24 @@
         <!-- 圖例 -->
         <div class="legend">
             <div class="legend-item">
-                <div class="legend-color mastered"></div>
-                <span>已掌握 (能力值 ≥ 100)</span>
+                <div class="legend-color" style="background: #E8F4F8;"></div>
+                <span>L0: 教育階段</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color learning"></div>
-                <span>學習中 (50 ≤ 能力值 < 100)</span>
+                <div class="legend-color" style="background: #B3D9E8;"></div>
+                <span>L1: 領域</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color not-started"></div>
-                <span>未開始 (能力值 < 50)</span>
+                <div class="legend-color" style="background: #7AB3D1;"></div>
+                <span>L2: 單元</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4A7BA7;"></div>
+                <span>L3: 主題</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #1D3557;"></div>
+                <span>L4: 次主題</span>
             </div>
         </div>
 
@@ -445,117 +438,61 @@
                 .attr("class", "link-arrow");
         }
 
-        // 載入年級選項
-        async function onCurriculumChange() {
-            const curriculum = document.getElementById('curriculum-select').value;
+        // 初始化年級選項
+        async function initGradeSelect() {
             const gradeSelect = document.getElementById('grade-select');
-            const volumeSelect = document.getElementById('volume-select');
-            const chapterSelect = document.getElementById('chapter-select');
-
-            // 重置後續選項
-            gradeSelect.innerHTML = '<option value="">請選擇...</option>';
-            volumeSelect.innerHTML = '<option value="">請選擇...</option>';
-            chapterSelect.innerHTML = '<option value="">請選擇...</option>';
-            gradeSelect.disabled = true;
-            volumeSelect.disabled = true;
-            chapterSelect.disabled = true;
-
-            if (!curriculum) return;
-
+            
             try {
-                const response = await fetch(`/api/knowledge-graph/filters?curriculum=${curriculum}`);
+                const response = await fetch('/api/knowledge-graph/filters');
                 const data = await response.json();
-
+                
                 if (data.grades) {
                     data.grades.forEach(grade => {
                         const option = document.createElement('option');
                         option.value = grade;
-                        option.textContent = grade + '年級';
+                        option.textContent = grade;
                         gradeSelect.appendChild(option);
                     });
-                    gradeSelect.disabled = false;
                 }
             } catch (error) {
                 console.error('載入年級失敗:', error);
             }
         }
 
-        // 載入冊別選項
+        // 年級變更事件
         async function onGradeChange() {
-            const curriculum = document.getElementById('curriculum-select').value;
             const grade = document.getElementById('grade-select').value;
-            const volumeSelect = document.getElementById('volume-select');
-            const chapterSelect = document.getElementById('chapter-select');
-
-            volumeSelect.innerHTML = '<option value="">請選擇...</option>';
-            chapterSelect.innerHTML = '<option value="">請選擇...</option>';
-            volumeSelect.disabled = true;
-            chapterSelect.disabled = true;
-
+            const unitSelect = document.getElementById('unit-select');
+            
+            // 重置單元選擇
+            unitSelect.innerHTML = '<option value="">全部單元</option>';
+            
             if (!grade) return;
-
+            
             try {
-                const response = await fetch(`/api/knowledge-graph/filters?curriculum=${curriculum}&grade=${grade}`);
+                const response = await fetch(`/api/knowledge-graph/filters?grade=${encodeURIComponent(grade)}`);
                 const data = await response.json();
-
-                if (data.volumes) {
-                    data.volumes.forEach(volume => {
+                
+                if (data.units) {
+                    data.units.forEach(unit => {
                         const option = document.createElement('option');
-                        option.value = volume;
-                        option.textContent = volume;
-                        volumeSelect.appendChild(option);
+                        option.value = unit;
+                        option.textContent = unit;
+                        unitSelect.appendChild(option);
                     });
-                    volumeSelect.disabled = false;
                 }
             } catch (error) {
-                console.error('載入冊別失敗:', error);
+                console.error('載入單元失敗:', error);
             }
-        }
-
-        // 載入章節選項
-        async function onVolumeChange() {
-            const curriculum = document.getElementById('curriculum-select').value;
-            const grade = document.getElementById('grade-select').value;
-            const volume = document.getElementById('volume-select').value;
-            const chapterSelect = document.getElementById('chapter-select');
-
-            chapterSelect.innerHTML = '<option value="">請選擇...</option>';
-            chapterSelect.disabled = true;
-
-            if (!volume) return;
-
-            try {
-                const response = await fetch(`/api/knowledge-graph/filters?curriculum=${curriculum}&grade=${grade}&volume=${volume}`);
-                const data = await response.json();
-
-                if (data.chapters) {
-                    data.chapters.forEach(chapter => {
-                        const option = document.createElement('option');
-                        option.value = chapter;
-                        option.textContent = chapter;
-                        chapterSelect.appendChild(option);
-                    });
-                    chapterSelect.disabled = false;
-                }
-            } catch (error) {
-                console.error('載入章節失敗:', error);
-            }
-        }
-
-        // 章節變更（可選）
-        function onChapterChange() {
-            // 可以在這裡添加額外的邏輯
         }
 
         // 載入圖譜資料
         async function loadGraph() {
-            const curriculum = document.getElementById('curriculum-select').value;
             const grade = document.getElementById('grade-select').value;
-            const volume = document.getElementById('volume-select').value;
-            const chapter = document.getElementById('chapter-select').value;
+            const unitId = document.getElementById('unit-select').value;
 
-            if (!curriculum) {
-                alert('請至少選擇課程類型');
+            if (!grade) {
+                alert('請選擇年級');
                 return;
             }
 
@@ -564,20 +501,29 @@
             document.getElementById('empty-state').style.display = 'none';
 
             try {
-                let url = `/api/knowledge-graph/data?curriculum=${curriculum}`;
-                if (grade) url += `&grade=${grade}`;
-                if (volume) url += `&volume=${volume}`;
-                if (chapter) url += `&chapter=${chapter}`;
+                let url = `/api/knowledge-graph/data?grade=${encodeURIComponent(grade)}`;
+                if (unitId) {
+                    url += `&unit_id=${encodeURIComponent(unitId)}`;
+                }
 
                 const response = await fetch(url);
                 const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
 
                 currentData = data;
                 renderGraph(data);
             } catch (error) {
                 console.error('載入圖譜失敗:', error);
-                alert('載入圖譜失敗，請稍後再試');
+                alert('載入圖譜失敗: ' + error.message);
                 document.getElementById('empty-state').style.display = 'block';
+                document.getElementById('empty-state').innerHTML = `
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <h3>載入失敗</h3>
+                    <p>${error.message}</p>
+                `;
             } finally {
                 document.getElementById('loading-overlay').style.display = 'none';
             }
@@ -600,26 +546,22 @@
             const width = document.querySelector('.graph-container').clientWidth;
             const height = 700;
 
-            // 建立節點和連接的映射
-            const nodeMap = new Map(data.nodes.map(n => [n.id, n]));
-
-            // 建立層級結構（樹狀圖需要）
-            const roots = data.nodes.filter(node => {
-                // 找出沒有前置知識點的節點作為根節點
-                return !data.links.some(link => link.target === node.id);
-            });
-
-            if (roots.length === 0 && data.nodes.length > 0) {
-                // 如果沒有根節點，使用第一個節點
-                roots.push(data.nodes[0]);
-            }
-
-            // 使用力導向圖佈局（更適合有多個根節點的情況）
+            // 使用力導向圖佈局
             const simulation = d3.forceSimulation(data.nodes)
-                .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
-                .force("charge", d3.forceManyBody().strength(-300))
+                .force("link", d3.forceLink(data.links)
+                    .id(d => d.id)
+                    .distance(d => {
+                        const sourceLevel = d.source.level;
+                        const targetLevel = d.target.level;
+                        // 根據階級調整距離
+                        return sourceLevel === 'L0' ? 100 : sourceLevel === 'L1' ? 120 : 100;
+                    }))
+                .force("charge", d3.forceManyBody().strength(-200))
                 .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("y", d3.forceY().strength(0.1));
+                .force("collide", d3.forceCollide().radius(d => {
+                    const radiusMap = {'L0': 30, 'L1': 25, 'L2': 20, 'L3': 18, 'L4': 15};
+                    return radiusMap[d.level] || 20;
+                }));
 
             // 繪製連接線
             const link = g.append("g")
@@ -634,7 +576,7 @@
                 .selectAll("g")
                 .data(data.nodes)
                 .join("g")
-                .attr("class", d => `node ${d.mastery_status.replace('_', '-')}`)
+                .attr("class", d => `node ${getLevelClass(d.level)}`)
                 .call(d3.drag()
                     .on("start", dragstarted)
                     .on("drag", dragged)
@@ -642,16 +584,28 @@
 
             // 節點圓圈
             node.append("circle")
-                .attr("r", 15)
+                .attr("r", d => {
+                    const radiusMap = {'L0': 25, 'L1': 20, 'L2': 18, 'L3': 15, 'L4': 12};
+                    return radiusMap[d.level] || 15;
+                })
+                .attr("fill", d => getNodeColor(d.level))
                 .on("mouseover", showTooltip)
                 .on("mouseout", hideTooltip);
 
             // 節點文字
             node.append("text")
-                .attr("dy", 25)
+                .attr("dy", d => {
+                    const dyMap = {'L0': 28, 'L1': 24, 'L2': 22, 'L3': 18, 'L4': 15};
+                    return dyMap[d.level] || 20;
+                })
                 .attr("text-anchor", "middle")
                 .text(d => d.name)
-                .style("fill", "#2c3e50");
+                .style("fill", "#2c3e50")
+                .style("font-size", d => {
+                    const sizeMap = {'L0': '10px', 'L1': '9px', 'L2': '8px', 'L3': '7px', 'L4': '6px'};
+                    return sizeMap[d.level] || '8px';
+                })
+                .style("font-weight", "500");
 
             // 更新位置
             simulation.on("tick", () => {
@@ -683,17 +637,41 @@
             }
         }
 
+        // 獲取節點顏色
+        function getNodeColor(level) {
+            const colorMap = {
+                'L0': '#E8F4F8',
+                'L1': '#B3D9E8',
+                'L2': '#7AB3D1',
+                'L3': '#4A7BA7',
+                'L4': '#1D3557'
+            };
+            return colorMap[level] || '#95a5a6';
+        }
+
+        // 獲取階級 CSS 類別
+        function getLevelClass(level) {
+            return level.toLowerCase().replace('_', '-');
+        }
+
         // 顯示提示框
         function showTooltip(event, d) {
             const tooltip = document.getElementById('tooltip');
-            tooltip.innerHTML = `
-                <strong>${d.name}</strong><br>
-                <small>${d.description || ''}</small><br>
-                <hr style="margin: 8px 0; border-color: rgba(255,255,255,0.3);">
-                綜合能力: ${d.ability_a}<br>
-                觀念能力: ${d.concept_u}<br>
-                計算熟練度: ${d.calculation_c}
-            `;
+            let content = `<strong>${d.name}</strong><br>`;
+            content += `<small>ID: ${d.id}</small><br>`;
+            content += `<small>Level: ${d.level}</small><br>`;
+            
+            if (d.description) {
+                content += `<hr style="margin: 8px 0; border-color: rgba(255,255,255,0.3);">`;
+                content += `<small>${d.description}</small><br>`;
+            }
+            
+            if (d.difficulty) {
+                content += `<hr style="margin: 8px 0; border-color: rgba(255,255,255,0.3);">`;
+                content += `難度: ${d.difficulty}`;
+            }
+            
+            tooltip.innerHTML = content;
             tooltip.classList.add('show');
             tooltip.style.left = (event.pageX + 10) + 'px';
             tooltip.style.top = (event.pageY + 10) + 'px';
@@ -706,13 +684,8 @@
 
         // 重置篩選
         function resetFilters() {
-            document.getElementById('curriculum-select').value = '';
-            document.getElementById('grade-select').innerHTML = '<option value="">請選擇...</option>';
-            document.getElementById('volume-select').innerHTML = '<option value="">請選擇...</option>';
-            document.getElementById('chapter-select').innerHTML = '<option value="">請選擇...</option>';
-            document.getElementById('grade-select').disabled = true;
-            document.getElementById('volume-select').disabled = true;
-            document.getElementById('chapter-select').disabled = true;
+            document.getElementById('grade-select').value = '';
+            document.getElementById('unit-select').innerHTML = '<option value="">全部單元</option>';
 
             if (svg) {
                 svg.selectAll("*").remove();
@@ -721,13 +694,14 @@
             document.getElementById('empty-state').innerHTML = `
                 <i class="bi bi-diagram-3"></i>
                 <h3>請選擇篩選條件</h3>
-                <p>選擇課程類型、年級、冊別和章節來查看知識圖譜</p>
+                <p>選擇年級和單元來查看知識圖譜</p>
             `;
         }
 
         // 頁面載入時初始化
         window.addEventListener('DOMContentLoaded', function () {
             initSVG();
+            initGradeSelect();
         });
     </script>
 </body>

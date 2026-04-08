@@ -1,0 +1,1117 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "數與量",
+    "l2_unit": "第1章_數列與級數",
+    "l2_unit_id": "JH_NUM_SEQ"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_SEQ",
+      "level": "L2",
+      "name": "第1章_數列與級數",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01",
+      "level": "L3",
+      "name": "數列的規律",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習數列的基本概念，理解數列的定義、項的表示方式，並透過觀察找出數列的規律。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_a",
+      "level": "L4",
+      "name": "數列的定義與規律",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "認識數列的定義，理解數列是由依序排列的數字組成，並能透過觀察找出簡單數列的規律。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_b",
+      "level": "L4",
+      "name": "觀察數列規律",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "透過具體例子練習觀察數列的數字變化模式，並填入適當的數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_c",
+      "level": "L4",
+      "name": "規律遊戲挑戰",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "透過遊戲形式的挑戰題，提升找出數列規律的興趣與能力。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_d",
+      "level": "L4",
+      "name": "數列規律的多元性",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "理解即使是相同的數列前幾項，也可能存在多種不同的規律，導致不同的預測結果。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_e",
+      "level": "L4",
+      "name": "圖形規律性",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "學習將圖形的變化模式轉換為數列，並找出其規律，以預測後續圖形的數量。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_01_f",
+      "level": "L4",
+      "name": "正六邊形圖形規律",
+      "parent_id": "JH_NUM_SEQ_L3_01",
+      "description": "應用圖形規律性的概念，解決正六邊形排列的數量問題，包括求特定項數和判斷是否能完整排列。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02",
+      "level": "L3",
+      "name": "等差數列概念",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習等差數列的定義、公差的計算，並能判斷數列是否為等差數列，以及列出等差數列的各項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02_a",
+      "level": "L4",
+      "name": "等差數列的定義與公差",
+      "parent_id": "JH_NUM_SEQ_L3_02",
+      "description": "理解等差數列中任意相鄰兩項的差值相等，並認識公差的意義與表示符號。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02_b",
+      "level": "L4",
+      "name": "判斷是否為等差數列",
+      "parent_id": "JH_NUM_SEQ_L3_02",
+      "description": "透過計算相鄰項的差值，判斷給定數列是否為等差數列，並寫出其公差。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02_c",
+      "level": "L4",
+      "name": "列出等差數列",
+      "parent_id": "JH_NUM_SEQ_L3_02",
+      "description": "根據已知首項和公差，依序寫出等差數列的前幾項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02_d",
+      "level": "L4",
+      "name": "找出公差並求出等差數列的各項",
+      "parent_id": "JH_NUM_SEQ_L3_02",
+      "description": "根據數列中已知的項，計算公差並填入空格，使數列成為等差數列。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_02_e",
+      "level": "L4",
+      "name": "等差數列的性質",
+      "parent_id": "JH_NUM_SEQ_L3_02",
+      "description": "歸納等差數列中後項與前項、公差之間的關係，並理解公差可為正、負或零。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03",
+      "level": "L3",
+      "name": "等差數列的第n項",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習推導並應用等差數列的第n項公式，以計算特定項的值或數列的項數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03_a",
+      "level": "L4",
+      "name": "等差數列第n項公式推導",
+      "parent_id": "JH_NUM_SEQ_L3_03",
+      "description": "透過觀察數列項與首項、公差的關係，推導出等差數列的第n項公式 an = a1 + (n-1)d。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03_b",
+      "level": "L4",
+      "name": "已知首項、公差，求第n項",
+      "parent_id": "JH_NUM_SEQ_L3_03",
+      "description": "應用第n項公式，根據已知首項和公差，計算等差數列中指定項的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03_c",
+      "level": "L4",
+      "name": "已知前幾項及末項，求項數",
+      "parent_id": "JH_NUM_SEQ_L3_03",
+      "description": "應用第n項公式，根據已知首項、末項和公差，計算等差數列的總項數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03_d",
+      "level": "L4",
+      "name": "等差數列第n項公式應用",
+      "parent_id": "JH_NUM_SEQ_L3_03",
+      "description": "歸納等差數列第n項公式 an = a1 + (n-1)d，並能靈活運用於各類問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_03_e",
+      "level": "L4",
+      "name": "數線上的等差數列",
+      "parent_id": "JH_NUM_SEQ_L3_03",
+      "description": "應用等差數列的概念，解決數線上點的數值問題，例如已知部分點求其他點的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04",
+      "level": "L3",
+      "name": "等差中項",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習等差中項的定義與性質，並能應用其公式解決相關問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04_a",
+      "level": "L4",
+      "name": "等差中項的定義與性質",
+      "parent_id": "JH_NUM_SEQ_L3_04",
+      "description": "理解三個數成等差數列時，中間項為等差中項，且其值為前後兩項和的一半。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04_b",
+      "level": "L4",
+      "name": "求等差中項",
+      "parent_id": "JH_NUM_SEQ_L3_04",
+      "description": "應用等差中項公式，計算已知兩項的等差中項。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04_c",
+      "level": "L4",
+      "name": "等差中項應用",
+      "parent_id": "JH_NUM_SEQ_L3_04",
+      "description": "應用等差中項的性質，解決數列中未知項的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04_d",
+      "level": "L4",
+      "name": "等差中項與數列關係",
+      "parent_id": "JH_NUM_SEQ_L3_04",
+      "description": "歸納等差中項的公式 b = (a+c)/2，並理解其在等差數列中的重要性。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_04_e",
+      "level": "L4",
+      "name": "等差中項的計算",
+      "parent_id": "JH_NUM_SEQ_L3_04",
+      "description": "練習計算不同類型數字（整數、分數、根號、文字符號）的等差中項。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05",
+      "level": "L3",
+      "name": "等差級數的和",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習等差級數的定義、表示方法，並推導及應用等差級數和的公式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_a",
+      "level": "L4",
+      "name": "等差級數和的公式推導",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "透過高斯求和的例子，理解並推導等差級數和的公式 Sn = n(a1+an)/2。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_b",
+      "level": "L4",
+      "name": "等差級數的定義與符號",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "認識級數與等差級數的定義，並理解等差級數的和以符號 Sn 表示。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_c",
+      "level": "L4",
+      "name": "求等差級數的和",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "應用等差級數和的公式 Sn = n(a1+an)/2，計算給定等差級數的和。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_d",
+      "level": "L4",
+      "name": "已知首項、公差、末項，求項數及總和",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "綜合運用等差數列第n項公式與等差級數和公式，解決已知部分資訊求項數和總和的問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_e",
+      "level": "L4",
+      "name": "已知首項、公差、項數，求總和",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "應用等差級數和的另一公式 Sn = n[2a1+(n-1)d]/2，計算已知首項、公差和項數的級數和。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_f",
+      "level": "L4",
+      "name": "已知首項、項數、總和，求公差",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "應用等差級數和的公式，根據已知首項、項數和總和，反推公差的值。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_05_g",
+      "level": "L4",
+      "name": "等差級數和公式應用",
+      "parent_id": "JH_NUM_SEQ_L3_05",
+      "description": "歸納等差級數和的兩種公式，並理解在不同已知條件下選擇合適公式的重要性。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06",
+      "level": "L3",
+      "name": "等差級數的應用",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "應用等差級數的概念解決實際生活中的問題，如堆疊、座位排列和圖形數量計算。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06_a",
+      "level": "L4",
+      "name": "堆疊問題",
+      "parent_id": "JH_NUM_SEQ_L3_06",
+      "description": "應用等差級數和的公式，計算積木或物品堆疊的總數量。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06_b",
+      "level": "L4",
+      "name": "座位問題",
+      "parent_id": "JH_NUM_SEQ_L3_06",
+      "description": "應用等差級數和的公式，解決座位排列問題，例如計算第一排座位數或總座位數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06_c",
+      "level": "L4",
+      "name": "圖形問題",
+      "parent_id": "JH_NUM_SEQ_L3_06",
+      "description": "應用等差級數和的公式，計算由棋子或吸管組成的圖形總數量。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06_d",
+      "level": "L4",
+      "name": "費氏數列簡介",
+      "parent_id": "JH_NUM_SEQ_L3_06",
+      "description": "認識費氏數列的定義，理解其從第三項起每一項都是前兩項之和的規律。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_06_e",
+      "level": "L4",
+      "name": "費氏數列與黃金比例",
+      "parent_id": "JH_NUM_SEQ_L3_06",
+      "description": "探索費氏數列中相鄰兩項比值與黃金比例的關係，並觀察其在自然界中的應用。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07",
+      "level": "L3",
+      "name": "等比數列概念",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習等比數列的定義、公比的計算，並能判斷數列是否為等比數列，以及列出等比數列的各項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07_a",
+      "level": "L4",
+      "name": "等比數列的定義與公比",
+      "parent_id": "JH_NUM_SEQ_L3_07",
+      "description": "理解等比數列中任意相鄰兩項的比值相等，並認識公比的意義與表示符號。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07_b",
+      "level": "L4",
+      "name": "判斷是否為等比數列",
+      "parent_id": "JH_NUM_SEQ_L3_07",
+      "description": "透過計算相鄰項的比值，判斷給定數列是否為等比數列，並寫出其公比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07_c",
+      "level": "L4",
+      "name": "列出等比數列",
+      "parent_id": "JH_NUM_SEQ_L3_07",
+      "description": "根據已知首項和公比，依序寫出等比數列的前幾項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07_d",
+      "level": "L4",
+      "name": "找出公比並求出等比數列的各項",
+      "parent_id": "JH_NUM_SEQ_L3_07",
+      "description": "根據數列中已知的項，計算公比並填入空格，使數列成為等比數列。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_07_e",
+      "level": "L4",
+      "name": "等比數列的性質",
+      "parent_id": "JH_NUM_SEQ_L3_07",
+      "description": "歸納等比數列中後項與前項、公比之間的關係，並理解公比可為正、負或分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08",
+      "level": "L3",
+      "name": "等比數列的第n項",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習推導並應用等比數列的第n項公式，以計算特定項的值或數列的項數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08_a",
+      "level": "L4",
+      "name": "等比數列第n項公式推導",
+      "parent_id": "JH_NUM_SEQ_L3_08",
+      "description": "透過觀察數列項與首項、公比的關係，推導出等比數列的第n項公式 an = a1 * r^(n-1)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08_b",
+      "level": "L4",
+      "name": "已知首項、公比，求第n項",
+      "parent_id": "JH_NUM_SEQ_L3_08",
+      "description": "應用第n項公式，根據已知首項和公比，計算等比數列中指定項的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08_c",
+      "level": "L4",
+      "name": "已知前幾項，求公比及第n項",
+      "parent_id": "JH_NUM_SEQ_L3_08",
+      "description": "根據已知數列的前幾項，計算公比並應用第n項公式，求出指定項的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08_d",
+      "level": "L4",
+      "name": "等比數列第n項公式應用",
+      "parent_id": "JH_NUM_SEQ_L3_08",
+      "description": "歸納等比數列第n項公式 an = a1 * r^(n-1)，並能靈活運用於各類問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_08_e",
+      "level": "L4",
+      "name": "等比數列的動動腦",
+      "parent_id": "JH_NUM_SEQ_L3_08",
+      "description": "透過思考題，理解等比數列若順序顛倒或取奇數項，仍會形成等比數列的性質。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09",
+      "level": "L3",
+      "name": "等比中項與應用",
+      "parent_id": "JH_NUM_SEQ",
+      "description": "學習等比中項的定義與性質，並能應用其公式解決相關問題及實際應用。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09_a",
+      "level": "L4",
+      "name": "等比中項的定義與性質",
+      "parent_id": "JH_NUM_SEQ_L3_09",
+      "description": "理解三個數成等比數列時，中間項為等比中項，且其平方等於前後兩項的乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09_b",
+      "level": "L4",
+      "name": "求等比中項",
+      "parent_id": "JH_NUM_SEQ_L3_09",
+      "description": "應用等比中項公式，計算已知兩項的等比中項，並注意正負號的可能性。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09_c",
+      "level": "L4",
+      "name": "等比數列的應用",
+      "parent_id": "JH_NUM_SEQ_L3_09",
+      "description": "應用等比數列的概念解決實際問題，如雞蛋花分枝數、紙張對摺厚度等。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09_d",
+      "level": "L4",
+      "name": "等比中項應用",
+      "parent_id": "JH_NUM_SEQ_L3_09",
+      "description": "應用等比中項的性質，解決數列中未知項的問題，例如三數成等比數列求乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_SEQ_L3_09_e",
+      "level": "L4",
+      "name": "等差與等比數列的綜合應用",
+      "parent_id": "JH_NUM_SEQ_L3_09",
+      "description": "思考並判斷一個數列是否能同時是等差數列和等比數列，並說明其公差與公比。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_NUM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_NUM",
+      "to_id": "JH_NUM_SEQ",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_01_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_04_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_05_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_06_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_06_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_08_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_08_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ",
+      "to_id": "JH_NUM_SEQ_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09",
+      "to_id": "JH_NUM_SEQ_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09",
+      "to_id": "JH_NUM_SEQ_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09",
+      "to_id": "JH_NUM_SEQ_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09",
+      "to_id": "JH_NUM_SEQ_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09",
+      "to_id": "JH_NUM_SEQ_L3_09_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01",
+      "to_id": "JH_NUM_SEQ_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02",
+      "to_id": "JH_NUM_SEQ_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03",
+      "to_id": "JH_NUM_SEQ_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04",
+      "to_id": "JH_NUM_SEQ_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05",
+      "to_id": "JH_NUM_SEQ_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06",
+      "to_id": "JH_NUM_SEQ_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07",
+      "to_id": "JH_NUM_SEQ_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08",
+      "to_id": "JH_NUM_SEQ_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_a",
+      "to_id": "JH_NUM_SEQ_L3_01_b",
+      "type": "prerequisite",
+      "reason": "觀察規律是建立在對數列定義的理解上"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_b",
+      "to_id": "JH_NUM_SEQ_L3_01_c",
+      "type": "prerequisite",
+      "reason": "遊戲挑戰需要先具備觀察數列規律的能力"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_b",
+      "to_id": "JH_NUM_SEQ_L3_01_d",
+      "type": "prerequisite",
+      "reason": "理解規律多元性需要先會觀察規律"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_b",
+      "to_id": "JH_NUM_SEQ_L3_01_e",
+      "type": "prerequisite",
+      "reason": "圖形規律性是數列規律的應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_e",
+      "to_id": "JH_NUM_SEQ_L3_01_f",
+      "type": "prerequisite",
+      "reason": "正六邊形規律是圖形規律性的具體應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_b",
+      "to_id": "JH_NUM_SEQ_L3_02_a",
+      "type": "prerequisite",
+      "reason": "等差數列是具體規律數列的一種，需先會觀察數列規律"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_02_b",
+      "type": "prerequisite",
+      "reason": "判斷等差數列需理解其定義與公差"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_02_c",
+      "type": "prerequisite",
+      "reason": "列出等差數列需理解其定義與公差"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_02_d",
+      "type": "prerequisite",
+      "reason": "找出公差並求項需理解等差數列定義"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_02_e",
+      "type": "prerequisite",
+      "reason": "等差數列性質是基於其定義與公差"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_03_a",
+      "type": "prerequisite",
+      "reason": "第n項公式推導基於等差數列定義和公差"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03_a",
+      "to_id": "JH_NUM_SEQ_L3_03_b",
+      "type": "prerequisite",
+      "reason": "應用公式求第n項需先理解公式推導"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03_a",
+      "to_id": "JH_NUM_SEQ_L3_03_c",
+      "type": "prerequisite",
+      "reason": "應用公式求項數需先理解公式推導"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03_a",
+      "to_id": "JH_NUM_SEQ_L3_03_d",
+      "type": "prerequisite",
+      "reason": "公式應用是建立在對公式的理解上"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03_b",
+      "to_id": "JH_NUM_SEQ_L3_03_e",
+      "type": "prerequisite",
+      "reason": "數線問題是第n項公式的應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_a",
+      "to_id": "JH_NUM_SEQ_L3_04_a",
+      "type": "prerequisite",
+      "reason": "等差中項是等差數列的特殊性質"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04_a",
+      "to_id": "JH_NUM_SEQ_L3_04_b",
+      "type": "prerequisite",
+      "reason": "求等差中項需理解其定義與性質"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04_b",
+      "to_id": "JH_NUM_SEQ_L3_04_c",
+      "type": "prerequisite",
+      "reason": "等差中項應用是基於其計算能力"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04_a",
+      "to_id": "JH_NUM_SEQ_L3_04_d",
+      "type": "prerequisite",
+      "reason": "等差中項與數列關係是其定義的歸納"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_04_b",
+      "to_id": "JH_NUM_SEQ_L3_04_e",
+      "type": "prerequisite",
+      "reason": "等差中項的計算是其基本應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_03_a",
+      "to_id": "JH_NUM_SEQ_L3_05_a",
+      "type": "prerequisite",
+      "reason": "級數和公式推導需要等差數列的基礎知識"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_a",
+      "to_id": "JH_NUM_SEQ_L3_05_b",
+      "type": "prerequisite",
+      "reason": "級數定義是建立在對級數和的理解上"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_a",
+      "to_id": "JH_NUM_SEQ_L3_05_c",
+      "type": "prerequisite",
+      "reason": "求級數和需應用公式"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_c",
+      "to_id": "JH_NUM_SEQ_L3_05_d",
+      "type": "prerequisite",
+      "reason": "綜合求項數及總和需要級數和的計算能力"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_a",
+      "to_id": "JH_NUM_SEQ_L3_05_e",
+      "type": "prerequisite",
+      "reason": "另一種和公式的應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_e",
+      "to_id": "JH_NUM_SEQ_L3_05_f",
+      "type": "prerequisite",
+      "reason": "反推公差需要級數和公式的應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_a",
+      "to_id": "JH_NUM_SEQ_L3_05_g",
+      "type": "prerequisite",
+      "reason": "公式應用是建立在對公式的理解上"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_c",
+      "to_id": "JH_NUM_SEQ_L3_06_a",
+      "type": "prerequisite",
+      "reason": "堆疊問題是等差級數和的實際應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_c",
+      "to_id": "JH_NUM_SEQ_L3_06_b",
+      "type": "prerequisite",
+      "reason": "座位問題是等差級數和的實際應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_05_c",
+      "to_id": "JH_NUM_SEQ_L3_06_c",
+      "type": "prerequisite",
+      "reason": "圖形問題是等差級數和的實際應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_a",
+      "to_id": "JH_NUM_SEQ_L3_06_d",
+      "type": "prerequisite",
+      "reason": "費氏數列是另一種數列，但仍需數列基本概念"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_06_d",
+      "to_id": "JH_NUM_SEQ_L3_06_e",
+      "type": "prerequisite",
+      "reason": "費氏數列與黃金比例是費氏數列的延伸探討"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_01_b",
+      "to_id": "JH_NUM_SEQ_L3_07_a",
+      "type": "prerequisite",
+      "reason": "等比數列是具體規律數列的一種，需先會觀察數列規律"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_07_b",
+      "type": "prerequisite",
+      "reason": "判斷等比數列需理解其定義與公比"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_07_c",
+      "type": "prerequisite",
+      "reason": "列出等比數列需理解其定義與公比"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_07_d",
+      "type": "prerequisite",
+      "reason": "找出公比並求項需理解等比數列定義"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_07_e",
+      "type": "prerequisite",
+      "reason": "等比數列性質是基於其定義與公比"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_08_a",
+      "type": "prerequisite",
+      "reason": "第n項公式推導基於等比數列定義和公比"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08_a",
+      "to_id": "JH_NUM_SEQ_L3_08_b",
+      "type": "prerequisite",
+      "reason": "應用公式求第n項需先理解公式推導"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08_a",
+      "to_id": "JH_NUM_SEQ_L3_08_c",
+      "type": "prerequisite",
+      "reason": "應用公式求公比及第n項需先理解公式推導"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08_a",
+      "to_id": "JH_NUM_SEQ_L3_08_d",
+      "type": "prerequisite",
+      "reason": "公式應用是建立在對公式的理解上"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08_d",
+      "to_id": "JH_NUM_SEQ_L3_08_e",
+      "type": "prerequisite",
+      "reason": "動動腦問題是等比數列性質的延伸應用"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_a",
+      "to_id": "JH_NUM_SEQ_L3_09_a",
+      "type": "prerequisite",
+      "reason": "等比中項是等比數列的特殊性質"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09_a",
+      "to_id": "JH_NUM_SEQ_L3_09_b",
+      "type": "prerequisite",
+      "reason": "求等比中項需理解其定義與性質"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_08_b",
+      "to_id": "JH_NUM_SEQ_L3_09_c",
+      "type": "prerequisite",
+      "reason": "等比數列的應用需要計算第n項的能力"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_09_b",
+      "to_id": "JH_NUM_SEQ_L3_09_d",
+      "type": "prerequisite",
+      "reason": "等比中項應用是基於其計算能力"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_02_e",
+      "to_id": "JH_NUM_SEQ_L3_09_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要等差數列的基礎知識"
+    },
+    {
+      "from_id": "JH_NUM_SEQ_L3_07_e",
+      "to_id": "JH_NUM_SEQ_L3_09_e",
+      "type": "prerequisite",
+      "reason": "綜合應用需要等比數列的基礎知識"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 60,
+    "total_edges": 115,
+    "l3_count": 9,
+    "l4_count": 48,
+    "l4_avg_per_l3": 5.333333333333333
+  }
+}

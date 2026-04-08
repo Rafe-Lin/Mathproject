@@ -1,0 +1,987 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "數與量",
+    "l2_unit": "比與比例式",
+    "l2_unit_id": "JH_NUM_RATIO"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_RATIO",
+      "level": "L2",
+      "name": "比與比例式",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01",
+      "level": "L3",
+      "name": "比與比值",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "介紹比的定義、前項、後項以及比值的概念。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01_a",
+      "level": "L4",
+      "name": "比的定義與表示",
+      "parent_id": "JH_NUM_RATIO_L3_01",
+      "description": "學習如何將兩個數a與b的比記為a:b，並認識前項和後項。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01_b",
+      "level": "L4",
+      "name": "比值的定義與計算",
+      "parent_id": "JH_NUM_RATIO_L3_01",
+      "description": "學習將比的前項除以後項得到比值，並理解比值為倍數關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01_c",
+      "level": "L4",
+      "name": "比值在生活中的應用",
+      "parent_id": "JH_NUM_RATIO_L3_01",
+      "description": "透過實際情境（如調配泡泡水、消毒酒精、製作粽子食譜）理解比值的應用。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01_d",
+      "level": "L4",
+      "name": "比值在運動數據中的應用",
+      "parent_id": "JH_NUM_RATIO_L3_01",
+      "description": "學習如何計算打擊率、命中率等運動數據的比值，並理解其意義。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_01_e",
+      "level": "L4",
+      "name": "負數與分數的比值計算",
+      "parent_id": "JH_NUM_RATIO_L3_01",
+      "description": "學習計算包含負數和分數的比值，並以最簡分數表示。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_02",
+      "level": "L3",
+      "name": "相等的比與最簡整數比",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習相等的比的定義、性質以及如何將比化為最簡整數比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_02_a",
+      "level": "L4",
+      "name": "相等的比的定義",
+      "parent_id": "JH_NUM_RATIO_L3_02",
+      "description": "理解當兩個比的比值相等時，稱這兩個比為相等的比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_02_b",
+      "level": "L4",
+      "name": "相等的比的性質",
+      "parent_id": "JH_NUM_RATIO_L3_02",
+      "description": "學習比的前項與後項同乘以或同除以不為0的數，所得的比和原來的比相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_02_c",
+      "level": "L4",
+      "name": "最簡整數比",
+      "parent_id": "JH_NUM_RATIO_L3_02",
+      "description": "學習將比的前項、後項化為互質的整數，稱為最簡整數比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03",
+      "level": "L3",
+      "name": "比例式的定義與基本性質",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習比例式的定義、內項、外項以及外項乘積等於內項乘積的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03_a",
+      "level": "L4",
+      "name": "比例式的定義與項的名稱",
+      "parent_id": "JH_NUM_RATIO_L3_03",
+      "description": "學習將兩個相等的比寫成比例式a:b=c:d，並認識內項和外項。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03_b",
+      "level": "L4",
+      "name": "比例式基本性質：外項積等於內項積",
+      "parent_id": "JH_NUM_RATIO_L3_03",
+      "description": "學習若a:b=c:d，則ad=bc，並應用此性質求解未知數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03_c",
+      "level": "L4",
+      "name": "比例式性質：設公比",
+      "parent_id": "JH_NUM_RATIO_L3_03",
+      "description": "學習若x:y=a:b，可設x=ar、y=br (r≠0)，並應用此性質求解未知數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03_d",
+      "level": "L4",
+      "name": "從等式推導比與比值",
+      "parent_id": "JH_NUM_RATIO_L3_03",
+      "description": "學習從形如ax=by的等式推導出x:y的比值，並應用公比法求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_03_e",
+      "level": "L4",
+      "name": "比例式性質的綜合應用",
+      "parent_id": "JH_NUM_RATIO_L3_03",
+      "description": "綜合運用比例式的基本性質和公比法，解決涉及多項式比值的問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_04",
+      "level": "L3",
+      "name": "比例式的應用問題",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習將實際問題轉化為比例式，並運用比例性質求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_04_a",
+      "level": "L4",
+      "name": "倍數關係的應用",
+      "parent_id": "JH_NUM_RATIO_L3_04",
+      "description": "解決涉及倍數關係的應用問題，如零用錢分配、物品數量比較等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_04_b",
+      "level": "L4",
+      "name": "數量變化的應用",
+      "parent_id": "JH_NUM_RATIO_L3_04",
+      "description": "解決涉及數量變化後比例關係改變的應用問題，如馬拉松距離、班級人數變化等。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_04_c",
+      "level": "L4",
+      "name": "比例尺的應用",
+      "parent_id": "JH_NUM_RATIO_L3_04",
+      "description": "學習理解比例尺的意義，並應用比例式計算地圖上距離與實際距離。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_05",
+      "level": "L3",
+      "name": "正比的定義與判斷",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習正比的定義 (y=kx, k≠0) 及其判斷方式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_05_a",
+      "level": "L4",
+      "name": "正比的定義",
+      "parent_id": "JH_NUM_RATIO_L3_05",
+      "description": "理解兩個變數x、y，當x值改變時，y值也隨著改變，且y值保持為x值的某個固定倍數(y=kx, k≠0)時，稱y與x成正比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_05_b",
+      "level": "L4",
+      "name": "正比的判斷",
+      "parent_id": "JH_NUM_RATIO_L3_05",
+      "description": "學習透過觀察x、y的比值是否為定值，或關係式是否為y=kx的形式來判斷兩變數是否成正比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_05_c",
+      "level": "L4",
+      "name": "從表格判斷正比關係",
+      "parent_id": "JH_NUM_RATIO_L3_05",
+      "description": "透過分析表格中x、y的比值是否為定值，判斷兩變數是否成正比。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_05_d",
+      "level": "L4",
+      "name": "從幾何關係判斷正比關係",
+      "parent_id": "JH_NUM_RATIO_L3_05",
+      "description": "透過長方形面積、圓周長、正三角形周長等幾何公式，判斷變數間是否成正比。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_06",
+      "level": "L3",
+      "name": "正比關係的求值",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習在已知正比關係和一組對應值的情況下，求出變數間的關係式或另一組對應值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_06_a",
+      "level": "L4",
+      "name": "建立正比關係式",
+      "parent_id": "JH_NUM_RATIO_L3_06",
+      "description": "學習在已知一組對應值時，透過y=kx的形式求出常數k，建立x與y的關係式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_06_b",
+      "level": "L4",
+      "name": "應用關係式求值",
+      "parent_id": "JH_NUM_RATIO_L3_06",
+      "description": "學習將已知變數值代入已建立的正比關係式，求解另一變數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_07",
+      "level": "L3",
+      "name": "正比關係的應用問題",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習將實際問題轉化為正比關係，並運用正比性質求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_07_a",
+      "level": "L4",
+      "name": "薪資與工時的正比應用",
+      "parent_id": "JH_NUM_RATIO_L3_07",
+      "description": "解決涉及薪資與工時成正比的應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_07_b",
+      "level": "L4",
+      "name": "調配比例的正比應用",
+      "parent_id": "JH_NUM_RATIO_L3_07",
+      "description": "解決涉及調配比例成正比的應用問題，如調配鮮奶茶。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_07_c",
+      "level": "L4",
+      "name": "價格與數量的正比應用",
+      "parent_id": "JH_NUM_RATIO_L3_07",
+      "description": "解決涉及商品價格與數量成正比的應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_08",
+      "level": "L3",
+      "name": "反比的定義與判斷",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習反比的定義 (xy=k, k≠0) 及其判斷方式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_08_a",
+      "level": "L4",
+      "name": "反比的定義",
+      "parent_id": "JH_NUM_RATIO_L3_08",
+      "description": "理解兩個變數x、y，當x值改變時，y值也隨著改變，且x與y的乘積為某個固定值(xy=k, k≠0)時，稱y與x成反比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_08_b",
+      "level": "L4",
+      "name": "反比的判斷",
+      "parent_id": "JH_NUM_RATIO_L3_08",
+      "description": "學習透過觀察x、y的乘積是否為定值，或關係式是否為xy=k的形式來判斷兩變數是否成反比。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_08_c",
+      "level": "L4",
+      "name": "從表格判斷反比關係",
+      "parent_id": "JH_NUM_RATIO_L3_08",
+      "description": "透過分析表格中x、y的乘積是否為定值，判斷兩變數是否成反比。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_08_d",
+      "level": "L4",
+      "name": "從幾何與工作量關係判斷反比關係",
+      "parent_id": "JH_NUM_RATIO_L3_08",
+      "description": "透過長方形面積、工作量與時間等公式，判斷變數間是否成反比。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_09",
+      "level": "L3",
+      "name": "反比關係的求值",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習在已知反比關係和一組對應值的情況下，求出變數間的關係式或另一組對應值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_09_a",
+      "level": "L4",
+      "name": "建立反比關係式",
+      "parent_id": "JH_NUM_RATIO_L3_09",
+      "description": "學習在已知一組對應值時，透過xy=k的形式求出常數k，建立x與y的關係式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_09_b",
+      "level": "L4",
+      "name": "應用關係式求值",
+      "parent_id": "JH_NUM_RATIO_L3_09",
+      "description": "學習將已知變數值代入已建立的反比關係式，求解另一變數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_10",
+      "level": "L3",
+      "name": "反比關係的應用問題",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "學習將實際問題轉化為反比關係，並運用反比性質求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_10_a",
+      "level": "L4",
+      "name": "速率與時間的反比應用",
+      "parent_id": "JH_NUM_RATIO_L3_10",
+      "description": "解決涉及距離固定時，速率與時間成反比的應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_10_b",
+      "level": "L4",
+      "name": "人數與費用的反比應用",
+      "parent_id": "JH_NUM_RATIO_L3_10",
+      "description": "解決涉及總費用固定時，分擔人數與每人費用成反比的應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_10_c",
+      "level": "L4",
+      "name": "人數與工期的反比應用",
+      "parent_id": "JH_NUM_RATIO_L3_10",
+      "description": "解決涉及總工作量固定時，工作人數與完工日數成反比的應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_11",
+      "level": "L3",
+      "name": "正比與反比的綜合比較",
+      "parent_id": "JH_NUM_RATIO",
+      "description": "綜合整理正比與反比的定義、判斷方式及常見應用情境，並進行比較。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_11_a",
+      "level": "L4",
+      "name": "長方形面積與邊長關係",
+      "parent_id": "JH_NUM_RATIO_L3_11",
+      "description": "理解長方形面積、長、寬之間的正比與反比關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_11_b",
+      "level": "L4",
+      "name": "行駛距離與速率時間關係",
+      "parent_id": "JH_NUM_RATIO_L3_11",
+      "description": "理解行駛距離、速率、時間之間的正比與反比關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_11_c",
+      "level": "L4",
+      "name": "總價與單價數量關係",
+      "parent_id": "JH_NUM_RATIO_L3_11",
+      "description": "理解總價、單價、購買數量之間的正比與反比關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_RATIO_L3_11_d",
+      "level": "L4",
+      "name": "三角形面積與底高關係",
+      "parent_id": "JH_NUM_RATIO_L3_11",
+      "description": "理解三角形面積、底、高之間的正比與反比關係。",
+      "difficulty": 3
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_NUM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_NUM",
+      "to_id": "JH_NUM_RATIO",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02",
+      "to_id": "JH_NUM_RATIO_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02",
+      "to_id": "JH_NUM_RATIO_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02",
+      "to_id": "JH_NUM_RATIO_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04",
+      "to_id": "JH_NUM_RATIO_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04",
+      "to_id": "JH_NUM_RATIO_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04",
+      "to_id": "JH_NUM_RATIO_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05",
+      "to_id": "JH_NUM_RATIO_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05",
+      "to_id": "JH_NUM_RATIO_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05",
+      "to_id": "JH_NUM_RATIO_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05",
+      "to_id": "JH_NUM_RATIO_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_06",
+      "to_id": "JH_NUM_RATIO_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_06",
+      "to_id": "JH_NUM_RATIO_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07",
+      "to_id": "JH_NUM_RATIO_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07",
+      "to_id": "JH_NUM_RATIO_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07",
+      "to_id": "JH_NUM_RATIO_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08",
+      "to_id": "JH_NUM_RATIO_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08",
+      "to_id": "JH_NUM_RATIO_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08",
+      "to_id": "JH_NUM_RATIO_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08",
+      "to_id": "JH_NUM_RATIO_L3_08_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_09",
+      "to_id": "JH_NUM_RATIO_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_09",
+      "to_id": "JH_NUM_RATIO_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10",
+      "to_id": "JH_NUM_RATIO_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10",
+      "to_id": "JH_NUM_RATIO_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10",
+      "to_id": "JH_NUM_RATIO_L3_10_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO",
+      "to_id": "JH_NUM_RATIO_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11",
+      "to_id": "JH_NUM_RATIO_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11",
+      "to_id": "JH_NUM_RATIO_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11",
+      "to_id": "JH_NUM_RATIO_L3_11_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11",
+      "to_id": "JH_NUM_RATIO_L3_11_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01",
+      "to_id": "JH_NUM_RATIO_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02",
+      "to_id": "JH_NUM_RATIO_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03",
+      "to_id": "JH_NUM_RATIO_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04",
+      "to_id": "JH_NUM_RATIO_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05",
+      "to_id": "JH_NUM_RATIO_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_06",
+      "to_id": "JH_NUM_RATIO_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07",
+      "to_id": "JH_NUM_RATIO_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08",
+      "to_id": "JH_NUM_RATIO_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_09",
+      "to_id": "JH_NUM_RATIO_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10",
+      "to_id": "JH_NUM_RATIO_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01_a",
+      "to_id": "JH_NUM_RATIO_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01_b",
+      "to_id": "JH_NUM_RATIO_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01_c",
+      "to_id": "JH_NUM_RATIO_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_01_d",
+      "to_id": "JH_NUM_RATIO_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02_a",
+      "to_id": "JH_NUM_RATIO_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_02_b",
+      "to_id": "JH_NUM_RATIO_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03_a",
+      "to_id": "JH_NUM_RATIO_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03_b",
+      "to_id": "JH_NUM_RATIO_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03_c",
+      "to_id": "JH_NUM_RATIO_L3_03_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_03_d",
+      "to_id": "JH_NUM_RATIO_L3_03_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04_a",
+      "to_id": "JH_NUM_RATIO_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_04_b",
+      "to_id": "JH_NUM_RATIO_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05_a",
+      "to_id": "JH_NUM_RATIO_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05_b",
+      "to_id": "JH_NUM_RATIO_L3_05_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_05_c",
+      "to_id": "JH_NUM_RATIO_L3_05_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_06_a",
+      "to_id": "JH_NUM_RATIO_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07_a",
+      "to_id": "JH_NUM_RATIO_L3_07_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_07_b",
+      "to_id": "JH_NUM_RATIO_L3_07_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08_a",
+      "to_id": "JH_NUM_RATIO_L3_08_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08_b",
+      "to_id": "JH_NUM_RATIO_L3_08_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_08_c",
+      "to_id": "JH_NUM_RATIO_L3_08_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_09_a",
+      "to_id": "JH_NUM_RATIO_L3_09_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10_a",
+      "to_id": "JH_NUM_RATIO_L3_10_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_10_b",
+      "to_id": "JH_NUM_RATIO_L3_10_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11_a",
+      "to_id": "JH_NUM_RATIO_L3_11_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11_b",
+      "to_id": "JH_NUM_RATIO_L3_11_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_RATIO_L3_11_c",
+      "to_id": "JH_NUM_RATIO_L3_11_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_RATIO_L3_01_e",
+      "type": "prerequisite",
+      "reason": "計算負數的比值需要整數四則運算。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_RATIO_L3_01_e",
+      "type": "prerequisite",
+      "reason": "計算分數的比值需要分數四則運算。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_RATIO_L3_02_c",
+      "type": "prerequisite",
+      "reason": "將比化為最簡整數比需要整數四則運算（如求最大公因數）。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_03_b",
+      "type": "prerequisite",
+      "reason": "應用外項積等於內項積求解未知數需要一元一次方程式的解法。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_03_c",
+      "type": "prerequisite",
+      "reason": "設公比後求解未知數需要一元一次方程式的解法。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_03_d",
+      "type": "prerequisite",
+      "reason": "從等式推導比與比值並求解需要一元一次方程式的解法。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_03_e",
+      "type": "prerequisite",
+      "reason": "比例式性質的綜合應用通常涉及一元一次方程式的解法。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_04_a",
+      "type": "prerequisite",
+      "reason": "解決倍數關係的應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_04_b",
+      "type": "prerequisite",
+      "reason": "解決數量變化的應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_04_c",
+      "type": "prerequisite",
+      "reason": "解決比例尺問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_06_a",
+      "type": "prerequisite",
+      "reason": "建立正比關係式需要透過已知點求解常數k，涉及一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_06_b",
+      "type": "prerequisite",
+      "reason": "應用關係式求值需要將已知值代入方程式求解。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_07_a",
+      "type": "prerequisite",
+      "reason": "解決正比應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_07_b",
+      "type": "prerequisite",
+      "reason": "解決正比應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_07_c",
+      "type": "prerequisite",
+      "reason": "解決正比應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_09_a",
+      "type": "prerequisite",
+      "reason": "建立反比關係式需要透過已知點求解常數k，涉及一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_09_b",
+      "type": "prerequisite",
+      "reason": "應用關係式求值需要將已知值代入方程式求解。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_10_a",
+      "type": "prerequisite",
+      "reason": "解決反比應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_10_b",
+      "type": "prerequisite",
+      "reason": "解決反比應用問題需要列出並解一元一次方程式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_NUM_RATIO_L3_10_c",
+      "type": "prerequisite",
+      "reason": "解決反比應用問題需要列出並解一元一次方程式。"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 52,
+    "total_edges": 108
+  }
+}

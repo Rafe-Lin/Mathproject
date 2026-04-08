@@ -1,0 +1,957 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "第3章_因式分解",
+    "l2_unit_id": "JH_ALG_FACTOR"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_FACTOR",
+      "level": "L2",
+      "name": "第3章_因式分解",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01",
+      "level": "L3",
+      "name": "因式與倍式",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "學習多項式因式與倍式的定義，並能利用除法判斷多項式之間的因式與倍式關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_a",
+      "level": "L4",
+      "name": "整數因數與倍數的複習",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "回顧整數因數與倍數的定義與判斷方法。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_b",
+      "level": "L4",
+      "name": "多項式因式與倍式的定義",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "理解多項式A能被B整除時，B是A的因式，A是B的倍式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_c",
+      "level": "L4",
+      "name": "利用除法判斷多項式因式與倍式",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "透過多項式除法，判斷餘式是否為0，以確定因式與倍式關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_d",
+      "level": "L4",
+      "name": "判斷給定多項式是否為因式",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "練習判斷一個多項式是否為另一個多項式的因式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_e",
+      "level": "L4",
+      "name": "判斷給定多項式是否為倍式",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "練習判斷一個多項式是否為另一個多項式的倍式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_01_f",
+      "level": "L4",
+      "name": "因式與倍式的綜合判斷",
+      "parent_id": "JH_ALG_FACTOR_L3_01",
+      "description": "掌握多項式A、B、C之間的因式與倍式關係。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02",
+      "level": "L3",
+      "name": "因式分解的意義與方法概述",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "理解因式分解的定義，並初步認識因式分解與多項式乘法的關係，以及因式分解的應用。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_a",
+      "level": "L4",
+      "name": "因式分解的定義",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "將一個二次式寫成兩個一次式的乘積，稱為因式分解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_b",
+      "level": "L4",
+      "name": "因式分解與多項式乘法的關係",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "理解因式分解是多項式乘法的逆運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_c",
+      "level": "L4",
+      "name": "利用除法進行因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "透過多項式除法，若餘式為0，則可將被除式因式分解為商式與除式的乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_d",
+      "level": "L4",
+      "name": "利用比較係數法進行因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "透過展開因式分解後的式子，比較兩邊多項式的係數來求解未知數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_e",
+      "level": "L4",
+      "name": "利用除法求解因式分解中的未知數",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "透過多項式除法，利用餘式為0的條件求解因式分解中的未知數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_02_f",
+      "level": "L4",
+      "name": "因式分解方法的初步認識",
+      "parent_id": "JH_ALG_FACTOR_L3_02",
+      "description": "認識除了除法外，還有其他因式分解方法。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03",
+      "level": "L3",
+      "name": "提公因式法",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "學習找出多項式的公因式，並利用分配律將公因式提出，完成因式分解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_a",
+      "level": "L4",
+      "name": "多項式公因式的定義與判斷",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "理解多項式A和B的公因式C，是同時能整除A和B的多項式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_b",
+      "level": "L4",
+      "name": "找出單項式的公因式",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "練習找出給定單項式的公因式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_c",
+      "level": "L4",
+      "name": "找出多項式的公因式",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "練習找出給定多項式的公因式，特別是含有多項式因子的情況。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_d",
+      "level": "L4",
+      "name": "提出單項公因式進行因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "應用分配律將多項式中的單項公因式提出。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_e",
+      "level": "L4",
+      "name": "提出多項式公因式進行因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "應用分配律將多項式中的多項式公因式提出。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_03_f",
+      "level": "L4",
+      "name": "利用變號技巧提出公因式",
+      "parent_id": "JH_ALG_FACTOR_L3_03",
+      "description": "學習在因式分解時，透過變號將看似不同的項轉化為可提出公因式的形式。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04",
+      "level": "L3",
+      "name": "乘法公式法",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "學習利用平方差公式、和的平方公式及差的平方公式進行因式分解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_a",
+      "level": "L4",
+      "name": "複習乘法公式",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "回顧平方差公式、和的平方公式及差的平方公式。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_b",
+      "level": "L4",
+      "name": "平方差公式的因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "將形如a²-b²的多項式分解為(a+b)(a-b)。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_c",
+      "level": "L4",
+      "name": "平方差公式的應用",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "練習將具體數字或變數的平方差形式進行因式分解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_d",
+      "level": "L4",
+      "name": "複雜形式的平方差公式因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "學習將含有多項式作為a或b的平方差形式進行因式分解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_e",
+      "level": "L4",
+      "name": "和的平方公式的因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "將形如a²+2ab+b²的多項式分解為(a+b)²。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_f",
+      "level": "L4",
+      "name": "差的平方公式的因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "將形如a²-2ab+b²的多項式分解為(a-b)²。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_04_g",
+      "level": "L4",
+      "name": "和或差的平方公式的應用",
+      "parent_id": "JH_ALG_FACTOR_L3_04",
+      "description": "練習將符合和或差的平方公式形式的多項式進行因式分解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05",
+      "level": "L3",
+      "name": "十字交乘法",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "學習利用十字交乘法將二次多項式分解為兩個一次式的乘積。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_a",
+      "level": "L4",
+      "name": "十字交乘法的基本原理",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "理解十字交乘法是將二次多項式分解為兩個一次式乘積的視覺化方法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_b",
+      "level": "L4",
+      "name": "二次項係數為1的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "學習將x²+px+q形式的二次多項式分解為(x+a)(x+b)，其中a+b=p且ab=q。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_c",
+      "level": "L4",
+      "name": "常數項為正數時的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "練習當二次項係數為1且常數項為正數時，利用十字交乘法進行因式分解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_d",
+      "level": "L4",
+      "name": "常數項為負數時的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "練習當二次項係數為1且常數項為負數時，利用十字交乘法進行因式分解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_e",
+      "level": "L4",
+      "name": "二次項係數不為1的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "學習將ax²+bx+c形式的二次多項式分解為(dx+e)(fx+g)。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_f",
+      "level": "L4",
+      "name": "二次項係數不為1且常數項為正數的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "練習當二次項係數不為1且常數項為正數時，利用十字交乘法進行因式分解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_05_g",
+      "level": "L4",
+      "name": "二次項係數不為1且常數項為負數的十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_05",
+      "description": "練習當二次項係數不為1且常數項為負數時，利用十字交乘法進行因式分解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06",
+      "level": "L3",
+      "name": "因式分解綜合應用",
+      "parent_id": "JH_ALG_FACTOR",
+      "description": "學習綜合運用提公因式法、乘法公式法和十字交乘法進行因式分解，並處理特殊形式的多項式。",
+      "difficulty": 7
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_a",
+      "level": "L4",
+      "name": "提出負數公因數再因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "學習當二次項係數為負時，先提出負數公因數再進行因式分解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_b",
+      "level": "L4",
+      "name": "提出係數公因數再因式分解",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "學習當多項式各項有數值公因數時，先提出公因數再進行因式分解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_c",
+      "level": "L4",
+      "name": "綜合運用提公因式與乘法公式",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "練習先提出公因數，再利用乘法公式進行因式分解。",
+      "difficulty": 6
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_d",
+      "level": "L4",
+      "name": "綜合運用提公因式與十字交乘法",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "練習先提出公因數，再利用十字交乘法進行因式分解。",
+      "difficulty": 6
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_e",
+      "level": "L4",
+      "name": "因式分解方法的選擇與應用",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "學習根據多項式形式，選擇最合適的因式分解方法。",
+      "difficulty": 7
+    },
+    {
+      "id": "JH_ALG_FACTOR_L3_06_f",
+      "level": "L4",
+      "name": "替換法在因式分解中的應用",
+      "parent_id": "JH_ALG_FACTOR_L3_06",
+      "description": "學習利用未知數替換簡化複雜的多項式，再進行因式分解。",
+      "difficulty": 7
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_FACTOR",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_01_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_02_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_03_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_04_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_05_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR",
+      "to_id": "JH_ALG_FACTOR_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06",
+      "to_id": "JH_ALG_FACTOR_L3_06_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01",
+      "to_id": "JH_ALG_FACTOR_L3_02",
+      "type": "prerequisite",
+      "reason": "因式分解的意義建立在因式與倍式的概念之上。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_03",
+      "type": "prerequisite",
+      "reason": "提公因式法是因式分解的第一種具體方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_04",
+      "type": "prerequisite",
+      "reason": "乘法公式法是因式分解的另一種具體方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_05",
+      "type": "prerequisite",
+      "reason": "十字交乘法是因式分解的另一種具體方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06",
+      "type": "prerequisite",
+      "reason": "綜合應用需要掌握提公因式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_06",
+      "type": "prerequisite",
+      "reason": "綜合應用需要掌握乘法公式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06",
+      "type": "prerequisite",
+      "reason": "綜合應用需要掌握十字交乘法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_a",
+      "to_id": "JH_ALG_FACTOR_L3_01_b",
+      "type": "prerequisite",
+      "reason": "多項式因式與倍式的概念建立在整數因數與倍數的基礎上。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_b",
+      "to_id": "JH_ALG_FACTOR_L3_01_c",
+      "type": "prerequisite",
+      "reason": "利用除法判斷因式與倍式是應用其定義的具體方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_c",
+      "to_id": "JH_ALG_FACTOR_L3_01_d",
+      "type": "prerequisite",
+      "reason": "判斷給定多項式是否為因式是利用除法判斷的練習。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_c",
+      "to_id": "JH_ALG_FACTOR_L3_01_e",
+      "type": "prerequisite",
+      "reason": "判斷給定多項式是否為倍式是利用除法判斷的練習。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_d",
+      "to_id": "JH_ALG_FACTOR_L3_01_f",
+      "type": "prerequisite",
+      "reason": "綜合判斷需要整合因式與倍式的個別判斷能力。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_01_e",
+      "to_id": "JH_ALG_FACTOR_L3_01_f",
+      "type": "prerequisite",
+      "reason": "綜合判斷需要整合因式與倍式的個別判斷能力。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02_a",
+      "to_id": "JH_ALG_FACTOR_L3_02_b",
+      "type": "prerequisite",
+      "reason": "因式分解與多項式乘法的關係是基於因式分解的定義。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02_b",
+      "to_id": "JH_ALG_FACTOR_L3_02_c",
+      "type": "prerequisite",
+      "reason": "利用除法進行因式分解是應用因式分解與乘法關係的具體方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02_b",
+      "to_id": "JH_ALG_FACTOR_L3_02_d",
+      "type": "prerequisite",
+      "reason": "利用比較係數法進行因式分解是另一種應用因式分解與乘法關係的方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02_c",
+      "to_id": "JH_ALG_FACTOR_L3_02_e",
+      "type": "prerequisite",
+      "reason": "利用除法求解因式分解中的未知數是除法因式分解的進階應用。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02_a",
+      "to_id": "JH_ALG_FACTOR_L3_02_f",
+      "type": "prerequisite",
+      "reason": "初步認識因式分解方法是為後續學習具體方法做準備。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03_a",
+      "to_id": "JH_ALG_FACTOR_L3_03_b",
+      "type": "prerequisite",
+      "reason": "找出單項式的公因式是應用公因式定義的基礎練習。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03_b",
+      "to_id": "JH_ALG_FACTOR_L3_03_c",
+      "type": "prerequisite",
+      "reason": "找出多項式的公因式是單項式公因式概念的延伸。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03_c",
+      "to_id": "JH_ALG_FACTOR_L3_03_d",
+      "type": "prerequisite",
+      "reason": "提出單項公因式進行因式分解是將公因式概念應用於因式分解的第一步。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_03_d",
+      "type": "prerequisite",
+      "reason": "進行因式分解需要先理解因式分解的意義。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03_d",
+      "to_id": "JH_ALG_FACTOR_L3_03_e",
+      "type": "prerequisite",
+      "reason": "提出多項式公因式是單項公因式提取的進階應用。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03_e",
+      "to_id": "JH_ALG_FACTOR_L3_03_f",
+      "type": "prerequisite",
+      "reason": "利用變號技巧提出公因式是提公因式法的進階技巧。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_a",
+      "to_id": "JH_ALG_FACTOR_L3_04_b",
+      "type": "prerequisite",
+      "reason": "平方差公式的因式分解是應用乘法公式的基礎。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_04_b",
+      "type": "prerequisite",
+      "reason": "進行因式分解需要先理解因式分解的意義。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_b",
+      "to_id": "JH_ALG_FACTOR_L3_04_c",
+      "type": "prerequisite",
+      "reason": "平方差公式的應用是練習基礎公式的因式分解。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_c",
+      "to_id": "JH_ALG_FACTOR_L3_04_d",
+      "type": "prerequisite",
+      "reason": "複雜形式的平方差公式因式分解是基礎公式應用的延伸。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_a",
+      "to_id": "JH_ALG_FACTOR_L3_04_e",
+      "type": "prerequisite",
+      "reason": "和的平方公式的因式分解是應用乘法公式的基礎。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_04_e",
+      "type": "prerequisite",
+      "reason": "進行因式分解需要先理解因式分解的意義。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_a",
+      "to_id": "JH_ALG_FACTOR_L3_04_f",
+      "type": "prerequisite",
+      "reason": "差的平方公式的因式分解是應用乘法公式的基礎。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_02",
+      "to_id": "JH_ALG_FACTOR_L3_04_f",
+      "type": "prerequisite",
+      "reason": "進行因式分解需要先理解因式分解的意義。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_e",
+      "to_id": "JH_ALG_FACTOR_L3_04_g",
+      "type": "prerequisite",
+      "reason": "和或差的平方公式的應用是練習兩種公式的因式分解。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04_f",
+      "to_id": "JH_ALG_FACTOR_L3_04_g",
+      "type": "prerequisite",
+      "reason": "和或差的平方公式的應用是練習兩種公式的因式分解。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_a",
+      "to_id": "JH_ALG_FACTOR_L3_05_b",
+      "type": "prerequisite",
+      "reason": "二次項係數為1的十字交乘法是十字交乘法的基礎應用。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_b",
+      "to_id": "JH_ALG_FACTOR_L3_05_c",
+      "type": "prerequisite",
+      "reason": "常數項為正數時的十字交乘法是二次項係數為1的特殊情況。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_b",
+      "to_id": "JH_ALG_FACTOR_L3_05_d",
+      "type": "prerequisite",
+      "reason": "常數項為負數時的十字交乘法是二次項係數為1的特殊情況。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_a",
+      "to_id": "JH_ALG_FACTOR_L3_05_e",
+      "type": "prerequisite",
+      "reason": "二次項係數不為1的十字交乘法是十字交乘法的進階應用。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_e",
+      "to_id": "JH_ALG_FACTOR_L3_05_f",
+      "type": "prerequisite",
+      "reason": "二次項係數不為1且常數項為正數的十字交乘法是其特殊情況。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05_e",
+      "to_id": "JH_ALG_FACTOR_L3_05_g",
+      "type": "prerequisite",
+      "reason": "二次項係數不為1且常數項為負數的十字交乘法是其特殊情況。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06_a",
+      "type": "prerequisite",
+      "reason": "提出負數公因數再因式分解需要掌握提公因式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06_a",
+      "type": "prerequisite",
+      "reason": "提出負數公因數後常需搭配十字交乘法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06_b",
+      "type": "prerequisite",
+      "reason": "提出係數公因數再因式分解需要掌握提公因式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06_b",
+      "type": "prerequisite",
+      "reason": "提出係數公因數後常需搭配十字交乘法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06_c",
+      "type": "prerequisite",
+      "reason": "綜合運用需要掌握提公因式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_06_c",
+      "type": "prerequisite",
+      "reason": "綜合運用需要掌握乘法公式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06_d",
+      "type": "prerequisite",
+      "reason": "綜合運用需要掌握提公因式法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06_d",
+      "type": "prerequisite",
+      "reason": "綜合運用需要掌握十字交乘法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_03",
+      "to_id": "JH_ALG_FACTOR_L3_06_e",
+      "type": "prerequisite",
+      "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_04",
+      "to_id": "JH_ALG_FACTOR_L3_06_e",
+      "type": "prerequisite",
+      "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_05",
+      "to_id": "JH_ALG_FACTOR_L3_06_e",
+      "type": "prerequisite",
+      "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+    },
+    {
+      "from_id": "JH_ALG_FACTOR_L3_06_e",
+      "to_id": "JH_ALG_FACTOR_L3_06_f",
+      "type": "prerequisite",
+      "reason": "替換法是因式分解方法的進階應用技巧。"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 47,
+    "total_edges": 104,
+    "l3_count": 6,
+    "l4_count": 38,
+    "l4_avg_per_l3": 6.333333333333333
+  }
+}

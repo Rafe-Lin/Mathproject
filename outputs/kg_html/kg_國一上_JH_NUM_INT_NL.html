@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知識圖譜 - 國一上 (JH_NUM_INT_NL)</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-card strong {
+            display: block;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-card span {
+            font-size: 1.5rem;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        /* SVG 容器 */
+        #graph {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        /* 節點樣式 */
+        .node {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .node:hover {
+            stroke-width: 3px;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+        }
+
+        .node.L0 { fill: #E8F4F8; }
+        .node.L1 { fill: #B3D9E8; }
+        .node.L2 { fill: #7AB3D1; }
+        .node.L3 { fill: #4A7BA7; }
+        .node.L4 { fill: #1D3557; }
+
+        /* 連接線樣式 */
+        .link {
+            stroke: #999;
+            stroke-width: 1.5px;
+            stroke-opacity: 0.6;
+        }
+
+        .link.highlighted {
+            stroke: #ff6b6b;
+            stroke-width: 3px;
+            stroke-opacity: 1;
+        }
+
+        /* 文字 */
+        .node-label {
+            font-size: 11px;
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            fill: #fff;
+            font-weight: 500;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .legend {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            border: 1px solid #999;
+        }
+
+        .legend-item span {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 控制面板 */
+        .controls {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .controls button:hover {
+            background: #2980b9;
+        }
+
+        .controls button.active {
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>知識圖譜 - 國一上 (JH_NUM_INT_NL)</h1>
+            <p>生成於 2026-04-07</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <strong>節點總數</strong>
+                    <span id="total-nodes">107</span>
+                </div>
+                <div class="stat-card">
+                    <strong>連接總數</strong>
+                    <span id="total-links">106</span>
+                </div>
+                <div class="stat-card">
+                    <strong>難度分佈</strong>
+                    <span id="difficulty-summary"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="zoom-in">放大</button>
+            <button id="zoom-out">縮小</button>
+            <button id="reset-view">重置視圖</button>
+            <button id="toggle-labels">切換標籤</button>
+        </div>
+
+        <svg id="graph" width="100%" height="800"></svg>
+
+        <div class="legend">
+            <h3>難度分佈</h3>
+            <div id="difficulty-chart" style="display: flex; gap: 15px; flex-wrap: wrap;"></div>
+        </div>
+
+        <div class="legend">
+            <h3>階級說明 (Level Legend)</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #E8F4F8;"></div>
+                    <span>L0: 教育階段</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #B3D9E8;"></div>
+                    <span>L1: 領域</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #7AB3D1;"></div>
+                    <span>L2: 單元</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #4A7BA7;"></div>
+                    <span>L3: 主題</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box" style="background: #1D3557;"></div>
+                    <span>L4: 次主題</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // 圖譜資料
+        const graphData = {
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_INT_NL",
+      "level": "L2",
+      "name": "整數與數線",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01",
+      "level": "L3",
+      "name": "正負數的引入與意義",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解正負數在日常生活中表示相反意義的量的應用，並學習使用「+」和「-」符號來表示這些量。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_a",
+      "level": "L4",
+      "name": "以正負符號表示相反的量",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "學習如何使用「+」表示正向或增加，以及「-」表示負向或減少的量，例如東邊與西邊、進步與退步、賺與賠等。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_b",
+      "level": "L4",
+      "name": "正數、負數與0的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "理解正數是比0大的數，負數是比0小的數，並認識到0既不是正數也不是負數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_c",
+      "level": "L4",
+      "name": "性質符號與運算符號的區別",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "區分表示數的正負的「性質符號」（如+5、-2）和表示加減運算的「運算符號」（如2+3=5、8-1=7）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_d",
+      "level": "L4",
+      "name": "同號數與異號數的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "理解性質符號相同的數稱為同號數（如6和1.8），性質符號相異的數稱為異號數（如3和-6）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_e",
+      "level": "L4",
+      "name": "整數的分類",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "認識正整數（自然數）、負整數和0，並理解它們共同構成整數集合。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02",
+      "level": "L3",
+      "name": "數線的概念與構成要素",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解數線是將正負數標記在一條直線上的工具，並認識其構成要素：原點、正向與單位長。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_a",
+      "level": "L4",
+      "name": "數線的三要素：原點、正向、單位長",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "學習數線必須包含原點（代表0）、正向（通常向右）和單位長（長度要相同）這三個要素。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_b",
+      "level": "L4",
+      "name": "在數線上標記整數",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "學習以原點為起點，向右標記正整數，向左標記負整數，並確保單位長度一致。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03",
+      "level": "L3",
+      "name": "數線上的點與坐標",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習如何在數線上表示任意數，並理解點與坐標之間的一一對應關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_a",
+      "level": "L4",
+      "name": "由數線上的點找出坐標",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "根據數線上點的位置，判斷並寫出該點所代表的數（坐標），例如A(2)表示A點在原點右邊2個單位長處。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_b",
+      "level": "L4",
+      "name": "由整數坐標在數線上標記點",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "根據給定的整數坐標，在數線上正確標記出對應的點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_c",
+      "level": "L4",
+      "name": "由分數或小數坐標在數線上標記點",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "學習將單位長等分成更小的長度，以在數線上標記分數或小數點，例如將1單位長分成4等分來標記1/4。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04",
+      "level": "L3",
+      "name": "數的大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用數線上的位置關係來比較數的大小，並理解正數、負數和0之間的相對大小關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_a",
+      "level": "L4",
+      "name": "數線上的大小比較原則",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "理解數線上愈右邊的點所表示的數愈大，愈左邊的點所表示的數愈小。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_b",
+      "level": "L4",
+      "name": "正數、負數與0的大小關係",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "認識到0大於所有負數，所有正數大於0，因此「負數 < 0 < 正數」。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05",
+      "level": "L3",
+      "name": "兩數在數線上的位置關係",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習根據數線上兩點A(a)和B(b)的位置關係，判斷a與b的大小關係（a>b, a<b, a=b）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05_a",
+      "level": "L4",
+      "name": "兩數大小關係的三一律",
+      "parent_id": "JH_NUM_INT_NL_L3_05",
+      "description": "理解對於任意兩數a、b，其大小關係只有三種情況之一成立：a>b、a<b或a=b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06",
+      "level": "L3",
+      "name": "數的大小關係的遞移律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用遞移律來比較三個或更多數的大小關係，例如若a>b且b>c，則a>c。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_a",
+      "level": "L4",
+      "name": "遞移律：若a>b且b>c，則a>c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點在B點右邊且B點在C點右邊，則A點一定在C點右邊的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_b",
+      "level": "L4",
+      "name": "遞移律：若a<b且b<c，則a<c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點在B點左邊且B點在C點左邊，則A點一定在C點左邊的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_c",
+      "level": "L4",
+      "name": "遞移律：若a=b且b=c，則a=c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點與B點重合且B點與C點重合，則A點一定與C點重合的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07",
+      "level": "L3",
+      "name": "相反數的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解相反數的定義為數線上位於原點左右兩側且與原點距離相等的兩個數，並學習其性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_a",
+      "level": "L4",
+      "name": "相反數的數線定義",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "認識相反數是數線上與原點距離相等且位於原點左右兩側的兩個數，例如4和-4互為相反數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_b",
+      "level": "L4",
+      "name": "相反數的性質：數字部分相同，性質符號不同",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "理解除了0以外，相反數的數字部分相同，但性質符號不同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_c",
+      "level": "L4",
+      "name": "相反數的代數表示法",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "若a是不為0的任意數，則-a是a的相反數，且-(-a)=a。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_d",
+      "level": "L4",
+      "name": "0的相反數是0",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "認識到0的相反數是0。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08",
+      "level": "L3",
+      "name": "絕對值的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解絕對值的定義為數線上點與原點的距離，並學習其性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_a",
+      "level": "L4",
+      "name": "絕對值的定義：點與原點的距離",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "認識在數線上，點A(a)與原點的距離稱為a的絕對值，以|a|表示，例如|4|=4，|-5|=5，|0|=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_b",
+      "level": "L4",
+      "name": "絕對值恆為非負數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解一個數的絕對值一定是0或正數，不可能為負數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_c",
+      "level": "L4",
+      "name": "相反數的絕對值相等",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解互為相反數的兩數，其絕對值相等，即|a|=|-a|。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_d",
+      "level": "L4",
+      "name": "負數大小與絕對值的關係",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解負數的絕對值愈大，其值愈小，例如|-9| > |-3| 但 -9 < -3。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_e",
+      "level": "L4",
+      "name": "由絕對值求原數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "根據|a|=k（k>0），判斷a可能為k或-k；若|a|=0，則a=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_f",
+      "level": "L4",
+      "name": "找出絕對值小於某數的所有整數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "利用數線概念，找出絕對值小於某正數的所有整數，例如絕對值小於4的整數為-3, -2, -1, 0, 1, 2, 3。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09",
+      "level": "L3",
+      "name": "整數加法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相加與異號數相加的運算規則，並能應用數線進行加法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_a",
+      "level": "L4",
+      "name": "同號數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個同號數相加時，其結果等於兩數的絕對值相加，性質符號與原來的兩數相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_b",
+      "level": "L4",
+      "name": "異號數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個異號數相加時，其結果等於兩數的絕對值相減（大減小），性質符號與絕對值較大的數相同。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_c",
+      "level": "L4",
+      "name": "整數與0相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解任何整數a與0相加，其值不變，即a+0=a；0+a=a。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_d",
+      "level": "L4",
+      "name": "相反數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個互為相反數的整數相加時，它們的和為0，即a+(-a)=0；(-a)+a=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10",
+      "level": "L3",
+      "name": "整數加法的交換律與結合律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數加法的交換律和結合律，並應用這些性質簡化計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_a",
+      "level": "L4",
+      "name": "加法交換律：a+b=b+a",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解計算兩個整數相加時，調換兩數的順序，相加的結果不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_b",
+      "level": "L4",
+      "name": "加法結合律：(a+b)+c=a+(b+c)",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解三個整數相加時，先算前面兩個數或先算後面兩個數，結果都相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11",
+      "level": "L3",
+      "name": "整數減法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習將整數減法轉換為加法運算，即減去一個數等於加上這個數的相反數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_a",
+      "level": "L4",
+      "name": "減去一個數等於加上這個數的相反數",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "理解對於任意兩個整數a、b而言，a-b=a+(-b)，並應用此規則進行減法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_b",
+      "level": "L4",
+      "name": "溫度變化在整數減法中的應用",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "利用「最後溫度 - 原來溫度 = 溫度變化」的概念，應用整數減法計算溫度變化，包括正數減負數、負數減正數和負數減負數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12",
+      "level": "L3",
+      "name": "整數加減混合運算",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習處理整數加減混合運算時，將減法轉換為加法，並利用加法的交換律和結合律簡化計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_a",
+      "level": "L4",
+      "name": "加減混合運算的簡化技巧",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "將減法轉換為加法後，重新排列算式，利用加法交換律和結合律，使計算更方便。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_b",
+      "level": "L4",
+      "name": "含絕對值的加減混合運算",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "學習在含有絕對值的算式中，優先處理絕對值內的運算，再進行其他加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13",
+      "level": "L3",
+      "name": "去括號規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習在整數加減運算中，如何正確地去掉括號，特別是括號前有「+」或「-」號時的規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_a",
+      "level": "L4",
+      "name": "括號前為「-」號的去括號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解若括號前面是「-」號，去括號後，原來括號內的「+」變「-」，「-」變「+」，例如-(a+b)=-a-b，-(a-b)=-a+b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_b",
+      "level": "L4",
+      "name": "括號前為「+」號的去括號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解若括號前面是「+」號，去括號後，原來括號內的「+」、「-」不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14",
+      "level": "L3",
+      "name": "數線上兩點的距離",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用絕對值計算數線上兩點之間的距離，並理解其與兩數之差的絕對值的關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_a",
+      "level": "L4",
+      "name": "數線上兩點距離公式：|a-b|",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "理解數線上A(a)、B(b)兩點的距離AB可記作|a-b|或|b-a|，即大數減小數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_b",
+      "level": "L4",
+      "name": "已知距離求未知坐標",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "根據數線上兩點的距離和其中一點的坐標，找出另一點的可能坐標（通常有兩個解，分別在已知點的左右兩側）。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15",
+      "level": "L3",
+      "name": "數線上線段的中點",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習計算數線上兩點之間的中點坐標，並理解中點到兩端點的距離相等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15_a",
+      "level": "L4",
+      "name": "中點坐標的計算",
+      "parent_id": "JH_NUM_INT_NL_L3_15",
+      "description": "理解若C(c)是A(a)和B(b)的中點，則c=(a+b)/2，並能應用此公式計算中點坐標。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16",
+      "level": "L3",
+      "name": "整數乘法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相乘與異號數相乘的運算規則，並理解其積的性質符號與數字部分的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_a",
+      "level": "L4",
+      "name": "正數乘以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解正數乘以正數，其積為正數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_b",
+      "level": "L4",
+      "name": "正數乘以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解正數乘以負數，其積為負數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_c",
+      "level": "L4",
+      "name": "負數乘以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解負數乘以正數，其積為負數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_d",
+      "level": "L4",
+      "name": "負數乘以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解負數乘以負數，其積為正數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_e",
+      "level": "L4",
+      "name": "整數與0相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與0的乘積都是0，即a×0=0×a=0。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_f",
+      "level": "L4",
+      "name": "整數與1相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與1的乘積，等於自己本身，即a×1=1×a=a。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_g",
+      "level": "L4",
+      "name": "整數與-1相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與-1的乘積，等於這個數的相反數，即a×(-1)=(-1)×a=-a。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17",
+      "level": "L3",
+      "name": "整數乘法的交換律與結合律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數乘法的交換律和結合律，並應用這些性質調整相乘順序以簡化計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_a",
+      "level": "L4",
+      "name": "乘法交換律：a×b=b×a",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解計算兩個整數相乘時，調換兩數的順序，乘積不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_b",
+      "level": "L4",
+      "name": "乘法結合律：(a×b)×c=a×(b×c)",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解三個整數相乘時，先算前面兩個數或先算後面兩個數，結果都相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_c",
+      "level": "L4",
+      "name": "多個負數連乘積的符號判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解在計算多個不為0的整數相乘時，若有偶數個負數相乘，則其乘積為正數；若有奇數個負數相乘，則其乘積為負數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18",
+      "level": "L3",
+      "name": "整數除法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相除與異號數相除的運算規則，並理解其商的性質符號與數字部分的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_a",
+      "level": "L4",
+      "name": "負數除以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解負數除以正數，其商數為負數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_b",
+      "level": "L4",
+      "name": "正數除以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解正數除以負數，其商數為負數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_c",
+      "level": "L4",
+      "name": "負數除以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解負數除以負數，其商數為正數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_d",
+      "level": "L4",
+      "name": "0除以不為0的整數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解0除以任何一個不為0的整數，其結果都是0，即0÷a=0（a≠0）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19",
+      "level": "L3",
+      "name": "整數四則運算順序",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數四則運算的優先順序，包括括號、絕對值、乘除、加減，並能應用這些規則進行混合運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_a",
+      "level": "L4",
+      "name": "基本四則運算順序",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "理解若只有加減或只有乘除運算時，由左而右計算；若同時有加、減、乘、除運算時，先算乘除再算加減。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_b",
+      "level": "L4",
+      "name": "含括號的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習若有括號時，括號內的運算先算，或利用去括號規則去括號後再算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_c",
+      "level": "L4",
+      "name": "含絕對值的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習若算式中有絕對值，應先處理絕對值，再做其他的運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_d",
+      "level": "L4",
+      "name": "應用問題的整數四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "將實際情境問題轉換為整數四則運算算式，並正確計算結果。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_e",
+      "level": "L4",
+      "name": "含乘方的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習在含有乘方的四則運算中，優先計算乘方，再依序進行乘除、加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20",
+      "level": "L3",
+      "name": "乘法對加減法的分配律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習乘法對加法和減法的分配律，並應用這些性質簡化計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_a",
+      "level": "L4",
+      "name": "乘法對加法的分配律：a×(b+c)=a×b+a×c",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解並應用乘法對加法的分配律，即a×(b+c)=a×b+a×c，以及c×(a+b)=c×a+c×b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_b",
+      "level": "L4",
+      "name": "乘法對減法的分配律：a×(b-c)=a×b-a×c",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解並應用乘法對減法的分配律，即a×(b-c)=a×b-a×c，以及c×(a-b)=c×a-c×b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_c",
+      "level": "L4",
+      "name": "除法不具分配律",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解除法不滿足分配律，即a÷(b+c)≠a÷b+a÷c。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21",
+      "level": "L3",
+      "name": "乘方的意義與表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解乘方是相同數連乘的簡記方式，並認識底數、指數的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_a",
+      "level": "L4",
+      "name": "乘方的定義：底數與指數",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解a^n表示n個a相乘，其中a為底數，n為指數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_b",
+      "level": "L4",
+      "name": "指數為1的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當指數為1時，指數1通常省略不寫，例如3^1習慣上寫成3。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_c",
+      "level": "L4",
+      "name": "底數為0的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當底數為0時，不管幾個0相乘，其值都是0，即0^n=0（n為正整數）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_d",
+      "level": "L4",
+      "name": "底數為1的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當底數為1時，不管幾個1相乘，其值都是1，即1^n=1（n為正整數）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_e",
+      "level": "L4",
+      "name": "整數的偶數次方計算",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "學習計算整數的偶數次方，特別是負數的偶數次方為正數，並區分(-a)^n與-a^n的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_f",
+      "level": "L4",
+      "name": "整數的奇數次方計算",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "學習計算整數的奇數次方，特別是負數的奇數次方為負數，並區分(-a)^n與-a^n的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_g",
+      "level": "L4",
+      "name": "負數乘方的符號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解負數的偶數次方是正數，負數的奇數次方是負數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22",
+      "level": "L3",
+      "name": "10的次方與其表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習10的正整數、負整數和0次方表示法，並理解其與數值大小的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_a",
+      "level": "L4",
+      "name": "10的正整數次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10^n（n為正整數）表示1後面有n個0的數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_b",
+      "level": "L4",
+      "name": "10的0次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10的0次方等於1，即10^0=1。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_c",
+      "level": "L4",
+      "name": "10的負整數次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10^-n（n為正整數）表示1/10^n，即小數點後第n位為1的數，例如10^-1=0.1，10^-2=0.01。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23",
+      "level": "L3",
+      "name": "科學記號的意義與表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解科學記號是表示很大或很小正數的簡潔方式，並學習其標準表示形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_a",
+      "level": "L4",
+      "name": "科學記號的標準形式：a×10^n",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解將一個正數表示成a×10^n的形式，其中1≤a<10，且n為整數，這種表示法稱為科學記號。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_b",
+      "level": "L4",
+      "name": "大數的科學記號表示",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "學習將很大的正數轉換為科學記號a×10^n的形式，其中n為正整數，例如930,000,000 = 9.3×10^8。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_c",
+      "level": "L4",
+      "name": "小數的科學記號表示",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "學習將很小的正數轉換為科學記號a×10^n的形式，其中n為負整數，例如0.00000431 = 4.31×10^-6。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_d",
+      "level": "L4",
+      "name": "科學記號表示大數的位數判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解科學記號a×10^n（n為正整數）乘開後，整數部分是(n+1)位數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_e",
+      "level": "L4",
+      "name": "科學記號表示小數的小數點後第n位判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解科學記號a×10^-n（n為正整數）乘開後，小數點後第n位開始出現不為0的數字。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24",
+      "level": "L3",
+      "name": "科學記號的大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習比較以科學記號表示的數的大小，包括指數相同和指數不同兩種情況。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24_a",
+      "level": "L4",
+      "name": "指數不同時的科學記號大小比較",
+      "parent_id": "JH_NUM_INT_NL_L3_24",
+      "description": "理解當兩個數以科學記號表示時，指數愈大者，其數值愈大。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24_b",
+      "level": "L4",
+      "name": "指數相同時的科學記號大小比較",
+      "parent_id": "JH_NUM_INT_NL_L3_24",
+      "description": "理解當兩個數以科學記號表示且指數相同時，比較其a值，a值愈大者，其數值愈大。",
+      "difficulty": 3
+    }
+  ],
+  "links": [
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_04"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_22"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_16"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_20"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_21"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_03"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_20",
+      "target": "JH_NUM_INT_NL_L3_20_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_22",
+      "target": "JH_NUM_INT_NL_L3_22_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_04",
+      "target": "JH_NUM_INT_NL_L3_04_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_14"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_22",
+      "target": "JH_NUM_INT_NL_L3_22_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_11",
+      "target": "JH_NUM_INT_NL_L3_11_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_18"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_19",
+      "target": "JH_NUM_INT_NL_L3_19_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_23",
+      "target": "JH_NUM_INT_NL_L3_23_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_17",
+      "target": "JH_NUM_INT_NL_L3_17_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_07"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_03",
+      "target": "JH_NUM_INT_NL_L3_03_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_f"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_08"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_17",
+      "target": "JH_NUM_INT_NL_L3_17_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_19",
+      "target": "JH_NUM_INT_NL_L3_19_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_01"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_b"
+    },
+    {
+      "source": "L1_JH_NUM",
+      "target": "JH_NUM_INT_NL"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_04",
+      "target": "JH_NUM_INT_NL_L3_04_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_14",
+      "target": "JH_NUM_INT_NL_L3_14_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_11",
+      "target": "JH_NUM_INT_NL_L3_11_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_18",
+      "target": "JH_NUM_INT_NL_L3_18_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_20",
+      "target": "JH_NUM_INT_NL_L3_20_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_03",
+      "target": "JH_NUM_INT_NL_L3_03_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_10",
+      "target": "JH_NUM_INT_NL_L3_10_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_g"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_20",
+      "target": "JH_NUM_INT_NL_L3_20_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_24",
+      "target": "JH_NUM_INT_NL_L3_24_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_19",
+      "target": "JH_NUM_INT_NL_L3_19_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_f"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_19",
+      "target": "JH_NUM_INT_NL_L3_19_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_11"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_15",
+      "target": "JH_NUM_INT_NL_L3_15_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_17"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_12"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_08",
+      "target": "JH_NUM_INT_NL_L3_08_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_17",
+      "target": "JH_NUM_INT_NL_L3_17_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_c"
+    },
+    {
+      "source": "L0_JH",
+      "target": "L1_JH_NUM"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_13"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_23",
+      "target": "JH_NUM_INT_NL_L3_23_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_g"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_23"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_15"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_24"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_14",
+      "target": "JH_NUM_INT_NL_L3_14_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_19"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_23",
+      "target": "JH_NUM_INT_NL_L3_23_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_24",
+      "target": "JH_NUM_INT_NL_L3_24_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_23",
+      "target": "JH_NUM_INT_NL_L3_23_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_09"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_f"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_18",
+      "target": "JH_NUM_INT_NL_L3_18_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_18",
+      "target": "JH_NUM_INT_NL_L3_18_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_21",
+      "target": "JH_NUM_INT_NL_L3_21_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_02"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_02",
+      "target": "JH_NUM_INT_NL_L3_02_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_12",
+      "target": "JH_NUM_INT_NL_L3_12_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_13",
+      "target": "JH_NUM_INT_NL_L3_13_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_03",
+      "target": "JH_NUM_INT_NL_L3_03_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_02",
+      "target": "JH_NUM_INT_NL_L3_02_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_19",
+      "target": "JH_NUM_INT_NL_L3_19_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_18",
+      "target": "JH_NUM_INT_NL_L3_18_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_16",
+      "target": "JH_NUM_INT_NL_L3_16_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_05",
+      "target": "JH_NUM_INT_NL_L3_05_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_d"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_07",
+      "target": "JH_NUM_INT_NL_L3_07_c"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_06",
+      "target": "JH_NUM_INT_NL_L3_06_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_22",
+      "target": "JH_NUM_INT_NL_L3_22_b"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_06"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_23",
+      "target": "JH_NUM_INT_NL_L3_23_e"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_01",
+      "target": "JH_NUM_INT_NL_L3_01_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_10"
+    },
+    {
+      "source": "JH_NUM_INT_NL_L3_09",
+      "target": "JH_NUM_INT_NL_L3_09_a"
+    },
+    {
+      "source": "JH_NUM_INT_NL",
+      "target": "JH_NUM_INT_NL_L3_05"
+    }
+  ]
+};
+        const difficultyDist = {
+  "1": 17,
+  "2": 55,
+  "3": 31,
+  "4": 1
+};
+
+        // 初始化
+        const width = document.getElementById('graph').clientWidth || 1600;
+        const height = 800;
+
+        // 創建 SVG
+        const svg = d3.select('#graph')
+            .attr('width', width)
+            .attr('height', height);
+
+        const g = svg.append('g');
+
+        // 創建力導向圖
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force('link', d3.forceLink(graphData.links)
+                .id(d => d.id)
+                .distance(50)
+                .strength(0.5))
+            .force('charge', d3.forceManyBody().strength(-100))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collide', d3.forceCollide(30));
+
+        // 繪製連接線
+        const links = g.selectAll('.link')
+            .data(graphData.links)
+            .enter()
+            .append('line')
+            .attr('class', 'link')
+            .attr('stroke', d => {
+                const sourceLevel = graphData.nodes.find(n => n.id === d.source.id)?.level;
+                const targetLevel = graphData.nodes.find(n => n.id === d.target.id)?.level;
+                return '#ccc';
+            });
+
+        // 繪製節點
+        const nodes = g.selectAll('.node')
+            .data(graphData.nodes)
+            .enter()
+            .append('circle')
+            .attr('class', d => 'node ' + d.level)
+            .attr('r', d => {
+                const sizeMap = {'L0': 25, 'L1': 22, 'L2': 20, 'L3': 18, 'L4': 15};
+                return sizeMap[d.level] || 20;
+            })
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended))
+            .on('mouseover', showTooltip)
+            .on('mouseout', hideTooltip);
+
+        // 添加標籤
+        const labels = g.selectAll('.node-label')
+            .data(graphData.nodes)
+            .enter()
+            .append('text')
+            .attr('class', 'node-label')
+            .attr('dy', '0.3em')
+            .text(d => d.name)
+            .style('font-size', d => {
+                const sizeMap = {'L0': '10px', 'L1': '9px', 'L2': '8px', 'L3': '7px', 'L4': '6px'};
+                return sizeMap[d.level] || '8px';
+            });
+
+        // Tooltip
+        const tooltip = document.getElementById('tooltip');
+
+        function showTooltip(event, d) {
+            tooltip.innerHTML = `
+                <strong>${d.name}</strong><br/>
+                ID: ${d.id}<br/>
+                Level: ${d.level}
+                ${d.description ? '<br/><br/>' + d.description : ''}
+                ${d.difficulty ? '<br/><br/>難度: ' + d.difficulty : ''}
+            `;
+            tooltip.classList.add('visible');
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        // 拖拽事件
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // 更新位置
+        simulation.on('tick', () => {
+            links
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y);
+
+            nodes
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y);
+
+            labels
+                .attr('x', d => d.x)
+                .attr('y', d => d.y);
+        });
+
+        // 縮放控制
+        let currentScale = 1;
+        
+        document.getElementById('zoom-in').addEventListener('click', () => {
+            currentScale *= 1.2;
+            g.attr('transform', `scale(${currentScale})`);
+        });
+
+        document.getElementById('zoom-out').addEventListener('click', () => {
+            currentScale /= 1.2;
+            g.attr('transform', `scale(${currentScale})`);
+        });
+
+        document.getElementById('reset-view').addEventListener('click', () => {
+            currentScale = 1;
+            g.attr('transform', 'scale(1)');
+        });
+
+        // 標籤切換
+        let labelsVisible = true;
+        document.getElementById('toggle-labels').addEventListener('click', function() {
+            labelsVisible = !labelsVisible;
+            labels.style('opacity', labelsVisible ? 1 : 0);
+            this.classList.toggle('active', labelsVisible);
+        });
+
+        // 生成難度分佈圖表
+        const diffChart = document.getElementById('difficulty-chart');
+        const diffSummary = document.getElementById('difficulty-summary');
+        let diffSummaryText = '';
+        
+        for (const [difficulty, count] of Object.entries(difficultyDist).sort()) {
+            const bar = document.createElement('div');
+            bar.style.display = 'flex';
+            bar.style.alignItems = 'center';
+            bar.style.gap = '8px';
+            bar.innerHTML = `
+                <span style="min-width: 40px;">難度 ${difficulty}:</span>
+                <div style="background: #3498db; height: 20px; width: ${Math.max(count * 5, 50)}px; border-radius: 3px;"></div>
+                <span>${count} 個</span>
+            `;
+            diffChart.appendChild(bar);
+            diffSummaryText += (diffSummaryText ? ', ' : '') + `難度${difficulty}: ${count}`;
+        }
+        diffSummary.textContent = diffSummaryText;
+    </script>
+</body>
+</html>

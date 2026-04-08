@@ -1,0 +1,659 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數", // (若是第六章則改為 幾何與測量)
+    "l2_unit": "二元一次方程式的圖形",
+    "l2_unit_id": "JH_ALG_LINEAR2_GRAPH"
+  },
+  "nodes": [
+    {
+      "id": "L0_UNK",
+      "level": "L0",
+      "name": "JH",
+      "parent_id": null
+    },
+    {
+      "id": "L1_UNK_UNK",
+      "level": "L1",
+      "name": "ALG",
+      "parent_id": "L0_UNK"
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH",
+      "level": "L2",
+      "name": "二元一次方程式的圖形",
+      "parent_id": "L1_UNK_UNK"
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "level": "L3",
+      "name": "二元一次方程式的圖形概念",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "理解二元一次方程式的解與坐標平面上點的對應關係，以及圖形的定義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_01_a",
+      "level": "L4",
+      "name": "二元一次方程式的解與數對表示",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "description": "理解二元一次方程式的解可以表示為數對(x,y)的形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_01_b",
+      "level": "L4",
+      "name": "數對作為坐標點的意義",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "description": "理解二元一次方程式的解數對在坐標平面上對應一個點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_01_c",
+      "level": "L4",
+      "name": "二元一次方程式的圖形定義",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "description": "理解二元一次方程式所有解在坐標平面上形成的圖形稱為該方程式的圖形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_01_d",
+      "level": "L4",
+      "name": "笛卡兒坐標平面由來的傳說",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "description": "了解笛卡兒坐標平面發展的歷史背景。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "level": "L3",
+      "name": "描繪二元一次方程式的解",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習如何找出二元一次方程式的解並將其描繪在坐標平面上。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_02_a",
+      "level": "L4",
+      "name": "找出二元一次方程式的解(數對)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "description": "透過代入x或y值，找出二元一次方程式的對應解，並以數對表示。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_02_b",
+      "level": "L4",
+      "name": "將解的數對描繪在坐標平面上",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "description": "將找出的數對解在直角坐標平面上標示出來。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_02_c",
+      "level": "L4",
+      "name": "觀察描繪點的共線性",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "description": "觀察描繪出的點是否落在同一條直線上。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_02_d",
+      "level": "L4",
+      "name": "驗證二元一次方程式的圖形為一條直線",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "description": "透過描繪多組解，驗證二元一次方程式的圖形為一條直線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "level": "L3",
+      "name": "畫出二元一次方程式的圖形",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習利用兩點畫出二元一次方程式的直線圖形，並分析其與坐標軸的交點及不通過的象限。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03_a",
+      "level": "L4",
+      "name": "找出任意兩組解",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "description": "為二元一次方程式找出任意兩組解，通常選擇整數解以方便描點。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03_b",
+      "level": "L4",
+      "name": "描繪兩點並畫直線",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "description": "將找出的兩組解描繪在坐標平面上，並通過這兩點畫一條直線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03_c",
+      "level": "L4",
+      "name": "判斷圖形不通過的象限",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "description": "根據畫出的圖形，判斷該直線不通過哪一個象限。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03_d",
+      "level": "L4",
+      "name": "找出圖形與x軸的交點坐標(y=0)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "description": "將y=0代入方程式，求出圖形與x軸的交點坐標。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_03_e",
+      "level": "L4",
+      "name": "找出圖形與y軸的交點坐標(x=0)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "description": "將x=0代入方程式，求出圖形與y軸的交點坐標。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "level": "L3",
+      "name": "畫出特殊形式二元一次方程式的圖形(y=m 或 x=n)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習畫出y=m (水平線) 和 x=n (鉛垂線) 形式的二元一次方程式圖形。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_04_a",
+      "level": "L4",
+      "name": "畫出 y=m 形式的圖形(水平線)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "description": "理解並畫出y=m形式的方程式圖形，其為一條水平線，與y軸交於(0,m)。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_04_b",
+      "level": "L4",
+      "name": "畫出 x=n 形式的圖形(鉛垂線)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "description": "理解並畫出x=n形式的方程式圖形，其為一條鉛垂線，與x軸交於(n,0)。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_04_c",
+      "level": "L4",
+      "name": "y=0 的圖形為x軸",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "description": "理解方程式y=0的圖形即為x軸。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_04_d",
+      "level": "L4",
+      "name": "x=0 的圖形為y軸",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "description": "理解方程式x=0的圖形即為y軸。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "level": "L3",
+      "name": "判斷點是否在二元一次方程式圖形上",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習判斷給定點是否在方程式圖形上，並利用此特性求解未知數或判斷是否通過原點。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_05_a",
+      "level": "L4",
+      "name": "將點坐標代入方程式驗證",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "description": "將點的x,y坐標代入二元一次方程式，若等號成立則點在圖形上。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_05_b",
+      "level": "L4",
+      "name": "根據已知點求方程式中的未知係數",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "description": "若已知點在方程式圖形上，將點坐標代入方程式可解出方程式中的未知係數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_05_c",
+      "level": "L4",
+      "name": "判斷圖形是否通過原點",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "description": "將(0,0)代入方程式，判斷圖形是否通過原點。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_05_d",
+      "level": "L4",
+      "name": "通過原點的方程式特性(c=0)",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "description": "理解若二元一次方程式ax+by=c的圖形通過原點，則c=0。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "level": "L3",
+      "name": "找出通過兩點的二元一次方程式",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習利用兩點坐標找出其所通過的二元一次方程式。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_06_a",
+      "level": "L4",
+      "name": "將兩點坐標代入方程式形成聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "description": "將兩點的x,y坐標分別代入ax+by=c形式的方程式，得到一個二元一次聯立方程式。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_06_b",
+      "level": "L4",
+      "name": "解聯立方程式求未知係數",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "description": "解由兩點坐標代入形成的聯立方程式，求出方程式中的未知係數a和b。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_06_c",
+      "level": "L4",
+      "name": "判斷第三點是否在圖形上",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "description": "在求出方程式後，將第三點坐標代入方程式，判斷其是否在圖形上。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "level": "L3",
+      "name": "二元一次聯立方程式的幾何意義",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "理解二元一次聯立方程式的解在幾何上代表兩條直線的交點。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_07_a",
+      "level": "L4",
+      "name": "聯立方程式的解為兩直線的交點坐標",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "description": "理解二元一次聯立方程式的唯一解對應於其圖形（兩條直線）的唯一交點坐標。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_07_b",
+      "level": "L4",
+      "name": "兩直線交點坐標滿足兩個方程式",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "description": "理解交點坐標同時滿足聯立方程式中的兩個方程式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "level": "L3",
+      "name": "找出兩直線的交點坐標",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "學習透過圖形或代數方法找出兩個二元一次方程式圖形的交點坐標。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_08_a",
+      "level": "L4",
+      "name": "分別畫出兩個二元一次方程式的圖形",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "description": "根據方程式找出兩點並畫出各自的直線圖形。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_08_b",
+      "level": "L4",
+      "name": "觀察圖形找出交點坐標",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "description": "透過觀察兩直線圖形的交點位置，讀取其坐標。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_08_c",
+      "level": "L4",
+      "name": "解聯立方程式求交點坐標",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "description": "透過代入消去法或加減消去法解聯立方程式，求出精確的交點坐標。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "level": "L3",
+      "name": "二元一次方程式圖形的應用",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH",
+      "description": "應用二元一次方程式圖形的概念解決實際問題，例如計算圖形與坐標軸圍成的面積。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_09_a",
+      "level": "L4",
+      "name": "計算圖形與x軸圍成的區域面積",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "description": "利用直線與x軸的交點以及兩直線的交點，計算圍成的三角形面積。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_GRAPH_L3_09_b",
+      "level": "L4",
+      "name": "計算圖形與y軸圍成的區域面積",
+      "parent_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "description": "利用直線與y軸的交點以及兩直線的交點，計算圍成的三角形面積。",
+      "difficulty": 5
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_UNK",
+      "to_id": "L1_UNK_UNK",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_UNK_UNK",
+      "to_id": "JH_ALG_LINEAR2_GRAPH",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_04",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_GRAPH_L3_08",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "type": "prerequisite",
+      "reason": "理解二元一次方程式的解是圖形概念的基礎"
+    },
+    {
+      "from_id": "JH_ALG_COORD",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_01",
+      "type": "prerequisite",
+      "reason": "直角坐標平面是描繪圖形的基礎"
+    },
+    {
+      "from_id": "JH_ALG_COORD",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_02",
+      "type": "prerequisite",
+      "reason": "需要在坐標平面上描繪點"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "type": "prerequisite",
+      "reason": "需要解方程式以找出點"
+    },
+    {
+      "from_id": "JH_ALG_COORD",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_03",
+      "type": "prerequisite",
+      "reason": "需要在坐標平面上畫線"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_05",
+      "type": "prerequisite",
+      "reason": "需要代入方程式進行驗證或求解"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_06",
+      "type": "prerequisite",
+      "reason": "需要解聯立方程式以找出方程式係數"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_07",
+      "type": "prerequisite",
+      "reason": "理解聯立方程式的解是幾何意義的基礎"
+    },
+    {
+      "from_id": "JH_GEO_BASIC",
+      "to_id": "JH_ALG_LINEAR2_GRAPH_L3_09",
+      "type": "prerequisite",
+      "reason": "計算面積需要幾何基礎知識"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 43,
+    "total_edges": 59
+  }
+}

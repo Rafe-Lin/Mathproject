@@ -1,0 +1,460 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "第4章_一元二次方程式",
+    "l2_unit_id": "JH_ALG_QUAD"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_QUAD",
+      "level": "L2",
+      "name": "第4章_一元二次方程式",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01",
+      "level": "L3",
+      "name": "因式分解解一元二次方程式",
+      "parent_id": "JH_ALG_QUAD",
+      "description": "學習一元二次方程式的定義、解的意義，並利用因式分解法（提公因式、乘法公式、十字交乘法）求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01_a",
+      "level": "L4",
+      "name": "一元二次方程式的意義",
+      "parent_id": "JH_ALG_QUAD_L3_01",
+      "description": "認識一元二次方程式的定義，並判斷一個數是否為方程式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01_b",
+      "level": "L4",
+      "name": "利用提公因式解方程式",
+      "parent_id": "JH_ALG_QUAD_L3_01",
+      "description": "學習當A×B=0時，則A=0或B=0的性質，並應用提公因式法解一元二次方程式，包含先移項再提公因式的情境。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01_c",
+      "level": "L4",
+      "name": "利用十字交乘法解方程式",
+      "parent_id": "JH_ALG_QUAD_L3_01",
+      "description": "應用十字交乘法將一元二次方程式因式分解後求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01_d",
+      "level": "L4",
+      "name": "利用乘法公式解方程式",
+      "parent_id": "JH_ALG_QUAD_L3_01",
+      "description": "應用平方差公式或和/差的平方公式將一元二次方程式因式分解後求解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_01_e",
+      "level": "L4",
+      "name": "已知一根求另一根與係數",
+      "parent_id": "JH_ALG_QUAD_L3_01",
+      "description": "根據一元二次方程式的已知解，代入方程式求出未知係數或另一根。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02",
+      "level": "L3",
+      "name": "配方法與公式解",
+      "parent_id": "JH_ALG_QUAD",
+      "description": "學習利用平方根概念、配方法和公式解來求解一元二次方程式，並理解判別式的意義。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_a",
+      "level": "L4",
+      "name": "利用平方根概念解方程式",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "學習利用平方根概念解形如x²=k或(ax+b)²=c的一元二次方程式，包含先移項的情境。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_b",
+      "level": "L4",
+      "name": "配成完全平方式",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "認識完全平方式的定義，並學習如何將x²+px配成完全平方式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_c",
+      "level": "L4",
+      "name": "利用配方法解方程式",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "學習利用配方法求解一元二次方程式，包含二次項係數為1或不為1，以及常數項絕對值較大的情境。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_d",
+      "level": "L4",
+      "name": "一元二次方程式的公式解",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "學習公式解的推導過程，並應用公式解求解一元二次方程式，包含二次項係數為負數的情境。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_e",
+      "level": "L4",
+      "name": "判別式與方程式解的情形",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "學習判別式b²-4ac的意義，並利用其值判斷一元二次方程式解的種類（兩個相異根、重根、無解）。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_02_f",
+      "level": "L4",
+      "name": "已知方程式解的情形應用",
+      "parent_id": "JH_ALG_QUAD_L3_02",
+      "description": "應用判別式判斷方程式解的種類，進而求解未知係數。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03",
+      "level": "L3",
+      "name": "應用問題",
+      "parent_id": "JH_ALG_QUAD",
+      "description": "學習解一元二次方程式應用問題的步驟，並應用於各種實際情境。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03_a",
+      "level": "L4",
+      "name": "解應用問題的步驟",
+      "parent_id": "JH_ALG_QUAD_L3_03",
+      "description": "學習解一元二次方程式應用問題的四個步驟：設未知數、列方程式、解方程式、檢查並寫答案。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03_b",
+      "level": "L4",
+      "name": "數字與年齡問題",
+      "parent_id": "JH_ALG_QUAD_L3_03",
+      "description": "應用一元二次方程式解決涉及數字關係或年齡的應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03_c",
+      "level": "L4",
+      "name": "價格與數量問題",
+      "parent_id": "JH_ALG_QUAD_L3_03",
+      "description": "應用一元二次方程式解決涉及商品價格、數量與總收入的應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03_d",
+      "level": "L4",
+      "name": "面積與幾何問題",
+      "parent_id": "JH_ALG_QUAD_L3_03",
+      "description": "應用一元二次方程式解決涉及幾何圖形面積或邊長的應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_QUAD_L3_03_e",
+      "level": "L4",
+      "name": "解與情境的合理性",
+      "parent_id": "JH_ALG_QUAD_L3_03",
+      "description": "學習在應用問題中，檢查求出的解是否符合實際情境的合理性，並捨棄不合理的解。",
+      "difficulty": 5
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_QUAD",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD",
+      "to_id": "JH_ALG_QUAD_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD",
+      "to_id": "JH_ALG_QUAD_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_02_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD",
+      "to_id": "JH_ALG_QUAD_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03",
+      "to_id": "JH_ALG_QUAD_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03",
+      "to_id": "JH_ALG_QUAD_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03",
+      "to_id": "JH_ALG_QUAD_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03",
+      "to_id": "JH_ALG_QUAD_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03",
+      "to_id": "JH_ALG_QUAD_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_a",
+      "to_id": "JH_ALG_QUAD_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_b",
+      "to_id": "JH_ALG_QUAD_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_c",
+      "to_id": "JH_ALG_QUAD_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_d",
+      "to_id": "JH_ALG_QUAD_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_a",
+      "to_id": "JH_ALG_QUAD_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_b",
+      "to_id": "JH_ALG_QUAD_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_c",
+      "to_id": "JH_ALG_QUAD_L3_02_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_d",
+      "to_id": "JH_ALG_QUAD_L3_02_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_e",
+      "to_id": "JH_ALG_QUAD_L3_02_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_a",
+      "to_id": "JH_ALG_QUAD_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_b",
+      "to_id": "JH_ALG_QUAD_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_c",
+      "to_id": "JH_ALG_QUAD_L3_03_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_d",
+      "to_id": "JH_ALG_QUAD_L3_03_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_a",
+      "to_id": "JH_ALG_QUAD_L3_01_b",
+      "type": "prerequisite",
+      "reason": "理解一元二次方程式的意義是利用因式分解求解的前提"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_b",
+      "to_id": "JH_ALG_QUAD_L3_01_c",
+      "type": "prerequisite",
+      "reason": "提公因式是因式分解的基礎方法之一"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_b",
+      "to_id": "JH_ALG_QUAD_L3_01_d",
+      "type": "prerequisite",
+      "reason": "提公因式是因式分解的基礎方法之一"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01_b",
+      "to_id": "JH_ALG_QUAD_L3_01_e",
+      "type": "prerequisite",
+      "reason": "因式分解是已知一根求另一根與係數的常用方法"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_a",
+      "to_id": "JH_ALG_QUAD_L3_02_b",
+      "type": "prerequisite",
+      "reason": "平方根概念是配成完全平方式的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_b",
+      "to_id": "JH_ALG_QUAD_L3_02_c",
+      "type": "prerequisite",
+      "reason": "配成完全平方式是利用配方法解方程式的核心步驟"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_c",
+      "to_id": "JH_ALG_QUAD_L3_02_d",
+      "type": "prerequisite",
+      "reason": "公式解是由配方法推導而來"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_d",
+      "to_id": "JH_ALG_QUAD_L3_02_e",
+      "type": "prerequisite",
+      "reason": "判別式是公式解的一部分，用於判斷解的種類"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02_e",
+      "to_id": "JH_ALG_QUAD_L3_02_f",
+      "type": "prerequisite",
+      "reason": "理解判別式才能應用於已知方程式解的情形"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_01",
+      "to_id": "JH_ALG_QUAD_L3_03_a",
+      "type": "prerequisite",
+      "reason": "掌握一元二次方程式的解法是解決應用問題的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_02",
+      "to_id": "JH_ALG_QUAD_L3_03_a",
+      "type": "prerequisite",
+      "reason": "掌握一元二次方程式的解法是解決應用問題的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_a",
+      "to_id": "JH_ALG_QUAD_L3_03_b",
+      "type": "prerequisite",
+      "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_a",
+      "to_id": "JH_ALG_QUAD_L3_03_c",
+      "type": "prerequisite",
+      "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_a",
+      "to_id": "JH_ALG_QUAD_L3_03_d",
+      "type": "prerequisite",
+      "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+    },
+    {
+      "from_id": "JH_ALG_QUAD_L3_03_a",
+      "to_id": "JH_ALG_QUAD_L3_03_e",
+      "type": "prerequisite",
+      "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 22,
+    "total_edges": 51,
+    "l3_count": 3,
+    "l4_count": 16,
+    "l4_avg_per_l3": 5.333333333333333
+  }
+}

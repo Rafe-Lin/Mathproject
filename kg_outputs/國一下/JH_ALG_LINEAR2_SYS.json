@@ -1,0 +1,507 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "二元一次聯立方程式",
+    "l2_unit_id": "JH_ALG_LINEAR2_SYS"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS",
+      "level": "L2",
+      "name": "二元一次聯立方程式",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "level": "L3",
+      "name": "二元一次聯立方程式的意義",
+      "parent_id": "JH_ALG_LINEAR2_SYS",
+      "description": "學習二元一次聯立方程式的定義、如何列出以及其解的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_01_a",
+      "level": "L4",
+      "name": "定義二元一次聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "description": "學習如何將兩個二元一次方程式並列，形成一個聯立方程式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_01_b",
+      "level": "L4",
+      "name": "列出二元一次聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "description": "根據具體情境中的數量關係，列出對應的二元一次聯立方程式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_01_c",
+      "level": "L4",
+      "name": "定義二元一次聯立方程式的解",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "description": "了解使聯立方程式中所有等式同時成立的x、y值，即為其解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "level": "L4",
+      "name": "判斷二元一次聯立方程式的解",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "description": "檢驗給定的x、y值是否為二元一次聯立方程式的解。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "level": "L3",
+      "name": "代入消去法",
+      "parent_id": "JH_ALG_LINEAR2_SYS",
+      "description": "學習使用代入消去法來解二元一次聯立方程式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "level": "L4",
+      "name": "運用代入消去法解聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "description": "學習將其中一個方程式的變數以另一個方程式的表達式取代，以消去一個未知數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "level": "L4",
+      "name": "整理方程式後運用代入消去法",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "description": "當方程式未直接提供可代入的變數表達式時，先整理方程式再使用代入消去法。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "level": "L3",
+      "name": "加減消去法",
+      "parent_id": "JH_ALG_LINEAR2_SYS",
+      "description": "學習使用加減消去法來解二元一次聯立方程式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "level": "L4",
+      "name": "運用加減消去法解聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "description": "學習透過將兩個方程式相加或相減，以消去一個未知數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "level": "L4",
+      "name": "係數不一致時運用加減消去法",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "description": "學習透過乘以適當的數，使其中一個未知數的係數相同或互為相反數，再進行加減消去。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "level": "L4",
+      "name": "整理方程式後運用加減消去法",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "description": "當方程式未在標準形式時，先整理方程式再使用加減消去法。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "level": "L4",
+      "name": "處理分數或小數係數的聯立方程式",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "description": "學習先將分數或小數係數轉換為整數，再運用加減消去法解聯立方程式。",
+      "difficulty": 6
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "level": "L3",
+      "name": "應用問題",
+      "parent_id": "JH_ALG_LINEAR2_SYS",
+      "description": "學習如何將實際問題轉化為二元一次聯立方程式並求解。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "level": "L4",
+      "name": "解決數量關係的應用問題",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "description": "學習如何從文字敘述中定義未知數、列出聯立方程式並求解，以解決數量相關問題。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "level": "L4",
+      "name": "解決情境中的應用問題",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "description": "學習如何從複雜情境中提取關鍵資訊，建立聯立方程式並求解，例如年齡、價格等問題。",
+      "difficulty": 6
+    },
+    {
+      "id": "JH_ALG_LINEAR2_SYS_L3_04_c",
+      "level": "L4",
+      "name": "檢驗解的合理性",
+      "parent_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "description": "學習在解出聯立方程式後，判斷所得的解是否符合實際情境的限制（例如年齡不能為負）。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_LINEAR2_SYS",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_02",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_c",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_a",
+      "type": "prerequisite",
+      "reason": "理解單一二元一次方程式是學習聯立方程式的基礎"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_b",
+      "type": "prerequisite",
+      "reason": "需要具備從情境中列出單一二元一次方程式的能力"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_c",
+      "type": "prerequisite",
+      "reason": "理解單一二元一次方程式的解是學習聯立方程式解的基礎"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "type": "prerequisite",
+      "reason": "需要具備將數值代入二元一次方程式並計算的能力"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_01_d",
+      "type": "prerequisite",
+      "reason": "判斷解的過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "type": "prerequisite",
+      "reason": "代入消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "type": "prerequisite",
+      "reason": "代入消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係，並能進行整理"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_02_b",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "type": "prerequisite",
+      "reason": "加減消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "type": "prerequisite",
+      "reason": "加減消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係，並能進行係數調整"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_b",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "type": "prerequisite",
+      "reason": "加減消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係，並能進行整理"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_c",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "prerequisite",
+      "reason": "加減消去法最終會簡化為解一元一次方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "prerequisite",
+      "reason": "需要理解二元一次方程式的結構和變數關係"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "prerequisite",
+      "reason": "處理分數係數需要分數四則運算能力"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_03_d",
+      "type": "prerequisite",
+      "reason": "解題過程涉及整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_01_b",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "prerequisite",
+      "reason": "應用問題首先需要列出聯立方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_02_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "prerequisite",
+      "reason": "解決應用問題需要掌握至少一種解聯立方程式的方法"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_03_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "type": "prerequisite",
+      "reason": "解決應用問題需要掌握至少一種解聯立方程式的方法"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04_a",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "type": "prerequisite",
+      "reason": "情境應用問題是數量關係應用問題的延伸"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR2_SYS_L3_04_b",
+      "to_id": "JH_ALG_LINEAR2_SYS_L3_04_c",
+      "type": "prerequisite",
+      "reason": "在解決情境問題後，需要檢驗解的合理性"
+    }
+  ],
+  "warnings": [
+    "⚠️ L3 sequence 不完整：預期 3 條，實際 0 條。"
+  ],
+  "stats": {
+    "total_nodes": 20,
+    "total_edges": 61
+  }
+}
