@@ -62,6 +62,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from core.routes import core_bp
 from core.ai_analyzer import configure_gemini
 from core.rag_engine import init_rag
+from core.advanced_rag_engine import init_adv_rag
 from config import Config
 from models import init_db, User, db, Progress, SkillInfo, SkillCurriculum, SkillPrerequisites
 from core.utils import get_all_active_skills
@@ -464,6 +465,11 @@ def create_app():
                 init_rag(app)
             except Exception as e:
                 app.logger.error(f"RAG initialization failed: {e}")
+                
+            try:
+                init_adv_rag(app)
+            except Exception as e:
+                app.logger.error(f"Advanced RAG initialization failed: {e}")
 
     return app
 

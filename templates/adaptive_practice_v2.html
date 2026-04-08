@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
@@ -235,6 +235,7 @@
     }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <div class="shell">
@@ -246,12 +247,17 @@
         </h1>
         <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
       </div>
-      <div class="badge" id="entryModeBadge">
-        {% if mode == 'assessment' %}
-          評量模式｜{{ unit_name }}
-        {% else %}
-          學習模式｜{{ unit_name }}
-        {% endif %}
+      <div class="badge" id="entryModeBadge" style="display:flex; flex-direction:column; gap:8px; background:none; border:none; box-shadow:none; padding:0;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; min-width:260px; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px;">
+          {% if mode == 'assessment' %}
+            評量模式｜{{ unit_name }}
+          {% else %}
+            學習模式｜{{ unit_name }}
+          {% endif %}
+        </span>
+        <a href="/dashboard" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 14px; border-radius:999px; font-size:14px; font-weight:700; background:#fff; border:1px solid #cce1ff; color:#1565c0; text-decoration:none; box-shadow:0 2px 5px rgba(0,0,0,0.05); transition:all 0.2s;">
+          ⬅ 返回主畫面
+        </a>
       </div>
     </div>
 
@@ -387,6 +393,68 @@
               <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
             </div>
             <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
+            
+            <!-- ========== Advanced RAG 模式 ========== -->
+            <button id="adv-rag-mode-btn" onclick="toggleAdvRagMode()" style="
+                width: 100%;
+                padding: 10px 16px;
+                margin-top: 12px;
+                background: linear-gradient(135deg, #1565c0 0%, #31a2ac 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 0.95em;
+                font-weight: 700;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            ">
+                <span style="font-size: 1.1em;">📚</span> RAG 模式
+            </button>
+
+            <!-- Advanced RAG 面板 (預設隱藏) -->
+            <div id="adv-rag-panel"
+                style="display: none; margin-top: 8px; padding: 12px; background: #f0f7ff; border: 1px solid #cce1ff; border-radius: 12px;">
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <input type="text" id="adv-rag-query-input" placeholder="輸入你的問題…" style="
+                        flex: 1;
+                        padding: 10px 14px;
+                        border: 1px solid #cce1ff;
+                        border-radius: 8px;
+                        font-size: 1em;
+                        outline: none;
+                    ">
+                    <button id="adv-rag-search-btn" onclick="performAdvRagSearch()" style="
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #1565c0 0%, #31a2ac 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 0.9em;
+                        font-weight: 600;
+                        cursor: pointer;
+                        white-space: nowrap;
+                    ">🔍 檢索</button>
+                </div>
+
+                <div id="adv-rag-loading" style="display: none; text-align: center; padding: 10px; color: #1565c0;">
+                    正在檢索相關單元...
+                </div>
+
+                <div id="adv-rag-results" style="display: none; margin-bottom: 10px;">
+                    <div style="font-size: 0.8em; color: #1565c0; font-weight: 700; margin-bottom: 6px;">📌 最相關單元：</div>
+                    <div id="adv-rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                </div>
+
+                <div id="adv-rag-ai-answer"
+                    style="display: none; padding: 10px; background: white; border-radius: 8px; border: 1px solid #dce8ea; font-size: 0.9em; line-height: 1.6; color: #333;">
+                    <div id="adv-rag-routing-badge" style="font-size: 0.75em; padding: 3px 6px; border-radius: 6px; background:#e6f4ff; color:#0958d9; margin-bottom: 8px; display:inline-block; font-weight:bold; display:none;"></div>
+                    <div style="font-size: 0.8em; color: #1565c0; font-weight: 700; margin-bottom: 6px;">🤖 AI 教學教材 (基於 RAG)：</div>
+                    <div id="adv-rag-ai-answer-text"></div>
+                </div>
+            </div>
           </section>
         </div>
       </div>
@@ -2021,7 +2089,155 @@
     updateAdaptiveStatePanel();
     assistantSendBtn.disabled = true;
     assistantInput.disabled = true;
+    assistantInput.disabled = true;
     analyzeCanvasBtn.disabled = true;
+
+    // === Advanced RAG API functions ===
+    function toggleAdvRagMode() {
+        const panel = document.getElementById('adv-rag-panel');
+        const btn = document.getElementById('adv-rag-mode-btn');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            btn.style.opacity = '0.7';
+            setTimeout(() => {
+                document.getElementById('adv-rag-query-input')?.focus();
+            }, 100);
+        } else {
+            panel.style.display = 'none';
+            btn.style.opacity = '1';
+        }
+    }
+
+    async function performAdvRagSearch() {
+        const query = document.getElementById('adv-rag-query-input').value.trim();
+        if (!query) return;
+
+        const loading = document.getElementById('adv-rag-loading');
+        const resultsDiv = document.getElementById('adv-rag-results');
+        const buttonsDiv = document.getElementById('adv-rag-results-buttons');
+        const answerDiv = document.getElementById('adv-rag-ai-answer');
+        const answerText = document.getElementById('adv-rag-ai-answer-text');
+        const routingBadge = document.getElementById('adv-rag-routing-badge');
+
+        loading.style.display = 'block';
+        resultsDiv.style.display = 'none';
+        answerDiv.style.display = 'none';
+        routingBadge.style.display = 'none';
+
+        try {
+            // 1. Search Advanced RAG
+            const searchResp = await fetch('/api/adaptive/adv_rag_search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+
+            const searchParams = await searchResp.json();
+            if (searchParams.error) throw new Error(searchParams.error);
+
+            const results = searchParams.results || [];
+            buttonsDiv.innerHTML = '';
+
+            let firstRouting = "";
+            let retrievedSkillsForChat = [];
+
+            if (results.length > 0) {
+                firstRouting = results[0].routing || "Unknown";
+                
+                results.forEach((item, index) => {
+                    const btn = document.createElement('button');
+                    const chineseName = item.chinese_name || item.skill_id;
+                    const dispFamily = (typeof FAMILY_NAME_UI_MAP !== 'undefined' && FAMILY_NAME_UI_MAP[item.family_name]) ? FAMILY_NAME_UI_MAP[item.family_name] : item.family_name;
+                    const familyName = dispFamily ? ` (${dispFamily})` : '';
+                    btn.innerText = `${index + 1}. ${chineseName}${familyName}`;
+                    btn.title = item.skill_id;
+                    btn.style.cssText = `
+                        background: #f0f7ff;
+                        color: #1565c0;
+                        border: 1px solid #1565c0;
+                        border-radius: 6px;
+                        padding: 4px 8px;
+                        font-size: 0.85em;
+                        cursor: pointer;
+                        display: inline-block;
+                        text-align: left;
+                    `;
+                    btn.onclick = () => {
+                        fetch('/api/adaptive/rag_settings').then(r=>r.json()).then(data => {
+                            if (data.target_type === 'adaptive') {
+                                window.location.href = `/adaptive_practice_v2?skill_id=${encodeURIComponent(item.skill_id)}&mode=teaching`;
+                            } else {
+                                window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
+                            }
+                        }).catch(e => {
+                            window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
+                        });
+                    };
+                    buttonsDiv.appendChild(btn);
+
+                    retrievedSkillsForChat.push({
+                        skill_id: item.skill_id,
+                        chinese_name: item.chinese_name,
+                        family_name: item.family_name,
+                        subskill_nodes: item.subskill_nodes
+                    });
+                });
+                resultsDiv.style.display = 'block';
+                
+                if (firstRouting) {
+                    routingBadge.innerText = `💡 檢索通道：${firstRouting}`;
+                    routingBadge.style.display = 'inline-block';
+                }
+
+                // 2. Query Chat AI
+                const chatResp = await fetch('/api/adaptive/adv_rag_chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        retrieved_skills: retrievedSkillsForChat
+                    })
+                });
+
+                const chatParams = await chatResp.json();
+                if (chatParams.error) throw new Error(chatParams.error);
+                if (chatParams.reply) {
+                    if (typeof marked !== 'undefined') {
+                        answerText.innerHTML = marked.parse(chatParams.reply);
+                    } else {
+                        answerText.innerText = chatParams.reply;
+                    }
+                    if (window.MathJax) {
+                        window.MathJax.typesetPromise([answerText]).catch(e => console.error("MathJax Error", e));
+                    }
+                    answerDiv.style.display = 'block';
+                } else {
+                    answerText.innerText = "抱歉，處理您的問題時發生錯誤。";
+                    answerDiv.style.display = 'block';
+                }
+
+            } else {
+                buttonsDiv.innerHTML = '<span style="font-size:0.85em; color:#999;">找不到相關文章</span>';
+                resultsDiv.style.display = 'block';
+            }
+
+        } catch (err) {
+            alert('RAG Search Failed: ' + err.message);
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    // Bind Enter key
+    const advRagInput = document.getElementById('adv-rag-query-input');
+    if (advRagInput) {
+        advRagInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performAdvRagSearch();
+            }
+        });
+    }
+
   </script>
 </body>
 </html>

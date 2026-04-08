@@ -78,7 +78,7 @@ def main():
     parser.add_argument("--mode", default="teaching", choices=["teaching", "assessment"],
                         help="自適應模式")
     parser.add_argument("--steps", type=int, default=20, help="最大步數")
-    parser.add_argument("--model", default="qwen3-vl:8b-instruct-q4_k_m",
+    parser.add_argument("--model", default="qwen2.5:3b",
                         help="Ollama 模型名稱")
     parser.add_argument("--api-url", default="http://localhost:11434/api/generate",
                         help="Ollama API URL")

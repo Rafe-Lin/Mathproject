@@ -48,7 +48,16 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-me'
 
     # ==========================================
-    # 4. ????AI ?芋蝯身摰?(蝘?撖阡??詨?) ????
+    # 3.5. RAG 配置
+    # ==========================================
+    # 控制混合 RAG 中，Naive RAG (快速通道) 與 Advanced RAG (救援通道) 的分流閾值
+    # 若 Naive RAG 的首筆距離分數小於或等於此閾值，將直接採用快速通道。
+    # 數值越小，越嚴格（越常走 Advanced RAG 救援）；數值越大，越寬鬆（常走 Naive）。
+    # 管理者可以根據實驗調整此分流比例
+    ADVANCED_RAG_NAIVE_THRESHOLD = 0.35
+
+    # ==========================================
+    # 4. 各種 AI 模型群配置 (本地與雲端端點) 各群組
     # ==========================================
     
     # AI 璅∪?隤踹漲銝剖?
@@ -160,6 +169,19 @@ class Config:
             },
             'description': 'Qwen 2.5 Coder 1.5B (Ultra-Stable Fallback)'
         },
+        'qwen2.5-3b': {
+            'provider': 'local',
+            'model': 'qwen2.5:3b',
+            'temperature': 0.1,
+            'max_tokens': 2048,
+            'extra_body': {
+                'num_ctx': 4096,
+                'num_gpu': -1,
+                'num_thread': 8,
+                'keep_alive': "30m",
+            },
+            'description': 'Qwen 2.5 3B (User Local Model)'
+        },
         'qwen3-vl-8b': {
             'provider': 'local',
             'model': 'qwen3-vl:8b-instruct-q4_k_m', 
@@ -250,7 +272,7 @@ class Config:
 
     # ???身隞?Ⅳ??璅∪? Preset Key嚗耨?寞迨??臬????
     # [rollback] 原本：DEFAULT_CODER_PRESET = 'gemma4-e4b'
-    DEFAULT_CODER_PRESET = 'qwen3-vl-8b'
+    DEFAULT_CODER_PRESET = 'qwen2.5-3b'
 
     # Preserve Mathproject's original model options so they remain easy to
     # toggle by commenting/uncommenting during manual testing.
@@ -297,7 +319,7 @@ class Config:
         # ?身撌亦?撣思??臭誑?湔?郊?? VL ?嚗???閫隞?Ⅳ??
         # [rollback] coder 原本：CODER_PRESETS['qwen3-vl-8b']  # [2026-03-11] ?Ｗ儔雿輻蝯曹? VL ?嗆?
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
-        'coder': CODER_PRESETS['qwen3-vl-8b'],
+        'coder': CODER_PRESETS['qwen2.5-3b'],
         # 'coder': CODER_PRESETS['gemma4-e4b'],
         # 'coder': CODER_PRESETS['qwen3-vl-4b'],
         # 'coder': CODER_PRESETS['qwen3.5-4b'],
@@ -317,13 +339,13 @@ class Config:
         # },
         # [rollback] tutor 原本：CODER_PRESETS['qwen3-vl-8b']
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
-        'tutor': CODER_PRESETS['qwen3-vl-8b'],
+        'tutor': CODER_PRESETS['qwen2.5-3b'],
         
         # 撠?閬箏??敺?Gemini ???典?? Qwen3-VL
         # [rollback] vision_analyzer 原本：CODER_PRESETS['qwen3-vl-8b']
         # [rollback] vision_analyzer 改回 qwen3-vl-8b（Gemma 在手寫 OCR 不穩）
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
-        'vision_analyzer': CODER_PRESETS['qwen3-vl-8b'],
+        'vision_analyzer': CODER_PRESETS['qwen2.5-3b'],
         # 'vision_analyzer': CODER_PRESETS['gemma4-e4b'],
 
         # 'vision_analyzer': {
@@ -333,11 +355,11 @@ class Config:
 
         # [rollback] classifier 原本：provider 'google', model 'gemini-2.5-flash', temperature 0.3, max_tokens 500
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
-        'classifier': CODER_PRESETS['qwen3-vl-8b'],
+        'classifier': CODER_PRESETS['qwen2.5-3b'],
 
         # [rollback] default 原本：provider 'local', model 'qwen3-14b-nothink:latest'
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
-        'default': CODER_PRESETS['qwen3-vl-8b'],
+        'default': CODER_PRESETS['qwen2.5-3b'],
     }
 
     LEGACY_MODEL_ROLES = {

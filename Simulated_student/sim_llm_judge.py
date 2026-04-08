@@ -17,7 +17,7 @@ import requests
 
 
 # ─── Default configuration ─────────────────────────────────────────────────
-DEFAULT_MODEL = "qwen3-vl:8b-instruct-q4_k_m"
+DEFAULT_MODEL = "qwen2.5:3b"
 DEFAULT_API_URL = "http://localhost:11434/api/generate"
 
 # ─── Ability-level prompt modifiers ────────────────────────────────────────

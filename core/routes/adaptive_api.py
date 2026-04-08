@@ -234,6 +234,28 @@ def adaptive_submit_and_get_next():
     return jsonify(_response_for_frontend(response))
 
 
+@practice_bp.route("/api/adaptive/rag_settings", methods=["GET"])
+@login_required
+def api_adaptive_rag_settings():
+    import os
+    rag_path = os.path.join(current_app.root_path, '..', 'configs', 'rag_settings.json')
+    if os.path.exists(rag_path):
+        try:
+            with open(rag_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                # Sync memory threshold when loading if it differs
+                if 'threshold' in data:
+                    current_app.config['ADVANCED_RAG_NAIVE_THRESHOLD'] = data['threshold']
+                return jsonify(data)
+        except Exception as e:
+            print(f"Error reading rag_settings: {e}")
+            pass
+    return jsonify({
+        'threshold': current_app.config.get('ADVANCED_RAG_NAIVE_THRESHOLD', 0.35),
+        'target_type': 'practice'
+    })
+
+
 @practice_bp.route("/api/adaptive/rag_hint", methods=["GET"])
 @login_required
 def adaptive_rag_hint():
@@ -264,3 +286,44 @@ def adaptive_rag_hint():
     except Exception as exc:
         return jsonify({"error": f"rag hint failure: {exc}"}), 500
     return jsonify(response)
+
+
+@practice_bp.route('/api/adaptive/adv_rag_search', methods=['POST'])
+@login_required
+def api_adv_rag_search():
+    """Advanced RAG hybrid search API."""
+    data = request.get_json(silent=True) or {}
+    query = (data.get('query') or '').strip()
+    
+    if not query:
+        return jsonify({"results": [], "error": "請輸入問題"}), 400
+        
+    try:
+        from core.advanced_rag_engine import adv_rag_search
+        results = adv_rag_search(query, top_k=5)
+        return jsonify({"results": results})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"results": [], "error": str(e)}), 500
+
+
+@practice_bp.route('/api/adaptive/adv_rag_chat', methods=['POST'])
+@login_required
+def api_adv_rag_chat():
+    """RAG + LLM chat API for generating hints/short lessons from retrieved materials."""
+    data = request.get_json(silent=True) or {}
+    query = (data.get('query') or '').strip()
+    retrieved_skills = data.get('retrieved_skills') or []
+
+    if not query:
+        return jsonify({"reply": "請提供問題"}), 400
+
+    try:
+        from core.advanced_rag_engine import adv_rag_chat
+        result = adv_rag_chat(query, retrieved_skills)
+        return jsonify(result)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"reply": f"AI 發生錯誤: {e}"}), 500
