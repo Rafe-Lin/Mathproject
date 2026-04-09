@@ -169,7 +169,7 @@ def _load_bridge_rows(app) -> list[dict[str, Any]]:
         if rows:
             rows_out = [dict(row) for row in rows]
 
-    if (not rows_out) and _table_exists(db, "skills_info") and _table_exists(db, "skill_curriculum"):
+    if _table_exists(db, "skills_info") and _table_exists(db, "skill_curriculum"):
         rows = db.session.execute(
             db.text("""
                 SELECT DISTINCT
@@ -194,7 +194,7 @@ def _load_bridge_rows(app) -> list[dict[str, Any]]:
                 ORDER BY si.skill_id
             """)
         ).mappings().all()
-        rows_out = [dict(row) for row in rows]
+        rows_out.extend([dict(row) for row in rows])
 
     catalog_rows = _load_catalog_rows()
     if not rows_out:
@@ -272,10 +272,35 @@ def _index_documents(rows: list[dict[str, Any]]):
         _collection = None
         return
 
+    import os, pickle, hashlib
+    docs_string = "".join(documents)
+    docs_hash = hashlib.md5(docs_string.encode('utf-8')).hexdigest()
+    cache_file = os.path.join(app.root_path, '..', 'configs', 'rag_embeddings_cache.pkl')
+    
+    embeddings = None
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'rb') as f:
+                cache_data = pickle.load(f)
+                if cache_data.get('hash') == docs_hash:
+                    embeddings = cache_data.get('embeddings')
+        except Exception:
+            pass
+            
+    if embeddings is None:
+        embeddings = _embedding_model.encode(documents).tolist()
+        try:
+            os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+            with open(cache_file, 'wb') as f:
+                pickle.dump({'hash': docs_hash, 'embeddings': embeddings}, f)
+        except Exception:
+            pass
+
     _collection.add(
         documents=documents,
         ids=ids,
         metadatas=metadatas,
+        embeddings=embeddings
     )
     _bridge_rows = list(rows)
     print(f"[RAG] ✅ ChromaDB 初始化完成，已索引 {len(documents)} 筆知識節點")

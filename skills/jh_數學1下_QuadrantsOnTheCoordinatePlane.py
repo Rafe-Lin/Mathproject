@@ -320,7 +320,7 @@ def _generate_coordinate_value(is_fraction_allowed=True, integer_only_chance=0.7
         den = denominator
     
     # V13.5 整數優先: 確保整數值以 int 類型儲存
-    if float_val.is_integer():
+    if float(float_val).is_integer():
         float_val = int(float_val) # 強制轉換為 int
         int_part = int(abs(float_val))
         num = 0
@@ -593,8 +593,8 @@ def generate(level=1):
         # V13.0 格式精確要求: str(int(val)) 處理整數
         # correct_answer 必須是機器可讀，不能包含 LaTeX 分數
         # 系統底層鐵律: 數值格式化 (No .0)
-        correct_x_str = str(int(x_val)) if x_val.is_integer() else str(round(x_val, 4))
-        correct_y_str = str(int(y_val)) if y_val.is_integer() else str(round(y_val, 4))
+        correct_x_str = str(int(x_val)) if float(x_val).is_integer() else str(round(x_val, 4))
+        correct_y_str = str(int(y_val)) if float(y_val).is_integer() else str(round(y_val, 4))
         
         correct_answer = f"{point_label}({correct_x_str}, {correct_y_str}), {quadrant}"
         

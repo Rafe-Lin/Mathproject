@@ -247,8 +247,8 @@
         </h1>
         <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
       </div>
-      <div class="badge" id="entryModeBadge" style="display:flex; flex-direction:column; gap:8px; background:none; border:none; box-shadow:none; padding:0;">
-        <span style="display:inline-flex; align-items:center; justify-content:center; min-width:260px; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px;">
+      <div class="badge" id="entryModeBadgeContainer" style="display:flex; flex-direction:column; gap:8px; background:none; border:none; box-shadow:none; padding:0;">
+        <span id="entryModeText" style="display:inline-flex; align-items:center; justify-content:center; min-width:260px; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px;">
           {% if mode == 'assessment' %}
             評量模式｜{{ unit_name }}
           {% else %}
@@ -377,22 +377,24 @@
 
         <div class="top-right">
           <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
-            <div class="assistant-title">AI 助教（這題專用）</div>
-            <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
-            <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
-            <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
-            <div style="height:10px;"></div>
-            <div class="guide-buttons">
-              <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
-              <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
-              <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+            <div style="display: none;">
+              <div class="assistant-title">AI 助教（這題專用）</div>
+              <div class="assistant-rag-scope" id="ragScopeBadge">RAG 影響範圍：右側補救提示、AI 助教回覆、手寫檢查摘要</div>
+              <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
+              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+              <div style="height:10px;"></div>
+              <div class="guide-buttons">
+                <button type="button" data-guide="請用國中生能懂的方式提醒我这题先看哪一個觀念。">看核心觀念</button>
+                <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+                <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+              </div>
+              <div style="height:10px;"></div>
+              <div class="assistant-input">
+                <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+                <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
+              </div>
+              <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
             </div>
-            <div style="height:10px;"></div>
-            <div class="assistant-input">
-              <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
-              <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
-            </div>
-            <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
             
             <!-- ========== Advanced RAG 模式 ========== -->
             <button id="adv-rag-mode-btn" onclick="toggleAdvRagMode()" style="
@@ -718,7 +720,7 @@
       "\u006a\u0068_\u6578\u5b781\u4e0a_OperationsOnLinearExpressions": "\u4e00\u5143\u4e00\u6b21\u5f0f\u5316\u7c21",
     };
     function updateEntryModeBadge() {
-      const node = document.getElementById("entryModeBadge");
+      const node = document.getElementById("entryModeText");
       if (!node) return;
       const mode = String(state.mode || "teaching").toLowerCase();
       const skillLabel = SKILL_UI_MAP[skillId] || skillId || "未指定單元";
@@ -2165,7 +2167,7 @@
                     btn.onclick = () => {
                         fetch('/api/adaptive/rag_settings').then(r=>r.json()).then(data => {
                             if (data.target_type === 'adaptive') {
-                                window.location.href = `/adaptive_practice_v2?skill_id=${encodeURIComponent(item.skill_id)}&mode=teaching`;
+                                window.location.href = `/adaptive_summative?skill_id=${encodeURIComponent(item.skill_id)}&mode=teaching`;
                             } else {
                                 window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
                             }

@@ -113,11 +113,37 @@ def init_adv_rag(app):
 
     # Embed and add to DB
     logger.info(f"[Advanced RAG] Building index for {_documents.__len__()} items (this may take a bit)...")
+    
+    import os, pickle, hashlib
+    docs_string = "".join(_documents)
+    docs_hash = hashlib.md5(docs_string.encode('utf-8')).hexdigest()
+    cache_file = os.path.join(app.root_path, '..', 'configs', 'adv_embeddings_cache.pkl')
+    
+    embeddings = None
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'rb') as f:
+                cache_data = pickle.load(f)
+                if cache_data.get('hash') == docs_hash:
+                    embeddings = cache_data.get('embeddings')
+                    logger.info("[Advanced RAG] Loaded embeddings from cache!")
+        except Exception:
+            pass
+            
+    if embeddings is None:
+        embeddings = _embedding_model.encode(_documents).tolist()
+        try:
+            os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+            with open(cache_file, 'wb') as f:
+                pickle.dump({'hash': docs_hash, 'embeddings': embeddings}, f)
+        except Exception:
+            pass
+
     _adv_collection.add(
         documents=_documents,
         ids=_ids,
         metadatas=_metadatas,
-        embeddings=_embedding_model.encode(_documents).tolist()
+        embeddings=embeddings
     )
 
     # Initialize BM25
@@ -219,7 +245,11 @@ def adv_rag_search(query: str, top_k=5):
     naive_dist = naive_results[0]['distance'] if naive_results and 'distance' in naive_results[0] else float('inf')
 
     # 2. Check if we can route to Fast Path (Naive)
-    threshold = getattr(Config, 'ADVANCED_RAG_NAIVE_THRESHOLD', 0.85)
+    try:
+        from flask import current_app
+        threshold = current_app.config.get('ADVANCED_RAG_NAIVE_THRESHOLD', getattr(Config, 'ADVANCED_RAG_NAIVE_THRESHOLD', 0.85))
+    except RuntimeError:
+        threshold = getattr(Config, 'ADVANCED_RAG_NAIVE_THRESHOLD', 0.85)
     
     # 距離分數越低代表越接近。
     if naive_dist <= threshold:

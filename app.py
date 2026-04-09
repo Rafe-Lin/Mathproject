@@ -123,7 +123,20 @@ def create_app():
         ,SQLALCHEMY_ENGINE_OPTIONS={
             "connect_args": {"timeout": 30}  # 增加等待解鎖的時間到 30 秒
         }
-    )    
+    )
+
+    try:
+        import json
+        rag_path = os.path.join(basedir, 'configs', 'rag_settings.json')
+        if os.path.exists(rag_path):
+            with open(rag_path, 'r', encoding='utf-8') as f:
+                rag_data = json.load(f)
+                if 'threshold' in rag_data:
+                    app.config['ADVANCED_RAG_NAIVE_THRESHOLD'] = float(rag_data['threshold'])
+                if 'enable_ai_chat' in rag_data:
+                    app.config['ADVANCED_RAG_ENABLE_AI_CHAT'] = bool(rag_data['enable_ai_chat'])
+    except Exception as e:
+        app.logger.warning(f"Error loading rag_settings.json: {e}")
 
     # 只有在真的要用 Gemini 時才檢查
     if app.config.get('AI_PROVIDER') == 'gemini' and not app.config.get('GEMINI_API_KEY'):

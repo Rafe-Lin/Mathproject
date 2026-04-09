@@ -51,16 +51,18 @@ def admin_update_rag_settings():
         return jsonify({'success': False, 'message': '權限不足'}), 403
     try:
         data = request.get_json()
-        threshold = float(data.get('threshold', 0.35))
+        threshold = float(data.get('threshold', 0.40))
         target_type = data.get('target_type', 'practice')
+        enable_ai_chat = bool(data.get('enable_ai_chat', True))
         
         rag_path = os.path.join(current_app.root_path, '..', 'configs', 'rag_settings.json')
         os.makedirs(os.path.dirname(rag_path), exist_ok=True)
         with open(rag_path, 'w', encoding='utf-8') as f:
-            json.dump({'threshold': threshold, 'target_type': target_type}, f, ensure_ascii=False)
+            json.dump({'threshold': threshold, 'target_type': target_type, 'enable_ai_chat': enable_ai_chat}, f, ensure_ascii=False)
             
         # Update memory
         current_app.config['ADVANCED_RAG_NAIVE_THRESHOLD'] = threshold
+        current_app.config['ADVANCED_RAG_ENABLE_AI_CHAT'] = enable_ai_chat
         
         return jsonify({'success': True})
     except Exception as e:

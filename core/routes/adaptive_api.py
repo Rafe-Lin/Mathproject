@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 
-from flask import jsonify, request, session
+from flask import jsonify, request, session, current_app
 from flask_login import current_user, login_required
 
 from core.adaptive.judge import judge_answer_with_feedback
@@ -246,13 +246,19 @@ def api_adaptive_rag_settings():
                 # Sync memory threshold when loading if it differs
                 if 'threshold' in data:
                     current_app.config['ADVANCED_RAG_NAIVE_THRESHOLD'] = data['threshold']
+                if 'enable_ai_chat' in data:
+                    current_app.config['ADVANCED_RAG_ENABLE_AI_CHAT'] = data['enable_ai_chat']
+                # ensure default if missing
+                if 'enable_ai_chat' not in data:
+                    data['enable_ai_chat'] = True
                 return jsonify(data)
         except Exception as e:
             print(f"Error reading rag_settings: {e}")
             pass
     return jsonify({
-        'threshold': current_app.config.get('ADVANCED_RAG_NAIVE_THRESHOLD', 0.35),
-        'target_type': 'practice'
+        'threshold': current_app.config.get('ADVANCED_RAG_NAIVE_THRESHOLD', 0.40),
+        'target_type': 'practice',
+        'enable_ai_chat': current_app.config.get('ADVANCED_RAG_ENABLE_AI_CHAT', True)
     })
 
 
@@ -320,6 +326,9 @@ def api_adv_rag_chat():
         return jsonify({"reply": "請提供問題"}), 400
 
     try:
+        if not current_app.config.get('ADVANCED_RAG_ENABLE_AI_CHAT', True):
+            return jsonify({"reply": "目前 AI 助教已由老師關閉"})
+
         from core.advanced_rag_engine import adv_rag_chat
         result = adv_rag_chat(query, retrieved_skills)
         return jsonify(result)

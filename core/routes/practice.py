@@ -10,7 +10,7 @@
 =============================================================================
 """
 
-from flask import Blueprint, request, jsonify, current_app, render_template, session, url_for
+from flask import Blueprint, request, jsonify, current_app, render_template, session, url_for, redirect
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import importlib
