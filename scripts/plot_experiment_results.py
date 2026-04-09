@@ -150,12 +150,32 @@ def plot_ablation_steps_vs_success(summary_rows: list[dict[str, str]]) -> None:
     width = 0.38
 
     plt.figure(figsize=(9, 5))
-    plt.bar([i - width / 2 for i in x], steps_vals, width=width, label="Avg Steps")
-    plt.bar([i + width / 2 for i in x], success_vals, width=width, label="Success Rate (%)")
+    bars_steps = plt.bar([i - width / 2 for i in x], steps_vals, width=width, label="Avg Steps")
+    bars_success = plt.bar([i + width / 2 for i in x], success_vals, width=width, label="Success Rate (%)")
     plt.xticks(x, labels)
     plt.title("Ablation Avg Steps vs Success Rate")
     plt.xlabel("Strategy")
     plt.ylabel("Value")
+    for bar in bars_steps:
+        h = float(bar.get_height())
+        plt.annotate(
+            f"{h:.2f}",
+            (bar.get_x() + bar.get_width() / 2, h),
+            textcoords="offset points",
+            xytext=(0, 3),
+            ha="center",
+            fontsize=8,
+        )
+    for bar in bars_success:
+        h = float(bar.get_height())
+        plt.annotate(
+            f"{h:.2f}%",
+            (bar.get_x() + bar.get_width() / 2, h),
+            textcoords="offset points",
+            xytext=(0, 3),
+            ha="center",
+            fontsize=8,
+        )
     plt.legend()
     os.makedirs(EXP1_DIR, exist_ok=True)
     save_fig(os.path.join(EXP1_DIR, "fig_ablation_steps_vs_success.png"))
@@ -279,7 +299,21 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
         return
 
     student_order = ["Careless", "Average", "Weak"]
-    student_display = {"Careless": "high", "Average": "mid", "Weak": "low"}
+    student_display = {
+        "Careless": "Careless",
+        "Average": "Average",
+        "Weak": "Weak Foundation",
+    }
+    strategy_display = {
+        "AB1_Baseline": "Baseline",
+        "AB2_RuleBased": "Rule-Based",
+        "AB3_PPO_Dynamic": "Adaptive Strategy",
+    }
+    strategy_colors = {
+        "AB1_Baseline": "#6B7A8F",   # gray-blue
+        "AB2_RuleBased": "#F39C34",  # orange
+        "AB3_PPO_Dynamic": "#2E8B57",  # green
+    }
     x_labels = [t for t in student_order if any(grouped["student_type"] == t)]
     if not x_labels:
         return
@@ -288,6 +322,7 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
     width = 0.24
 
     plt.figure(figsize=(10, 6))
+    strategy_peak: dict[str, float] = {}
     for idx, strategy in enumerate(STRATEGY_ORDER):
         ys: list[float] = []
         for st in x_labels:
@@ -296,8 +331,16 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
                 ys.append(float("nan"))
             else:
                 ys.append(float(pd.to_numeric(hit["success_rate"], errors="coerce").mean()) * 100.0)
+        finite_vals = [v for v in ys if not pd.isna(v)]
+        strategy_peak[strategy] = max(finite_vals) if finite_vals else 0.0
         offset = (idx - 1) * width
-        bars = plt.bar([i + offset for i in x], ys, width=width, label=strategy)
+        bars = plt.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            label=strategy_display.get(strategy, strategy),
+            color=strategy_colors.get(strategy),
+        )
         for bar in bars:
             h = bar.get_height()
             if pd.isna(h):
@@ -312,13 +355,47 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
             )
 
     plt.xticks(x, [student_display.get(s, s) for s in x_labels])
-    plt.title("Experiment 1 Success Rate by Student Type and Strategy")
+    plt.title("Effect of Teaching Strategy Across Student Types")
+    plt.figtext(
+        0.5,
+        0.01,
+        "(Careless = high initial mastery)\n(Average = mid initial mastery)\n(Weak Foundation = low initial mastery)",
+        ha="center",
+        fontsize=9,
+    )
     plt.xlabel("Student Type")
     plt.ylabel("Success Rate (%)")
     plt.ylim(0, 100)
     plt.legend()
+    ab3_peak = strategy_peak.get("AB3_PPO_Dynamic", 0.0)
+    ab2_peak = strategy_peak.get("AB2_RuleBased", 0.0)
+    plt.text(
+        x[-1] + 0.35,
+        min(98.0, ab3_peak + 8.0),
+        "Consistent improvement across all student types",
+        fontsize=9,
+        color=strategy_colors["AB3_PPO_Dynamic"],
+        ha="right",
+        va="bottom",
+    )
+    plt.text(
+        x[-1] + 0.35,
+        min(92.0, ab2_peak + 8.0),
+        "Over-remediation leads to lower efficiency",
+        fontsize=9,
+        color=strategy_colors["AB2_RuleBased"],
+        ha="right",
+        va="bottom",
+    )
     os.makedirs(EXP1_DIR, exist_ok=True)
-    save_fig(os.path.join(EXP1_DIR, "fig_ablation_by_student_type.png"))
+    plt.tight_layout()
+    plt.savefig(os.path.join(EXP1_DIR, "fig_ablation_by_student_type.png"), dpi=150)
+    plt.savefig(
+        os.path.join(EXP1_DIR, "fig_exp1_student_type_improved.png"),
+        dpi=300,
+        bbox_inches="tight",
+    )
+    plt.close()
 
 
 def plot_ab3_subskill_gain_by_type(rows: list[dict[str, str]]) -> None:
@@ -393,14 +470,28 @@ def plot_multi_steps_results(include_ab3_by_student_type: bool = True) -> None:
     strategy_df = pd.read_csv(strategy_path) if os.path.exists(strategy_path) else pd.DataFrame()
     by_type_df = pd.read_csv(by_type_path) if os.path.exists(by_type_path) else pd.DataFrame()
 
-    if not strategy_df.empty and {"max_steps", "strategy", "success_rate"}.issubset(strategy_df.columns):
+    if not strategy_df.empty and {"max_steps", "strategy", "success_rate", "avg_steps"}.issubset(strategy_df.columns):
         plt.figure(figsize=(8, 5))
-        for strategy in STRATEGY_ORDER:
+        for idx, strategy in enumerate(STRATEGY_ORDER):
             sub = strategy_df[strategy_df["strategy"] == strategy].copy()
             if sub.empty:
                 continue
             sub = sub.sort_values("max_steps")
             plt.plot(sub["max_steps"], sub["success_rate"] * 100.0, marker="o", label=strategy)
+            for _, row in sub.iterrows():
+                max_steps = pd.to_numeric(row["max_steps"], errors="coerce")
+                success_pct = pd.to_numeric(row["success_rate"], errors="coerce") * 100.0
+                avg_steps = pd.to_numeric(row["avg_steps"], errors="coerce")
+                if pd.isna(max_steps) or pd.isna(success_pct) or pd.isna(avg_steps):
+                    continue
+                plt.annotate(
+                    f"Avg Steps: {float(avg_steps):.2f}",
+                    (float(max_steps), float(success_pct)),
+                    textcoords="offset points",
+                    xytext=(0, 8 + (idx * 10)),
+                    ha="center",
+                    fontsize=8,
+                )
         plt.title("Success Rate vs MAX_STEPS")
         plt.xlabel("MAX_STEPS")
         plt.ylabel("Success Rate (%)")

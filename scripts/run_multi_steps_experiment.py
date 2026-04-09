@@ -37,7 +37,7 @@ from pathlib import Path
 import pandas as pd
 
 import simulate_student
-from plot_experiment_results import plot_multi_steps_results
+from plot_experiment_results import plot_ablation_by_student_type, plot_multi_steps_results
 
 MAX_STEPS_LIST = [30, 40, 50]
 REPORTS_DIR = Path("reports")
@@ -61,7 +61,23 @@ EXP1_ARTIFACTS = [
     "experiment1_summary_table.md",
     "fig_multi_steps_success_rate.png",
     "fig_multi_steps_efficiency.png",
+    "fig_exp1_student_type_improved.png",
 ]
+
+
+def cleanup_previous_step_snapshots(max_steps_list: list[int]) -> None:
+    """Remove stale step-suffixed CSV snapshots before a new multi-step run."""
+    EXP1_DIR.mkdir(parents=True, exist_ok=True)
+    stems = [
+        "ablation_simulation_results",
+        "ablation_strategy_summary",
+        "ablation_strategy_by_student_type_summary",
+    ]
+    for steps in max_steps_list:
+        for stem in stems:
+            path = EXP1_DIR / f"{stem}_steps{int(steps)}.csv"
+            if path.exists():
+                path.unlink()
 
 
 def run_single_steps_experiment(max_steps: int) -> None:
@@ -86,10 +102,16 @@ def preserve_step_outputs(max_steps: int) -> None:
 
 
 def consolidate_experiment1_outputs() -> None:
-    """Move Experiment 1 artifacts from reports root into experiment_1_ablation."""
+    """Move Experiment 1 artifacts from reports root into experiment_1_ablation.
+
+    Note: experiment1_summary_table.* are generated from aggregated multi-step results.
+    We avoid moving same-name files from reports root to prevent accidental overwrite.
+    """
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     EXP1_DIR.mkdir(parents=True, exist_ok=True)
     for filename in EXP1_ARTIFACTS:
+        if filename in {"experiment1_summary_table.csv", "experiment1_summary_table.md"}:
+            continue
         src = REPORTS_DIR / filename
         if not src.exists():
             continue
@@ -299,20 +321,51 @@ def write_experiment1_summary_table(df: pd.DataFrame) -> tuple[Path, Path]:
     return csv_path, md_path
 
 
+def validate_experiment1_summary_table(df: pd.DataFrame, max_steps_list: list[int]) -> None:
+    """Enforce complete 3xN strategy table before writing final report artifacts."""
+    expected_steps = sorted({int(s) for s in max_steps_list})
+    expected_strategies = ["AB1_Baseline", "AB2_RuleBased", "AB3_PPO_Dynamic"]
+    expected_pairs = {(s, st) for s in expected_steps for st in expected_strategies}
+
+    got_pairs = set()
+    for _, row in df.iterrows():
+        try:
+            step = int(row["MAX_STEPS"])
+        except Exception:
+            continue
+        strategy = str(row["Strategy"])
+        got_pairs.add((step, strategy))
+
+    missing = sorted(expected_pairs - got_pairs)
+    extra = sorted(got_pairs - expected_pairs)
+    if missing or extra or len(df) != len(expected_pairs):
+        raise RuntimeError(
+            "Experiment 1 summary table is incomplete or inconsistent. "
+            f"rows={len(df)}, expected_rows={len(expected_pairs)}, "
+            f"missing={missing}, extra={extra}"
+        )
+
+
 def main() -> None:
     """Run multiple MAX_STEPS experiments and generate cross-step summaries + plots."""
     original_max_steps = simulate_student.MAX_STEPS
+    max_steps_list = [int(s) for s in MAX_STEPS_LIST]
     try:
-        for steps in MAX_STEPS_LIST:
+        cleanup_previous_step_snapshots(max_steps_list)
+
+        for steps in max_steps_list:
             print(f"\n=== Running simulate_student with MAX_STEPS={steps} ===")
             run_single_steps_experiment(steps)
             preserve_step_outputs(steps)
 
-        strategy_out = build_multi_steps_strategy_summary(MAX_STEPS_LIST)
-        by_type_out = build_multi_steps_strategy_by_type_summary(MAX_STEPS_LIST)
+        strategy_out = build_multi_steps_strategy_summary(max_steps_list)
+        by_type_out = build_multi_steps_strategy_by_type_summary(max_steps_list)
         exp1_table_df = build_experiment1_summary_table_from_multi_steps()
+        validate_experiment1_summary_table(exp1_table_df, max_steps_list)
         exp1_csv, exp1_md = write_experiment1_summary_table(exp1_table_df)
 
+        # Explicitly render Experiment 1 student-type figure from this runner.
+        plot_ablation_by_student_type()
         plot_multi_steps_results(include_ab3_by_student_type=False)
         consolidate_experiment1_outputs()
 
@@ -323,6 +376,7 @@ def main() -> None:
         print(f"Output Markdown: {exp1_md}")
         print("Output Figure: reports/experiment_1_ablation/fig_multi_steps_success_rate.png")
         print("Output Figure: reports/experiment_1_ablation/fig_multi_steps_efficiency.png")
+        print("Output Figure: reports/experiment_1_ablation/fig_exp1_student_type_improved.png")
     finally:
         simulate_student.MAX_STEPS = original_max_steps
 
