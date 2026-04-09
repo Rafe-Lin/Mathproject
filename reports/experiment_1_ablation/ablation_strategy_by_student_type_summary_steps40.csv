@@ -1,0 +1,10 @@
+﻿strategy,student_type,success_rate,avg_steps,avg_final_polynomial_mastery,avg_reached_mastery_step,avg_remediation_count,avg_unnecessary_remediations,avg_target_gain,avg_total_subskill_gain
+AB1_Baseline,Careless,0.48,33.23,0.8163,25.8958,0.0,0.0,0.1732,1.0458
+AB1_Baseline,Weak,0.01,49.99,0.605,49.0,0.0,0.0,0.3026,2.2947
+AB1_Baseline,Average,0.14,39.29,0.7689,34.9286,0.0,0.0,0.2422,1.7099
+AB2_RuleBased,Careless,0.48,32.35,0.8176,24.0625,6.02,4.81,0.1595,0.9709
+AB2_RuleBased,Weak,0.0,50.0,0.611,,9.86,0.57,0.3104,2.2412
+AB2_RuleBased,Average,0.03,39.9,0.723,36.6667,7.16,3.35,0.1953,1.4329
+AB3_PPO_Dynamic,Careless,0.89,24.69,0.8514,22.7978,3.74,0.64,0.2107,1.0313
+AB3_PPO_Dynamic,Weak,0.13,49.16,0.5573,43.5385,11.91,0.02,0.2584,1.6745
+AB3_PPO_Dynamic,Average,0.74,34.53,0.8313,32.6081,4.45,0.37,0.3033,1.7006

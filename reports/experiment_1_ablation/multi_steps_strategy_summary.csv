@@ -1,0 +1,10 @@
+﻿max_steps,strategy,success_rate,avg_steps,avg_final_mastery,avg_unnecessary_remediation
+30,AB1_Baseline,0.1233,32.47,0.7006,0.0
+30,AB2_RuleBased,0.1,32.13,0.69,2.0133
+30,AB3_PPO_Dynamic,0.3567,30.4267,0.7214,0.2033
+40,AB1_Baseline,0.21,40.8367,0.7301,0.0
+40,AB2_RuleBased,0.17,40.75,0.7172,2.91
+40,AB3_PPO_Dynamic,0.5867,36.1267,0.7467,0.3433
+50,AB1_Baseline,0.3667,47.6833,0.759,0.0
+50,AB2_RuleBased,0.2067,49.1933,0.7267,3.5133
+50,AB3_PPO_Dynamic,0.7267,38.6967,0.7735,0.3367

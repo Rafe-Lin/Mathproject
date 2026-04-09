@@ -1,0 +1,4 @@
+﻿student_type,total_episodes,remediation_steps,mainline_steps,remediation_ratio,mainline_ratio,avg_steps,rag_activation_ratio
+Careless,100,613,1581,0.27939835916134914,0.7206016408386509,21.94,0.0
+Weak,100,1914,2086,0.4785,0.5215,40.0,0.45
+Average,100,730,2204,0.24880708929788684,0.7511929107021131,29.34,0.0

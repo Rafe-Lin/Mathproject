@@ -1,0 +1,4 @@
+﻿student_type,most_common_weakest_subskill,avg_final_polynomial_mastery,avg_steps,count_failed_episodes
+Careless,family_isomorphism,0.7517,30.0,23
+Weak,family_isomorphism,0.5248,40.0,100
+Average,family_isomorphism,0.7833,30.0,70
