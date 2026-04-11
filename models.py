@@ -552,6 +552,18 @@ def init_db(engine):
             FOREIGN KEY (student_id) REFERENCES users (id)
         )
     ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS node_competency (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            node_id TEXT NOT NULL,
+            competency_theta REAL DEFAULT 0.0,
+            competency_score REAL DEFAULT 50.0,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            UNIQUE(user_id, node_id)
+        )
+    ''')
 
     _sync_skill_family_bridge(conn)
 
@@ -777,6 +789,18 @@ class SkillPrerequisites(db.Model):
     skill_id = db.Column(db.String, db.ForeignKey('skills_info.skill_id', ondelete='CASCADE'), nullable=False)
     prerequisite_id = db.Column(db.String, db.ForeignKey('skills_info.skill_id', ondelete='CASCADE'), nullable=False)
     __table_args__ = (db.UniqueConstraint('skill_id', 'prerequisite_id', name='_skill_prerequisite_uc'),)
+
+class NodeCompetency(db.Model):
+    __tablename__ = 'node_competency'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    node_id = db.Column(db.String(64), nullable=False, index=True)
+    competency_theta = db.Column(db.Float, default=0.0)
+    competency_score = db.Column(db.Float, default=50.0)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    __table_args__ = (db.UniqueConstraint('user_id', 'node_id', name='_user_node_comp_uc'),)
+    
+    user = db.relationship('User', backref=db.backref('node_competencies', lazy=True))
 
 class AblationSetting(db.Model):
     """

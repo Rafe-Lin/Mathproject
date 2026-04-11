@@ -34,6 +34,7 @@ from core.utils import get_skill_info
 from core.session import get_current, set_current
 from core.adaptive_engine import recommend_question, update_student_ability, apply_error_penalty, get_all_prerequisites
 from core.ai_analyzer import diagnose_error
+from core.irt_engine import update_node_competencies
 from config import Config
 
 # ==========================================
@@ -646,6 +647,14 @@ def check_answer():
     
     # 更新一般進度
     update_progress(current_user.id, skill_id, is_correct)
+
+    # [IRT] 動態更新對應知識圖譜微節點能力質
+    try:
+        difficulty = current.get('current_level', 1)
+        q_text = current.get('question_text', '')
+        update_node_competencies(current_user.id, skill_id, q_text, is_correct, difficulty)
+    except Exception as e:
+        current_app.logger.error(f"IRT 更新節點能力失敗: {e}")
 
     # 若答錯，自動記錄到錯題本
     if not is_correct:

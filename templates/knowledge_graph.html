@@ -359,26 +359,30 @@
         </div>
 
         <!-- 圖例 -->
-        <div class="legend">
+        <div class="legend" style="flex-wrap: wrap;">
             <div class="legend-item">
-                <div class="legend-color" style="background: #E8F4F8;"></div>
-                <span>L0: 教育階段</span>
+                <div class="legend-color" style="background: #95a5a6;"></div>
+                <span>未受測紀錄</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: #B3D9E8;"></div>
-                <span>L1: 領域</span>
+                <div class="legend-color" style="background: #e74c3c;"></div>
+                <span>尚未掌握 (0-20)</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: #7AB3D1;"></div>
-                <span>L2: 單元</span>
+                <div class="legend-color" style="background: #e67e22;"></div>
+                <span>需加強 (20-40)</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: #4A7BA7;"></div>
-                <span>L3: 主題</span>
+                <div class="legend-color" style="background: #f1c40f;"></div>
+                <span>學習中 (40-60)</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: #1D3557;"></div>
-                <span>L4: 次主題</span>
+                <div class="legend-color" style="background: #2ecc71;"></div>
+                <span>熟練 (60-80)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #27ae60;"></div>
+                <span>精熟 (80+)</span>
             </div>
         </div>
 
@@ -588,7 +592,7 @@
                     const radiusMap = {'L0': 25, 'L1': 20, 'L2': 18, 'L3': 15, 'L4': 12};
                     return radiusMap[d.level] || 15;
                 })
-                .attr("fill", d => getNodeColor(d.level))
+                .attr("fill", d => getNodeColor(d.competency, d.level))
                 .on("mouseover", showTooltip)
                 .on("mouseout", hideTooltip);
 
@@ -637,16 +641,25 @@
             }
         }
 
-        // 獲取節點顏色
-        function getNodeColor(level) {
-            const colorMap = {
-                'L0': '#E8F4F8',
-                'L1': '#B3D9E8',
-                'L2': '#7AB3D1',
-                'L3': '#4A7BA7',
-                'L4': '#1D3557'
-            };
-            return colorMap[level] || '#95a5a6';
+        // 獲取節點顏色 (依據能力值)
+        function getNodeColor(competency, level) {
+            // 如果 competency 為 0 或不存在，代表未開始學習，維持原本的結構色
+            if (!competency || competency === 0) {
+                const colorMap = {
+                    'L0': '#E8F4F8',
+                    'L1': '#B3D9E8',
+                    'L2': '#7AB3D1',
+                    'L3': '#4A7BA7',
+                    'L4': '#1D3557'
+                };
+                return colorMap[level] || '#95a5a6';
+            }
+            // 根據能力質 0-100 分段上色
+            if (competency >= 80) return '#27ae60'; // 精熟 (綠)
+            if (competency >= 60) return '#2ecc71'; // 熟練 (淺綠)
+            if (competency >= 40) return '#f1c40f'; // 學習中 (黃)
+            if (competency >= 20) return '#e67e22'; // 需加強 (橘)
+            return '#e74c3c'; // 尚未掌握 (紅)
         }
 
         // 獲取階級 CSS 類別
@@ -670,6 +683,10 @@
                 content += `<hr style="margin: 8px 0; border-color: rgba(255,255,255,0.3);">`;
                 content += `難度: ${d.difficulty}`;
             }
+            
+            content += `<hr style="margin: 8px 0; border-color: rgba(255,255,255,0.3);">`;
+            const comp = d.competency ? parseFloat(d.competency).toFixed(1) : 0.0;
+            content += `<strong>當前能力值: ${comp} / 100</strong>`;
             
             tooltip.innerHTML = content;
             tooltip.classList.add('show');

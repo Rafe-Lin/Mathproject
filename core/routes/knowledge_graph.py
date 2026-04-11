@@ -16,6 +16,7 @@ from typing import Optional
 
 from . import core_bp
 from core.kg_data_loader import get_kg_loader
+from models import db, NodeCompetency
 
 # ==========================================
 # 知識圖譜頁面
@@ -61,6 +62,14 @@ def get_knowledge_graph_data():
         # 獲取圖譜資料
         graph_data = kg_loader.get_graph_data(grade, unit_id)
         
+        # [IRT 整合] 獲取目前學生的所有 IRT 能力值進度
+        competencies = db.session.query(NodeCompetency).filter_by(user_id=current_user.id).all()
+        comp_map = {comp.node_id: comp.competency_score for comp in competencies}
+        
+        for node in graph_data.get('nodes', []):
+            node_id = node.get('id')
+            node['competency'] = comp_map.get(node_id, 0.0)
+            
         return jsonify(graph_data)
         
     except Exception as e:
