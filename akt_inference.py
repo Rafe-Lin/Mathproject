@@ -53,7 +53,7 @@ class AKTInference:
         
         # 建立反向映射（從 problem_id 到 skill_id）
         self.problem_to_skill_id = {}
-        with open('./synthesized_training_data.csv') as f:
+        with open('./synthesized_training_data.csv', encoding='utf-8') as f:
             next(f)  # Skip header
             for line in f:
                 parts = line.strip().split(',')
@@ -64,7 +64,7 @@ class AKTInference:
                         skill_id = self.skill_to_id[skill_name]
                         self.problem_to_skill_id[problem_id] = skill_id
         
-        print(f"✓ AKT 推論引擎已載入")
+        print(f"[OK] AKT 推論引擎已載入")
         print(f"  模型版本 AUC：{self.ckpt['best_auc']:.4f}")
         print(f"  技能數：{self.n_skills}，題目數：{self.n_items}\n")
 
@@ -233,7 +233,7 @@ class AKTInference:
         skill_aprs = sorted(report['skill_aprs'].items(), 
                            key=lambda x: x[1], reverse=True)
         for skill, apr in skill_aprs:
-            status = "✓ 掌握" if report['skill_mastery'][skill] else "✗ 待加強"
+            status = "[OK] 掌握" if report['skill_mastery'][skill] else "[X] 待加強"
             print(f"  {skill:<50} {apr:6.1%}  [{status}]")
         
         print(f"\n【學習建議】")
@@ -281,5 +281,5 @@ if __name__ == "__main__":
         inference.print_report(report)
         
     except FileNotFoundError as e:
-        print(f"✗ 錯誤：{e}")
+        print(f"[X] 錯誤：{e}")
         print("請先執行 train_akt_curriculum.py 訓練模型")
