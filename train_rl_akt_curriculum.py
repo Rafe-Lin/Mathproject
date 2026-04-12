@@ -5,6 +5,7 @@
 
 import sys, os
 import argparse
+import multiprocessing as mp
 import numpy as np
 import torch
 import torch.nn as nn
@@ -15,13 +16,16 @@ from collections import defaultdict
 from scipy.stats import mannwhitneyu
 
 from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecNormalize
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.monitor import Monitor
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+# Keep AKT environment inference on CPU so PPO can own the GPU.
+os.environ.setdefault("AKT_INFER_DEVICE", "cpu")
 
 # 匯入現有的 AKT 推論工具
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -155,8 +159,14 @@ def strat_max_fisher(s_t, visited, n_items):
 # ==========================================
 
 class AKTEnv(gym.Env):
-    def __init__(self, inference, student_pool, item_difficulty, beta=BETA, max_steps=MAX_STEPS, seed=0):
+    def __init__(self, inference=None, student_pool=None, item_difficulty=None, beta=BETA, max_steps=MAX_STEPS, seed=0):
         super().__init__()
+        if inference is None:
+            inference = AKTInference(MODEL_PATH)
+        if student_pool is None:
+            raise ValueError("student_pool is required")
+        if item_difficulty is None:
+            item_difficulty = {}
         self.inference       = inference
         self.student_pool    = student_pool
         self.item_difficulty = item_difficulty
@@ -330,6 +340,11 @@ def optimize_runtime(device):
     cpu_count = os.cpu_count() or 8
     # 避免 CPU thread oversubscription，保留一點系統餘裕
     torch.set_num_threads(max(1, min(10, cpu_count - 1)))
+    # Ensure spawned workers use the same Python executable (venv).
+    try:
+        mp.set_executable(sys.executable)
+    except Exception:
+        pass
     if device == "cuda":
         torch.backends.cudnn.benchmark = True
         try:
@@ -341,7 +356,6 @@ def train(train_pool, test_pool, item_difficulty, seed=0, num_envs=NUM_ENVS,
           timesteps=TIMESTEPS, eval_freq=EVAL_FREQ, eval_episodes=EVAL_EPISODES,
           device=TRAIN_DEVICE):
     env_kwargs = {
-        'inference': inference,
         'item_difficulty': item_difficulty,
         'beta': BETA,
         'max_steps': MAX_STEPS
@@ -350,10 +364,14 @@ def train(train_pool, test_pool, item_difficulty, seed=0, num_envs=NUM_ENVS,
     def make_env(pool, s):
         return Monitor(AKTEnv(student_pool=pool, seed=s, **env_kwargs))
 
-    train_env = DummyVecEnv([
+    env_fns = [
         (lambda s=(seed + i): make_env(train_pool, s))
         for i in range(num_envs)
-    ])
+    ]
+    if num_envs > 1:
+        train_env = SubprocVecEnv(env_fns, start_method="spawn")
+    else:
+        train_env = DummyVecEnv(env_fns)
     train_env = VecNormalize(train_env, norm_obs=False, norm_reward=True, clip_reward=10.0)
     
     eval_env = AKTEnv(student_pool=test_pool, seed=seed+1, **env_kwargs)

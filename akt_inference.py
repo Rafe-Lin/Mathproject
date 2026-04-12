@@ -4,12 +4,14 @@ AKT 推論工具 - 用於知識狀態評估和學習指標計算
 ═════════════════════════════════════════════════════════════════
 """
 
+import os
 import torch
 import pandas as pd
 import numpy as np
 from typing import List, Dict, Tuple
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+_DEVICE_NAME = os.getenv("AKT_INFER_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device(_DEVICE_NAME)
 MAX_SEQ_LEN = 50
 
 
