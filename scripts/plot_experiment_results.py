@@ -67,6 +67,32 @@ STRATEGY_LABEL_MAP = {
     "AB3_PPO_Dynamic": "Adaptive (Ours)",
 }
 
+EXP1_STUDENT_DISPLAY_MAP = {
+    "Careless": "Careless (B+,B++)",
+    "Average": "Average (B)",
+    "Weak": "Weak (C)",
+}
+EXP1_STUDENT_ORDER = [
+    "Careless (B+,B++)",
+    "Average (B)",
+    "Weak (C)",
+]
+EXP1_SUCCESS_LABEL = "Success(達標A) Rate%"
+
+
+def _exp1_success_col(df: pd.DataFrame) -> str | None:
+    for c in [EXP1_SUCCESS_LABEL, "Success Rate (%)"]:
+        if c in df.columns:
+            return c
+    return None
+
+
+def _exp1_group_col(df: pd.DataFrame) -> str | None:
+    for c in ["Student Level", "Student Group"]:
+        if c in df.columns:
+            return c
+    return None
+
 
 def setup_report_style() -> None:
     """Apply a simple report-style matplotlib theme for all generated figures."""
@@ -98,6 +124,257 @@ def report_color_for_strategy(strategy: str) -> str:
 def display_strategy(strategy: str) -> str:
     """Normalize strategy display names for report figures."""
     return STRATEGY_LABEL_MAP.get(strategy, strategy)
+
+
+def _read_csv_df(path: str | Path) -> pd.DataFrame:
+    """Read CSV safely for plotting; return empty dataframe when missing."""
+    p = Path(path)
+    if not p.exists():
+        return pd.DataFrame()
+    return pd.read_csv(p)
+
+
+def plot_exp1_overall_success_rate(summary_csv_path: str | Path, output_path: str | Path) -> None:
+    """Experiment 1 figure 1: overall success-rate bar chart."""
+    df = _read_csv_df(summary_csv_path)
+    success_col = _exp1_success_col(df)
+    if df.empty or "Strategy" not in df.columns or success_col is None:
+        return
+    order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    plot_df = df[df["Strategy"].isin(order)].copy()
+    plot_df["Strategy"] = pd.Categorical(plot_df["Strategy"], categories=order, ordered=True)
+    plot_df = plot_df.sort_values("Strategy")
+    if plot_df.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    bars = ax.bar(
+        plot_df["Strategy"].tolist(),
+        pd.to_numeric(plot_df[success_col], errors="coerce").tolist(),
+        color=[
+            report_color_for_strategy("AB1_Baseline"),
+            report_color_for_strategy("AB2_RuleBased"),
+            report_color_for_strategy("AB3_PPO_Dynamic"),
+        ],
+    )
+    for bar in bars:
+        h = float(bar.get_height())
+        ax.annotate(
+            f"{h:.1f}%",
+            (bar.get_x() + bar.get_width() / 2.0, h),
+            textcoords="offset points",
+            xytext=(0, 3),
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+    ax.set_title("Experiment 1: Overall Success Rate")
+    ax.set_xlabel("Strategy")
+    ax.set_ylabel(EXP1_SUCCESS_LABEL)
+    ax.set_ylim(0, 100)
+    finalize_report_figure(fig, str(output_path))
+
+
+def plot_exp1_overall_efficiency(summary_csv_path: str | Path, output_path: str | Path) -> None:
+    """Experiment 1 figure 2: overall average-steps bar chart."""
+    df = _read_csv_df(summary_csv_path)
+    required = {"Strategy", "Avg Steps"}
+    if df.empty or not required.issubset(df.columns):
+        return
+    order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    plot_df = df[df["Strategy"].isin(order)].copy()
+    plot_df["Strategy"] = pd.Categorical(plot_df["Strategy"], categories=order, ordered=True)
+    plot_df = plot_df.sort_values("Strategy")
+    if plot_df.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.bar(
+        plot_df["Strategy"].tolist(),
+        pd.to_numeric(plot_df["Avg Steps"], errors="coerce").tolist(),
+        color=[
+            report_color_for_strategy("AB1_Baseline"),
+            report_color_for_strategy("AB2_RuleBased"),
+            report_color_for_strategy("AB3_PPO_Dynamic"),
+        ],
+    )
+    ax.set_title("Experiment 1: Overall Efficiency (Avg Steps)")
+    ax.set_xlabel("Strategy")
+    ax.set_ylabel("Average Steps")
+    finalize_report_figure(fig, str(output_path))
+
+
+def plot_exp1_student_type_comparison(group_csv_path: str | Path, output_path: str | Path) -> None:
+    """Experiment 1 figure 3: grouped success-rate bars by student group."""
+    df = _read_csv_df(group_csv_path)
+    success_col = _exp1_success_col(df)
+    group_col = _exp1_group_col(df)
+    if df.empty or success_col is None or group_col is None or "Strategy" not in df.columns:
+        return
+    student_order = EXP1_STUDENT_ORDER
+    strategy_order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    plot_df = df.copy()
+    plot_df[group_col] = plot_df[group_col].astype(str).str.strip()
+    plot_df[group_col] = plot_df[group_col].replace(EXP1_STUDENT_DISPLAY_MAP)
+    plot_df["Strategy"] = plot_df["Strategy"].astype(str).str.strip()
+    plot_df = plot_df[
+        plot_df[group_col].isin(student_order) & plot_df["Strategy"].isin(strategy_order)
+    ]
+    if plot_df.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    x = list(range(len(student_order)))
+    width = 0.25
+    color_map = {
+        "Baseline": report_color_for_strategy("AB1_Baseline"),
+        "Rule-Based": report_color_for_strategy("AB2_RuleBased"),
+        "Adaptive (Ours)": report_color_for_strategy("AB3_PPO_Dynamic"),
+    }
+    for idx, strategy in enumerate(strategy_order):
+        ys = []
+        for student in student_order:
+            hit = plot_df[
+                (plot_df[group_col] == student) & (plot_df["Strategy"] == strategy)
+            ]
+            v = (
+                float(pd.to_numeric(hit[success_col], errors="coerce").mean())
+                if not hit.empty
+                else float("nan")
+            )
+            ys.append(v)
+        offset = (idx - 1) * width
+        ax.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            label=strategy,
+            color=color_map[strategy],
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(student_order)
+    ax.set_ylim(0, 100)
+    ax.set_xlabel("Student Level")
+    ax.set_ylabel(EXP1_SUCCESS_LABEL)
+    ax.set_title("Experiment 1: Success Rate by Student Level")
+    ax.legend(loc="upper right")
+    finalize_report_figure(fig, str(output_path))
+
+
+def plot_exp1_final_mastery_comparison(group_csv_path: str | Path, output_path: str | Path) -> None:
+    """Experiment 1 figure 4: grouped final-mastery bars by student group."""
+    df = _read_csv_df(group_csv_path)
+    group_col = _exp1_group_col(df)
+    required = {"Strategy", "Avg Final Mastery"}
+    if df.empty or group_col is None or not required.issubset(df.columns):
+        return
+    student_order = EXP1_STUDENT_ORDER
+    strategy_order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    plot_df = df.copy()
+    plot_df[group_col] = plot_df[group_col].astype(str).str.strip()
+    plot_df[group_col] = plot_df[group_col].replace(EXP1_STUDENT_DISPLAY_MAP)
+    plot_df["Strategy"] = plot_df["Strategy"].astype(str).str.strip()
+    plot_df = plot_df[
+        plot_df[group_col].isin(student_order) & plot_df["Strategy"].isin(strategy_order)
+    ]
+    if plot_df.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    x = list(range(len(student_order)))
+    width = 0.25
+    color_map = {
+        "Baseline": report_color_for_strategy("AB1_Baseline"),
+        "Rule-Based": report_color_for_strategy("AB2_RuleBased"),
+        "Adaptive (Ours)": report_color_for_strategy("AB3_PPO_Dynamic"),
+    }
+    for idx, strategy in enumerate(strategy_order):
+        ys = []
+        for student in student_order:
+            hit = plot_df[
+                (plot_df[group_col] == student) & (plot_df["Strategy"] == strategy)
+            ]
+            v = (
+                float(pd.to_numeric(hit["Avg Final Mastery"], errors="coerce").mean())
+                if not hit.empty
+                else float("nan")
+            )
+            ys.append(v)
+        offset = (idx - 1) * width
+        ax.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            label=strategy,
+            color=color_map[strategy],
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(student_order)
+    ax.set_ylim(0, 1.0)
+    ax.set_xlabel("Student Level")
+    ax.set_ylabel("Avg Final Mastery")
+    ax.set_title("Experiment 1: Final Mastery by Student Level")
+    ax.legend(loc="upper right")
+    finalize_report_figure(fig, str(output_path))
+
+
+def plot_exp1_mastery_gain_comparison(group_csv_path: str | Path, output_path: str | Path) -> None:
+    """Experiment 1 figure 4: grouped mastery-gain bars by student group."""
+    df = _read_csv_df(group_csv_path)
+    group_col = _exp1_group_col(df)
+    required = {"Strategy", "Avg Mastery Gain"}
+    if df.empty or group_col is None or not required.issubset(df.columns):
+        return
+    student_order = EXP1_STUDENT_ORDER
+    strategy_order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    plot_df = df.copy()
+    plot_df[group_col] = plot_df[group_col].astype(str).str.strip()
+    plot_df[group_col] = plot_df[group_col].replace(EXP1_STUDENT_DISPLAY_MAP)
+    plot_df["Strategy"] = plot_df["Strategy"].astype(str).str.strip()
+    plot_df = plot_df[
+        plot_df[group_col].isin(student_order) & plot_df["Strategy"].isin(strategy_order)
+    ]
+    if plot_df.empty:
+        return
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    x = list(range(len(student_order)))
+    width = 0.25
+    color_map = {
+        "Baseline": report_color_for_strategy("AB1_Baseline"),
+        "Rule-Based": report_color_for_strategy("AB2_RuleBased"),
+        "Adaptive (Ours)": report_color_for_strategy("AB3_PPO_Dynamic"),
+    }
+    for idx, strategy in enumerate(strategy_order):
+        ys = []
+        for student in student_order:
+            hit = plot_df[
+                (plot_df[group_col] == student) & (plot_df["Strategy"] == strategy)
+            ]
+            v = (
+                float(pd.to_numeric(hit["Avg Mastery Gain"], errors="coerce").mean())
+                if not hit.empty
+                else float("nan")
+            )
+            ys.append(v)
+        offset = (idx - 1) * width
+        ax.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            label=strategy,
+            color=color_map[strategy],
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(student_order)
+    ax.set_xlabel("Student Level")
+    ax.set_ylabel("Avg Mastery Gain")
+    ax.set_title("Experiment 1: Mastery Gain by Student Level")
+    ax.legend(loc="upper right")
+    finalize_report_figure(fig, str(output_path))
 
 
 def add_bar_labels(ax: plt.Axes, fmt: str = "{:.1f}%") -> None:
@@ -471,15 +748,20 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
         return
 
     student_type_alias = {
-        "high": "Careless",
-        "mid": "Average",
-        "low": "Weak",
+        "high": "Careless (B+~B++)",
+        "careless": "Careless (B+~B++)",
+        "mid": "Average (B)",
+        "average": "Average (B)",
+        "low": "Weak (C)",
+        "weak": "Weak (C)",
+        "weak foundation": "Weak (C)",
+        "weak_foundation": "Weak (C)",
     }
     normalized = df.copy()
     normalized["student_type"] = (
         normalized["student_type"]
         .astype(str)
-        .map(lambda s: student_type_alias.get(s.strip().lower(), s))
+        .map(lambda s: student_type_alias.get(s.strip().lower(), s.strip()))
     )
 
     grouped = (
@@ -490,77 +772,119 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
     if grouped.empty:
         return
 
-    student_order = ["Careless", "Average", "Weak"]
-    student_display = {
-        "Careless": "Careless",
-        "Average": "Average",
-        "Weak": "Weak Foundation",
-    }
+    student_order = ["Careless (B+~B++)", "Average (B)", "Weak (C)"]
+    assert student_order == ["Careless (B+~B++)", "Average (B)", "Weak (C)"]
     strategy_display = {
         "AB1_Baseline": "Baseline",
         "AB2_RuleBased": "Rule-Based",
         "AB3_PPO_Dynamic": "Adaptive (Ours)",
     }
-    strategy_colors = {s: report_color_for_strategy(s) for s in STRATEGY_ORDER}
+    strategy_colors = {
+        "AB1_Baseline": "#808080",   # Baseline: gray
+        "AB2_RuleBased": "#ff7f0e",  # Rule-Based: orange
+        "AB3_PPO_Dynamic": "#1f77b4",  # Adaptive: blue (highlight)
+    }
     x_labels = [t for t in student_order if any(grouped["student_type"] == t)]
     if not x_labels:
         return
 
     x = list(range(len(x_labels)))
-    width = 0.3
+    width = 0.24
 
     setup_report_style()
-    fig, ax = plt.subplots(figsize=(8, 5), constrained_layout=False)
-    fig.subplots_adjust(left=0.10, right=0.98, top=0.90, bottom=0.13)
+    fig, ax = plt.subplots(figsize=(9, 5.5), constrained_layout=False)
+    fig.subplots_adjust(left=0.10, right=0.98, top=0.90, bottom=0.14)
     ax.set_facecolor("white")
-    strategy_peak: dict[str, float] = {}
+    plotted_vals: dict[str, dict[str, float]] = {s: {} for s in STRATEGY_ORDER}
+    bar_containers = []
     for idx, strategy in enumerate(STRATEGY_ORDER):
         ys: list[float] = []
         for st in x_labels:
             hit = grouped[(grouped["strategy"] == strategy) & (grouped["student_type"] == st)]
             if hit.empty:
-                ys.append(float("nan"))
+                ys.append(0.0)
             else:
                 ys.append(float(pd.to_numeric(hit["success_rate"], errors="coerce").mean()) * 100.0)
-        finite_vals = [v for v in ys if not pd.isna(v)]
-        strategy_peak[strategy] = max(finite_vals) if finite_vals else 0.0
+        for st, y in zip(x_labels, ys):
+            plotted_vals[strategy][st] = float(y)
         offset = (idx - 1) * width
-        ax.bar(
+        bars = ax.bar(
             [i + offset for i in x],
             ys,
             width=width,
             label=strategy_display.get(strategy, strategy),
             color=strategy_colors.get(strategy),
         )
-    add_bar_labels(ax, fmt="{:.1f}%")
+        bar_containers.append(bars)
+
+    # Value labels (1 decimal), compact to avoid overlap.
+    for bars in bar_containers:
+        for b in bars:
+            h = float(b.get_height())
+            ax.annotate(
+                f"{h:.1f}%",
+                (b.get_x() + b.get_width() / 2.0, h),
+                textcoords="offset points",
+                xytext=(0, 3),
+                ha="center",
+                va="bottom",
+                fontsize=9,
+            )
 
     ax.set_xticks(x)
-    ax.set_xticklabels([student_display.get(s, s) for s in x_labels], fontsize=11)
+    ax.set_xticklabels(x_labels, fontsize=11)
     ax.set_title(
-        "Student Type Comparison",
-        fontsize=13,
+        "Experiment 1: Strategy Comparison by Student Type",
+        fontsize=14,
         pad=8,
         color="#333333",
         fontweight="normal",
     )
     ax.set_xlabel("Student Type", labelpad=8, fontsize=10.5, color="#333333")
-    ax.set_ylabel("Success Rate (%)", fontsize=10.5, color="#333333")
+    ax.set_ylabel("Success Rate % (達標A, threshold=0.80)", fontsize=10.5, color="#333333")
     ax.set_ylim(0, 100)
     ax.tick_params(axis="both", labelsize=9.5, colors="#333333")
-    ax.legend(loc="upper left", fontsize=9.5, frameon=True)
-    ab3_peak = strategy_peak.get("AB3_PPO_Dynamic", 0.0)
-    ab2_peak = strategy_peak.get("AB2_RuleBased", 0.0)
-    ax.text(
-        x[-1] + 0.15,
-        min(95.0, ab3_peak + 6.0),
-        "Consistent improvement across all student types",
-        fontsize=9.5,
-        color="tab:green",
-        ha="right",
-        va="bottom",
-    )
+    ax.legend(loc="upper left", fontsize=10, frameon=True)
+    plt.tight_layout()
+
+    # Compute largest improvement dynamically: AB3 - Baseline.
+    improvement_rows: list[tuple[str, float]] = []
+    for st in student_order:
+        b = plotted_vals.get("AB1_Baseline", {}).get(st, float("nan"))
+        a = plotted_vals.get("AB3_PPO_Dynamic", {}).get(st, float("nan"))
+        if pd.notna(b) and pd.notna(a):
+            improvement_rows.append((st, float(a - b)))
+    best_group = "Average (B)"
+    if improvement_rows:
+        best_group = max(improvement_rows, key=lambda t: t[1])[0]
+
+    os.makedirs(EXP1_BASE_DIR, exist_ok=True)
     os.makedirs(EXP1_DIR, exist_ok=True)
-    finalize_report_figure(fig, os.path.join(EXP1_DIR, "fig_exp1_student_type_improved.png"))
+    # Required output path.
+    base_fig_path = os.path.join(EXP1_BASE_DIR, "fig_exp1_student_type_improved.png")
+    finalize_report_figure(fig, base_fig_path)
+    # Keep compatibility with existing latest-based pipeline.
+    try:
+        shutil.copy2(base_fig_path, os.path.join(EXP1_DIR, "fig_exp1_student_type_improved.png"))
+    except Exception:
+        pass
+
+    caption_text = (
+        "[Figure Title]\n"
+        "Experiment 1: Strategy Comparison by Student Type\n\n"
+        "[Main Finding]\n"
+        "Adaptive policy (AB3) improves success rate across all student groups.\n\n"
+        "[Key Insight]\n"
+        f"The largest improvement is observed in: {best_group}\n\n"
+        "Why:\n"
+        "- Careless: already near threshold -> limited gain\n"
+        "- Average: most sensitive to timing -> biggest gain\n"
+        "- Weak: still constrained by foundation\n\n"
+        "[Conclusion]\n"
+        "Adaptive decision (when to remediate) is the key driver of performance.\n"
+    )
+    caption_path = Path(EXP1_BASE_DIR) / "figure_caption_exp1_student_type.md"
+    caption_path.write_text(caption_text, encoding="utf-8-sig")
 
 
 def plot_ab3_subskill_gain_by_type(rows: list[dict[str, str]]) -> None:

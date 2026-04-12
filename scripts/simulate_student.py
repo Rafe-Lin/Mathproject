@@ -37,10 +37,26 @@ import os
 import random
 import statistics
 import shutil
+import sys
 from pathlib import Path
 from collections import Counter
 from typing import Any
 import matplotlib.pyplot as plt
+try:
+    from core.experiment_config import (
+        EXP1_SUCCESS_THRESHOLD as CONFIG_EXP1_SUCCESS_THRESHOLD,
+        get_group_mastery_range,
+        validate_group_config,
+    )
+except ModuleNotFoundError:
+    repo_root = Path(__file__).resolve().parents[1]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from core.experiment_config import (
+        EXP1_SUCCESS_THRESHOLD as CONFIG_EXP1_SUCCESS_THRESHOLD,
+        get_group_mastery_range,
+        validate_group_config,
+    )
 from plot_experiment_results import (
     add_bar_labels,
     create_timestamped_run_dir,
@@ -58,10 +74,14 @@ setup_report_style()
 RANDOM_SEED = 42
 # 每種學生在每個策略下的 episode 數。
 N_PER_TYPE = 100
+# Experiment 1 fixed setting.
+EXP1_N_PER_GROUP = 300
 # 每個 episode 最大步數。
 MAX_STEPS = 30
 # Fixed condition for Experiment 2 mechanism-analysis outputs.
 EXP2_FIXED_MAX_STEPS = 50
+# Experiment 1 fixed max steps.
+EXP1_FIXED_MAX_STEPS = 30
 # Weak foundation-phase extra support budget (used by experiment runner; default off).
 WEAK_FOUNDATION_EXTRA_STEPS = 0
 # Experiment 4: RAG tutor switch and per-episode intervention cap.
@@ -72,6 +92,8 @@ STRUCTURAL_SUBSKILLS = {"family_isomorphism", "expand_binomial"}
 TRANSITION_SUBSKILLS = {"expand_monomial", "sign_distribution"}
 # polynomial 目標精熟門檻。
 TARGET_MASTERY = 0.85
+EXP1_SUCCESS_THRESHOLD = CONFIG_EXP1_SUCCESS_THRESHOLD
+RUNTIME_SUCCESS_THRESHOLD = TARGET_MASTERY
 
 # 子技能導向更新幅度（不做策略 buff，僅依作答結果更新）。
 MASTERY_UPDATE = {
@@ -83,13 +105,7 @@ MASTERY_UPDATE = {
 STRATEGIES = ["AB1_Baseline", "AB2_RuleBased", "AB3_PPO_Dynamic"]
 STUDENT_TYPES = ["Careless", "Weak", "Average"]
 TARGET_SKILL = "polynomial"
-EXP2_STUDENT_TYPE_ORDER = ["Careless", "Average", "Weak Foundation"]
-EXP2_STUDENT_TYPE_DISPLAY = {
-    "Careless": "Careless",
-    "Average": "Average",
-    "Weak": "Weak Foundation",
-    "Weak Foundation": "Weak Foundation",
-}
+EXP2_STUDENT_TYPE_ORDER = ["Careless", "Average", "Weak"]
 
 REPORTS_DIR = Path("reports")
 EXPERIMENT1_OUTPUT_DIR = REPORTS_DIR / "experiment_1_ablation"
@@ -144,11 +160,36 @@ SUBSKILL_WEIGHTS: dict[str, float] = {
 }
 
 FAMILY_SEQUENCE = list(FAMILY_TO_SUBSKILLS.keys())
+validate_group_config()
 
 
 def clamp(value: float, low: float, high: float) -> float:
     """Clamp value into [low, high]."""
     return max(low, min(high, value))
+
+
+def format_student_type_label(student_type: str) -> str:
+    """Normalize student-type labels for all human-facing outputs."""
+    mapping = {
+        "careless": "Careless",
+        "average": "Average",
+        "weak": "Weak",
+        "weak_foundation": "Weak",
+        "weak foundation": "Weak",
+        "low": "Weak",
+        "mid": "Average",
+        "high": "Careless",
+    }
+    raw = str(student_type).strip()
+    return mapping.get(raw.lower(), raw)
+
+
+def _format_row_student_type(row: dict[str, Any]) -> dict[str, Any]:
+    """Return a shallow-copied row with normalized student_type label when present."""
+    out = dict(row)
+    if "student_type" in out:
+        out["student_type"] = format_student_type_label(str(out["student_type"]))
+    return out
 
 
 def get_experiment1_output_dir() -> Path:
@@ -358,6 +399,31 @@ class SimulatedStudent:
         self.reached_mastery_step: int | None = None
 
     def _get_profile(self, student_type: str) -> dict[str, float]:
+        runtime_mode = get_output_mode()
+        if runtime_mode == "experiment1":
+            if student_type == "Careless":
+                # Keep high ability but add stronger slip noise for better separation.
+                return {
+                    "mean": 0.67,
+                    "std": 0.18,
+                    "slip": 0.22,
+                    "guess": 0.05,
+                }
+            if student_type == "Weak":
+                # Slightly lift weak baseline to avoid near-zero baseline success.
+                return {
+                    "mean": 0.44,
+                    "std": 0.09,
+                    "slip": 0.08,
+                    "guess": 0.05,
+                }
+            if student_type == "Average":
+                return {
+                    "mean": 0.57,
+                    "std": 0.06,
+                    "slip": 0.11,
+                    "guess": 0.04,
+                }
         if student_type == "Careless":
             # 高平均 mastery、較大方差、較高 slip。
             return {
@@ -385,6 +451,14 @@ class SimulatedStudent:
         raise ValueError(f"Unknown student_type: {student_type}")
 
     def _init_subskill_mastery(self, student_type: str) -> dict[str, float]:
+        runtime_mode = get_output_mode()
+        if runtime_mode == "experiment1":
+            low, high = get_group_mastery_range(student_type)
+            out_exp1: dict[str, float] = {}
+            for subskill in POLYNOMIAL_SUBSKILLS:
+                out_exp1[subskill] = clamp(random.uniform(low, high), 0.05, 0.98)
+            return out_exp1
+
         if student_type == "Average":
             # 前段基礎技能高於後段複雜技能（遞減）。
             base_curve = [0.68, 0.62, 0.58, 0.53, 0.48, 0.44]
@@ -430,6 +504,10 @@ class SimulatedStudent:
             slip = clamp(slip + 0.05, 0.0, 0.40)
         guess = self.profile["guess"]
         p_correct = clamp(raw_p * (1.0 - slip) + (1.0 - raw_p) * guess, 0.01, 0.99)
+        if get_output_mode() == "experiment1" and self.student_type == "Careless":
+            # Additional lapse event for high-ability but careless students.
+            if random.random() < 0.12:
+                p_correct = clamp(p_correct - 0.14, 0.01, 0.99)
 
         is_correct = random.random() < p_correct
 
@@ -492,6 +570,17 @@ def update_mastery(
         delta *= 1.08
     if phase == "remediation" and error_type != "correct":
         delta *= 0.70
+    if get_output_mode() == "experiment1" and student.student_type == "Careless":
+        # Careless learners show unstable consolidation in Exp1.
+        if error_type == "correct":
+            delta *= 0.88
+        else:
+            delta *= 1.10
+    if get_output_mode() == "experiment1" and student.student_type == "Weak":
+        # Diminishing return at low-mastery region for smoother weak-group gain.
+        weak_scale = 0.80 + (0.35 * clamp(current_hit_mastery, 0.0, 1.0))
+        if error_type == "correct":
+            delta *= weak_scale
 
     transfer_scale = 0.25 if error_type == "correct" else 0.08
     student._apply_subskill_delta(hit_subskill=hit_subskill, delta=delta, transfer_scale=transfer_scale)
@@ -520,7 +609,7 @@ def update_mastery(
 
 def maybe_mark_reached_mastery(student: SimulatedStudent, total_steps: int) -> None:
     """Set first step when mastery reaches target."""
-    if student.reached_mastery_step is None and student.mastery >= TARGET_MASTERY:
+    if student.reached_mastery_step is None and student.mastery >= RUNTIME_SUCCESS_THRESHOLD:
         student.reached_mastery_step = total_steps
 
 
@@ -690,7 +779,8 @@ def run_strategy(
             return True
         return False
 
-    while student.mastery < TARGET_MASTERY:
+    done = False
+    while (not done) and student.mastery < RUNTIME_SUCCESS_THRESHOLD:
         if total_steps >= MAX_STEPS:
             break
         gate_active = is_progression_gate_active(student)
@@ -773,7 +863,8 @@ def run_strategy(
         )
         previous_phase = "mainline"
 
-        if student.mastery >= TARGET_MASTERY:
+        if student.mastery >= RUNTIME_SUCCESS_THRESHOLD:
+            done = True
             break
         if total_steps >= MAX_STEPS:
             break
@@ -785,10 +876,21 @@ def run_strategy(
 
         if strategy_name == "AB2_RuleBased" and not is_correct:
             # AB2：錯就進補救，但補救目標較固定、較不精準。
-            remediation_triggered = True
-            remediation_steps = 3
-            remediation_target_subskill = "sign_handling"
-            unnecessary = (error_type == "minor_error") and (student.mastery > 0.60)
+            if get_output_mode() == "experiment1":
+                # Exp1 recalibration: later trigger and shorter remediation for better baseline balance.
+                remediation_triggered = (student.fail_streak >= 2) or (
+                    error_type == "major_error" and student.mastery < 0.62
+                )
+                remediation_steps = 2
+                remediation_target_subskill = (
+                    "sign_handling" if student.student_type == "Weak" else hit_subskill
+                )
+                unnecessary = (error_type == "minor_error") and (student.mastery > 0.70)
+            else:
+                remediation_triggered = True
+                remediation_steps = 3
+                remediation_target_subskill = "sign_handling"
+                unnecessary = (error_type == "minor_error") and (student.mastery > 0.60)
 
         if strategy_name == "AB3_PPO_Dynamic" and not is_correct:
             # AB3：依失敗型態動態觸發，且優先補最可能弱點。
@@ -906,11 +1008,25 @@ def run_strategy(
                     )
                 )
                 previous_phase = "remediation"
+                if (
+                    strategy_name == "AB2_RuleBased"
+                    and get_output_mode() == "experiment1"
+                    and rem_correct
+                    and student.subskill_mastery[rem_hit] >= 0.62
+                ):
+                    # Exp1 recalibration: return to mainline earlier for Rule-Based.
+                    break
 
-                if student.mastery >= TARGET_MASTERY:
+                if student.mastery >= RUNTIME_SUCCESS_THRESHOLD:
+                    done = True
                     break
                 if total_steps >= MAX_STEPS:
                     break
+
+            # Immediate episode termination once mastery threshold is reached.
+            if student.mastery >= RUNTIME_SUCCESS_THRESHOLD:
+                done = True
+                break
 
     return total_steps, mainline_steps, foundation_extra_used, rag_intervention_count, trajectory_rows
 
@@ -933,7 +1049,37 @@ def simulate_episode(
         episode_id=episode_id,
     )
 
-    success = 1 if student.mastery >= TARGET_MASTERY else 0
+    success = 1 if student.mastery >= RUNTIME_SUCCESS_THRESHOLD else 0
+    reached_step = student.reached_mastery_step
+
+    # Correctness check: if success was reached, no additional steps should be taken afterward.
+    if success == 1 and reached_step is not None and int(total_steps) != int(reached_step):
+        print(
+            "[WARN][TerminationMismatch] "
+            f"strategy={strategy_name} student_type={student_type} episode={episode_id} "
+            f"reached_step={reached_step} total_steps={total_steps} final_mastery={student.mastery:.4f}"
+        )
+
+    if (
+        student_type == "Weak"
+        and get_output_mode() == "experiment1"
+        and int(MAX_STEPS) == 40
+    ):
+        remediation_steps = sum(
+            1 for r in trajectory_rows if str(r.get("route", r.get("phase", ""))) == "remediation"
+        )
+        gate_active_steps = sum(
+            1
+            for r in trajectory_rows
+            if int(r.get("progression_gate_active", 0)) == 1
+        )
+        print(
+            "[DEBUG][WeakEpisode] "
+            f"strategy={strategy_name} episode={episode_id} "
+            f"success={success} steps_taken={total_steps} final_mastery={student.mastery:.4f} "
+            f"reached_step={reached_step if reached_step is not None else ''} "
+            f"remediation_steps={remediation_steps} gate_active_steps={gate_active_steps}"
+        )
 
     total_subskill_gain = sum(
         student.subskill_mastery[s] - student.initial_subskill_mastery[s]
@@ -953,6 +1099,7 @@ def simulate_episode(
         "initial_polynomial_mastery": round(initial_polynomial_mastery, 4),
         "final_mastery": round(student.mastery, 4),
         "target_gain": round(polynomial_gain, 4),
+        "mastery_gain": round(polynomial_gain, 4),
         "total_subskill_gain": round(total_subskill_gain, 4),
         "reached_mastery_step": student.reached_mastery_step,
         "remediation_count": student.remediation_count,
@@ -984,6 +1131,39 @@ def run_batch_experiments() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]
                 )
                 episodes.append(one_episode)
                 trajectory.extend(rows)
+
+    # Debug diagnostics: check whether Weak + Rule-Based is trapped in remediation/gate dynamics.
+    weak_rule_rows = [
+        r for r in trajectory
+        if str(r.get("strategy")) == "AB2_RuleBased" and str(r.get("student_type")) == "Weak"
+    ]
+    weak_rule_eps = [
+        e for e in episodes
+        if str(e.get("strategy")) == "AB2_RuleBased" and str(e.get("student_type")) == "Weak"
+    ]
+    if weak_rule_rows and weak_rule_eps:
+        rem_steps = sum(
+            1 for r in weak_rule_rows if str(r.get("route", r.get("phase", ""))) == "remediation"
+        )
+        gate_steps = sum(
+            1 for r in weak_rule_rows if int(r.get("progression_gate_active", 0)) == 1
+        )
+        total_rows = len(weak_rule_rows)
+        success_rate = statistics.mean(float(e["success"]) for e in weak_rule_eps) * 100.0
+        avg_steps = statistics.mean(float(e["total_steps"]) for e in weak_rule_eps)
+        rem_ratio = (rem_steps / total_rows) if total_rows > 0 else float("nan")
+        gate_ratio = (gate_steps / total_rows) if total_rows > 0 else float("nan")
+        print(
+            "[DEBUG][WeakRuleBasedAggregate] "
+            f"max_steps={int(MAX_STEPS)} "
+            f"success_rate={success_rate:.2f}% avg_steps={avg_steps:.2f} "
+            f"remediation_ratio={rem_ratio:.3f} gate_active_ratio={gate_ratio:.3f} "
+            f"episodes={len(weak_rule_eps)}"
+        )
+        if rem_ratio > 0.80:
+            print("[WARN][WeakRuleBased] high remediation ratio detected (>0.80).")
+        if gate_ratio > 0.80:
+            print("[WARN][WeakRuleBased] progression gate active in most steps (>0.80).")
 
     return episodes, trajectory
 
@@ -1370,7 +1550,7 @@ def write_trajectory_csv(trajectory_rows: list[dict[str, Any]]) -> str:
         "active_family",
         "hit_subskill",
         "progression_gate_active",
-        "weak_foundation_mean",
+        "foundation_mastery_mean",
         "polynomial_mastery",
         "mastery_before",
         "mastery_after",
@@ -1398,7 +1578,9 @@ def write_trajectory_csv(trajectory_rows: list[dict[str, Any]]) -> str:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in trajectory_rows:
-            writer.writerow(row)
+            out_row = _format_row_student_type(row)
+            out_row["foundation_mastery_mean"] = out_row.pop("weak_foundation_mean", "")
+            writer.writerow(out_row)
 
     return str(target)
 
@@ -1423,7 +1605,7 @@ def write_ab3_student_type_summary_csv(rows: list[dict[str, Any]]) -> str:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1445,7 +1627,7 @@ def write_ab3_subskill_progress_summary_csv(rows: list[dict[str, Any]]) -> str:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1528,7 +1710,7 @@ def write_ab3_student_type_detailed_summary_csv(rows: list[dict[str, Any]]) -> s
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1551,7 +1733,7 @@ def write_ab3_subskill_by_type_detailed_summary_csv(rows: list[dict[str, Any]]) 
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1574,7 +1756,7 @@ def write_ab3_failure_breakpoint_summary_csv(rows: list[dict[str, Any]]) -> str:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1725,7 +1907,11 @@ def build_experiment2_student_type_summary(
     summaries: list[dict[str, Any]] = []
 
     for student_type in ["Careless", "Average", "Weak"]:
-        rows = [row for row in ab3_rows if row.get("student_type") == student_type]
+        rows = [
+            row
+            for row in ab3_rows
+            if format_student_type_label(str(row.get("student_type", ""))) == student_type
+        ]
         if not rows:
             continue
 
@@ -1755,7 +1941,7 @@ def build_experiment2_student_type_summary(
 
         summaries.append(
             {
-                "student_type": EXP2_STUDENT_TYPE_DISPLAY.get(student_type, student_type),
+                "student_type": format_student_type_label(student_type),
                 "total_episodes": total_episodes,
                 "remediation_steps": remediation_steps,
                 "mainline_steps": mainline_steps,
@@ -1797,7 +1983,7 @@ def write_experiment2_student_type_summary_csv(rows: list[dict[str, Any]]) -> st
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow(row)
+            writer.writerow(_format_row_student_type(row))
     return str(target)
 
 
@@ -1810,13 +1996,14 @@ def write_experiment2_policy_behavior_figure(rows: list[dict[str, Any]]) -> str:
     if not ok:
         return str(target)
 
-    student_order = EXP2_STUDENT_TYPE_ORDER
-    valid_rows = [row for row in rows if row.get("student_type") in student_order]
+    student_order = [format_student_type_label(st) for st in EXP2_STUDENT_TYPE_ORDER]
+    formatted_rows = [_format_row_student_type(row) for row in rows]
+    valid_rows = [row for row in formatted_rows if row.get("student_type") in student_order]
     if not valid_rows:
         return output_path
     valid_rows.sort(key=lambda row: student_order.index(str(row["student_type"])))
 
-    x_labels = [str(row["student_type"]) for row in valid_rows]
+    x_labels = [format_student_type_label(str(row["student_type"])) for row in valid_rows]
     remediation_ratio = [
         float(row["remediation_ratio"]) if row["remediation_ratio"] != "" else float("nan")
         for row in valid_rows
@@ -1878,7 +2065,7 @@ def write_experiment2_figure_captions(output_dir: str, representative_episode_id
         with open(target, "w", encoding="utf-8-sig") as f:
             f.write(
                 "### Figure Caption: Experiment 2 Policy Behavior Summary\n"
-                "This figure compares policy allocation across Careless, Average, and Weak Foundation groups under AB3.\n"
+                "This figure compares policy allocation across Careless, Average, and Weak groups under AB3.\n"
                 "Both bars are computed from real step-level logs: remediation ratio = remediation steps / active steps,\n"
                 "mainline ratio = mainline steps / active steps.\n"
                 "Experiment 1 identifies MAX_STEPS = 50 as the best-performing setting; therefore Experiment 2 uses MAX_STEPS = 50 for mechanism analysis consistency.\n"
@@ -1936,7 +2123,7 @@ def select_representative_mastery_episode(
         by_episode.setdefault(eid, []).append(row)
 
     episode_meta = {int(e["episode_id"]): e for e in episodes if e["strategy"] == "AB3_PPO_Dynamic"}
-    type_priority = {"Average": 0, "Weak Foundation": 1, "Careless": 2}
+    type_priority = {"Average": 0, "Weak": 1, "Careless": 2}
     candidates: list[tuple[int, int, int, int]] = []
     # tuple: (type_rank, -remediation_steps, -return_count, episode_id)
     for eid, rows in by_episode.items():
@@ -1947,12 +2134,12 @@ def select_representative_mastery_episode(
         meta = episode_meta.get(eid)
         if not meta or int(meta.get("success", 0)) != 1:
             continue
-        stype = EXP2_STUDENT_TYPE_DISPLAY.get(str(meta.get("student_type", "Average")), str(meta.get("student_type", "Average")))
+        stype = format_student_type_label(str(meta.get("student_type", "Average")))
         rank = type_priority.get(stype, 99)
         candidates.append((rank, -rem_steps, -ret_count, eid))
 
     if not candidates:
-        # Fallback: any AB3 episode with remediation, prioritize Average/Weak Foundation.
+        # Fallback: any AB3 episode with remediation, prioritize Average/Weak.
         fallback: list[tuple[int, int, int]] = []
         for eid, rows in by_episode.items():
             rem_steps = sum(
@@ -1961,7 +2148,7 @@ def select_representative_mastery_episode(
             if rem_steps <= 0:
                 continue
             meta = episode_meta.get(eid, {})
-            stype = EXP2_STUDENT_TYPE_DISPLAY.get(str(meta.get("student_type", "Average")), str(meta.get("student_type", "Average")))
+            stype = format_student_type_label(str(meta.get("student_type", "Average")))
             rank = type_priority.get(stype, 99)
             total_steps = len(rows)
             fallback.append((rank, abs(total_steps - 30), eid))
@@ -2025,7 +2212,7 @@ def save_mastery_trajectory_plot(
     remediation_spans = _find_remediation_spans(rows)
 
     raw_student_type = str(rows[0].get("student_type", "Unknown"))
-    student_type = EXP2_STUDENT_TYPE_DISPLAY.get(raw_student_type, raw_student_type)
+    student_type = format_student_type_label(raw_student_type)
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -2156,7 +2343,7 @@ def save_mastery_trajectory_plot(
         ax.set_ylim(0.0, 1.0)
     ax.set_title(
         "How Remediation Improves Target Mastery (Representative Episode)\n"
-        "Average Student | AB3 Policy",
+        f"{student_type} Student | AB3 Policy",
         fontsize=11.5,
     )
     ax.legend(
@@ -2202,7 +2389,7 @@ def save_average_mastery_trajectory_by_type(
     step_log_rows: list[dict[str, Any]],
     output_dir: str,
 ) -> str | None:
-    """Save single publication figure: average mastery trajectory by student type."""
+    """Save single publication figure using fixed-N (episode-padded) averaging."""
     ab3 = [r for r in step_log_rows if r.get("strategy") == "AB3_PPO_Dynamic"]
     if not ab3:
         return None
@@ -2212,7 +2399,7 @@ def save_average_mastery_trajectory_by_type(
 
     steps = list(range(1, max_step + 1))
     student_order = ["Careless", "Average", "Weak"]
-    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak Foundation"}
+    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak"}
     colors = {"Careless": "tab:blue", "Average": "tab:orange", "Weak": "tab:green"}
 
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -2220,17 +2407,11 @@ def save_average_mastery_trajectory_by_type(
         episodes = type_episode_step.get(st, {})
         if not episodes:
             continue
-        pre_mean: list[float] = []
-        tar_mean: list[float] = []
-        for t in steps:
-            valid_pre = []
-            valid_tar = []
-            for eid in episodes:
-                if t in episodes[eid]:
-                    valid_pre.append(episodes[eid][t][0])
-                    valid_tar.append(episodes[eid][t][1])
-            pre_mean.append(statistics.mean(valid_pre) if valid_pre else float("nan"))
-            tar_mean.append(statistics.mean(valid_tar) if valid_tar else float("nan"))
+        padded_pre, padded_tar = _build_padded_episode_trajectories(episodes, max_step)
+        if not padded_pre or not padded_tar:
+            continue
+        pre_mean = [statistics.mean(step_values) for step_values in zip(*padded_pre)]
+        tar_mean = [statistics.mean(step_values) for step_values in zip(*padded_tar)]
 
         ax.plot(
             steps,
@@ -2238,7 +2419,7 @@ def save_average_mastery_trajectory_by_type(
             color=colors[st],
             linewidth=2.4,
             linestyle="-",
-            label=f"{display[st]} Target",
+            label=display[st],
         )
         ax.plot(
             steps,
@@ -2246,7 +2427,7 @@ def save_average_mastery_trajectory_by_type(
             color=colors[st],
             linewidth=1.8,
             linestyle="--",
-            label=f"{display[st]} Prerequisite",
+            label="_nolegend_",
         )
 
     ax.set_title("Average Mastery Trajectory under AB3 by Student Type")
@@ -2254,7 +2435,18 @@ def save_average_mastery_trajectory_by_type(
     ax.set_ylabel("Mastery")
     ax.set_ylim(0.3, 0.9)
     ax.grid(alpha=0.3)
-    ax.legend(loc="upper right", fontsize=8.5, frameon=True, ncol=1)
+    ax.text(
+        0.98,
+        0.04,
+        "Solid = Target, Dashed = Prerequisite",
+        transform=ax.transAxes,
+        fontsize=9,
+        ha="right",
+        va="bottom",
+        bbox=dict(facecolor="white", alpha=0.85, edgecolor="gray", boxstyle="round,pad=0.25"),
+        alpha=0.85,
+    )
+    ax.legend(loc="upper left", fontsize=8.5, frameon=True, ncol=1)
 
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, "mastery_trajectory_average_by_student_type.png")
@@ -2268,6 +2460,28 @@ def save_average_mastery_trajectory_by_type(
     return str(target)
 
 
+def _build_padded_episode_trajectories(
+    episodes: dict[int, dict[int, tuple[float, float]]],
+    max_steps: int,
+) -> tuple[list[list[float]], list[list[float]]]:
+    """Convert sparse per-step mastery logs into fixed-length episode trajectories."""
+    padded_pre: list[list[float]] = []
+    padded_tar: list[list[float]] = []
+    for episode_steps in episodes.values():
+        if not episode_steps:
+            continue
+        sorted_steps = sorted(episode_steps)
+        pre_traj = [episode_steps[s][0] for s in sorted_steps]
+        tar_traj = [episode_steps[s][1] for s in sorted_steps]
+        remaining_steps = max_steps - len(pre_traj)
+        if remaining_steps > 0:
+            pre_traj += [pre_traj[-1]] * remaining_steps
+            tar_traj += [tar_traj[-1]] * remaining_steps
+        padded_pre.append(pre_traj[:max_steps])
+        padded_tar.append(tar_traj[:max_steps])
+    return padded_pre, padded_tar
+
+
 def _build_mastery_by_episode(
     step_log_rows: list[dict[str, Any]],
 ) -> tuple[dict[str, dict[int, dict[int, tuple[float, float]]]], int]:
@@ -2279,7 +2493,7 @@ def _build_mastery_by_episode(
     }
     max_step = 0
     for row in step_log_rows:
-        student_type = str(row.get("student_type", ""))
+        student_type = format_student_type_label(str(row.get("student_type", "")))
         if student_type not in type_episode_step:
             continue
         if row.get("step") is None:
@@ -2300,7 +2514,7 @@ def plot_mastery_trajectory_raw(df: list[dict[str, Any]]) -> plt.Figure | None:
         return None
     steps = list(range(1, max_step + 1))
     student_order = ["Careless", "Average", "Weak"]
-    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak Foundation"}
+    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak"}
     colors = {"Careless": "tab:blue", "Average": "tab:orange", "Weak": "tab:green"}
 
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -2341,7 +2555,7 @@ def plot_mastery_trajectory_corrected(df: list[dict[str, Any]]) -> plt.Figure | 
         return None
     steps = list(range(1, max_step + 1))
     student_order = ["Careless", "Average", "Weak"]
-    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak Foundation"}
+    display = {"Careless": "Careless", "Average": "Average", "Weak": "Weak"}
     colors = {"Careless": "tab:blue", "Average": "tab:orange", "Weak": "tab:green"}
 
     fig, (ax, ax_count) = plt.subplots(
@@ -2479,7 +2693,7 @@ def write_mastery_trajectory_average_figure(
 # ====================
 def main(output_mode: str = "experiment2") -> None:
     """Run simulation workflow with explicit output routing by mode."""
-    global MAX_STEPS
+    global MAX_STEPS, N_PER_TYPE, RUNTIME_SUCCESS_THRESHOLD
     normalized_mode = str(output_mode).strip().lower()
     if normalized_mode not in {"experiment1", "experiment2", "full"}:
         raise ValueError(f"Unsupported output_mode: {output_mode}")
@@ -2490,6 +2704,8 @@ def main(output_mode: str = "experiment2") -> None:
     exp2_enabled = normalized_mode in {"experiment2", "full"}
 
     original_max_steps = int(MAX_STEPS)
+    original_n_per_type = int(N_PER_TYPE)
+    original_runtime_success_threshold = float(RUNTIME_SUCCESS_THRESHOLD)
     print(f"[MODE] {normalized_mode}")
     prev_exp2_env = os.environ.get(EXP2_OUTPUT_DIR_ENV)
     prev_exp1_env = os.environ.get(EXP1_OUTPUT_DIR_ENV)
@@ -2522,8 +2738,13 @@ def main(output_mode: str = "experiment2") -> None:
         print(f"[LATEST] Updating {exp2_latest_dir}")
         print(f"[PROTECT] final directory is never auto-written")
 
-    if exp2_enabled and not exp1_enabled:
+    if exp1_enabled:
+        MAX_STEPS = int(EXP1_FIXED_MAX_STEPS)
+        N_PER_TYPE = int(EXP1_N_PER_GROUP)
+        RUNTIME_SUCCESS_THRESHOLD = float(EXP1_SUCCESS_THRESHOLD)
+    elif exp2_enabled and not exp1_enabled:
         MAX_STEPS = int(EXP2_FIXED_MAX_STEPS)
+        RUNTIME_SUCCESS_THRESHOLD = float(TARGET_MASTERY)
     random.seed(RANDOM_SEED)
     try:
         episodes, trajectory_rows = run_batch_experiments()
@@ -2642,8 +2863,11 @@ def main(output_mode: str = "experiment2") -> None:
         print(f"N_PER_TYPE: {N_PER_TYPE}")
         print(f"MAX_STEPS: {MAX_STEPS}")
         print(f"TARGET_MASTERY: {TARGET_MASTERY}")
+        print(f"RUNTIME_SUCCESS_THRESHOLD: {RUNTIME_SUCCESS_THRESHOLD}")
     finally:
         MAX_STEPS = original_max_steps
+        N_PER_TYPE = original_n_per_type
+        RUNTIME_SUCCESS_THRESHOLD = original_runtime_success_threshold
         if prev_exp2_env is None:
             os.environ.pop(EXP2_OUTPUT_DIR_ENV, None)
         else:

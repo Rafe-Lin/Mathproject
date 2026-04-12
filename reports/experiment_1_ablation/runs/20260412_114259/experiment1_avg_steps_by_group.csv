@@ -1,0 +1,10 @@
+﻿max_steps,strategy,student_group,avg_steps,success_rate,n_success,n_failure
+40,Baseline,"Careless (B+,B++)",16.863333333333333,0.9933333333333333,298,2
+40,Rule-Based,"Careless (B+,B++)",16.07,0.99,297,3
+40,Adaptive (Ours),"Careless (B+,B++)",12.186666666666667,1.0,300,0
+40,Baseline,Average (B),32.20666666666666,0.7133333333333334,214,86
+40,Rule-Based,Average (B),31.273333333333333,0.78,234,66
+40,Adaptive (Ours),Average (B),24.106666666666666,0.98,294,6
+40,Baseline,Weak (C),39.92,0.016666666666666666,5,295
+40,Rule-Based,Weak (C),39.95,0.016666666666666666,5,295
+40,Adaptive (Ours),Weak (C),39.67,0.08,24,276

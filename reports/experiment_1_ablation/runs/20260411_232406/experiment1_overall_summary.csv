@@ -1,0 +1,4 @@
+﻿Strategy,Success(達標A) Rate%,Avg Steps,Avg Mastery Gain,Avg Unnecessary Remediations
+Baseline,43.89,24.97,0.1566,0.0
+Rule-Based,47.44,24.57,0.1734,0.7
+Adaptive (Ours),60.0,22.15,0.148,0.19

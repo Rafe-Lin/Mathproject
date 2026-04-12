@@ -1,474 +1,327 @@
 ﻿"""
-[File Name]
-run_multi_steps_experiment.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This runner executes multi-budget AB experiments by sweeping MAX_STEPS settings.
-It repeatedly calls the simulation entrypoint, preserves per-step result snapshots,
-and builds cross-step summary tables for strategy-level and student-type-level comparisons.
-The script also triggers cross-step plotting and output synchronization for reporting.
-
-[Core Functionality]
-- Override MAX_STEPS in batch mode (30/40/50) and run simulation rounds
-- Preserve each round outputs with step-specific filenames to avoid overwrite
-- Build cross-step merged summaries for strategy and strategy-by-student-type
-- Regenerate multi-step comparison figures from merged summary tables
-- Sync curated outputs into experiment subdirectories for presentation
-
-[Related Experiments]
-- Experiment 1: Baseline vs AB2 vs AB3
-- Experiment 3: Policy Timing (AB3)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
+Experiment 1 official runner (single fixed setting, timestamped run output).
 """
 
-import os
-import shutil
-from pathlib import Path
+from __future__ import annotations
 
-import pandas as pd
+import csv
+import os
+import random
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 import simulate_student
-import plot_experiment_results as plot_results_module
+from core.experiment_config import (
+    EXP1_SUCCESS_THRESHOLD as CONFIG_EXP1_SUCCESS_THRESHOLD,
+    display_student_group,
+    validate_group_config,
+)
 from plot_experiment_results import (
-    create_timestamped_run_dir,
-    plot_multi_steps_results,
-    sync_run_to_latest,
+    plot_exp1_mastery_gain_comparison,
+    plot_exp1_overall_efficiency,
+    plot_exp1_overall_success_rate,
+    plot_exp1_student_type_comparison,
     setup_report_style,
 )
 
-MAX_STEPS_LIST = [30, 40, 50]
 REPORTS_DIR = Path("reports")
 EXP1_BASE_DIR = REPORTS_DIR / "experiment_1_ablation"
 RUNS_DIR = EXP1_BASE_DIR / "runs"
-LATEST_DIR = EXP1_BASE_DIR / "latest"
-FINAL_DIR = EXP1_BASE_DIR / "final"
-EXP1_OUTPUT_DIR_ENV = "MATHPROJECT_EXP1_OUTPUT_DIR"
 
-# Per-run outputs that should be preserved with a steps suffix.
-PRESERVE_FILES = [
-    "ablation_simulation_results.csv",
-    "ablation_strategy_summary.csv",
-    "ablation_strategy_by_student_type_summary.csv",
-]
-
-EXP1_ARTIFACTS = [
-    "ablation_simulation_results.csv",
-    "ablation_strategy_summary.csv",
-    "ablation_strategy_by_student_type_summary.csv",
-    "multi_steps_strategy_summary.csv",
-    "multi_steps_strategy_by_type_summary.csv",
-    "experiment1_summary_table.csv",
-    "experiment1_summary_table.md",
-    "fig_multi_steps_success_rate.png",
-    "fig_multi_steps_efficiency.png",
-    "fig_exp1_student_type_improved.png",
-]
+N_PER_GROUP = 300
+MAX_STEPS = 30
+SUCCESS_THRESHOLD = 0.80
 
 STRATEGY_DISPLAY_MAP = {
     "AB1_Baseline": "Baseline",
     "AB2_RuleBased": "Rule-Based",
     "AB3_PPO_Dynamic": "Adaptive (Ours)",
 }
-
-REDUNDANT_EXP1_FIGURES = [
-    "fig_ablation_by_student_type.png",
-    "fig_ablation_by_student_type_success.png",
-    "fig_ablation_success_rate.png",
-    "fig_ablation_steps_vs_success.png",
-    "fig_ablation_strategy_breakdown.png",
-    "fig_multi_steps_ab3_by_student_type.png",
-]
-
-ACTIVE_EXP1_DIR: Path = LATEST_DIR
+STUDENT_ORDER = ["Careless", "Average", "Weak"]
+STUDENT_DISPLAY_MAP = {
+    "Careless": display_student_group("careless"),
+    "Average": display_student_group("average"),
+    "Weak": display_student_group("weak"),
+}
+STRATEGY_ORDER = ["AB1_Baseline", "AB2_RuleBased", "AB3_PPO_Dynamic"]
+SUCCESS_DISPLAY_LABEL = "Success(達標A) Rate%"
+SUCCESS_THRESHOLD_DISPLAY = "0.80"
 
 
-def get_active_exp1_dir() -> Path:
-    """Current Experiment 1 output directory for this process."""
-    return ACTIVE_EXP1_DIR
+def _as_pct(x: float) -> float:
+    return round(float(x) * 100.0, 2)
 
 
-def set_active_exp1_dir(path: Path) -> None:
-    """Configure active Experiment 1 output directory and env override."""
-    global ACTIVE_EXP1_DIR
-    ACTIVE_EXP1_DIR = path
-    os.environ[EXP1_OUTPUT_DIR_ENV] = str(path)
+def _new_run_dir() -> Path:
+    RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    run_dir = RUNS_DIR / datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_dir.mkdir(parents=True, exist_ok=True)
+    return run_dir
 
 
-def create_run_output_dir() -> Path:
-    """Create runs/<timestamp> folder for current Experiment 1 execution."""
-    dirs = create_timestamped_run_dir(EXP1_BASE_DIR)
-    return dirs["run_dir"]
+def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, Any]]) -> None:
+    with open(path, "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
 
 
-def refresh_latest_from_run(run_dir: Path) -> None:
-    """Replace latest/ with current run outputs."""
-    sync_run_to_latest(run_dir, LATEST_DIR)
-
-
-def cleanup_redundant_experiment1_figures() -> None:
-    """Remove redundant Experiment 1 figure files from root and exp1 folders."""
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    exp1_dir = get_active_exp1_dir()
-    exp1_dir.mkdir(parents=True, exist_ok=True)
-    for filename in REDUNDANT_EXP1_FIGURES:
-        for parent in (REPORTS_DIR, exp1_dir):
-            path = parent / filename
-            if path.exists():
-                path.unlink()
-
-
-def cleanup_previous_step_snapshots(max_steps_list: list[int]) -> None:
-    """Remove stale step-suffixed CSV snapshots before a new multi-step run."""
-    exp1_dir = get_active_exp1_dir()
-    exp1_dir.mkdir(parents=True, exist_ok=True)
-    stems = [
-        "ablation_simulation_results",
-        "ablation_strategy_summary",
-        "ablation_strategy_by_student_type_summary",
+def validate_experiment1_labels() -> None:
+    validate_group_config()
+    blocked = [
+        "A~B++",
+        "B~B+",
+        "Weak Foundation",
+        "達標率（精熟度 ≥ 0.80, %）",
+        "Success Rate (Mastery ≥ 0.80, %)",
     ]
-    for steps in max_steps_list:
-        for stem in stems:
-            path = exp1_dir / f"{stem}_steps{int(steps)}.csv"
-            if path.exists():
-                path.unlink()
-
-    cleanup_redundant_experiment1_figures()
-
-
-def run_single_steps_experiment(max_steps: int) -> None:
-    """Run one simulate_student round with an overridden MAX_STEPS."""
-    simulate_student.MAX_STEPS = int(max_steps)
-    simulate_student.main(output_mode="experiment1")
+    values = list(STUDENT_DISPLAY_MAP.values()) + [SUCCESS_DISPLAY_LABEL]
+    bad_hits = [w for w in blocked if any(w in str(v) for v in values)]
+    if bad_hits:
+        print(f"[WARN] Experiment 1 label check found legacy terms: {bad_hits}")
+    assert SUCCESS_THRESHOLD_DISPLAY == "0.80"
+    assert abs(CONFIG_EXP1_SUCCESS_THRESHOLD - 0.80) < 1e-9
+    assert SUCCESS_DISPLAY_LABEL == "Success(達標A) Rate%"
 
 
-def preserve_step_outputs(max_steps: int) -> None:
-    """Copy current report CSVs to step-suffixed files to avoid overwrite."""
-    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    exp1_dir = get_active_exp1_dir()
-    exp1_dir.mkdir(parents=True, exist_ok=True)
-    for filename in PRESERVE_FILES:
-        src = exp1_dir / filename
-        if not src.exists():
+def _build_overall_summary(episodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for strategy in STRATEGY_ORDER:
+        subset = [e for e in episodes if str(e["strategy"]) == strategy]
+        if not subset:
             continue
-        stem = src.stem
-        dst = exp1_dir / f"{stem}_steps{max_steps}.csv"
-        shutil.copy2(src, dst)
-
-
-def consolidate_experiment1_outputs() -> None:
-    """Move Experiment 1 artifacts from reports root into experiment_1_ablation.
-
-    Note: experiment1_summary_table.* are generated from aggregated multi-step results.
-    We avoid moving same-name files from reports root to prevent accidental overwrite.
-    """
-    # Outputs are already written into run_dir via env override. Keep as no-op
-    # for backward compatibility.
-    exp1_dir = get_active_exp1_dir()
-    exp1_dir.mkdir(parents=True, exist_ok=True)
-
-
-def build_multi_steps_strategy_summary(max_steps_list: list[int]) -> Path:
-    """Merge per-step strategy summaries into one cross-step table."""
-    exp1_dir = get_active_exp1_dir()
-    rows: list[pd.DataFrame] = []
-    for steps in max_steps_list:
-        path = exp1_dir / f"ablation_strategy_summary_steps{steps}.csv"
-        if not path.exists():
-            continue
-        df = pd.read_csv(path)
-        if df.empty:
-            continue
-        df["max_steps"] = int(steps)
-        df = df.rename(
-            columns={
-                "avg_final_polynomial_mastery": "avg_final_mastery",
-                "avg_unnecessary_remediations": "avg_unnecessary_remediation",
+        success_rate = sum(int(e["success"]) for e in subset) / len(subset)
+        avg_steps = sum(float(e["total_steps"]) for e in subset) / len(subset)
+        avg_mastery_gain = sum(float(e["mastery_gain"]) for e in subset) / len(subset)
+        avg_unnecessary = sum(float(e["unnecessary_remediations"]) for e in subset) / len(subset)
+        rows.append(
+            {
+                "Strategy": STRATEGY_DISPLAY_MAP.get(strategy, strategy),
+                SUCCESS_DISPLAY_LABEL: _as_pct(success_rate),
+                "Avg Steps": round(avg_steps, 2),
+                "Avg Mastery Gain": round(avg_mastery_gain, 4),
+                "Avg Unnecessary Remediations": round(avg_unnecessary, 2),
             }
         )
-        keep = [
-            "max_steps",
-            "strategy",
-            "success_rate",
-            "avg_steps",
-            "avg_final_mastery",
-            "avg_unnecessary_remediation",
-        ]
-        for col in keep:
-            if col not in df.columns:
-                df[col] = pd.NA
-        # Safety clamp: reported average steps cannot exceed configured MAX_STEPS.
-        df["avg_steps"] = pd.to_numeric(df["avg_steps"], errors="coerce").clip(upper=int(steps))
-        rows.append(df[keep])
+    return rows
 
-    out = exp1_dir / "multi_steps_strategy_summary.csv"
-    if rows:
-        pd.concat(rows, ignore_index=True).to_csv(out, index=False, encoding="utf-8-sig")
-    else:
-        pd.DataFrame(
-            columns=[
-                "max_steps",
-                "strategy",
-                "success_rate",
-                "avg_steps",
-                "avg_final_mastery",
-                "avg_unnecessary_remediation",
+
+def _build_group_summary(episodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for student_group in STUDENT_ORDER:
+        for strategy in STRATEGY_ORDER:
+            subset = [
+                e
+                for e in episodes
+                if str(e["student_type"]) == student_group and str(e["strategy"]) == strategy
             ]
-        ).to_csv(out, index=False, encoding="utf-8-sig")
-    return out
+            if not subset:
+                continue
+            success_rate = sum(int(e["success"]) for e in subset) / len(subset)
+            avg_steps = sum(float(e["total_steps"]) for e in subset) / len(subset)
+            avg_mastery_gain = sum(float(e["mastery_gain"]) for e in subset) / len(subset)
+            avg_unnecessary = sum(float(e["unnecessary_remediations"]) for e in subset) / len(subset)
+            rows.append(
+                {
+                    "Student Level": STUDENT_DISPLAY_MAP.get(student_group, student_group),
+                    "Strategy": STRATEGY_DISPLAY_MAP.get(strategy, strategy),
+                    SUCCESS_DISPLAY_LABEL: _as_pct(success_rate),
+                    "Avg Steps": round(avg_steps, 2),
+                    "Avg Mastery Gain": round(avg_mastery_gain, 4),
+                    "Avg Unnecessary Remediations": round(avg_unnecessary, 2),
+                }
+            )
+    return rows
 
 
-def build_multi_steps_strategy_by_type_summary(max_steps_list: list[int]) -> Path:
-    """Merge per-step strategy x student_type summaries into one cross-step table."""
-    exp1_dir = get_active_exp1_dir()
-    rows: list[pd.DataFrame] = []
-    for steps in max_steps_list:
-        path = exp1_dir / f"ablation_strategy_by_student_type_summary_steps{steps}.csv"
-        if not path.exists():
-            continue
-        df = pd.read_csv(path)
-        if df.empty:
-            continue
-        df["max_steps"] = int(steps)
-        df = df.rename(columns={"avg_final_polynomial_mastery": "avg_final_mastery"})
-        keep = [
-            "max_steps",
-            "strategy",
-            "student_type",
-            "success_rate",
-            "avg_steps",
-            "avg_final_mastery",
-        ]
-        for col in keep:
-            if col not in df.columns:
-                df[col] = pd.NA
-        # Safety clamp: reported average steps cannot exceed configured MAX_STEPS.
-        df["avg_steps"] = pd.to_numeric(df["avg_steps"], errors="coerce").clip(upper=int(steps))
-        rows.append(df[keep])
-
-    out = exp1_dir / "multi_steps_strategy_by_type_summary.csv"
-    if rows:
-        pd.concat(rows, ignore_index=True).to_csv(out, index=False, encoding="utf-8-sig")
-    else:
-        pd.DataFrame(
-            columns=[
-                "max_steps",
-                "strategy",
-                "student_type",
-                "success_rate",
-                "avg_steps",
-                "avg_final_mastery",
-            ]
-        ).to_csv(out, index=False, encoding="utf-8-sig")
-    return out
-
-
-def build_experiment1_summary_table_from_multi_steps() -> pd.DataFrame:
-    """Build Experiment 1 final summary table from cross-step strategy summary."""
-    src = get_active_exp1_dir() / "multi_steps_strategy_summary.csv"
-    if not src.exists():
-        return pd.DataFrame(
-            columns=[
-                "MAX_STEPS",
-                "Strategy",
-                "Success Rate (%)",
-                "Avg Steps",
-                "Avg Unnecessary Remediations",
-                "Avg Final Mastery",
-            ]
-        )
-
-    df = pd.read_csv(src)
-    if df.empty:
-        return pd.DataFrame(
-            columns=[
-                "MAX_STEPS",
-                "Strategy",
-                "Success Rate (%)",
-                "Avg Steps",
-                "Avg Unnecessary Remediations",
-                "Avg Final Mastery",
-            ]
-        )
-
-    # Normalize source columns from existing summary output.
-    if "avg_unnecessary_remediation" in df.columns:
-        df["avg_unnecessary_remediations"] = df["avg_unnecessary_remediation"]
-
-    keep = [
-        "max_steps",
-        "strategy",
-        "success_rate",
-        "avg_steps",
-        "avg_unnecessary_remediations",
-        "avg_final_mastery",
-    ]
-    for col in keep:
-        if col not in df.columns:
-            df[col] = pd.NA
-    out = df[keep].copy()
-    out["avg_steps"] = pd.to_numeric(out["avg_steps"], errors="coerce")
-    out["max_steps"] = pd.to_numeric(out["max_steps"], errors="coerce")
-    out["avg_steps"] = out[["avg_steps", "max_steps"]].min(axis=1)
-    out = out.rename(
-        columns={
-            "max_steps": "MAX_STEPS",
-            "strategy": "Strategy",
-            "success_rate": "Success Rate (%)",
-            "avg_steps": "Avg Steps",
-            "avg_unnecessary_remediations": "Avg Unnecessary Remediations",
-            "avg_final_mastery": "Avg Final Mastery",
-        }
-    )
-    # success_rate in source is [0,1]; convert to percentage for final table.
-    out["Success Rate (%)"] = pd.to_numeric(out["Success Rate (%)"], errors="coerce") * 100.0
-    out["MAX_STEPS"] = pd.to_numeric(out["MAX_STEPS"], errors="coerce")
-
-    strategy_order = {"AB1_Baseline": 0, "AB2_RuleBased": 1, "AB3_PPO_Dynamic": 2}
-    out["_strategy_order"] = out["Strategy"].map(strategy_order).fillna(99)
-    out = out.sort_values(["MAX_STEPS", "_strategy_order"]).drop(columns=["_strategy_order"])
-
-    # Format all numeric columns to 2 decimals while keeping NaN-safe output.
-    for col in [
-        "Success Rate (%)",
-        "Avg Steps",
-        "Avg Unnecessary Remediations",
-        "Avg Final Mastery",
-    ]:
-        out[col] = pd.to_numeric(out[col], errors="coerce").round(2)
-    out["MAX_STEPS"] = out["MAX_STEPS"].astype("Int64")
-    out["Strategy"] = out["Strategy"].map(lambda s: STRATEGY_DISPLAY_MAP.get(str(s), str(s)))
-    return out
-
-
-def write_experiment1_summary_table(df: pd.DataFrame) -> tuple[Path, Path]:
-    """Write Experiment 1 summary table in CSV and Markdown formats."""
-    exp1_dir = get_active_exp1_dir()
-    exp1_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = exp1_dir / "experiment1_summary_table.csv"
-    md_path = exp1_dir / "experiment1_summary_table.md"
-
-    df.to_csv(csv_path, index=False, encoding="utf-8-sig")
-
+def _build_markdown_table(rows: list[dict[str, Any]], conclusion: str) -> str:
     lines = [
         "# Experiment 1 Summary Table",
         "",
-        "| MAX_STEPS | Strategy | Success Rate (%) | Avg Steps | Avg Unnecessary Remediations | Avg Final Mastery |",
-        "|-----------|----------|------------------|-----------|------------------------------|-------------------|",
+        f"本實驗成功指標為：{SUCCESS_DISPLAY_LABEL}",
+        "學生分為三類：",
+        f"- {display_student_group('careless')}：起始精熟度約 0.68–0.80，基礎能力較高但表現不穩定",
+        f"- {display_student_group('average')}：起始精熟度約 0.50–0.68，屬一般中段學生",
+        f"- {display_student_group('weak')}：起始精熟度約 0.20–0.50，基礎較弱，需要補救",
+        "",
+        f"| Strategy | Student Level | {SUCCESS_DISPLAY_LABEL} | Avg Steps | Avg Mastery Gain | Avg Unnecessary Remediations |",
+        "|---|---|---:|---:|---:|---:|",
     ]
-    for _, row in df.iterrows():
-        def fmt_num(v: object) -> str:
-            if pd.isna(v):
-                return "NaN"
-            return f"{float(v):.2f}"
-
-        max_steps = "NaN" if pd.isna(row["MAX_STEPS"]) else str(int(row["MAX_STEPS"]))
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    max_steps,
-                    str(row["Strategy"]),
-                    fmt_num(row["Success Rate (%)"]),
-                    fmt_num(row["Avg Steps"]),
-                    fmt_num(row["Avg Unnecessary Remediations"]),
-                    fmt_num(row["Avg Final Mastery"]),
-                ]
+    for strategy in ["Baseline", "Rule-Based", "Adaptive (Ours)"]:
+        for student_group in STUDENT_ORDER:
+            target_group = STUDENT_DISPLAY_MAP.get(student_group, student_group)
+            row = next(
+                (
+                    r
+                    for r in rows
+                    if r["Strategy"] == strategy and r["Student Level"] == target_group
+                ),
+                None,
             )
-            + " |"
-        )
-    lines.extend(
-        [
-            "",
-            "Note: The weak foundation group shows low absolute success rates, but Adaptive (Ours) still achieves the highest relative improvement.",
-        ]
+            if row is None:
+                continue
+            lines.append(
+                f"| {row['Strategy']} | {row['Student Level']} | {row[SUCCESS_DISPLAY_LABEL]:.2f} | "
+                f"{row['Avg Steps']:.2f} | {row['Avg Mastery Gain']:.4f} | {row['Avg Unnecessary Remediations']:.2f} |"
+            )
+    lines.extend(["", f"結論：{conclusion}", ""])
+    return "\n".join(lines)
+
+
+def _make_overall_conclusion(overall_rows: list[dict[str, Any]]) -> str:
+    by_name = {str(r["Strategy"]): r for r in overall_rows}
+    adaptive = by_name.get("Adaptive (Ours)")
+    baseline = by_name.get("Baseline")
+    rule = by_name.get("Rule-Based")
+    if not adaptive or not baseline or not rule:
+        return "Unable to recover from current outputs"
+
+    success_best = adaptive[SUCCESS_DISPLAY_LABEL] >= max(
+        baseline[SUCCESS_DISPLAY_LABEL], rule[SUCCESS_DISPLAY_LABEL]
     )
-    md_path.write_text("\n".join(lines) + "\n", encoding="utf-8-sig")
-    return csv_path, md_path
+    steps_best = adaptive["Avg Steps"] <= min(baseline["Avg Steps"], rule["Avg Steps"])
+    unnecessary_best = adaptive["Avg Unnecessary Remediations"] <= min(
+        baseline["Avg Unnecessary Remediations"], rule["Avg Unnecessary Remediations"]
+    )
+    if success_best and (steps_best or unnecessary_best):
+        return "在 Success(達標A) Rate% 指標下，Adaptive (Ours) 於達標率領先，且在效率或補救精準度至少一項更優。"
+    if success_best:
+        return "在 Success(達標A) Rate% 指標下，Adaptive (Ours) 的達標率高於 Baseline 與 Rule-Based。"
+    return "Adaptive (Ours) 未在整體達標率上領先，需檢查設定與隨機性。"
 
 
-def validate_experiment1_summary_table(df: pd.DataFrame, max_steps_list: list[int]) -> None:
-    """Enforce complete 3xN strategy table before writing final report artifacts."""
-    expected_steps = sorted({int(s) for s in max_steps_list})
-    expected_strategies = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
-    expected_pairs = {(s, st) for s in expected_steps for st in expected_strategies}
-
-    got_pairs = set()
-    for _, row in df.iterrows():
-        try:
-            step = int(row["MAX_STEPS"])
-        except Exception:
-            continue
-        strategy = str(row["Strategy"])
-        got_pairs.add((step, strategy))
-
-    missing = sorted(expected_pairs - got_pairs)
-    extra = sorted(got_pairs - expected_pairs)
-    if missing or extra or len(df) != len(expected_pairs):
-        raise RuntimeError(
-            "Experiment 1 summary table is incomplete or inconsistent. "
-            f"rows={len(df)}, expected_rows={len(expected_pairs)}, "
-            f"missing={missing}, extra={extra}"
-        )
+def _write_readme(path: Path) -> None:
+    content = (
+        "# Experiment 1 (Formal)\n\n"
+        "## Purpose\n"
+        "Compare Baseline, Rule-Based, and Adaptive (Ours) under one fixed setting to answer: "
+        "why choose Adaptive as the core system.\n\n"
+        "## Student Levels\n"
+        f"- {display_student_group('careless')}：起始精熟度約 0.68–0.80，基礎能力較高但表現不穩定\n"
+        f"- {display_student_group('average')}：起始精熟度約 0.50–0.68，屬一般中段學生\n"
+        f"- {display_student_group('weak')}：起始精熟度約 0.20–0.50，基礎較弱，需要補救\n\n"
+        "## Fixed Settings\n"
+        f"- 成功定義：{SUCCESS_DISPLAY_LABEL}\n"
+        f"- MAX_STEPS = {MAX_STEPS}\n"
+        f"- N_PER_GROUP = {N_PER_GROUP}\n"
+        f"- TOTAL = {N_PER_GROUP * len(STUDENT_ORDER)}\n\n"
+        "## Output Files\n"
+        "- experiment1_summary_table.csv: strategy x student-level formal table\n"
+        "- experiment1_summary_table.md: markdown table + one-line conclusion\n"
+        "- experiment1_overall_summary.csv: strategy-level summary\n"
+        "- experiment1_group_summary.csv: student-level summary\n"
+        "- fig_exp1_overall_success_rate.png: overall success-rate comparison\n"
+        "- fig_exp1_overall_efficiency.png: overall avg-steps comparison\n"
+        "- fig_exp1_student_type_comparison.png: success-rate grouped comparison\n"
+        "- fig_exp1_mastery_gain_comparison.png: mastery-gain grouped comparison\n"
+    )
+    path.write_text(content, encoding="utf-8-sig")
 
 
 def main() -> None:
-    """Run multiple MAX_STEPS experiments and generate cross-step summaries + plots."""
-    original_max_steps = simulate_student.MAX_STEPS
-    prev_exp1_env = os.environ.get(EXP1_OUTPUT_DIR_ENV)
-    max_steps_list = [int(s) for s in MAX_STEPS_LIST]
-    run_dir = create_run_output_dir()
-    set_active_exp1_dir(run_dir)
-    # Ensure Experiment 1 plotting helpers write into this run folder.
-    plot_results_module.EXP1_DIR = str(run_dir)
-    print(f"[RUN] Writing outputs to {run_dir}")
-    print(f"[PROTECT] Skipping final/ directory: {FINAL_DIR}")
+    validate_experiment1_labels()
+    run_dir = _new_run_dir()
+    setup_report_style()
+
+    original_max_steps = int(simulate_student.MAX_STEPS)
+    original_n_per_type = int(simulate_student.N_PER_TYPE)
+    original_threshold = float(simulate_student.RUNTIME_SUCCESS_THRESHOLD)
+    prev_mode_env = os.environ.get(simulate_student.OUTPUT_MODE_ENV)
+
     try:
-        cleanup_previous_step_snapshots(max_steps_list)
+        os.environ[simulate_student.OUTPUT_MODE_ENV] = "experiment1"
+        simulate_student.MAX_STEPS = int(MAX_STEPS)
+        simulate_student.N_PER_TYPE = int(N_PER_GROUP)
+        simulate_student.RUNTIME_SUCCESS_THRESHOLD = float(SUCCESS_THRESHOLD)
+        random.seed(simulate_student.RANDOM_SEED)
 
-        for steps in max_steps_list:
-            print(f"\n=== Running simulate_student with MAX_STEPS={steps} ===")
-            run_single_steps_experiment(steps)
-            preserve_step_outputs(steps)
+        episodes, _ = simulate_student.run_batch_experiments()
 
-        strategy_out = build_multi_steps_strategy_summary(max_steps_list)
-        by_type_out = build_multi_steps_strategy_by_type_summary(max_steps_list)
-        exp1_table_df = build_experiment1_summary_table_from_multi_steps()
-        validate_experiment1_summary_table(exp1_table_df, max_steps_list)
-        exp1_csv, exp1_md = write_experiment1_summary_table(exp1_table_df)
+        overall_rows = _build_overall_summary(episodes)
+        group_rows = _build_group_summary(episodes)
 
-        # Render only the 3 core Experiment 1 report figures.
-        setup_report_style()
-        plot_multi_steps_results(include_ab3_by_student_type=False)
-        consolidate_experiment1_outputs()
-        cleanup_redundant_experiment1_figures()
-        print(f"[LATEST] Updating {LATEST_DIR}")
-        refresh_latest_from_run(run_dir)
-        print(f"[LATEST] Updated {LATEST_DIR}")
-        print(f"[PROTECT] Skipping final/ directory: {FINAL_DIR}")
+        summary_table_rows = [
+            {
+                "Strategy": r["Strategy"],
+                "Student Level": r["Student Level"],
+                SUCCESS_DISPLAY_LABEL: r[SUCCESS_DISPLAY_LABEL],
+                "Avg Steps": r["Avg Steps"],
+                "Avg Mastery Gain": r["Avg Mastery Gain"],
+                "Avg Unnecessary Remediations": r["Avg Unnecessary Remediations"],
+            }
+            for r in group_rows
+        ]
 
-        print("\nMulti-steps experiment completed.")
-        print(f"Output CSV: {strategy_out}")
-        print(f"Output CSV: {by_type_out}")
-        print(f"Output CSV: {exp1_csv}")
-        print(f"Output Markdown: {exp1_md}")
-        print(f"Output Figure: {run_dir / 'fig_multi_steps_success_rate.png'}")
-        print(f"Output Figure: {run_dir / 'fig_multi_steps_efficiency.png'}")
-        print(f"Output Figure: {run_dir / 'fig_exp1_student_type_improved.png'}")
+        _write_csv(
+            run_dir / "experiment1_overall_summary.csv",
+            [
+                "Strategy",
+                SUCCESS_DISPLAY_LABEL,
+                "Avg Steps",
+                "Avg Mastery Gain",
+                "Avg Unnecessary Remediations",
+            ],
+            overall_rows,
+        )
+        _write_csv(
+            run_dir / "experiment1_group_summary.csv",
+            [
+                "Student Level",
+                "Strategy",
+                SUCCESS_DISPLAY_LABEL,
+                "Avg Steps",
+                "Avg Mastery Gain",
+                "Avg Unnecessary Remediations",
+            ],
+            group_rows,
+        )
+        _write_csv(
+            run_dir / "experiment1_summary_table.csv",
+            [
+                "Strategy",
+                "Student Level",
+                SUCCESS_DISPLAY_LABEL,
+                "Avg Steps",
+                "Avg Mastery Gain",
+                "Avg Unnecessary Remediations",
+            ],
+            summary_table_rows,
+        )
+
+        conclusion = _make_overall_conclusion(overall_rows)
+        md_text = _build_markdown_table(summary_table_rows, conclusion)
+        (run_dir / "experiment1_summary_table.md").write_text(md_text, encoding="utf-8-sig")
+        _write_readme(run_dir / "README.md")
+
+        plot_exp1_overall_success_rate(
+            run_dir / "experiment1_overall_summary.csv",
+            run_dir / "fig_exp1_overall_success_rate.png",
+        )
+        plot_exp1_overall_efficiency(
+            run_dir / "experiment1_overall_summary.csv",
+            run_dir / "fig_exp1_overall_efficiency.png",
+        )
+        plot_exp1_student_type_comparison(
+            run_dir / "experiment1_group_summary.csv",
+            run_dir / "fig_exp1_student_type_comparison.png",
+        )
+        plot_exp1_mastery_gain_comparison(
+            run_dir / "experiment1_group_summary.csv",
+            run_dir / "fig_exp1_mastery_gain_comparison.png",
+        )
+
+        print("Experiment 1 completed.")
+        print(f"Run directory: {run_dir}")
     finally:
         simulate_student.MAX_STEPS = original_max_steps
-        if prev_exp1_env is None:
-            os.environ.pop(EXP1_OUTPUT_DIR_ENV, None)
+        simulate_student.N_PER_TYPE = original_n_per_type
+        simulate_student.RUNTIME_SUCCESS_THRESHOLD = original_threshold
+        if prev_mode_env is None:
+            os.environ.pop(simulate_student.OUTPUT_MODE_ENV, None)
         else:
-            os.environ[EXP1_OUTPUT_DIR_ENV] = prev_exp1_env
+            os.environ[simulate_student.OUTPUT_MODE_ENV] = prev_mode_env
 
 
 if __name__ == "__main__":

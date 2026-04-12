@@ -1,0 +1,10 @@
+﻿Student Level,Strategy,Success(達標A) Rate%,Avg Steps,Avg Mastery Gain,Avg Unnecessary Remediations
+"Careless (B+,B++)",Baseline,91.0,17.3,0.075,0.0
+"Careless (B+,B++)",Rule-Based,92.67,16.6,0.0756,1.75
+"Careless (B+,B++)",Adaptive (Ours),99.33,12.93,0.0771,0.5
+Average (B),Baseline,40.67,27.6,0.1999,0.0
+Average (B),Rule-Based,49.67,27.1,0.2051,0.35
+Average (B),Adaptive (Ours),80.0,23.54,0.2235,0.08
+Weak (C),Baseline,0.0,30.0,0.1949,0.0
+Weak (C),Rule-Based,0.0,30.0,0.2393,0.0
+Weak (C),Adaptive (Ours),0.67,29.99,0.1435,0.0

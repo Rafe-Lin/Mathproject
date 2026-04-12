@@ -4,6 +4,7 @@
 """
 
 import sys, os
+import argparse
 import numpy as np
 import torch
 import torch.nn as nn
@@ -39,8 +40,12 @@ N_SKILLS  = inference.n_skills     # 17
 N_ITEMS   = inference.n_items      # 212
 BETA      = 0.65                   # 達標閾值
 MAX_STEPS = 60                     # 每輪最大步數
-TIMESTEPS = 500_000                # 訓練步數
+TIMESTEPS = 1_500_000              # 訓練步數
 N_EVAL    = 100                    # 評估輪數
+NUM_ENVS  = 8
+EVAL_FREQ = 25_000
+EVAL_EPISODES = 12
+TRAIN_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 FIGS_DIR = './figures/rl_akt_curriculum'
 RES_DIR  = './results/rl_akt_curriculum'
@@ -50,13 +55,13 @@ os.makedirs(RES_DIR,  exist_ok=True)
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 PPO_KWARGS = dict(
-    learning_rate = 3e-4,
-    n_steps       = 2048,
-    batch_size    = 64,
-    n_epochs      = 10,
+    learning_rate = 2.5e-4,
+    n_steps       = 1024,
+    batch_size    = 512,
+    n_epochs      = 5,
     gamma         = 0.99,
     gae_lambda    = 0.95,
-    ent_coef      = 0.01,
+    ent_coef      = 0.003,
     clip_range    = 0.2,
     max_grad_norm = 0.5,
     verbose       = 0,
@@ -166,10 +171,9 @@ class AKTEnv(gym.Env):
         # 狀態空間：當前每題的預測答對率
         self.observation_space = spaces.Box(0.0, 1.0, shape=(self.n_items,), dtype=np.float32)
 
-    def _get_apr(self):
-        # 計算 Skill-level APR
-        apr, _ = self.inference.get_skill_apr(self.item_history, self.skill_history, self.resp_history)
-        return apr
+    def _get_apr_from_state(self, s_t):
+        # 直接由當前知識狀態計算 skill-level APR，避免重複呼叫 AKT 推論
+        return compute_skill_apr(s_t, self.inference.problem_to_skill_id, self.n_skills)
 
     def _compute_reward(self, new_apr, p_correct, is_correct, item_id):
         d_t  = max(self.beta - self.current_apr, 1e-6)
@@ -218,7 +222,7 @@ class AKTEnv(gym.Env):
         self.resp_history  = list(student['resp_history'])
         
         self.s_t = self.inference.get_knowledge_state(self.item_history, self.skill_history, self.resp_history)
-        self.current_apr = self._get_apr()
+        self.current_apr = self._get_apr_from_state(self.s_t)
         
         self.step_count             = 0
         self.visited_items          = set(self.item_history)
@@ -263,7 +267,7 @@ class AKTEnv(gym.Env):
             
         # 更新狀態與計算獎勵
         self.s_t = self.inference.get_knowledge_state(self.item_history, self.skill_history, self.resp_history)
-        new_apr = self._get_apr()
+        new_apr = self._get_apr_from_state(self.s_t)
         reward = self._compute_reward(new_apr, p_correct, is_correct, item_id)
         
         terminated = bool(new_apr >= self.beta)
@@ -322,7 +326,20 @@ class ConvergenceCallback(BaseCallback):
 # 4. 訓練
 # ==========================================
 
-def train(train_pool, test_pool, item_difficulty, seed=0):
+def optimize_runtime(device):
+    cpu_count = os.cpu_count() or 8
+    # 避免 CPU thread oversubscription，保留一點系統餘裕
+    torch.set_num_threads(max(1, min(10, cpu_count - 1)))
+    if device == "cuda":
+        torch.backends.cudnn.benchmark = True
+        try:
+            torch.set_float32_matmul_precision("high")
+        except Exception:
+            pass
+
+def train(train_pool, test_pool, item_difficulty, seed=0, num_envs=NUM_ENVS,
+          timesteps=TIMESTEPS, eval_freq=EVAL_FREQ, eval_episodes=EVAL_EPISODES,
+          device=TRAIN_DEVICE):
     env_kwargs = {
         'inference': inference,
         'item_difficulty': item_difficulty,
@@ -333,20 +350,24 @@ def train(train_pool, test_pool, item_difficulty, seed=0):
     def make_env(pool, s):
         return Monitor(AKTEnv(student_pool=pool, seed=s, **env_kwargs))
 
-    train_env = DummyVecEnv([lambda: make_env(train_pool, seed)])
+    train_env = DummyVecEnv([
+        (lambda s=(seed + i): make_env(train_pool, s))
+        for i in range(num_envs)
+    ])
     train_env = VecNormalize(train_env, norm_obs=False, norm_reward=True, clip_reward=10.0)
     
     eval_env = AKTEnv(student_pool=test_pool, seed=seed+1, **env_kwargs)
-    cb = ConvergenceCallback(eval_env, eval_freq=10_000)
+    cb = ConvergenceCallback(eval_env, eval_freq=eval_freq, n_ep=eval_episodes)
 
     model = PPO(
         "MlpPolicy", train_env, seed=seed,
         policy_kwargs=dict(net_arch=[512, 256], activation_fn=nn.ReLU),
+        device=device,
         **PPO_KWARGS
     )
     
-    print(f"開始訓練 RL 模型 (基於現有題庫)... 預計 {TIMESTEPS} steps")
-    model.learn(total_timesteps=TIMESTEPS, callback=cb)
+    print(f"Train config: device={device}, n_envs={num_envs}, timesteps={timesteps}, eval_freq={eval_freq}")
+    model.learn(total_timesteps=timesteps, callback=cb)
     
     model.save(f"{MODELS_DIR}/ppo_akt_curriculum")
     return model, cb.history
@@ -413,6 +434,17 @@ def plot_results(history, all_results):
 # ==========================================
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--timesteps", type=int, default=TIMESTEPS)
+    parser.add_argument("--num-envs", type=int, default=NUM_ENVS)
+    parser.add_argument("--eval-freq", type=int, default=EVAL_FREQ)
+    parser.add_argument("--eval-episodes", type=int, default=EVAL_EPISODES)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--device", type=str, default=TRAIN_DEVICE, choices=["cpu", "cuda"])
+    args = parser.parse_args()
+
+    optimize_runtime(args.device)
+
     print(f"載入題庫與學生池資料...")
     train_pool, test_pool = build_student_pool(DATA_PATH, inference.problem_to_id, inference.skill_to_id)
     item_difficulty = build_item_maps(DATA_PATH, inference.problem_to_id)
@@ -420,7 +452,15 @@ def main():
     print(f"學生池大小: Train={len(train_pool)}, Test={len(test_pool)}")
     
     # 1. 訓練
-    model, history = train(train_pool, test_pool, item_difficulty)
+    model, history = train(
+        train_pool, test_pool, item_difficulty,
+        seed=args.seed,
+        num_envs=max(1, args.num_envs),
+        timesteps=max(10_000, args.timesteps),
+        eval_freq=max(1_000, args.eval_freq),
+        eval_episodes=max(2, args.eval_episodes),
+        device=args.device
+    )
     
     # 2. 評估多種策略
     print("\n進行策略對比評估...")

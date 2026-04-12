@@ -1,0 +1,4 @@
+﻿student_type,success_rate,avg_steps,avg_final_polynomial_mastery,avg_reached_mastery_step,avg_remediation_count,avg_unnecessary_remediations,avg_initial_polynomial_mastery,avg_polynomial_gain,avg_total_subskill_gain
+Careless,0.97,23.69,0.8524,22.8763,3.38,0.68,0.6383,0.2141,1.0366
+Weak,0.11,49.58,0.5689,46.1818,11.69,0.03,0.3068,0.2621,1.6587
+Average,0.93,35.02,0.8445,33.8925,4.39,0.38,0.5281,0.3164,1.7644

@@ -1,4 +1,0 @@
-﻿strategy,success_rate,avg_steps,avg_final_polynomial_mastery,avg_reached_mastery_step,avg_remediation_count,avg_unnecessary_remediations,avg_target_gain,avg_total_subskill_gain
-AB1_Baseline,0.1233,29.1367,0.6784,23.0,0.0,0.0,0.1878,1.3037
-AB2_RuleBased,0.1333,28.69,0.6813,20.6923,5.4933,1.91,0.1886,1.3062
-AB3_PPO_Dynamic,0.38,26.6433,0.6945,21.1667,4.64,0.1767,0.202,1.1505
