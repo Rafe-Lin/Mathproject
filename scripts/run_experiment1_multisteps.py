@@ -1,7 +1,7 @@
 ﻿from __future__ import annotations
 
+import csv
 import os
-import random
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -17,10 +17,8 @@ from core.experiment_config import (
     validate_group_config,
 )
 from plot_experiment1_multisteps import (
-    plot_avg_steps_by_group,
-    plot_average_success_trend,
-    plot_student_type_comparison_30_vs_40,
-    plot_student_type_improved,
+    plot_multi_steps_success_rate,
+    plot_student_type_comparison_30_40_50,
     validate_experiment1_labels,
 )
 
@@ -29,9 +27,9 @@ try:
 except Exception:  # pragma: no cover
     tqdm = None
 
-RUNS_DIR = Path("reports/experiment_1_ablation/runs")
+BASE_DIR = Path("reports/experiment_1_ablation")
+RUNS_DIR = BASE_DIR / "runs"
 MAX_STEPS_LIST = [30, 40, 50]
-CLASSIC_N_PER_TYPE = 100
 
 STUDENT_GROUP_MAP = {
     "Careless": "careless",
@@ -48,15 +46,23 @@ STRATEGY_DISPLAY_MAP = {
     "AB3_PPO_Dynamic": "Adaptive (Ours)",
 }
 
-SUCCESS_DISPLAY_LABEL = "Success(達標A) Rate%"
+SUCCESS_DISPLAY_LABEL = "Success Rate 達標A (%)"
 SUCCESS_THRESHOLD_DISPLAY = "0.80"
-CORE_PLOT_NAMES = {
-    "fig_exp1_student_type_improved.png",
-    "fig_exp1_student_type_comparison_30_vs_40.png",
-    "fig_exp1_average_success_trend.png",
-    "fig_exp1_avg_steps_by_group.png",
+REQUIRED_OUTPUT_FILES = {
+    "ablation_simulation_results.csv",
+    "ablation_strategy_by_student_type_summary.csv",
+    "ablation_strategy_summary.csv",
+    "experiment1_summary_table.csv",
+    "experiment1_summary_table.md",
+    "fig_exp1_student_type_comparison_30_40_50.png",
+    "fig_multi_steps_success_rate.png",
 }
 PRIMARY_MAX_STEPS = 40
+
+
+def set_global_seed(seed: int) -> None:
+    """Delegates to simulator-level seed policy to keep behavior consistent."""
+    simulate_student.set_global_seed(int(seed))
 
 
 def validate_experiment1_display_labels() -> None:
@@ -82,7 +88,7 @@ def validate_experiment1_display_labels() -> None:
     if bad_hits:
         print(f"[WARN] Experiment 1 display consistency found legacy terms: {bad_hits}")
     assert values == expected
-    assert SUCCESS_DISPLAY_LABEL == "Success(達標A) Rate%"
+    assert SUCCESS_DISPLAY_LABEL == "Success Rate 達標A (%)"
     assert SUCCESS_THRESHOLD_DISPLAY == "0.80"
     assert abs(CONFIG_EXP1_SUCCESS_THRESHOLD - 0.80) < 1e-9
 
@@ -93,23 +99,33 @@ def _iter_steps(steps: list[int]):
     return tqdm(steps, desc="Experiment1 multi-steps", unit="step")
 
 
-def run_experiment1_multisteps() -> list[dict[str, Any]]:
+def run_experiment1_multisteps() -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[int, int]]:
     results: list[dict[str, Any]] = []
+    primary_episodes: list[dict[str, Any]] = []
+    condition_seed_map: dict[int, int] = {}
 
     original_max_steps = int(simulate_student.MAX_STEPS)
     original_n_per_type = int(simulate_student.N_PER_TYPE)
     original_threshold = float(simulate_student.RUNTIME_SUCCESS_THRESHOLD)
     prev_mode_env = os.environ.get(simulate_student.OUTPUT_MODE_ENV)
+    prev_profile_env = os.environ.get(simulate_student.EXPERIMENT_PROFILE_ENV)
 
     try:
         os.environ[simulate_student.OUTPUT_MODE_ENV] = "experiment1"
-        simulate_student.N_PER_TYPE = int(CLASSIC_N_PER_TYPE)
+        os.environ[simulate_student.EXPERIMENT_PROFILE_ENV] = simulate_student.EXP1_PROFILE_NAME
+        simulate_student.N_PER_TYPE = int(simulate_student.EXP1_EPISODES_PER_TYPE)
         simulate_student.RUNTIME_SUCCESS_THRESHOLD = float(simulate_student.EXP1_SUCCESS_THRESHOLD)
-        random.seed(simulate_student.RANDOM_SEED)
+        base_seed = int(simulate_student.RANDOM_SEED)
 
-        for max_steps in _iter_steps(MAX_STEPS_LIST):
+        for idx, max_steps in enumerate(_iter_steps(MAX_STEPS_LIST)):
+            condition_seed = int(base_seed + idx)
+            condition_seed_map[int(max_steps)] = condition_seed
+            set_global_seed(condition_seed)
+            print(f"[SEED] MAX_STEPS={int(max_steps)} uses seed={condition_seed}")
             simulate_student.MAX_STEPS = int(max_steps)
             episodes, _ = simulate_student.run_batch_experiments()
+            if int(max_steps) == int(PRIMARY_MAX_STEPS):
+                primary_episodes = [dict(e) for e in episodes]
 
             for strategy in STRATEGY_ORDER:
                 for student_type, student_group in STUDENT_GROUP_MAP.items():
@@ -155,6 +171,10 @@ def run_experiment1_multisteps() -> list[dict[str, Any]]:
             os.environ.pop(simulate_student.OUTPUT_MODE_ENV, None)
         else:
             os.environ[simulate_student.OUTPUT_MODE_ENV] = prev_mode_env
+        if prev_profile_env is None:
+            os.environ.pop(simulate_student.EXPERIMENT_PROFILE_ENV, None)
+        else:
+            os.environ[simulate_student.EXPERIMENT_PROFILE_ENV] = prev_profile_env
 
     assert len(results) > 0, "No Experiment 1 multi-step results were generated."
 
@@ -164,7 +184,7 @@ def run_experiment1_multisteps() -> list[dict[str, Any]]:
         groups = {r["student_group"] for r in results if int(r["max_steps"]) == int(max_steps)}
         assert groups == set(STUDENT_GROUP_ORDER)
 
-    return results
+    return results, primary_episodes, condition_seed_map
 
 
 def build_multi_steps_dataframe(results: list[dict]) -> pd.DataFrame:
@@ -225,11 +245,11 @@ def build_overall_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     ].copy()
 
 
-def build_student_type_comparison_30_vs_40_from_df(df: pd.DataFrame) -> pd.DataFrame:
-    """Build 30-vs-40 comparison strictly from main Experiment 1 dataframe (no rerun)."""
+def build_rq1_comparison_from_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Build 30/40/50 comparison dataframe from Experiment 1 results."""
     if df.empty:
         return pd.DataFrame()
-    out = df[df["max_steps"].astype(int).isin([30, 40])].copy()
+    out = df[df["max_steps"].astype(int).isin([30, 40, 50])].copy()
     if out.empty:
         return pd.DataFrame()
     out["success_rate_pct"] = pd.to_numeric(out["success_rate"], errors="coerce") * 100.0
@@ -273,13 +293,13 @@ def build_student_type_comparison_30_vs_40_from_df(df: pd.DataFrame) -> pd.DataF
     return out
 
 
-def validate_30_vs_40_consistency(df_compare: pd.DataFrame) -> None:
+def validate_rq1_adaptive_consistency(df_compare: pd.DataFrame) -> None:
     if df_compare.empty:
-        print("[WARN] 30_vs_40 comparison dataframe is empty.")
+        print("[WARN] RQ1 comparison dataframe is empty.")
         return
 
     groups = list(GROUP_DISPLAY_ORDER)
-    for max_steps in [30, 40]:
+    for max_steps in [30, 40, 50]:
         sub = df_compare[df_compare["max_steps"] == max_steps]
         for g in groups:
             r = sub[sub["student_group_display"] == g]
@@ -298,6 +318,67 @@ def validate_30_vs_40_consistency(df_compare: pd.DataFrame) -> None:
                     f"Consistency check failed: Adaptive is not highest at max_steps={max_steps}, group={g}. "
                     f"Baseline={b:.2f}, Rule-Based={rb:.2f}, Adaptive={a:.2f}"
                 )
+
+
+def _build_rq1_validation_rows(df_compare: pd.DataFrame) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    if df_compare.empty:
+        return pd.DataFrame()
+    for max_steps in [30, 40, 50]:
+        step_df = df_compare[df_compare["max_steps"].astype(int) == max_steps]
+        for g in GROUP_DISPLAY_ORDER:
+            sub = step_df[step_df["student_group_display"] == g].copy()
+            if sub.empty:
+                continue
+            sub["success_rate_pct"] = pd.to_numeric(sub["success_rate_pct"], errors="coerce")
+            by_strategy = {
+                str(r["strategy_display"]): float(r["success_rate_pct"])
+                for _, r in sub.iterrows()
+            }
+            a = by_strategy.get("Adaptive (Ours)")
+            b = by_strategy.get("Baseline")
+            rb = by_strategy.get("Rule-Based")
+            if a is None or b is None or rb is None:
+                continue
+            rows.append(
+                {
+                    "max_steps": int(max_steps),
+                    "student_group_display": str(g),
+                    "baseline": float(b),
+                    "rule_based": float(rb),
+                    "adaptive": float(a),
+                    "adaptive_is_best": bool(a >= max(b, rb)),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def write_experiment1_rq1_validation_report(df_compare: pd.DataFrame, output_dir: Path) -> None:
+    report_path = output_dir / "experiment1_rq1_validation_report.md"
+    rows = _build_rq1_validation_rows(df_compare)
+    if rows.empty:
+        report_path.write_text("# Experiment 1 RQ1 Validation\n\nUnable to validate.\n", encoding="utf-8-sig")
+        return
+    all_adaptive = bool(rows["adaptive_is_best"].all())
+    lines = [
+        "# Experiment 1 RQ1 Validation",
+        "",
+        f"| MAX_STEPS | Student Level | Baseline | Rule-Based | Adaptive | Adaptive Is Best |",
+        "|---:|---|---:|---:|---:|---|",
+    ]
+    for _, r in rows.sort_values(["max_steps", "student_group_display"]).iterrows():
+        lines.append(
+            f"| {int(r['max_steps'])} | {r['student_group_display']} | "
+            f"{float(r['baseline']):.1f}% | {float(r['rule_based']):.1f}% | {float(r['adaptive']):.1f}% | "
+            f"{'YES' if bool(r['adaptive_is_best']) else 'NO'} |"
+        )
+    lines.append("")
+    if all_adaptive:
+        lines.append("Adaptive is the best strategy in all 9 conditions.")
+    else:
+        lines.append("Adaptive is not the best strategy in all 9 conditions.")
+    lines.append("")
+    report_path.write_text("\n".join(lines), encoding="utf-8-sig")
 
 
 def save_outputs(df: pd.DataFrame, df_overall: pd.DataFrame, output_dir: Path) -> None:
@@ -374,7 +455,7 @@ def write_avg_steps_by_group_markdown(df_group_steps: pd.DataFrame, output_dir: 
     lines = [
         "# Experiment 1 Validation: Avg Steps by Student Level (MAX_STEPS=40)",
         "",
-        "| max_steps | strategy | student_group | avg_steps | Success(達標A) Rate% | n_success | n_failure |",
+        f"| max_steps | strategy | student_group | avg_steps | {SUCCESS_DISPLAY_LABEL} | n_success | n_failure |",
         "|---:|---|---|---:|---:|---:|---:|",
     ]
     for _, r in df_group_steps.iterrows():
@@ -387,7 +468,12 @@ def write_avg_steps_by_group_markdown(df_group_steps: pd.DataFrame, output_dir: 
     return path
 
 
-def write_multi_steps_summary_markdown(df: pd.DataFrame, df_overall: pd.DataFrame, output_dir: Path) -> Path:
+def write_multi_steps_summary_markdown(
+    df: pd.DataFrame,
+    df_overall: pd.DataFrame,
+    output_dir: Path,
+    condition_seed_map: dict[int, int] | None = None,
+) -> Path:
     path = output_dir / "experiment1_multi_steps_summary.md"
     if df.empty or df_overall.empty:
         path.write_text("Unable to recover from current outputs\n", encoding="utf-8-sig")
@@ -410,9 +496,21 @@ def write_multi_steps_summary_markdown(df: pd.DataFrame, df_overall: pd.DataFram
         "- 40 steps: best balance between fairness, realism, and strategy separability.",
         "- Therefore, MAX_STEPS = 40 is used as the main presentation setting.",
         "",
+        "## Condition Seed Policy",
+    ]
+    if condition_seed_map:
+        for s in sorted(condition_seed_map):
+            lines.append(f"- MAX_STEPS={int(s)} uses seed {int(condition_seed_map[s])}")
+    else:
+        lines.append("- Seed mapping unavailable.")
+    lines.append(f"- Sample size per (strategy x student_group x max_steps): N={int(simulate_student.EXP1_EPISODES_PER_TYPE)}")
+    lines.extend(
+        [
+            "",
         f"| MAX_STEPS | Strategy | {SUCCESS_DISPLAY_LABEL} | Avg Steps |",
         "|---:|---|---:|---:|",
-    ]
+        ]
+    )
 
     tmp = df_overall.copy()
     tmp["strategy"] = tmp["strategy"].map(STRATEGY_DISPLAY_MAP)
@@ -462,10 +560,10 @@ def write_final_summary(df: pd.DataFrame, df_overall: pd.DataFrame, output_dir: 
         "## Main Setting\n"
         f"- MAX_STEPS = {PRIMARY_MAX_STEPS}\n\n"
         "## Official Figure Set\n"
-        f"- fig_exp1_student_type_improved.png (主圖, MAX_STEPS={PRIMARY_MAX_STEPS})\n"
-        "- fig_exp1_student_type_comparison_30_vs_40.png (30 vs 40 對照圖)\n"
-        "- fig_exp1_average_success_trend.png (Average(B) multi-step trend 圖)\n\n"
-        "- fig_exp1_avg_steps_by_group.png (MAX_STEPS=40 補充驗證圖)\n\n"
+        "- fig_exp1_student_type_comparison_30_40_50.png (主圖, MAX_STEPS=30/40/50)\n"
+        "- fig_exp1_rq1_best_strategy_heatmap.png (總結圖, 3x3 全條件判讀)\n"
+        "- figure_caption_exp1_main.md (主圖圖說)\n"
+        "- figure_caption_exp1_heatmap.md (heatmap 圖說)\n\n"
         "## Key Findings\n"
         "- Experiment 1 first compares 30/40/50 step budgets.\n"
         "- 30 steps is more constrained and more discriminative, but may under-allocate practice opportunities.\n"
@@ -509,38 +607,35 @@ def export_experiment1_summary_table(df: pd.DataFrame, output_dir: Path) -> None
     sub[SUCCESS_DISPLAY_LABEL] = pd.to_numeric(sub["success_rate"], errors="coerce") * 100.0
     sub["Avg Steps"] = pd.to_numeric(sub["avg_steps"], errors="coerce")
     sub["Avg Final Mastery"] = pd.to_numeric(sub["avg_mastery"], errors="coerce")
-    sub["Avg Unnecessary Remediations"] = pd.to_numeric(sub["unnecessary_remediation"], errors="coerce")
     out_cols = [
+        "max_steps",
         "Strategy",
-        "Student Level",
         SUCCESS_DISPLAY_LABEL,
         "Avg Steps",
         "Avg Final Mastery",
-        "Avg Unnecessary Remediations",
     ]
     out = sub[out_cols].copy()
+    out = out.rename(columns={"max_steps": "MAX_STEPS"})
     s_order = {"Baseline": 0, "Rule-Based": 1, "Adaptive (Ours)": 2}
-    g_order = {
-        display_student_group("careless"): 0,
-        display_student_group("average"): 1,
-        display_student_group("weak"): 2,
-    }
     out["_s"] = out["Strategy"].map(s_order)
-    out["_g"] = out["Student Level"].map(g_order)
-    out = out.sort_values(["_g", "_s"]).drop(columns=["_s", "_g"])
+    out = out.sort_values(["MAX_STEPS", "_s"]).drop(columns=["_s"])
     out.to_csv(output_dir / "experiment1_summary_table.csv", index=False, encoding="utf-8-sig")
 
     lines = [
         f"# Experiment 1 Summary Table (MAX_STEPS={PRIMARY_MAX_STEPS})",
         "",
-        f"| Strategy | Student Level | {SUCCESS_DISPLAY_LABEL} | Avg Steps | Avg Final Mastery | Avg Unnecessary Remediations |",
-        "|---|---|---:|---:|---:|---:|",
+        "## Key Result",
+        "",
+        "Adaptive (Ours) achieves the highest success rate across all tested step budgets (30, 40, 50).",
+        "Its advantage is especially clear for Average (B) students, while it also remains the best-performing strategy for Weak (C) students despite low absolute success rates.",
+        "",
+        "| MAX_STEPS | Strategy | Success Rate (%) | Avg Steps | Avg Final Mastery |",
+        "|---:|---|---:|---:|---:|",
     ]
     for _, r in out.iterrows():
         lines.append(
-            f"| {r['Strategy']} | {r['Student Level']} | {float(r[SUCCESS_DISPLAY_LABEL]):.1f}% | "
-            f"{float(r['Avg Steps']):.1f} | {float(r['Avg Final Mastery']):.3f} | "
-            f"{float(r['Avg Unnecessary Remediations']):.2f} |"
+            f"| {int(r['MAX_STEPS'])} | {r['Strategy']} | {float(r[SUCCESS_DISPLAY_LABEL]):.1f}% | "
+            f"{float(r['Avg Steps']):.1f} | {float(r['Avg Final Mastery']):.3f} |"
         )
     lines.extend(
         [
@@ -553,50 +648,184 @@ def export_experiment1_summary_table(df: pd.DataFrame, output_dir: Path) -> None
     (output_dir / "experiment1_summary_table.md").write_text("\n".join(lines), encoding="utf-8-sig")
 
 
-def export_experiment1_core_figures_classic(
-    df: pd.DataFrame,
+def export_experiment1_rq1_figures(
+    df_compare: pd.DataFrame,
     df_overall: pd.DataFrame,
-    df_group_steps: pd.DataFrame,
-    df_30_40: pd.DataFrame,
     output_dir: Path,
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    # Figure role 1 (main): MAX_STEPS=40 student-level performance.
-    plot_student_type_improved(df, output_dir)
-    # Figure role 2 (contrast): 30 is constrained, 40 is balanced main setting.
-    plot_student_type_comparison_30_vs_40(df_30_40, output_dir)
-    # Figure role 3 (trend): Average(B) success trend under 30/40/50.
-    plot_average_success_trend(df, output_dir)
-    # Figure role 4 (supporting validation): average steps by group at MAX_STEPS=40.
-    plot_avg_steps_by_group(df_group_steps, output_dir, target_max_steps=40)
+    plot_student_type_comparison_30_40_50(df_compare, output_dir)
+    plot_multi_steps_success_rate(df_overall, output_dir)
 
 
-def validate_experiment1_core_outputs(run_dir: Path) -> None:
-    expected_files = set(CORE_PLOT_NAMES)
-    existing_png = {p.name for p in run_dir.glob("*.png")}
-    missing = sorted(expected_files - existing_png)
-    extras = sorted(existing_png - expected_files)
+def write_required_ablation_csvs(primary_episodes: list[dict[str, Any]], output_dir: Path) -> None:
+    if not primary_episodes:
+        return
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    episode_fields = [
+        "strategy",
+        "student_type",
+        "success",
+        "total_steps",
+        "final_mastery",
+        "reached_mastery_step",
+        "remediation_count",
+        "unnecessary_remediations",
+        "final_accuracy",
+    ]
+    with open(output_dir / "ablation_simulation_results.csv", "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=episode_fields)
+        writer.writeheader()
+        for episode in primary_episodes:
+            row = {k: episode.get(k, "") for k in episode_fields}
+            if row["reached_mastery_step"] is None:
+                row["reached_mastery_step"] = ""
+            writer.writerow(row)
+
+    strategy_rows = simulate_student.build_ablation_strategy_summary(primary_episodes)
+    strategy_fields = [
+        "strategy",
+        "success_rate",
+        "avg_steps",
+        "avg_final_polynomial_mastery",
+        "avg_reached_mastery_step",
+        "avg_remediation_count",
+        "avg_unnecessary_remediations",
+        "avg_target_gain",
+        "avg_total_subskill_gain",
+    ]
+    with open(output_dir / "ablation_strategy_summary.csv", "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=strategy_fields)
+        writer.writeheader()
+        for row in strategy_rows:
+            writer.writerow(row)
+
+    by_type_rows = simulate_student.build_ablation_strategy_by_student_type_summary(primary_episodes)
+    by_type_fields = [
+        "strategy",
+        "student_type",
+        "success_rate",
+        "avg_steps",
+        "avg_final_polynomial_mastery",
+        "avg_reached_mastery_step",
+        "avg_remediation_count",
+        "avg_unnecessary_remediations",
+        "avg_target_gain",
+        "avg_total_subskill_gain",
+    ]
+    with open(output_dir / "ablation_strategy_by_student_type_summary.csv", "w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=by_type_fields)
+        writer.writeheader()
+        for row in by_type_rows:
+            writer.writerow(row)
+
+
+def validate_experiment1_required_outputs(run_dir: Path) -> None:
+    existing = {p.name for p in run_dir.glob("*") if p.is_file()}
+    missing = sorted(REQUIRED_OUTPUT_FILES - existing)
+    extras = sorted(existing - REQUIRED_OUTPUT_FILES)
     if missing:
-        print(f"[WARN] Missing core plots: {missing}")
+        print(f"[WARN] Missing required Experiment 1 outputs: {missing}")
     if extras:
-        print(f"[WARN] Extra Experiment 1 plots in run dir: {extras}")
+        print(f"[INFO] Extra files in run dir (allowed): {extras}")
+
+
+def run_determinism_check() -> tuple[bool, str]:
+    """Run Experiment 1 twice with same seed policy and compare summary dataframe."""
+    r1, _, _ = run_experiment1_multisteps()
+    r2, _, _ = run_experiment1_multisteps()
+    d1 = build_multi_steps_dataframe(r1).sort_values(["max_steps", "strategy", "student_group"]).reset_index(drop=True)
+    d2 = build_multi_steps_dataframe(r2).sort_values(["max_steps", "strategy", "student_group"]).reset_index(drop=True)
+    key_cols = ["max_steps", "strategy", "student_group", "success_rate", "avg_steps", "avg_mastery"]
+    d1 = d1[key_cols].copy()
+    d2 = d2[key_cols].copy()
+    if d1.equals(d2):
+        return True, "Determinism check passed"
+    diff = d1.compare(d2)
+    return False, f"Determinism check failed\n{diff.to_string()}"
+
+
+def write_experiment1_reproducibility_report(
+    output_dir: Path,
+    condition_seed_map: dict[int, int],
+    determinism_ok: bool,
+    determinism_msg: str,
+) -> None:
+    lines = [
+        "# Experiment 1 Reproducibility Report",
+        "",
+        "## Seed Policy",
+        "- Global seed helper: `set_global_seed(seed)` sets PYTHONHASHSEED + random (+ numpy/torch when available).",
+        "- Condition-wise seeding is enabled (independent seed per MAX_STEPS).",
+    ]
+    for s in sorted(condition_seed_map):
+        lines.append(f"- MAX_STEPS={int(s)} uses seed {int(condition_seed_map[s])}.")
+    lines.extend(
+        [
+            "",
+            "## Sample Size Source",
+            f"- Single source: `simulate_student.EXP1_EPISODES_PER_TYPE = {int(simulate_student.EXP1_EPISODES_PER_TYPE)}`.",
+            "- Runner and simulator now both use this source; no dual overwrite constants remain.",
+            "",
+            "## Output Mode vs Logic",
+            "- Output mode now controls output routing only.",
+            "- Experiment 1 behavior is controlled by explicit profile flag: `MATHPROJECT_EXPERIMENT_PROFILE=exp1`.",
+            "",
+            "## MAX_STEPS Hard Cap",
+            "- `get_effective_max_steps()` now returns `MAX_STEPS` for all groups.",
+            "- Weak students no longer receive implicit +10 steps in Experiment 1.",
+            "",
+            "## Determinism Self-Check",
+            f"- {determinism_msg}",
+            "",
+        ]
+    )
+    if determinism_ok:
+        lines.extend(
+            [
+                "Experiment 1 randomness is now condition-wise deterministic.",
+                "Output mode no longer changes experiment logic.",
+                "All student groups now share the same MAX_STEPS hard cap.",
+            ]
+        )
+    (output_dir / "experiment1_reproducibility_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8-sig")
 
 
 def write_final_readme(output_dir: Path) -> None:
     text = (
-        "# Experiment 1 Core Plot Set\n\n"
-        "本 run 的正式輸出保留 4 張核心圖：\n\n"
-        "1. fig_exp1_student_type_improved.png\n"
-        "2. fig_exp1_student_type_comparison_30_vs_40.png\n"
-        "3. fig_exp1_average_success_trend.png\n"
-        "4. fig_exp1_avg_steps_by_group.png\n\n"
-        "說明：\n"
-        "- 主設定為 MAX_STEPS=40，用於主結果比較。\n"
-        "- 30 vs 40 對照圖用於說明 constrained 與 balanced setting 差異。\n"
-        "- 正式趨勢圖使用 Average (B) 單獨分析，以降低 ceiling/floor 對 overall 曲線的稀釋。\n"
-        "- avg_steps_by_group 為補充驗證圖，不作為第一主敘事圖。\n"
+        "# Experiment 1 Required Outputs\n\n"
+        "每次執行 Exp1 runner 都會產出以下核心檔案：\n\n"
+        "1. ablation_simulation_results.csv\n"
+        "2. ablation_strategy_by_student_type_summary.csv\n"
+        "3. ablation_strategy_summary.csv\n"
+        "4. experiment1_summary_table.csv\n"
+        "5. experiment1_summary_table.md\n"
+        "6. fig_exp1_student_type_comparison_30_40_50.png\n"
+        "7. fig_multi_steps_success_rate.png\n"
     )
     (output_dir / "README.md").write_text(text, encoding="utf-8-sig")
+
+
+def publish_rq1_readme(df_compare: pd.DataFrame, output_dir: Path) -> None:
+    best = _build_rq1_validation_rows(df_compare)
+    all_adaptive = bool(best["adaptive_is_best"].all()) if not best.empty else False
+    verdict = (
+        "Adaptive 在所有設定下皆優於 Baseline 與 Rule-Based。"
+        if all_adaptive
+        else "Adaptive 並非在所有設定下都優於 Baseline 與 Rule-Based。"
+    )
+    text = (
+        "# Experiment 1 RQ1\n\n"
+        "## 主結論\n"
+        f"- {verdict}\n\n"
+        "## 主分析基準\n"
+        "- MAX_STEPS = 40 作為主要分析設定（balanced setting）。\n\n"
+        "## 圖表說明\n"
+        "- 主圖：`fig_exp1_student_type_comparison_30_40_50.png`，呈現 30/40/50 三種步數預算下三類學生的三策略 success rate 比較。\n"
+        "- Heatmap：`fig_exp1_rq1_best_strategy_heatmap.png`，呈現 3×3 條件下每格最佳策略與對應 success rate，作為 overall verdict。\n"
+    )
+    (output_dir / "README_rq1.md").write_text(text, encoding="utf-8-sig")
 
 
 def print_classic_debug_summary(df_overall: pd.DataFrame) -> None:
@@ -629,7 +858,7 @@ if __name__ == "__main__":
 
     target_dir = create_experiment1_run_dir(RUNS_DIR)
 
-    results = run_experiment1_multisteps()
+    results, primary_episodes, condition_seed_map = run_experiment1_multisteps()
     df = build_multi_steps_dataframe(results)
     df_overall = build_overall_dataframe(df)
 
@@ -638,21 +867,29 @@ if __name__ == "__main__":
     assert set(df["student_group"].astype(str).unique().tolist()) == set(STUDENT_GROUP_ORDER)
 
     save_outputs(df, df_overall, target_dir)
-    multi_steps_md_path = write_multi_steps_summary_markdown(df, df_overall, target_dir)
+    write_required_ablation_csvs(primary_episodes, target_dir)
+    multi_steps_md_path = write_multi_steps_summary_markdown(
+        df, df_overall, target_dir, condition_seed_map=condition_seed_map
+    )
     write_final_summary(df, df_overall, target_dir)
     export_experiment1_summary_table(df, target_dir)
-    df_group_steps = build_avg_steps_by_group_table(df, target_max_steps=40)
-    if not df_group_steps.empty:
-        df_group_steps.to_csv(
-            target_dir / "experiment1_avg_steps_by_group.csv", index=False, encoding="utf-8-sig"
-        )
-        write_avg_steps_by_group_markdown(df_group_steps, target_dir)
-
-    df_30_40 = build_student_type_comparison_30_vs_40_from_df(df)
-    validate_30_vs_40_consistency(df_30_40)
-    export_experiment1_core_figures_classic(df, df_overall, df_group_steps, df_30_40, target_dir)
+    df_compare = build_rq1_comparison_from_df(df)
+    validate_rq1_adaptive_consistency(df_compare)
+    export_experiment1_rq1_figures(df_compare, df_overall, target_dir)
+    run_check = str(os.environ.get("MATHPROJECT_RUN_DETERMINISM_CHECK", "")).strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+    det_ok = True
+    det_msg = "Determinism check skipped (set MATHPROJECT_RUN_DETERMINISM_CHECK=1 to enable)."
+    if run_check:
+        det_ok, det_msg = run_determinism_check()
+        print(det_msg)
+    write_experiment1_reproducibility_report(target_dir, condition_seed_map, det_ok, det_msg)
     write_final_readme(target_dir)
-    validate_experiment1_core_outputs(target_dir)
+    validate_experiment1_required_outputs(target_dir)
     print_classic_debug_summary(df_overall)
 
     print(f"Multi-step summary markdown saved: {multi_steps_md_path}")

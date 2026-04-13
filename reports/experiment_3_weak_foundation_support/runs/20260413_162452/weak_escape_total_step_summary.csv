@@ -1,0 +1,6 @@
+﻿max_steps,total_episodes,success_rate,avg_final_mastery,avg_steps_used,avg_mastery_gain,cost_per_1pct_escape,interpretation
+30,1000,0.128,0.437812,29.351,0.136286,2.293,"Some improvement observed, but many students remain below B threshold."
+40,1000,0.299,0.472279,37.36,0.172751,1.2495,"Some improvement observed, but many students remain below B threshold."
+50,1000,0.444,0.497519,44.02,0.198371,0.9914,"Some improvement observed, but many students remain below B threshold."
+60,1000,0.583,0.523585,47.975,0.222002,0.8229,Meaningful reduction of C-range population.
+70,1000,0.646,0.536993,52.03,0.236589,0.8054,Meaningful reduction of C-range population.

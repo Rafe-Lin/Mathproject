@@ -1,0 +1,10 @@
+﻿MAX_STEPS,Strategy,Success Rate 達標A (%),Avg Steps,Avg Final Mastery
+40,Baseline,96.0,18.45,0.805861
+40,Baseline,64.0,32.39,0.793596
+40,Baseline,3.0,39.99,0.574297
+40,Rule-Based,99.0,16.93,0.8069799999999999
+40,Rule-Based,88.0,29.84,0.802775
+40,Rule-Based,0.0,40.0,0.6034769999999999
+40,Adaptive (Ours),100.0,13.2,0.8066580000000001
+40,Adaptive (Ours),98.0,24.14,0.806248
+40,Adaptive (Ours),9.0,39.48,0.5388109999999999

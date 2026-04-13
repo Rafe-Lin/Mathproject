@@ -1,0 +1,28 @@
+﻿max_steps,strategy,student_group,success_rate,avg_steps,avg_mastery,avg_mastery_gain
+30,Baseline,"Careless (B+,B++)",0.94,17.53,0.8047289999999999,0.076586
+30,Baseline,Average (B),0.38,28.33,0.772909,0.198321
+30,Baseline,Weak (C),0.0,30.0,0.525853,0.20325600000000002
+30,Rule-Based,"Careless (B+,B++)",0.92,16.02,0.8044530000000001,0.076893
+30,Rule-Based,Average (B),0.46,27.65,0.77385,0.199427
+30,Rule-Based,Weak (C),0.0,30.0,0.569412,0.24758
+30,Adaptive (Ours),"Careless (B+,B++)",0.99,12.82,0.8066150000000001,0.079345
+30,Adaptive (Ours),Average (B),0.85,23.18,0.799174,0.22677399999999998
+30,Adaptive (Ours),Weak (C),0.0,30.0,0.452122,0.131103
+40,Baseline,"Careless (B+,B++)",0.98,18.13,0.8063039999999999,0.07875
+40,Baseline,Average (B),0.66,32.36,0.7906749999999999,0.21713100000000002
+40,Baseline,Weak (C),0.0,40.0,0.56933,0.250438
+40,Rule-Based,"Careless (B+,B++)",0.98,17.49,0.806503,0.076373
+40,Rule-Based,Average (B),0.77,30.5,0.796998,0.22021000000000002
+40,Rule-Based,Weak (C),0.0,40.0,0.615966,0.29097100000000004
+40,Adaptive (Ours),"Careless (B+,B++)",1.0,12.28,0.805875,0.076696
+40,Adaptive (Ours),Average (B),0.99,24.45,0.808561,0.234025
+40,Adaptive (Ours),Weak (C),0.12,39.35,0.57831,0.250032
+50,Baseline,"Careless (B+,B++)",1.0,18.3,0.807543,0.078838
+50,Baseline,Average (B),0.86,33.99,0.8016960000000001,0.23024
+50,Baseline,Weak (C),0.02,49.89,0.590253,0.27236
+50,Rule-Based,"Careless (B+,B++)",0.99,16.51,0.8067059999999999,0.073179
+50,Rule-Based,Average (B),0.96,32.35,0.807436,0.235205
+50,Rule-Based,Weak (C),0.02,49.98,0.633622,0.311543
+50,Adaptive (Ours),"Careless (B+,B++)",1.0,12.46,0.8066159999999999,0.075728
+50,Adaptive (Ours),Average (B),0.99,24.1,0.806777,0.232453
+50,Adaptive (Ours),Weak (C),0.27,47.55,0.574161,0.25071899999999997

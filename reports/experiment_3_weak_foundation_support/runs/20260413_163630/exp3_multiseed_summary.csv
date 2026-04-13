@@ -1,0 +1,6 @@
+﻿MAX_STEPS,seeds,mean_escape_from_c_rate_pct,std_escape_from_c_rate_pct,mean_final_mastery,std_final_mastery,mean_steps_used,std_steps_used,mean_mastery_gain,std_mastery_gain,interpretation
+30,10,12.8,3.8158,0.437812,0.011384,29.351,0.245212,0.136286,0.010306,Low escape rate under constrained budget.
+40,10,29.9,6.5031,0.472279,0.016711,37.36,0.812059,0.172751,0.015624,Substantial improvement with moderate extra steps.
+50,10,44.4,4.5431,0.497519,0.011058,44.02,1.238838,0.198371,0.011206,"Performance continues to improve, but gains become less stable."
+60,10,58.3,5.0804,0.523585,0.010203,47.975,1.386537,0.222002,0.010267,"Performance improves, though cross-seed variance remains visible."
+70,10,64.6,4.7371,0.536993,0.008489,52.03,1.365877,0.236589,0.007107,"Performance continues to improve, but gains become less stable."

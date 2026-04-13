@@ -1,0 +1,5 @@
+﻿from_max_steps,to_max_steps,from_mean_escape_rate_pct,to_mean_escape_rate_pct,delta_escape_rate_pct,from_mean_steps_used,to_mean_steps_used,delta_steps_used,marginal_cost_per_1pct_escape,interpretation
+30,40,12.8,29.9,17.1,29.351,37.36,8.009,0.468363,Highly efficient interval for reducing the C population.
+40,50,29.9,44.4,14.5,37.36,44.02,6.66,0.45931,Improvement continues with acceptable efficiency.
+50,60,44.4,58.3,13.9,44.02,47.975,3.955,0.284532,Improvement continues with acceptable efficiency.
+60,70,58.3,64.6,6.3,47.975,52.03,4.055,0.643651,Improvement continues with acceptable efficiency.

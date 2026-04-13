@@ -18,7 +18,7 @@ COLOR_MAP = {
     "Adaptive (Ours)": "#2ca02c",
 }
 
-SUCCESS_RATE_LABEL_ZH = "Success(達標A) Rate%"
+SUCCESS_RATE_LABEL_ZH = "Success Rate 達標A (%)"
 SUCCESS_THRESHOLD_DISPLAY = "0.80"
 
 STRATEGY_LABEL_MAP = {
@@ -44,12 +44,18 @@ STEP_STYLE = {
     50: {"alpha": 1.0, "hatch": "xx"},
 }
 
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei", "Noto Sans CJK TC", "DejaVu Sans", "Arial"]
+plt.rcParams["axes.unicode_minus"] = False
+
 
 def validate_experiment1_labels() -> None:
     """Check Experiment 1 display labels and key wording consistency."""
     validate_group_config()
     label_values = list(GROUP_LABEL_MAP.values()) + [SUCCESS_RATE_LABEL_ZH]
     blocked = [
+        "Success(達標A) Rate%",
+        "Success Rate % (達標A, threshold=0.80)",
         "A~B++",
         "B~B+",
         "Weak Foundation",
@@ -60,7 +66,7 @@ def validate_experiment1_labels() -> None:
     if bad_hits:
         print(f"[WARN] Experiment 1 display label check found legacy terms: {bad_hits}")
     assert SUCCESS_THRESHOLD_DISPLAY == "0.80"
-    assert SUCCESS_RATE_LABEL_ZH == "Success(達標A) Rate%"
+    assert SUCCESS_RATE_LABEL_ZH == "Success Rate 達標A (%)"
     assert "A~B++" not in " | ".join(label_values)
     assert "B~B+" not in " | ".join(label_values)
     assert "Weak Foundation" not in " | ".join(label_values)
@@ -437,7 +443,7 @@ def plot_student_type_improved(df: pd.DataFrame, output_dir: str | Path) -> None
 
     ax.set_xticks(x)
     ax.set_xticklabels(x_labels, fontsize=12)
-    ax.set_ylabel("Success Rate % (達標A, threshold=0.80)", fontsize=12)
+    ax.set_ylabel(SUCCESS_RATE_LABEL_ZH, fontsize=12)
     ax.set_xlabel("Student Type", fontsize=12, labelpad=8)
     ax.set_title("Experiment 1: Strategy Comparison by Student Type", fontsize=16, pad=8)
     ax.set_ylim(0, 100)
@@ -475,7 +481,23 @@ def plot_student_type_comparison_30_vs_40(
     df_compare: pd.DataFrame,
     output_dir: str | Path,
 ) -> None:
-    """Presentation main figure: student-type success comparison at 30 vs 40 steps."""
+    """Supplementary figure: student-level success comparison at 30 vs 40 steps."""
+    _plot_student_type_comparison_panels(
+        df_compare=df_compare,
+        output_dir=output_dir,
+        panel_steps=[30, 40],
+        file_name="fig_exp1_student_type_comparison_30_vs_40.png",
+        figure_title="Experiment 1: Strategy Comparison Across Student Levels under Different Step Budgets",
+    )
+
+
+def _plot_student_type_comparison_panels(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+    panel_steps: list[int],
+    file_name: str,
+    figure_title: str,
+) -> None:
     out = _ensure_output_dir(output_dir)
     validate_experiment1_labels()
     if df_compare.empty:
@@ -486,14 +508,11 @@ def plot_student_type_comparison_30_vs_40(
     width = 0.25
     x = list(range(len(group_order)))
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6), sharey=True)
-    panel_steps = [30, 40]
-    panel_titles = {
-        30: "MAX_STEPS = 30 (More Constrained Setting)",
-        40: "MAX_STEPS = 40 (Balanced Main Setting)",
-    }
+    panel_count = len(panel_steps)
+    fig, axes = plt.subplots(1, panel_count, figsize=(6.0 * panel_count, 6.2), sharey=True)
+    if panel_count == 1:
+        axes = [axes]
 
-    weak_label = display_student_group("weak")
     for ax, max_steps in zip(axes, panel_steps):
         sub = df_compare[df_compare["max_steps"] == int(max_steps)].copy()
         for idx, strategy in enumerate(strategy_order):
@@ -519,20 +538,18 @@ def plot_student_type_comparison_30_vs_40(
             for g, bar in zip(group_order, bars):
                 h = float(bar.get_height())
                 if h == h:
-                    if g == weak_label and h <= 0.5:
-                        continue
-                    font_size = 9 if (g == weak_label and h <= 2.0) else 12
+                    font_size = 10 if h <= 2.0 else 11
+                    y_offset = 0.8 if h <= 2.0 else 1.2
                     ax.annotate(
                         f"{h:.1f}%",
-                        (bar.get_x() + bar.get_width() / 2.0, h),
-                        textcoords="offset points",
-                        xytext=(0, 3),
+                        (bar.get_x() + bar.get_width() / 2.0, h + y_offset),
+                        textcoords="data",
                         ha="center",
                         va="bottom",
                         fontsize=font_size,
                     )
 
-        ax.set_title(panel_titles[max_steps], fontsize=14, pad=10)
+        ax.set_title(f"MAX_STEPS = {max_steps}", fontsize=13, pad=8)
         ax.set_xticks(x)
         ax.set_xticklabels(group_order, fontsize=12)
         ax.set_xlabel("Student Level", fontsize=12)
@@ -543,51 +560,7 @@ def plot_student_type_comparison_30_vs_40(
             ax.spines[spine].set_visible(False)
 
     axes[0].set_ylabel(SUCCESS_RATE_LABEL_ZH, fontsize=12)
-
-    # Left-panel explanation near Adaptive on Average group.
-    left_sub = df_compare[
-        (df_compare["max_steps"] == 30)
-        & (df_compare["strategy_display"] == "Adaptive (Ours)")
-        & (df_compare["student_group_display"] == display_student_group("average"))
-    ]
-    if not left_sub.empty:
-        y = float(pd.to_numeric(left_sub["success_rate_pct"], errors="coerce").iloc[0])
-        x_anchor = 1 + width
-        axes[0].annotate(
-            "Maximum performance gap\nAdaptive shows strongest advantage",
-            xy=(x_anchor, y),
-            textcoords="offset points",
-            xytext=(8, 16),
-            fontsize=11,
-            ha="left",
-            arrowprops=dict(arrowstyle="->", lw=1.0),
-        )
-
-    axes[1].text(
-        0.5,
-        0.9,
-        "40 steps provides a more balanced and realistic evaluation budget while preserving clear strategy differences.",
-        transform=axes[1].transAxes,
-        ha="center",
-        va="center",
-        fontsize=9.5,
-        wrap=True,
-    )
-    axes[0].text(
-        0.5,
-        0.9,
-        "30 steps amplifies strategy differences but may under-allocate practice opportunities.",
-        transform=axes[0].transAxes,
-        ha="center",
-        va="center",
-        fontsize=9.5,
-        wrap=True,
-    )
-
-    fig.suptitle(
-        "Experiment 1: Strategy Comparison under Different Step Budgets",
-        fontsize=16,
-    )
+    fig.suptitle(figure_title, fontsize=16)
     legend_handles = [
         Patch(facecolor=COLOR_MAP["Baseline"], label="Baseline"),
         Patch(facecolor=COLOR_MAP["Rule-Based"], label="Rule-Based"),
@@ -596,14 +569,217 @@ def plot_student_type_comparison_30_vs_40(
     fig.legend(
         legend_handles,
         [h.get_label() for h in legend_handles],
-        loc="upper right",
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.96),
+        ncol=3,
         fontsize=12,
         framealpha=0.9,
     )
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.84)
-    fig.savefig(out / "fig_exp1_student_type_comparison_30_vs_40.png", dpi=300, bbox_inches="tight")
+    plt.tight_layout(rect=(0.02, 0.02, 0.98, 0.90))
+    fig.savefig(out / file_name, dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+
+def plot_student_type_comparison_30_40_50(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+) -> None:
+    """Main figure: student-level success comparison at 30/40/50 steps."""
+    _plot_student_type_comparison_panels(
+        df_compare=df_compare,
+        output_dir=output_dir,
+        panel_steps=[30, 40, 50],
+        file_name="fig_exp1_student_type_comparison_30_40_50.png",
+        figure_title="Experiment 1: Strategy Comparison Across Student Levels under Different Step Budgets",
+    )
+
+
+def _rq1_best_strategy_table(df_compare: pd.DataFrame) -> pd.DataFrame:
+    rows: list[dict[str, object]] = []
+    if df_compare.empty:
+        return pd.DataFrame()
+    for max_steps in [30, 40, 50]:
+        step_df = df_compare[df_compare["max_steps"].astype(int) == max_steps]
+        for group in GROUP_ORDER_DISPLAY:
+            sub = step_df[step_df["student_group_display"] == group]
+            if sub.empty:
+                continue
+            sub = sub.copy()
+            sub["success_rate_pct"] = pd.to_numeric(sub["success_rate_pct"], errors="coerce")
+            sub = sub.sort_values(["success_rate_pct", "strategy_display"], ascending=[False, True])
+            best = sub.iloc[0]
+            rows.append(
+                {
+                    "max_steps": int(max_steps),
+                    "student_group_display": str(group),
+                    "best_strategy": str(best["strategy_display"]),
+                    "best_rate": float(best["success_rate_pct"]),
+                    "adaptive_is_best": str(best["strategy_display"]) == "Adaptive (Ours)",
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def plot_exp1_rq1_best_strategy_heatmap(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+) -> None:
+    """RQ1 verdict heatmap: best strategy for each (MAX_STEPS, student level)."""
+    out = _ensure_output_dir(output_dir)
+    validate_experiment1_labels()
+    best = _rq1_best_strategy_table(df_compare)
+    if best.empty:
+        return
+
+    steps = [30, 40, 50]
+    groups = GROUP_ORDER_DISPLAY
+    z: list[list[int]] = []
+    labels: list[list[str]] = []
+    for s in steps:
+        row_vals: list[int] = []
+        row_text: list[str] = []
+        step_df = best[best["max_steps"] == s]
+        for g in groups:
+            cell = step_df[step_df["student_group_display"] == g]
+            if cell.empty:
+                row_vals.append(0)
+                row_text.append("N/A")
+                continue
+            c = cell.iloc[0]
+            is_adaptive = bool(c["adaptive_is_best"])
+            row_vals.append(1 if is_adaptive else 0)
+            short = "Adaptive" if is_adaptive else str(c["best_strategy"])
+            row_text.append(f"{short}\n{float(c['best_rate']):.0f}%")
+        z.append(row_vals)
+        labels.append(row_text)
+
+    fig, ax = plt.subplots(figsize=(10, 5.4))
+    ax.imshow(z, cmap=plt.cm.get_cmap("RdYlGn"), vmin=0, vmax=1, aspect="auto")
+    for i in range(len(steps)):
+        for j in range(len(groups)):
+            ax.text(j, i, labels[i][j], ha="center", va="center", fontsize=10, color="black")
+
+    ax.set_xticks(list(range(len(groups))))
+    ax.set_xticklabels(groups, fontsize=11)
+    ax.set_yticks(list(range(len(steps))))
+    ax.set_yticklabels([f"MAX_STEPS = {s}" for s in steps], fontsize=11)
+    ax.set_xlabel("Student Level", fontsize=12)
+    ax.set_ylabel("Step Budget", fontsize=12)
+    ax.set_title("Experiment 1 RQ1 Verdict: Best Strategy by Step Budget and Student Level", fontsize=14, pad=10)
+    plt.tight_layout()
+    fig.savefig(out / "fig_exp1_rq1_best_strategy_heatmap.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
+def write_figure_caption_exp1_main(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+) -> None:
+    """Write caption for the main 30/40/50 student-level comparison figure."""
+    out = _ensure_output_dir(output_dir)
+    if df_compare.empty:
+        return
+
+    compare = df_compare[df_compare["max_steps"].astype(int).isin([30, 40, 50])].copy()
+    if compare.empty:
+        return
+
+    hardest_step = None
+    hardest_group = None
+    hardest_score = None
+    max_gap_step = None
+    max_gap_group = None
+    max_gap_value = None
+
+    for max_steps in [30, 40, 50]:
+        sub_step = compare[compare["max_steps"] == max_steps]
+        for g in GROUP_ORDER_DISPLAY:
+            sub = sub_step[sub_step["student_group_display"] == g]
+            if sub.empty:
+                continue
+            by_strategy = {
+                str(r["strategy_display"]): float(pd.to_numeric(r["success_rate_pct"], errors="coerce"))
+                for _, r in sub.iterrows()
+            }
+            vals = [v for v in by_strategy.values() if v == v]
+            if not vals:
+                continue
+            avg_success = sum(vals) / len(vals)
+            if hardest_score is None or avg_success < hardest_score:
+                hardest_score = avg_success
+                hardest_step = max_steps
+                hardest_group = g
+
+            a = by_strategy.get("Adaptive (Ours)")
+            b = by_strategy.get("Baseline")
+            rb = by_strategy.get("Rule-Based")
+            if a is None or b is None or rb is None:
+                continue
+            gap = a - max(b, rb)
+            if max_gap_value is None or gap > max_gap_value:
+                max_gap_value = gap
+                max_gap_step = max_steps
+                max_gap_group = g
+
+    if max_gap_value is None:
+        max_gap_step = "N/A"
+        max_gap_group = "N/A"
+        max_gap_text = "N/A"
+    else:
+        max_gap_text = f"{float(max_gap_value):.1f}%"
+
+    if hardest_step is None:
+        hardest_step = "N/A"
+    if hardest_group is None:
+        hardest_group = "N/A"
+
+    caption = (
+        "### Figure Caption: Experiment 1 Main Figure (30/40/50 Student-Level Comparison)\n\n"
+        "This figure compares success rate across three strategies (Baseline, Rule-Based, Adaptive) "
+        "under three step budgets (MAX_STEPS = 30/40/50) and three student levels (Careless, Average, Weak).\n\n"
+        "MAX_STEPS = 40 is used as the primary interpretation baseline because it is the most balanced and "
+        "representative setting. In this setting, Adaptive (Ours) is best for Careless, Average, and Weak.\n\n"
+        "At MAX_STEPS = 30, strategy gaps are most visible in the resource-constrained regime; "
+        "at MAX_STEPS = 50, all methods improve but Adaptive remains the top strategy.\n\n"
+        f"The largest gap is at MAX_STEPS={max_gap_step}, {max_gap_group} (Adaptive lead: {max_gap_text}). "
+        f"The most difficult condition is {hardest_group} at MAX_STEPS={hardest_step}.\n"
+    )
+    (out / "figure_caption_exp1_main.md").write_text(
+        caption,
+        encoding="utf-8-sig",
+    )
+
+
+def write_figure_caption_exp1_heatmap(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+) -> None:
+    """Write caption for RQ1 best-strategy heatmap."""
+    out = _ensure_output_dir(output_dir)
+    best = _rq1_best_strategy_table(df_compare)
+    if best.empty:
+        return
+    all_adaptive = bool(best["adaptive_is_best"].all())
+    verdict = (
+        "Adaptive is the best strategy across all step budgets and student levels."
+        if all_adaptive
+        else "Adaptive is not the best strategy in every condition."
+    )
+    caption = (
+        "### Figure Caption: Experiment 1 RQ1 Best-Strategy Heatmap\n\n"
+        "This heatmap summarizes all 9 conditions (3 step budgets × 3 student levels). "
+        "Each cell shows the best strategy and its success rate.\n\n"
+        f"{verdict}\n"
+    )
+    (out / "figure_caption_exp1_heatmap.md").write_text(caption, encoding="utf-8-sig")
+
+
+def write_figure_caption_exp1_student_type_comparison_30_40_50(
+    df_compare: pd.DataFrame,
+    output_dir: str | Path,
+) -> None:
+    """Backward-compatible wrapper to new main-figure caption file."""
+    write_figure_caption_exp1_main(df_compare, output_dir)
 
 
 def plot_multi_steps_efficiency(

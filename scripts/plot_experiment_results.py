@@ -77,7 +77,7 @@ EXP1_STUDENT_ORDER = [
     "Average (B)",
     "Weak (C)",
 ]
-EXP1_SUCCESS_LABEL = "Success(達標A) Rate%"
+EXP1_SUCCESS_LABEL = "Success Rate 達標A (%)"
 
 
 def _exp1_success_col(df: pd.DataFrame) -> str | None:
@@ -841,7 +841,7 @@ def plot_ablation_by_student_type(by_type_csv_path: str | None = None) -> None:
         fontweight="normal",
     )
     ax.set_xlabel("Student Type", labelpad=8, fontsize=10.5, color="#333333")
-    ax.set_ylabel("Success Rate % (達標A, threshold=0.80)", fontsize=10.5, color="#333333")
+    ax.set_ylabel(EXP1_SUCCESS_LABEL, fontsize=10.5, color="#333333")
     ax.set_ylim(0, 100)
     ax.tick_params(axis="both", labelsize=9.5, colors="#333333")
     ax.legend(loc="upper left", fontsize=10, frameon=True)
@@ -1009,7 +1009,7 @@ def plot_multi_steps_results(include_ab3_by_student_type: bool = False) -> None:
                 )
         plt.title("Success Rate vs MAX_STEPS")
         plt.xlabel("MAX_STEPS")
-        plt.ylabel("Success Rate (%)")
+        plt.ylabel("Success Rate 達標A (%)")
         plt.ylim(0, 100)
         plt.legend()
         try:
@@ -1105,264 +1105,441 @@ def plot_multi_steps_results(include_ab3_by_student_type: bool = False) -> None:
 def plot_weak_foundation_support_results(
     output_dir: str = os.path.join(EXP3_BASE_DIR, "latest"),
 ) -> None:
-    """Plot weak foundation support decision-focused figures from experiment_3 CSV outputs."""
+    """Plot Experiment 3 figures focused on escape-from-C educational value."""
     setup_report_style()
     out_dir = output_dir
-    summary_path = os.path.join(out_dir, "weak_foundation_support_summary.csv")
+    summary_path = os.path.join(out_dir, "weak_escape_total_step_summary.csv")
     subskill_path = os.path.join(out_dir, "weak_foundation_subskill_summary.csv")
     breakpoint_path = os.path.join(out_dir, "weak_foundation_breakpoint_summary.csv")
 
     summary_df = pd.read_csv(summary_path) if os.path.exists(summary_path) else pd.DataFrame()
+    if summary_df.empty:
+        legacy_summary = os.path.join(out_dir, "weak_foundation_support_summary.csv")
+        summary_df = pd.read_csv(legacy_summary) if os.path.exists(legacy_summary) else pd.DataFrame()
     subskill_df = pd.read_csv(subskill_path) if os.path.exists(subskill_path) else pd.DataFrame()
     breakpoint_df = pd.read_csv(breakpoint_path) if os.path.exists(breakpoint_path) else pd.DataFrame()
 
-    peak_steps_label = "N/A"
+    if summary_df.empty:
+        return
 
-    # A) Success rate vs foundation extra steps (main figure).
-    if not summary_df.empty and {"foundation_extra_steps", "success_rate"}.issubset(summary_df.columns):
-        sub = summary_df.sort_values("foundation_extra_steps")
-        plt.figure(figsize=(8, 5))
-        plt.plot(
-            sub["foundation_extra_steps"],
-            sub["success_rate"] * 100.0,
-            marker="o",
-            linewidth=3,
-            markersize=8,
+    # Backward/forward compatibility for summary column names.
+    if "support_steps" not in summary_df.columns and "max_steps" in summary_df.columns:
+        summary_df = summary_df.rename(columns={"max_steps": "support_steps"})
+    if "support_steps" not in summary_df.columns and "foundation_extra_steps" in summary_df.columns:
+        summary_df = summary_df.rename(columns={"foundation_extra_steps": "support_steps"})
+    if "avg_final_mastery" not in summary_df.columns and "avg_final_polynomial_mastery" in summary_df.columns:
+        summary_df = summary_df.rename(columns={"avg_final_polynomial_mastery": "avg_final_mastery"})
+    if "avg_steps_used" not in summary_df.columns and "avg_total_steps" in summary_df.columns:
+        summary_df = summary_df.rename(columns={"avg_total_steps": "avg_steps_used"})
+    if "marginal_gain" not in summary_df.columns and "marginal_success_gain" in summary_df.columns:
+        summary_df = summary_df.rename(columns={"marginal_success_gain": "marginal_gain"})
+
+    summary_df["support_steps"] = pd.to_numeric(summary_df["support_steps"], errors="coerce")
+    summary_df["success_rate"] = pd.to_numeric(summary_df["success_rate"], errors="coerce")
+    summary_df["avg_final_mastery"] = pd.to_numeric(summary_df["avg_final_mastery"], errors="coerce")
+    summary_df["avg_steps_used"] = pd.to_numeric(summary_df["avg_steps_used"], errors="coerce")
+    if "marginal_gain" in summary_df.columns:
+        summary_df["marginal_gain"] = pd.to_numeric(summary_df["marginal_gain"], errors="coerce")
+    sub = summary_df.sort_values("support_steps").dropna(subset=["support_steps"])
+
+    # Figure 1 (PRIMARY): Escape-from-C rate with marginal annotation and best point.
+    if {"support_steps", "success_rate"}.issubset(sub.columns):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        x = sub["support_steps"].astype(float).tolist()
+        y = (sub["success_rate"].astype(float) * 100.0).tolist()
+        ax.plot(x, y, marker="o", linewidth=3, markersize=8, color="#2ca02c")
+        ax.set_title("Experiment 3: Escape-from-C Rate under Adaptive Support")
+        ax.text(
+            0.5,
+            1.01,
+            "Final mastery >= 0.60 (B threshold)",
+            transform=ax.transAxes,
+            ha="center",
+            va="bottom",
+            fontsize=9,
+            color="#444444",
         )
-        plt.title("Effect of Foundation Support on Success Rate")
-        plt.xlabel("Foundation Extra Steps")
-        plt.ylabel("Success Rate (%)")
-        plt.ylim(0, 35)
-        plt.axvspan(40, 50, alpha=0.1, color="green")
-        for _, row in sub.iterrows():
-            x = float(row["foundation_extra_steps"])
-            y = float(row["success_rate"]) * 100.0
-            plt.annotate(f"{y:.1f}", (x, y), textcoords="offset points", xytext=(0, 6), ha="center")
-        try:
-            peak_idx = sub["success_rate"].astype(float).idxmax()
-            peak_steps = int(float(sub.loc[peak_idx, "foundation_extra_steps"]))
-            peak_rate = float(sub.loc[peak_idx, "success_rate"]) * 100.0
-            peak_steps_label = str(peak_steps)
-            plt.scatter([peak_steps], [peak_rate], color="red", zorder=5)
-            plt.annotate(
-                "Optimal (~50 steps)",
-                (peak_steps, peak_rate),
-                textcoords="offset points",
-                xytext=(0, -18),
-                ha="center",
-            )
-        except Exception:
-            pass
-        save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_success_rate.png"))
+        ax.set_xlabel("support_steps")
+        ax.set_ylabel("success_rate (%)")
+        for xv, yv in zip(x, y):
+            ax.annotate(f"{yv:.0f}%", (xv, yv), textcoords="offset points", xytext=(0, 6), ha="center")
+        if len(x) > 1:
+            for i in range(1, len(x)):
+                dx = (x[i - 1] + x[i]) / 2.0
+                dy = (y[i - 1] + y[i]) / 2.0
+                delta = y[i] - y[i - 1]
+                ax.annotate(f"{delta:+.0f}%", (dx, dy), textcoords="offset points", xytext=(0, 8), ha="center", fontsize=9, color="#444444")
+        if y:
+            best_idx = int(y.index(max(y)))
+            ax.scatter([x[best_idx]], [y[best_idx]], color="red", zorder=5)
+            ax.annotate("best", (x[best_idx], y[best_idx]), textcoords="offset points", xytext=(0, -16), ha="center", color="red")
+        save_fig_high_quality(os.path.join(out_dir, "fig_exp3_escape_rate.png"))
 
-    # B) Learning cost vs foundation support (main figure).
-    if not summary_df.empty and {"foundation_extra_steps", "avg_total_steps"}.issubset(summary_df.columns):
-        sub = summary_df.sort_values("foundation_extra_steps")
-        plt.figure(figsize=(8, 5))
-        plt.plot(
-            sub["foundation_extra_steps"],
-            sub["avg_total_steps"],
-            marker="o",
-            linewidth=3,
-            markersize=8,
-        )
-        plt.title("Learning Cost vs Foundation Support")
-        plt.xlabel("Foundation Extra Steps")
-        plt.ylabel("Average Total Steps")
-        for _, row in sub.iterrows():
-            x = float(row["foundation_extra_steps"])
-            y = float(row["avg_total_steps"])
-            plt.annotate(f"{y:.1f}", (x, y), textcoords="offset points", xytext=(0, 6), ha="center")
-        try:
-            x_mid = float(sub["foundation_extra_steps"].median())
-            y_mid = float(sub["avg_total_steps"].median())
-            plt.annotate("Cost increases steadily", (x_mid, y_mid), textcoords="offset points", xytext=(12, 12))
-        except Exception:
-            pass
-        save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_cost.png"))
+    # Figure 2: Cost vs Benefit.
+    if {"avg_steps_used", "success_rate", "support_steps"}.issubset(sub.columns):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        x = sub["avg_steps_used"].astype(float).tolist()
+        y = (sub["success_rate"].astype(float) * 100.0).tolist()
+        labels = sub["support_steps"].astype(int).tolist()
+        ax.scatter(x, y, s=70, color="#1f77b4")
+        ax.plot(x, y, linewidth=1.5, alpha=0.6, color="#1f77b4")
+        ax.set_title("Cost vs Benefit of Foundation Support")
+        ax.set_xlabel("avg_steps_used")
+        ax.set_ylabel("success_rate (%)")
+        for xv, yv, sv in zip(x, y, labels):
+            ax.annotate(f"{sv} steps", (xv, yv), textcoords="offset points", xytext=(5, 6), fontsize=9)
+        save_fig_high_quality(os.path.join(out_dir, "fig_exp3_cost_vs_benefit.png"))
 
-    # C) Final mastery vs foundation extra steps (supporting main effect).
-    if not summary_df.empty and {"foundation_extra_steps", "avg_final_polynomial_mastery"}.issubset(
-        summary_df.columns
-    ):
-        sub = summary_df.sort_values("foundation_extra_steps")
-        plt.figure(figsize=(8, 5))
-        plt.plot(
-            sub["foundation_extra_steps"],
-            sub["avg_final_polynomial_mastery"],
-            marker="o",
-            linewidth=3,
-            markersize=8,
-        )
-        plt.title("Final Polynomial Mastery vs Foundation Support")
-        plt.xlabel("Foundation Extra Steps")
-        plt.ylabel("Average Final Polynomial Mastery")
-        for _, row in sub.iterrows():
-            x = float(row["foundation_extra_steps"])
-            y = float(row["avg_final_polynomial_mastery"])
-            plt.annotate(f"{y:.3f}", (x, y), textcoords="offset points", xytext=(0, 6), ha="center")
-        try:
-            x_max = float(sub.iloc[-1]["foundation_extra_steps"])
-            y_max = float(sub["avg_final_polynomial_mastery"].max())
-            plt.annotate("Near saturation", (x_max, y_max), textcoords="offset points", xytext=(-70, 10))
-        except Exception:
-            pass
-        save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_mastery.png"))
+    # Figure 3: ROI / marginal impact on escape rate.
+    if {"support_steps", "success_rate"}.issubset(sub.columns) and len(sub) > 1:
+        m = sub.sort_values("support_steps").copy()
+        m["delta_success"] = m["success_rate"].diff() * 100.0
+        m = m.dropna(subset=["delta_success"])
+        if not m.empty:
+            fig, ax = plt.subplots(figsize=(8, 5))
+            x = m["support_steps"].astype(float).tolist()
+            y = m["delta_success"].astype(float).tolist()
+            ax.plot(x, y, marker="o", linewidth=3, markersize=8, color="#ff7f0e")
+            ax.axhline(0.0, linestyle="--", linewidth=1.0, color="#666666")
+            ax.set_title("Marginal Impact of Additional Support (Escape Rate)")
+            ax.set_xlabel("support_steps")
+            ax.set_ylabel("delta_success (%)")
+            for xv, yv in zip(x, y):
+                ax.annotate(f"{yv:+.0f}%", (xv, yv), textcoords="offset points", xytext=(0, 6), ha="center")
+            save_fig_high_quality(os.path.join(out_dir, "fig_exp3_marginal_gain.png"))
 
-    # D) Breakpoint shift simplified: top-2 weakest subskills only (supporting).
-    if not breakpoint_df.empty and {"foundation_extra_steps", "subskill", "percentage"}.issubset(
-        breakpoint_df.columns
-    ):
-        steps_list = sorted(breakpoint_df["foundation_extra_steps"].dropna().unique().tolist())
-        if steps_list:
-            mean_pct = (
-                breakpoint_df.groupby("subskill", as_index=False)["percentage"]
-                .mean()
-                .sort_values("percentage", ascending=False)
-            )
-            top_skills = mean_pct["subskill"].head(2).tolist()
-            if top_skills:
-                plt.figure(figsize=(8, 5))
-                for skill in top_skills:
-                    vals = []
-                    for steps in steps_list:
-                        row = breakpoint_df[
-                            (breakpoint_df["foundation_extra_steps"] == steps)
-                            & (breakpoint_df["subskill"] == skill)
-                        ]
-                        vals.append(float(row["percentage"].iloc[0]) * 100.0 if not row.empty else 0.0)
-                    plt.plot(steps_list, vals, marker="o", linewidth=3, markersize=8, label=skill)
-                plt.title("Breakpoint Shift (Top-2 Weakest Subskills)")
-                plt.xlabel("Foundation Extra Steps")
-                plt.ylabel("Share of Failed Episodes (%)")
-                plt.legend()
-                save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_breakpoint_shift.png"))
+    # Figure 4: Mastery with explicit B threshold.
+    if {"support_steps", "avg_final_mastery"}.issubset(sub.columns):
+        fig, ax = plt.subplots(figsize=(8, 5))
+        x = sub["support_steps"].astype(float).tolist()
+        y = sub["avg_final_mastery"].astype(float).tolist()
+        ax.plot(x, y, marker="o", linewidth=3, markersize=8, color="#1f77b4")
+        ax.axhline(0.60, linestyle="--", linewidth=2.0, color="#333333")
+        ax.axhspan(0.0, 0.60, color="#eeeeee", alpha=0.45)
+        ax.annotate("B Threshold (Escape from C)", (x[-1], 0.60), textcoords="offset points", xytext=(-160, 8))
+        ax.set_title("Experiment 3: Final Mastery under Adaptive Support")
+        ax.set_xlabel("support_steps")
+        ax.set_ylabel("avg_final_mastery")
+        for xv, yv in zip(x, y):
+            ax.annotate(f"{yv:.3f}", (xv, yv), textcoords="offset points", xytext=(0, 6), ha="center")
+        save_fig_high_quality(os.path.join(out_dir, "fig_exp3_mastery_threshold.png"))
 
-    # E) Subskill gain simplified as heatmap (supporting).
-    if not subskill_df.empty and {"foundation_extra_steps", "subskill", "avg_gain"}.issubset(
-        subskill_df.columns
-    ):
-        steps_list = sorted(subskill_df["foundation_extra_steps"].dropna().unique().tolist())
-        subskills = [s for s in SUBSKILL_ORDER if any(subskill_df["subskill"] == s)]
-        if steps_list and subskills:
-            pivot = (
-                subskill_df.pivot_table(
-                    index="subskill",
-                    columns="foundation_extra_steps",
-                    values="avg_gain",
-                    aggfunc="mean",
-                )
-                .reindex(index=subskills, columns=steps_list)
-            )
-            plt.figure(figsize=(8, 5))
-            im = plt.imshow(pivot.values, aspect="auto", interpolation="nearest", cmap="YlGnBu")
-            plt.title("Subskill Gain Heatmap by Foundation Support")
-            plt.xlabel("Foundation Extra Steps")
-            plt.ylabel("Subskill")
-            plt.xticks(range(len(steps_list)), [str(int(s)) for s in steps_list])
-            plt.yticks(range(len(subskills)), subskills)
-            cbar = plt.colorbar(im)
-            cbar.set_label("Average Gain")
-            save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_subskill_gain.png"))
+    # Optional plots are intentionally not generated by default:
+    # - fig_weak_foundation_breakpoint_shift.png
+    # - fig_weak_foundation_subskill_gain.png
 
-    # F) Marginal success gain only (main decision figure).
-    if not summary_df.empty and {"foundation_extra_steps", "marginal_success_gain"}.issubset(summary_df.columns):
-        sub = summary_df.sort_values("foundation_extra_steps").copy()
-        sub = sub[sub["foundation_extra_steps"] > sub["foundation_extra_steps"].min()].copy()
-        sub["marginal_success_gain"] = pd.to_numeric(sub["marginal_success_gain"], errors="coerce")
-        sub = sub.dropna(subset=["marginal_success_gain"])
-        if not sub.empty:
-            plt.figure(figsize=(8, 5))
-            x_vals = sub["foundation_extra_steps"].astype(float).tolist()
-            y_vals = sub["marginal_success_gain"].astype(float).tolist()
-            plt.plot(
-                x_vals,
-                y_vals,
-                marker="o",
-                linewidth=3,
-                markersize=8,
-                label="marginal_success_gain",
-            )
-            plt.axhline(0.0, linestyle="--", linewidth=1.0)
-            plt.title("Marginal Benefit of Additional Foundation Support")
-            plt.xlabel("Foundation Extra Steps")
-            plt.ylabel("Marginal Success Gain")
-            for x, y in zip(x_vals, y_vals):
-                plt.annotate(f"{y:.3f}", (x, y), textcoords="offset points", xytext=(0, 6), ha="center")
-                if y < 0:
-                    plt.scatter([x], [y], color="red", zorder=5)
-            if 50.0 in x_vals:
-                y50 = y_vals[x_vals.index(50.0)]
-                plt.annotate("Optimal region", (50.0, y50), textcoords="offset points", xytext=(8, 10))
-            if 60.0 in x_vals:
-                y60 = y_vals[x_vals.index(60.0)]
-                plt.annotate("Over-support", (60.0, y60), textcoords="offset points", xytext=(-5, -16))
-            plt.legend()
-            save_fig_high_quality(os.path.join(out_dir, "fig_weak_foundation_marginal_gain.png"))
-
-    # Captions for Experiment 3 decision-oriented figures.
-    summary_for_caption = (
-        summary_df.sort_values("foundation_extra_steps").copy()
-        if not summary_df.empty and "foundation_extra_steps" in summary_df.columns
-        else pd.DataFrame()
-    )
-    if not summary_for_caption.empty and "success_rate" in summary_for_caption.columns:
-        try:
-            peak_idx = summary_for_caption["success_rate"].astype(float).idxmax()
-            peak_steps_label = str(int(float(summary_for_caption.loc[peak_idx, "foundation_extra_steps"])))
-        except Exception:
-            peak_steps_label = "N/A"
-
-    # simple diminishing-return signal: first step where marginal success gain <= 0 after sorting
-    dim_step_label = "N/A"
-    if not summary_for_caption.empty and {"foundation_extra_steps", "marginal_success_gain"}.issubset(
-        summary_for_caption.columns
-    ):
-        tmp = summary_for_caption.copy()
-        tmp["marginal_success_gain"] = pd.to_numeric(tmp["marginal_success_gain"], errors="coerce")
-        tmp = tmp.dropna(subset=["marginal_success_gain"])
-        tmp = tmp[tmp["foundation_extra_steps"] > tmp["foundation_extra_steps"].min()]
-        non_pos = tmp[tmp["marginal_success_gain"] <= 0]
-        if not non_pos.empty:
-            dim_step_label = str(int(float(non_pos.iloc[0]["foundation_extra_steps"])))
-
+    # Captions for Experiment 3.
     caption_success = os.path.join(out_dir, "figure_caption_exp3_success.md")
     safe_write_markdown(
         caption_success,
-        "### Figure Caption: Effect of Foundation Support on Success Rate\n"
-        "This figure plots weak-learner success rate across foundation-extra-step settings using simulation outputs.\n"
-        "Data are taken directly from weak_foundation_support_summary.csv without manual adjustment.\n"
-        f"Key finding: success generally improves with additional support, with the observed peak around {peak_steps_label} extra steps.\n",
+        "### Figure Caption: Escape-from-C Rate under Adaptive Support\n"
+        "Experiment 3 focuses on escaping C, not reaching A.\n"
+        "This figure reports weak-group success defined by final mastery >= 0.60.\n",
     )
-
     caption_cost = os.path.join(out_dir, "figure_caption_exp3_cost.md")
     safe_write_markdown(
         caption_cost,
-        "### Figure Caption: Learning Cost vs Foundation Support\n"
-        "This figure reports average total steps per episode across foundation support levels.\n"
-        "Values are computed from simulation summary outputs and indicate learning cost rather than learning gain.\n"
-        "Key finding: increased foundation support is associated with higher learning cost, which must be balanced against success improvement.\n",
+        "### Figure Caption: Cost vs Benefit of Foundation Support\n"
+        "Each point corresponds to one support_steps condition, showing avg_steps_used versus escape-from-C rate.\n",
     )
-
     caption_marginal = os.path.join(out_dir, "figure_caption_exp3_marginal.md")
     safe_write_markdown(
         caption_marginal,
-        "### Figure Caption: Marginal Benefit of Additional Foundation Support\n"
-        "This figure shows marginal success gain for each increment of foundation support, derived from simulation summary rows.\n"
-        "A horizontal zero line is included to distinguish positive and non-positive incremental benefit.\n"
-        f"Key finding: diminishing returns are observed as extra support increases; the practical optimal range is around {peak_steps_label} steps"
-        + (f", with non-positive marginal gain appearing by {dim_step_label} steps." if dim_step_label != "N/A" else ".")
-        + "\n",
+        "### Figure Caption: Marginal Impact of Additional Support (Escape Rate)\n"
+        "delta_success is computed as neighboring differences in success_rate (%), indicating diminishing returns.\n",
     )
-
     caption_mastery = os.path.join(out_dir, "figure_caption_exp3_mastery.md")
     safe_write_markdown(
         caption_mastery,
-        "### Figure Caption: Final Polynomial Mastery vs Foundation Support\n"
-        "This figure visualizes average final polynomial mastery under different foundation support budgets.\n"
-        "Values are read from simulation-generated summary CSV outputs.\n"
-        "Key finding: final mastery increases with support but serves as supporting evidence; the primary decision signal remains success-rate gain versus cost.\n",
+        "### Figure Caption: Final Mastery under Adaptive Support\n"
+        "The bold dashed 0.60 line marks the B-threshold for escape from C.\n",
     )
+
+
+def plot_exp3_multiseed_results(output_dir: str = os.path.join(EXP3_BASE_DIR, "latest")) -> None:
+    """Plot Experiment 3 multi-seed decision figures with error bars."""
+    setup_report_style()
+    out_dir = output_dir
+    summary_path = os.path.join(out_dir, "exp3_multiseed_summary.csv")
+    df = pd.read_csv(summary_path) if os.path.exists(summary_path) else pd.DataFrame()
+    if df.empty:
+        return
+
+    required = {
+        "MAX_STEPS",
+        "mean_escape_from_c_rate_pct",
+        "std_escape_from_c_rate_pct",
+        "mean_final_mastery",
+        "std_final_mastery",
+        "mean_steps_used",
+        "std_steps_used",
+    }
+    if not required.issubset(df.columns):
+        return
+
+    for c in required:
+        df[c] = pd.to_numeric(df[c], errors="coerce")
+    df = df.sort_values("MAX_STEPS").dropna(subset=["MAX_STEPS"])
+    if df.empty:
+        return
+
+    x = df["MAX_STEPS"].astype(float).tolist()
+
+    # Figure 1: escape rate (mean ± std).
+    y_escape = df["mean_escape_from_c_rate_pct"].astype(float).tolist()
+    yerr_escape = df["std_escape_from_c_rate_pct"].astype(float).tolist()
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.errorbar(x, y_escape, yerr=yerr_escape, fmt="o-", linewidth=2.2, markersize=7, capsize=4, color="#2ca02c")
+    ax.set_title("Experiment 3: Escape-from-C Rate under Total-Step Relaxation (Multi-Seed)")
+    ax.text(
+        0.5,
+        1.01,
+        "Weak only, AB3 only, success = final mastery >= 0.60",
+        transform=ax.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=9,
+        color="#444444",
+    )
+    ax.set_xlabel("MAX_STEPS")
+    ax.set_ylabel("Escape-from-C Rate (%)")
+    for xv, yv in zip(x, y_escape):
+        ax.annotate(f"{yv:.1f}%", (xv, yv), textcoords="offset points", xytext=(0, 7), ha="center", fontsize=9)
+    save_fig_high_quality(os.path.join(out_dir, "fig_exp3_escape_rate_multiseed.png"))
+
+    # Figure 2: final mastery (mean ± std) with B threshold.
+    y_mastery = df["mean_final_mastery"].astype(float).tolist()
+    yerr_mastery = df["std_final_mastery"].astype(float).tolist()
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.errorbar(x, y_mastery, yerr=yerr_mastery, fmt="o-", linewidth=2.2, markersize=7, capsize=4, color="#1f77b4")
+    ax.axhline(0.60, linestyle="--", linewidth=1.8, color="#333333")
+    ax.annotate("B Threshold (Escape from C)", (x[-1], 0.60), textcoords="offset points", xytext=(-165, 7), fontsize=9)
+    ax.set_title("Experiment 3: Final Mastery under Total-Step Relaxation (Multi-Seed)")
+    ax.set_xlabel("MAX_STEPS")
+    ax.set_ylabel("Mean Final Mastery")
+    for xv, yv in zip(x, y_mastery):
+        ax.annotate(f"{yv:.3f}", (xv, yv), textcoords="offset points", xytext=(0, 7), ha="center", fontsize=9)
+    save_fig_high_quality(os.path.join(out_dir, "fig_exp3_mastery_multiseed.png"))
+
+    # Figure 3: cost vs benefit with optional x/y error bars.
+    x_cost = df["mean_steps_used"].astype(float).tolist()
+    xerr_cost = df["std_steps_used"].astype(float).tolist()
+    labels = df["MAX_STEPS"].astype(int).tolist()
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.errorbar(
+        x_cost,
+        y_escape,
+        xerr=xerr_cost,
+        yerr=yerr_escape,
+        fmt="o",
+        markersize=7,
+        capsize=4,
+        color="#1f77b4",
+    )
+    ax.plot(x_cost, y_escape, linewidth=1.3, alpha=0.6, color="#1f77b4")
+    ax.set_title("Experiment 3: Cost vs Benefit under Total-Step Relaxation (Multi-Seed)")
+    ax.set_xlabel("Mean Steps Used")
+    ax.set_ylabel("Mean Escape-from-C Rate (%)")
+    for xv, yv, step_label in zip(x_cost, y_escape, labels):
+        ax.annotate(f"MAX_STEPS={step_label}", (xv, yv), textcoords="offset points", xytext=(5, 8), fontsize=8.5)
+    save_fig_high_quality(os.path.join(out_dir, "fig_exp3_cost_vs_benefit_multiseed.png"))
+
+
+def plot_exp3_marginal_cost(output_dir: str = os.path.join(EXP3_BASE_DIR, "latest")) -> None:
+    """Plot incremental marginal cost (steps per +1% escape-from-C) by MAX_STEPS interval."""
+    setup_report_style()
+    out_dir = output_dir
+    summary_path = os.path.join(out_dir, "exp3_marginal_cost_summary.csv")
+    df = pd.read_csv(summary_path) if os.path.exists(summary_path) else pd.DataFrame()
+    if df.empty:
+        return
+    required = {
+        "from_max_steps",
+        "to_max_steps",
+        "delta_escape_rate_pct",
+        "marginal_cost_per_1pct_escape",
+    }
+    if not required.issubset(df.columns):
+        return
+
+    df = df.copy()
+    df["from_max_steps"] = pd.to_numeric(df["from_max_steps"], errors="coerce")
+    df["to_max_steps"] = pd.to_numeric(df["to_max_steps"], errors="coerce")
+    df["delta_escape_rate_pct"] = pd.to_numeric(df["delta_escape_rate_pct"], errors="coerce")
+    df = df.sort_values(["from_max_steps", "to_max_steps"]).dropna(subset=["from_max_steps", "to_max_steps"])
+    if df.empty:
+        return
+
+    intervals = [f"{int(a)}→{int(b)}" for a, b in zip(df["from_max_steps"], df["to_max_steps"])]
+    raw_marginal = pd.to_numeric(df["marginal_cost_per_1pct_escape"], errors="coerce")
+    vals = raw_marginal.fillna(0.0).tolist()
+    colors = ["#9E9E9E" if (pd.isna(m) or float(d) <= 0) else "#4C72B0" for m, d in zip(raw_marginal, df["delta_escape_rate_pct"])]
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    bars = ax.bar(intervals, vals, color=colors)
+    ax.set_title("Experiment 3: Marginal Cost of Additional Support")
+    ax.set_xlabel("MAX_STEPS Interval")
+    ax.set_ylabel("Steps per +1% Escape-from-C")
+
+    for i, bar in enumerate(bars):
+        val = float(bar.get_height())
+        d = float(df["delta_escape_rate_pct"].iloc[i]) if pd.notna(df["delta_escape_rate_pct"].iloc[i]) else 0.0
+        if pd.isna(raw_marginal.iloc[i]) or d <= 0:
+            ax.annotate("NA", (bar.get_x() + bar.get_width() / 2.0, max(val, 0.0)), textcoords="offset points", xytext=(0, 5), ha="center", fontsize=9, color="#555555")
+        else:
+            ax.annotate(f"{val:.2f}", (bar.get_x() + bar.get_width() / 2.0, val), textcoords="offset points", xytext=(0, 5), ha="center", fontsize=9)
+
+    save_fig_high_quality(os.path.join(out_dir, "fig_exp3_marginal_cost.png"))
+
+    caption_path = os.path.join(out_dir, "figure_caption_exp3_marginal_cost.md")
+    safe_write_markdown(
+        caption_path,
+        "### Figure Caption: Marginal Cost of Additional Support\n\n"
+        "This figure reports the incremental cost of improving escape-from-C performance under larger total-step budgets.\n"
+        "For each adjacent MAX_STEPS interval, marginal cost is defined as the additional mean steps used divided by the additional escape-from-C rate (%).\n\n"
+        "Lower values indicate more efficient support.\n"
+        "Higher values indicate diminishing efficiency, meaning that additional steps are required to produce the same improvement in student outcomes.\n",
+    )
+
+
+def plot_exp3_strategy_comparison(
+    summary_csv_path: str | Path,
+    output_dir: str | Path,
+) -> None:
+    """Plot Exp3 strategy comparison figures under fixed MAX_STEPS budgets."""
+    setup_report_style()
+    df = _read_csv_df(summary_csv_path)
+    if df.empty:
+        return
+    required = {
+        "MAX_STEPS",
+        "Strategy",
+        "mean_escape_rate_pct",
+        "std_escape_rate_pct",
+        "mean_final_mastery",
+        "std_final_mastery",
+    }
+    if not required.issubset(df.columns):
+        return
+
+    work = df.copy()
+    for c in ["MAX_STEPS", "mean_escape_rate_pct", "std_escape_rate_pct", "mean_final_mastery", "std_final_mastery"]:
+        work[c] = pd.to_numeric(work[c], errors="coerce")
+    work = work.dropna(subset=["MAX_STEPS"])
+    if work.empty:
+        return
+
+    strategy_order = ["Baseline", "Rule-Based", "Adaptive (Ours)"]
+    hatch_map = {
+        "Baseline": "//",
+        "Rule-Based": "..",
+        "Adaptive (Ours)": "xx",
+    }
+    color_map = {
+        "Baseline": "#4C72B0",
+        "Rule-Based": "#DD8452",
+        "Adaptive (Ours)": "#55A868",
+    }
+
+    budgets = sorted(work["MAX_STEPS"].dropna().astype(int).unique().tolist())
+    if not budgets:
+        return
+    x = list(range(len(budgets)))
+    width = 0.25
+
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    # Figure 1: escape rate grouped bars.
+    fig, ax = plt.subplots(figsize=(8.4, 5.2))
+    for idx, strategy in enumerate(strategy_order):
+        ys = []
+        es = []
+        for b in budgets:
+            hit = work[(work["MAX_STEPS"] == b) & (work["Strategy"] == strategy)]
+            ys.append(float(hit["mean_escape_rate_pct"].iloc[0]) if not hit.empty else float("nan"))
+            es.append(float(hit["std_escape_rate_pct"].iloc[0]) if not hit.empty else float("nan"))
+        offset = (idx - 1) * width
+        bars = ax.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            yerr=es,
+            capsize=4,
+            label=strategy,
+            color=color_map[strategy],
+            edgecolor="#333333",
+            linewidth=0.6,
+            hatch=hatch_map[strategy],
+        )
+        for bar, val in zip(bars, ys):
+            if pd.isna(val):
+                continue
+            ax.annotate(
+                f"{val:.1f}%",
+                (bar.get_x() + bar.get_width() / 2.0, val),
+                textcoords="offset points",
+                xytext=(0, 5),
+                ha="center",
+                fontsize=8.5,
+            )
+
+    ax.set_title("Experiment 3: Escape-from-C Rate by Strategy under Fixed Support Budgets")
+    ax.set_xlabel("MAX_STEPS")
+    ax.set_ylabel("Escape-from-C Rate (%)")
+    ax.set_xticks(x)
+    ax.set_xticklabels([str(b) for b in budgets])
+    ax.set_ylim(0, max(100, (pd.to_numeric(work["mean_escape_rate_pct"], errors="coerce").max() or 0) + 10))
+    ax.legend(loc="upper left")
+    fig.tight_layout()
+    fig.savefig(str(out_dir / "fig_exp3_strategy_comparison_escape_rate.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    # Figure 2: final mastery grouped bars.
+    fig, ax = plt.subplots(figsize=(8.4, 5.2))
+    for idx, strategy in enumerate(strategy_order):
+        ys = []
+        es = []
+        for b in budgets:
+            hit = work[(work["MAX_STEPS"] == b) & (work["Strategy"] == strategy)]
+            ys.append(float(hit["mean_final_mastery"].iloc[0]) if not hit.empty else float("nan"))
+            es.append(float(hit["std_final_mastery"].iloc[0]) if not hit.empty else float("nan"))
+        offset = (idx - 1) * width
+        bars = ax.bar(
+            [i + offset for i in x],
+            ys,
+            width=width,
+            yerr=es,
+            capsize=4,
+            label=strategy,
+            color=color_map[strategy],
+            edgecolor="#333333",
+            linewidth=0.6,
+            hatch=hatch_map[strategy],
+        )
+        for bar, val in zip(bars, ys):
+            if pd.isna(val):
+                continue
+            ax.annotate(
+                f"{val:.3f}",
+                (bar.get_x() + bar.get_width() / 2.0, val),
+                textcoords="offset points",
+                xytext=(0, 5),
+                ha="center",
+                fontsize=8.5,
+            )
+
+    ax.set_title("Experiment 3: Final Mastery by Strategy under Fixed Support Budgets")
+    ax.set_xlabel("MAX_STEPS")
+    ax.set_ylabel("Mean Final Mastery")
+    ax.set_xticks(x)
+    ax.set_xticklabels([str(b) for b in budgets])
+    ymax = pd.to_numeric(work["mean_final_mastery"], errors="coerce").max()
+    ax.set_ylim(0, 1.0 if pd.isna(ymax) else min(1.0, float(ymax) + 0.2))
+    ax.legend(loc="upper left")
+    fig.tight_layout()
+    fig.savefig(str(out_dir / "fig_exp3_strategy_comparison_final_mastery.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 
 def plot_rag_intervention_results(

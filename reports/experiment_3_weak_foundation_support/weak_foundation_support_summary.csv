@@ -1,7 +1,0 @@
-﻿foundation_extra_steps,success_rate,avg_total_steps,avg_mainline_steps,avg_foundation_extra_used,avg_final_polynomial_mastery,avg_reached_mastery_step,avg_remediation_count,avg_unnecessary_remediations,marginal_success_gain,marginal_mastery_gain
-0,0.0,40.0,40.0,0.0,0.5056,,9.82,0.0,,
-10,0.12,49.2,39.61,9.59,0.5549,46.4167,11.57,0.05,0.12,0.0493
-20,0.14,55.57,39.22,16.35,0.5798,49.0714,13.35,0.04,0.02,0.0249
-40,0.18,59.24,39.17,20.07,0.625,54.4444,13.83,0.15,0.04,0.0452
-50,0.29,56.14,38.32,17.82,0.6393,51.6897,12.57,0.07,0.11,0.0143
-60,0.28,60.02,38.41,21.61,0.6502,54.1071,13.68,0.03,-0.01,0.0109

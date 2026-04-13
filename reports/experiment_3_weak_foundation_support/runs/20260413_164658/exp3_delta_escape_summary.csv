@@ -1,0 +1,7 @@
+﻿interval,from_max_steps,to_max_steps,escape_rate_start,escape_rate_end,delta_escape_pct,avg_steps_start,avg_steps_end,delta_steps,marginal_cost_steps_per_1pct_escape,plateau_flag
+30→40,30,40,12.8,29.9,17.1,29.351,37.36,8.009,0.468363,False
+40→50,40,50,29.9,44.4,14.5,37.36,44.02,6.66,0.45931,False
+50→60,50,60,44.4,58.3,13.9,44.02,47.975,3.955,0.284532,False
+60→70,60,70,58.3,64.6,6.3,47.975,52.03,4.055,0.643651,False
+70→80,70,80,64.6,69.0,4.4,52.03,56.184,4.154,0.944091,False
+80→90,80,90,69.0,71.6,2.6,56.184,58.937,2.753,1.058846,False

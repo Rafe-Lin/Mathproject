@@ -1,3 +1,0 @@
-﻿condition,student_type,avg_initial_polynomial_mastery,avg_final_polynomial_mastery,avg_mastery_gain,avg_total_steps,learning_efficiency,avg_rag_intervention_count,weakest_subskills_baseline
-weak_ab3_foundation,Weak,0.3026,0.5912,0.2886,54.88,0.005405,0.0,"sign_distribution,family_isomorphism"
-weak_ab3_foundation_rag,Weak,0.3026,0.5897,0.2871,54.04,0.005469,1.46,"family_isomorphism,expand_binomial"

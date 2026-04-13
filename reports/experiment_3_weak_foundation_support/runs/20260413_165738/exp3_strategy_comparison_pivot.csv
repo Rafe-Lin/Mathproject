@@ -1,0 +1,4 @@
+﻿MAX_STEPS,Baseline_Escape,RuleBased_Escape,Adaptive_Escape,Adaptive_minus_Baseline_pp,Adaptive_minus_RuleBased_pp,Baseline_Mastery,RuleBased_Mastery,Adaptive_Mastery
+50,51.9,52.3,44.4,-7.5,-7.9,0.55626,0.581004,0.497519
+70,71.4,67.8,64.6,-6.8,-3.2,0.580717,0.589297,0.536993
+90,80.6,75.5,71.6,-9.0,-3.9,0.591532,0.59103,0.553013
