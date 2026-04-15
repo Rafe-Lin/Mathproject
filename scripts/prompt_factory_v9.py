@@ -1,12 +1,21 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 # ID: prompt_factory_v9.py
-# Version: v9.1.2 (Optimization Menu Edition)
-# Last Updated: 2026-01-11
-# Description:
-#   V9.1.2 專用 Prompt 生成工廠。
-#   [Core]: 負責批次生成不同 Tier (Cloud/Local/Edge) 的 Prompt 規格書。
-#   [UI]: 優化選單，清楚標示歸納邏輯與助教指引更新狀態。
+# Version: V9.1.2 (V9 Prompt Factory)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   V9 專用 Prompt 生成工廠：依課程篩選批次產生 Cloud/Local/Edge 等 Tier 的
+#   gencode prompt 規格，並寫入 skill_gencode_prompt；互動選單標示更新狀態。
+#
+# [Database Schema Usage]:
+#   讀寫 SkillGenCodePrompt、SkillInfo、SkillCurriculum；呼叫 generate_v9_spec。
+#
+# [Logic Flow]:
+#   1. 互動選擇課綱/章節與 tier。
+#   2. 對選中技能呼叫 generate_v9_spec。
+#   3. 提交資料庫並顯示進度。
 # ==============================================================================
 
 import sys

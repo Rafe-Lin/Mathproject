@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
-# Script: benchmark_skills.py
-# Version: v2.1 (CSV Export Support)
-# Description: 
-#   基於 ISO/IEC 25010 標準進行評測，並自動將結果輸出為 CSV 檔案。
-#   方便匯入 Excel 製作科展圖表。
+# ID: benchmark_skills.py
+# Version: V2.1.0 (ISO/IEC 25010 Skill Benchmark)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   依 ISO/IEC 25010 面向對 skills 模組做批次評測（穩健、合規、語法等加權），
+#   並將結果匯出 CSV 供報表或科展圖表使用。
+#
+# [Database Schema Usage]:
+#   透過 create_app 載入環境；評測以匯入技能模組為主。
+#
+# [Logic Flow]:
+#   1. 掃描 skills 目錄並建立 Flask 上下文。
+#   2. 反覆執行 generate/check 並計分。
+#   3. 寫入 CSV 與終端摘要。
 # ==============================================================================
 
 import sys

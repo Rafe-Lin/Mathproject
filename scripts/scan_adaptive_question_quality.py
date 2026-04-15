@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: scan_adaptive_question_quality.py
+# Version: V1.0.0 (Micro-Generator Quality Scan)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   掃描適應性型錄中微題生成器產出之品質（敘述、LaTeX、分數合理性等），
+#   支援關鍵技能家族篩選與報表輸出。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作；讀取 catalog 與生成器模組。
+#
+# [Logic Flow]:
+#   1. 載入 catalog 與目標 family。
+#   2. 呼叫 generate_micro_question 採樣。
+#   3. 套用啟發式檢查並匯總。
+# ==============================================================================
 from __future__ import annotations
 
 import argparse

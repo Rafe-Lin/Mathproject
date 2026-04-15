@@ -1,9 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-驗證「單元 → 題型 pattern skill」出題流程 MVP
-執行：python scripts/verify_unit_pattern_mvp.py
-"""
+# ==============================================================================
+# ID: verify_unit_pattern_mvp.py
+# Version: V1.0.0 (Unit Pattern MVP Check)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   驗證單元選題器與 pattern skill 之 generate() 可正常運作（根式單元範例），
+#   作為單元—題型架構之煙霧測試。執行：python scripts/verify_unit_pattern_mvp.py
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 測試 unit selector 回傳技能 ID。
+#   2. 動態 import 各 pattern skill 並呼叫 generate。
+# ==============================================================================
 
 import os
 import sys

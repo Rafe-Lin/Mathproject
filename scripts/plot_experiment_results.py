@@ -1,36 +1,22 @@
-﻿"""
-[File Name]
-plot_experiment_results.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This script reads experiment CSV outputs and generates publication-ready figures for ablation and learning-dynamics analysis.
-It consolidates Experiment 1/2/3/4/5 visualizations into a reproducible plotting pipeline.
-The file includes summary charts, remediation profiles, mastery trajectories, and multi-condition comparison figures.
-It re-renders figures directly from latest logs to keep reporting synchronized with each run.
-
-[Core Functionality]
-- Load structured CSV outputs from reports/ and validate plotting prerequisites
-- Generate ablation and strategy-by-student-type comparison figures
-- Generate Experiment 2 policy profile and mastery trajectory figures from trajectory logs
-- Generate weak-foundation and RAG extension visualization sets
-- Export standardized PNG figures and caption files for reporting reuse
-
-[Related Experiments]
-- Experiment 1: Baseline vs AB2 vs AB3
-- Experiment 2: Student Type Analysis
-- Experiment 3: Policy Timing (AB3)
-- Experiment 4: Weak + RAG (Extension)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: plot_experiment_results.py
+# Version: V1.0.0 (Shared Experiment Plotting)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   讀取 reports/ 下實驗 CSV，產生 Exp1/2/3/4 等出版用圖表（消融、分群、掌握度、
+#   Weak foundation、RAG 延伸）；含目錄建立、樣式與 caption 檔輸出，供各 runner 共用。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 載入資料框並驗證欄位。
+#   2. 呼叫各 plot_* 函式繪圖。
+#   3. 輸出 PNG 與說明 markdown。
+# ==============================================================================
 import csv
 import os
 import shutil

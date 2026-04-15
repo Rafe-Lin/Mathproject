@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: enrich_skills.py
+# Version: V1.0.0 (Skill Prompt Enrichment)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   掃描資料庫 skills_info 中缺少 suggested_prompt 的技能，依課本例題上下文呼叫模型，
+#   批次產生繁中、精簡的引導語（功文風格），寫回資料庫供前台練習使用。
+#
+# [Database Schema Usage]:
+#   讀寫 skills_info、關聯 curriculum；讀取 textbook example 作為生成上下文。
+#
+# [Logic Flow]:
+#   1. 互動選擇課綱/章節範圍。
+#   2. 查詢待補技能並組裝提示。
+#   3. 呼叫 AI 寫入 suggested_prompt 欄位。
+# ==============================================================================
 import sys
 import os
 import json

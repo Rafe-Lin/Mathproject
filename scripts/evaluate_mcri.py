@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
-"""
-Minimal but compatible MCRI evaluator used by live_show/scaler.
-
-The original evaluator was missing from the merged workspace.  This module
-rebuilds the public API that the app currently expects:
-
-- analyze_code_robustness(code) -> (grade, reason)
-- evaluate_math_hygiene(question_text) -> (score_0_to_15, notes)
-- evaluate_live_code(code, exec_result, healer_trace=None, ablation_mode=False)
-
-The implementation is heuristic on purpose.  It is designed to:
-1. avoid fallback 50/32 fake scores,
-2. return stable numeric outputs for the UI,
-3. reward executable, renderable, curriculum-friendly math generation code.
-"""
+# ==============================================================================
+# ID: evaluate_mcri.py
+# Version: V1.0.0 (MCRI Heuristic Evaluator)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   提供 live_show、scaler、agent_tools 等模組共用的 MCRI 風格程式碼評分介面。
+#   實作 analyze_code_robustness、evaluate_math_hygiene、evaluate_live_code 等函式，
+#   以啟發式規則避免假分數，並產生穩定的數值輸出供 UI 與批次評測使用。
+#
+# [Scientific Control Strategy]:
+#   固定規則評分與分數上下限，避免隨機或未定義的 fallback 分數。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 解析或檢查程式碼結構、題文衛生與執行結果。
+#   2. 計算合併分數並回傳給路由或批次評測呼叫端。
+# ==============================================================================
 
 from __future__ import annotations
 

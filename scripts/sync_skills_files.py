@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 # ID: sync_skills_files.py
-# Version: v8.6.2 (Sort by display_order)
-# Description:
-#   負責同步資料庫中的技能清單與本地實體檔案。
-#   [Update v8.6.2]: 階層選單的技能列表改用 display_order 排序。
-#   [Mode 3]: 針對「選取範圍內尚未生成檔案」的技能，執行完整生成 (Architect + Coder)。
+# Version: V8.6.2 (DB ↔ skills/*.py Sync)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   同步資料庫 skills_info 與本機 skills/*.py：補齊缺失檔案、清理孤兒檔案、
+#   依課綱階層篩選後呼叫 Architect/Coder 產生程式碼；技能列表依 display_order 排序。
+#
+# [Database Schema Usage]:
+#   讀寫 SkillInfo、SkillCurriculum、TextbookExample；觸發 code_generator / prompt 產線。
+#
+# [Logic Flow]:
+#   1. 互動選擇課綱範圍並比對 DB 與檔案系統。
+#   2. 生成缺失檔或刪除確認後之孤兒檔。
+#   3. 輸出統計與日誌。
 # ==============================================================================
 
 import sys

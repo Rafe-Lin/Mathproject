@@ -1,12 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-將 MVP 的三個 pattern skills 寫入 skills_info 與 skill_curriculum，
-使 /get_next_question?mode=unit 能正常運作。
-執行：python scripts/seed_unit_pattern_skills.py
-
-採最小化 bootstrap，不載入 app/routes/code_generator 等，避免觸發 AI 相關 import。
-"""
+# ==============================================================================
+# ID: seed_unit_pattern_skills.py
+# Version: V1.0.0 (Unit Pattern DB Seed)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   將 MVP 三個 pattern skills 寫入 skills_info 與 skill_curriculum，使
+#   /get_next_question?mode=unit 可運作。採輕量 Flask 啟動，避免載入完整 app 管線。
+#   執行：python scripts/seed_unit_pattern_skills.py
+#
+# [Database Schema Usage]:
+#   寫入 SkillInfo、SkillCurriculum；呼叫 init_db。
+#
+# [Logic Flow]:
+#   1. 建立最小 Flask app 與 DB 上下文。
+#   2. 插入根式相關三技能列。
+#   3. 提交交易。
+# ==============================================================================
 
 import os
 import sys

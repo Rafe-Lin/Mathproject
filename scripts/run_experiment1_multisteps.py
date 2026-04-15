@@ -1,4 +1,26 @@
-﻿from __future__ import annotations
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_experiment1_multisteps.py
+# Version: V1.0.0 (Experiment 1 Official Runner)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   Experiment 1 正式入口：在 MAX_STEPS 為 30/40/50 下重跑三策略與三學生分群，
+#   集中管理種子、樣本數與門檻；輸出 CSV、MD 與圖表至 reports/experiment_1_ablation。
+#
+# [Scientific Control Strategy]:
+#   與 simulate_student、core.experiment_config 之 EXP1 設定一致。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 載入組態並建立時間戳 run 目錄。
+#   2. 呼叫 simulate_student 批次模擬。
+#   3. 彙總並繪製 Exp1 專用圖表。
+# ==============================================================================
+from __future__ import annotations
 
 import csv
 import os

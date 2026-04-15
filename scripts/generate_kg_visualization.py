@@ -1,14 +1,22 @@
 # -*- coding: utf-8 -*-
-"""
-=============================================================================
-模組名稱 (Module Name): scripts/generate_kg_visualization.py
-功能說明 (Description): 從 kg_outputs JSON 檔案生成知識圖譜的可視化 HTML
-執行語法 (Usage): python scripts/generate_kg_visualization.py [--grade 國一上] [--output-dir outputs/]
-版本資訊 (Version): V1.0
-更新日期 (Date): 2026-04-07
-維護團隊 (Maintainer): Math AI Project Team
-=============================================================================
-"""
+# ==============================================================================
+# ID: generate_kg_visualization.py
+# Version: V1.0.0 (KG Static HTML)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   從 kg_outputs JSON 與 KGDataLoader 載入資料，產生知識圖譜靜態 HTML 頁面；
+#   支援依年級/單元或 --all 批次輸出。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作；可選讀取專案內 JSON 產物。
+#
+# [Logic Flow]:
+#   1. 解析 CLI 參數與輸出目錄。
+#   2. 載入圖資料並組裝視覺化元件。
+#   3. 寫入 HTML 檔。
+# ==============================================================================
 
 import json
 import argparse

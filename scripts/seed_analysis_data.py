@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: seed_analysis_data.py
+# Version: V1.0.0 (Analysis Report Seed Data)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   建立或補齊學情分析報表示範所需之假資料（學生、錯題紀錄、診斷等），
+#   供驗證視覺化與報表流程。
+#
+# [Database Schema Usage]:
+#   寫入 User、MistakeLog、LearningDiagnosis、SkillInfo 等（依腳本邏輯）。
+#
+# [Logic Flow]:
+#   1. 建立 Flask app 上下文。
+#   2. 建立虛擬學生與種子錯題/診斷資料。
+#   3. 提交資料庫。
+# ==============================================================================
 import sys
 import os
 import random

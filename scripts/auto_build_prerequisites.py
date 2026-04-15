@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: auto_build_prerequisites.py
+# Version: V13.0.0 (Prerequisite Graph Builder)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   依課程座標與 AI 分析，自動建立技能間前置關係並寫入多對多關聯表；
+#   支援 Safe / Power 模式與階層候選池（含跨學制候選）。
+#
+# [Database Schema Usage]:
+#   讀寫 SkillInfo、前置關聯表；讀取例題與描述作為 AI 上下文。
+#
+# [Logic Flow]:
+#   1. 互動篩選課綱/章節與模式。
+#   2. 對每個技能呼叫模型推斷前置清單（上限數量）。
+#   3. 寫入資料庫並顯示進度。
+# ==============================================================================
 import sys
 import os
 import json

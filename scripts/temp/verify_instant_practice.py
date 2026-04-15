@@ -36,4 +36,4 @@ def verify_instant_practice():
     pass
 
 if __name__ == "__main__":
-    print("Please run the internal verification script 'scripts/verify_instant_internal.py' instead.")
+    print("Please run the internal verification script 'scripts/temp/verify_instant_internal.py' instead.")

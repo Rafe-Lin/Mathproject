@@ -1,4 +1,12 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
+import os
+import sys
+
+# Bootstrap: parent `scripts/` must be on sys.path for `import simulate_student`
+_scripts_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _scripts_dir not in sys.path:
+    sys.path.insert(0, _scripts_dir)
 
 import csv
 import hashlib

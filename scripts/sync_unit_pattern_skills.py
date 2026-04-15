@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
 # ==============================================================================
 # ID: sync_unit_pattern_skills.py
-# Description:
-#   產生「單元 base + 題型 delta」的技能程式碼。
-#   讀取 agent_skills/<unit_id>/SKILL.md + patterns/<pattern_id>.md，
-#   合併後交給 code_generator 生成 skills/<unit_id>__<pattern_id>.py
+# Version: V1.0.0 (Unit × Pattern Codegen)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   產生「單元 base + 題型 delta」之技能程式碼：讀取 agent_skills/<unit>/SKILL.md
+#   與 patterns/<pattern>.md，合併後交 code_generator 寫入 skills/<unit>__<pattern>.py。
+#
+# [Database Schema Usage]:
+#   透過 create_app 與現有題庫管線；不直接手寫 SQL。
+#
+# [Logic Flow]:
+#   1. 解析 --unit / --pattern / --all 與 mode。
+#   2. build_unit_pattern_spec → auto_generate_skill_code。
+#   3. 顯示 tqdm 進度。
 #
 # Usage:
 #   python scripts/sync_unit_pattern_skills.py --unit <unit_id> --pattern <pattern_id>

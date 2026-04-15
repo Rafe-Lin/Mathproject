@@ -1,37 +1,26 @@
-﻿"""
-[File Name]
-simulate_student.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This script runs the core adaptive-learning simulation workflow for polynomial learning.
-It generates per-episode and per-step trajectories for AB1/AB2/AB3 strategies across student types.
-The file computes outcome summaries, writes formal experiment CSV outputs, and auto-generates key Experiment 2 figures.
-It also logs remediation dynamics and optional RAG-assisted intervention traces for extension analysis.
-
-[Core Functionality]
-- Execute batch simulation across strategies and student profiles (Careless/Average/Weak)
-- Update subskill/mastery states step-by-step with remediation and routing behavior
-- Record detailed trajectory logs for learning dynamics and phase transitions
-- Build and export ablation and student-type summary CSV reports
-- Auto-generate Experiment 2 policy and mastery trajectory figures after each run
-- Output publication-support artifacts (fixed representative figure filename and captions)
-
-[Related Experiments]
-- Experiment 1: Baseline vs AB2 vs AB3
-- Experiment 2: Student Type Analysis
-- Experiment 3: Policy Timing (AB3)
-- Experiment 4: Weak + RAG (Extension)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: simulate_student.py
+# Version: V1.0.0 (Adaptive Simulation Engine)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   適應性學習核心模擬：依策略（AB1/AB2/AB3）與學生類型產生回合／步階軌跡、
+#   補救與路由行為紀錄；彙總結果、輸出正式實驗 CSV，並可自動產生 Exp2 圖表與 caption。
+#   亦支援 RAG 延伸實驗之軌跡延伸分析。
+#
+# [Scientific Control Strategy]:
+#   集中設定樣本數、種子與門檻，與 core.experiment_config 對齊。
+#
+# [Database Schema Usage]:
+#   無內建 ORM 持久化；以檔案系統 reports/ 為主輸出。
+#
+# [Logic Flow]:
+#   1. 解析輸出模式（如 experiment2）與策略清單。
+#   2. 模擬每回合步驟、更新掌握度與補救。
+#   3. 寫入 CSV/圖表並同步 latest。
+# ==============================================================================
 import csv
 import os
 import random

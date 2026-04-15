@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: train_adaptive_skill_policy.py
+# Version: V1.0.0 (PPO Skill Policy Trainer)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   從模擬器產生模仿學習資料集並訓練輕量技能路由策略（checkpoint），
+#   包裝 core.adaptive.skill_policy_trainer。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 解析 CLI（episodes、horizon、訓練超參數）。
+#   2. generate_imitation_dataset → train_policy_from_imitation。
+#   3. save_policy_checkpoint 至 artifacts。
+# ==============================================================================
 from __future__ import annotations
 
 import argparse

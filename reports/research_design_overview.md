@@ -1,4 +1,4 @@
-﻿# 1. 研究背景與動機
+# 1. 研究背景與動機
 
 台灣會考數學長期呈現明顯能力分層，學生在基礎概念、題型遷移與解題穩定性上存在系統性差異。相同教材與固定教學節奏，往往使高能力學生缺乏足夠挑戰、低能力學生無法及時補強，造成學習成效兩極化。
 
@@ -365,3 +365,38 @@ Corbett, A. T., & Anderson, J. R. (1995). Knowledge Tracing: Modeling the Acquis
 Bloom, B. S. (1968). Learning for Mastery. *Evaluation Comment, 1*(2), 1–12.
 
 Guskey, T. R. (2007). Closing Achievement Gaps: Revisiting Benjamin S. Bloom’s “Learning for Mastery”. *Journal of Advanced Academics, 19*(1), 8–31.
+
+---
+
+# 11. 附錄：Experiment 1～3 相關程式清單（執行與報表）
+
+本附錄整理目前與 Experiment 1～3 直接相關的核心程式，區分為「執行程式（Runner）」與「報表/繪圖程式（Reporting/Plotting）」。
+
+## 11.1 執行程式（Runner）
+
+| 程式路徑 | 對應實驗 | 類型 | 簡短說明 | 主要用途 |
+|---|---|---|---|---|
+| `scripts/run_experiment1_multisteps.py` | Exp1 | 主執行程式 | 以 30/40/50 三組 MAX_STEPS 重跑三策略與三學生群。 | 產生 Exp1 正式多步數比較結果（CSV、MD、圖表）。 |
+| `scripts/simulate_student.py` | Exp2（亦為核心模擬引擎） | 主執行程式（Exp2） | `main()` 目前固定走 Exp2（AB3、MAX_STEPS=40）流程。 | 產生 Exp2 的分群摘要、圖表與 caption。 |
+| `scripts/run_weak_foundation_support_strategy_comparison.py` | Exp3 | 主執行程式 | 針對 Weak 組跑 MAX_STEPS=30~100 的三策略比較（multi-seed）。 | 產生 Exp3（RQ3）主表、最佳法摘要與主圖。 |
+| `scripts/temp/run_multi_steps_experiment.py` | Exp1 | 舊版執行程式（已退役） | 舊的 Exp1 runner，已由 `run_experiment1_multisteps.py` 取代；已移至 `scripts/temp/`，執行時僅印出退役訊息並結束。 | 僅供歷史追溯，不作正式結果來源。 |
+| `scripts/run_weak_foundation_support_experiment.py` | Exp3 | 舊版/延伸流程 | 早期 Weak support 分析流程（含延伸圖）。 | 非本版 RQ3 最小輸出主流程。 |
+| `scripts/run_weak_foundation_support_experiment_extended.py` | Exp3 | 延伸分析流程 | 針對 Exp3 的延伸區間/附加分析。 | 供擴展研究，不屬最小核心輸出。 |
+
+## 11.2 報表與繪圖程式（Reporting / Plotting）
+
+| 程式路徑 | 對應實驗 | 類型 | 簡短說明 | 主要用途 |
+|---|---|---|---|---|
+| `scripts/plot_experiment1_multisteps.py` | Exp1 | 專用繪圖程式 | 產生 Exp1 多步數主圖、分群比較圖與圖說。 | 統一 Exp1 視覺風格與圖檔輸出。 |
+| `scripts/plot_experiment_results.py` | Exp1/Exp2/Exp3（共用） | 共用繪圖程式 | 提供通用繪圖工具與多實驗圖表函式（含 Exp3 主圖函式）。 | 供各 runner 呼叫產圖、套用一致圖表樣式。 |
+| `scripts/organize_experiment_outputs.py` | Exp1/Exp2/Exp3（共用） | 輸出整理程式 | 將不同實驗輸出同步/整理到對應報告目錄。 | 維護輸出目錄結構與交付一致性。 |
+| `scripts/cleanup_non_experiment1_outputs.py` | Exp1/Exp2（共用） | 輸出清理程式 | 清理或搬移非 Exp1 的混入輸出。 | 避免報告目錄污染與檔案混置。 |
+
+## 11.3 建議使用順序（正式重現）
+
+1. Exp1：`python scripts/run_experiment1_multisteps.py`
+2. Exp2：`python scripts/simulate_student.py`
+3. Exp3：`python scripts/run_weak_foundation_support_strategy_comparison.py`
+4. **路徑提醒**：舊版 Exp1 runner（`run_multi_steps_experiment.py`）請勿再依 `scripts/run_multi_steps_experiment.py` 尋找；該檔已移至 `scripts/temp/`（見 11.1），且執行僅會印出退役訊息後結束。
+
+補充：若僅需重畫圖（不重跑模擬），可改由對應 plotting 函式讀既有 CSV 重新輸出圖檔。

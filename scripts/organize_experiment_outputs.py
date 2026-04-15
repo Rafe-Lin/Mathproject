@@ -1,34 +1,21 @@
-﻿"""
-[File Name]
-organize_experiment_outputs.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This utility organizes generated report artifacts into experiment-specific folders.
-It copies selected CSV and figure outputs from reports root into curated subdirectories
-so that Experiment 1/2/3/4 deliverables are easier to track and present consistently.
-
-[Core Functionality]
-- Define experiment output directories under reports/
-- Maintain curated file allow-lists per experiment track
-- Copy existing report artifacts into corresponding experiment folders
-- Provide one-command synchronization for reporting workflows
-
-[Related Experiments]
-- Experiment 1: Baseline vs AB2 vs AB3
-- Experiment 2: Student Type Analysis
-- Experiment 3: Policy Timing (AB3)
-- Experiment 4: Weak + RAG (Extension)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: organize_experiment_outputs.py
+# Version: V1.0.0 (Report Artifact Organizer)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   將 reports 根目錄產生的 CSV、圖檔依實驗別複製到對應子資料夾，
+#   維持 Exp1/2/3/4 交付物目錄一致。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 依允許清單比對來源檔名。
+#   2. 複製至各實驗 curated 目錄。
+# ==============================================================================
 
 import shutil
 from pathlib import Path

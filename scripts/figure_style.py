@@ -1,4 +1,21 @@
-"""Shared matplotlib style helpers for report-wide visual consistency."""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: figure_style.py
+# Version: V1.0.0 (Publication Matplotlib Style)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   實驗報告共用 matplotlib 樣式：色票、字體、座標軸與圖例格式，
+#   供 plot_experiment_results、plot_mastery_trajectory 等模組匯入。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 設定 rcParams 與策略色對照。
+#   2. 提供儲存圖檔與軸線裝飾輔助函式。
+# ==============================================================================
 
 from __future__ import annotations
 

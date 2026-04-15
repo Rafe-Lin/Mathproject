@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: generate_skill_breakpoint_maps.py
+# Version: V1.0.0 (Catalog Generator)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   由 docs 內適應性斷點對照來源產生 `configs/skill_breakpoint_catalog.json` 與
+#   `configs/skill_breakpoint_ui_map.json`，供路由與 UI 使用 skill_id:family_id 定址。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作；讀取專案內 CSV/模板與設定檔。
+#
+# [Logic Flow]:
+#   1. 讀取目錄與對照資料。
+#   2. 合併 fallback 與子技能標籤。
+#   3. 寫入 JSON 型錄與 UI map。
+# ==============================================================================
 from __future__ import annotations
 
 import csv

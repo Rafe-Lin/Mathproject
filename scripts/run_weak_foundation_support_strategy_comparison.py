@@ -1,7 +1,22 @@
-"""
-Experiment 3 (RQ3) runner with integrated reflect-scale robustness.
-Runs both Weak reflect settings (0.10 vs 0.05) in one execution.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_weak_foundation_support_strategy_comparison.py
+# Version: V1.0.0 (Experiment 3 RQ3 Main Runner)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   Exp3（RQ3）主流程：Weak 組於多組 MAX_STEPS 與多 seed 下比較三策略，
+#   含 reflect-scale 設定，產生主表、摘要與 RQ3 圖表。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 建立時間戳 run 目錄。
+#   2. 呼叫 simulate_student 與繪圖函式。
+#   3. 寫入 reports/experiment_3_weak_foundation_support。
+# ==============================================================================
 
 from __future__ import annotations
 

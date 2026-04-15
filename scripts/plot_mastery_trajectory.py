@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: plot_mastery_trajectory.py
+# Version: V1.0.0 (Mastery Trajectory Figures)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   讀取實驗輸出 CSV，依學生類型與策略繪製多項式掌握度軌跡圖，
+#   與 figure_style 共用出版級樣式。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 載入資料並依策略著色。
+#   2. 繪製子圖與圖例。
+#   3. 輸出 PNG。
+# ==============================================================================
 import os
 import pandas as pd
 import matplotlib.pyplot as plt

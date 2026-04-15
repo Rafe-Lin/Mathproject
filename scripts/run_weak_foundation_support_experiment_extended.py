@@ -1,10 +1,22 @@
-"""
-Experiment 3 extended runner (plateau-oriented, multi-seed).
-
-RQ3-Extended:
-Where is the saturation point of total support budget for Weak (C) students,
-and at what point does marginal return begin to diminish?
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_weak_foundation_support_experiment_extended.py
+# Version: V1.0.0 (Experiment 3 Extended / Plateau)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   Exp3 延伸分析：觀察 Weak 組在總支援預算上的高原點與邊際報酬遞減區間，
+#   支援更長 MAX_STEPS 與選項化參數。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 解析 CLI（若有）與步數清單。
+#   2. 多 seed 模擬並計算高原指標。
+#   3. 輸出圖表與報表。
+# ==============================================================================
 
 from __future__ import annotations
 

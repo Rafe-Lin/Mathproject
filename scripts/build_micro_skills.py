@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: build_micro_skills.py
+# Version: V1.0.0 (Adaptive Micro-Skill Stubs)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   依適應性型錄與 manifest 登錄，為各 family 產生 skills/adaptive 下之微技能 stub，
+#   並更新 docs/自適應實作/skill_manifest.json。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. load_catalog / load_manifest。
+#   2. 對每個條目寫入 stub 檔與 register_manifest_entry。
+# ==============================================================================
 from __future__ import annotations
 
 import json

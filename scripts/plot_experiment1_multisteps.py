@@ -1,4 +1,23 @@
-﻿from __future__ import annotations
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: plot_experiment1_multisteps.py
+# Version: V1.0.0 (Experiment 1 Multistep Figures)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   專責 Experiment 1 多步數（30/40/50）成功率柱狀圖、學生分群比較圖與標籤驗證，
+#   與 run_experiment1_multisteps.py 搭配使用。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 讀取彙總資料或傳入 DataFrame。
+#   2. 套用策略與分群色碼。
+#   3. 輸出圖檔與同步路徑。
+# ==============================================================================
+from __future__ import annotations
 
 from pathlib import Path
 import shutil

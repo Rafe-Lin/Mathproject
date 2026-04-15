@@ -1,32 +1,22 @@
-﻿"""
-[File Name]
-run_rag_intervention_experiment.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This runner benchmarks Weak + AB3 performance with and without RAG tutor intervention.
-It controls the RAG switch under fixed weak-support settings and compares outcomes,
-subskill gains, and breakpoint shifts for extension-level analysis.
-Its outputs are treated as appendix evidence rather than mainline conclusions.
-
-[Core Functionality]
-- Execute Weak-only AB3 episodes under baseline vs RAG-enabled conditions
-- Aggregate summary metrics including success, mastery, and family_isomorphism gain
-- Build student-level, subskill-level, and breakpoint-shift comparison tables
-- Export Experiment 4 CSVs and regenerate corresponding RAG figures
-
-[Related Experiments]
-- Experiment 4: Weak + RAG (Extension)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_rag_intervention_experiment.py
+# Version: V1.0.0 (Experiment 4 RAG Intervention)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   Exp4（延伸）：在固定 Weak 支援設定下，比較 AB3 開啟／關閉 RAG 助教之成效、
+#   子技能增益與斷點位移；輸出 CSV 與 RAG 圖表，作為附錄證據管線。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 建立 run 目錄並設定 RAG 條件。
+#   2. 呼叫 simulate_student 與彙總。
+#   3. 繪製 intervention 圖並同步 latest。
+# ==============================================================================
 
 import csv
 import os

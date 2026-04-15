@@ -1,31 +1,21 @@
-"""
-[File Name]
-cleanup_non_experiment1_outputs.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This utility script cleans legacy non-Experiment-1 artifacts from the reports root.
-It moves Experiment-2-related files into reports/experiment_2_ab3_student_types.
-The script is designed for output organization only and does not affect simulation logic.
-
-[Core Functionality]
-- Scan only reports root-level files (no recursive traversal)
-- Match configured filename patterns for non-Experiment-1 artifacts
-- Move matched files into experiment_2_ab3_student_types
-- Optionally back up existing destination files before overwrite
-
-[Related Experiments]
-- Experiment 2: Student Type Analysis
-
-[Notes]
-- No experiment logic is modified by this script.
-- Added for maintainability and report-output housekeeping only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: cleanup_non_experiment1_outputs.py
+# Version: V1.0.0 (Reports Root Cleanup)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   掃描 reports 根目錄檔案，將非 Exp1 產物（如 Exp2 相關）搬移至
+#   experiment_2_ab3_student_types，避免根目錄混置；不影響模擬邏輯。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 比對檔名模式。
+#   2. 可選備份後搬移目標目錄。
+# ==============================================================================
 
 from __future__ import annotations
 

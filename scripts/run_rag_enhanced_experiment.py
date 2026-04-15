@@ -1,32 +1,22 @@
-﻿"""
-[File Name]
-run_rag_enhanced_experiment.py
-
-[Created Date]
-2026-04-09
-
-[Project]
-Adaptive Math Learning System (Adaptive Summative + Teaching)
-
-[Description]
-This runner extends RAG intervention analysis with enhanced v2 tutor settings.
-It compares baseline, RAG v1, and RAG v2 under aligned weak-support conditions,
-and summarizes usage, effectiveness, subskill gains, and breakpoint movement.
-The script is maintained as an extension-track evaluator for weak-focused support.
-
-[Core Functionality]
-- Run Weak-only AB3 under three conditions: no RAG, RAG v1, and RAG v2
-- Aggregate comparative metrics including rag usage and trigger effectiveness
-- Export detailed summary, subskill, and breakpoint tables for enhanced RAG analysis
-- Generate Experiment 5 extension figures through shared plotting pipeline
-
-[Related Experiments]
-- Experiment 4: Weak + RAG (Extension)
-
-[Notes]
-- No experiment logic is modified by this header.
-- Added for maintainability and research documentation only.
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_rag_enhanced_experiment.py
+# Version: V1.0.0 (Experiment 5 RAG Enhanced)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   RAG 延伸評測：在對齊的 Weak 支援下比較無 RAG、RAG v1、RAG v2，
+#   彙整使用量、觸發效益、子技能與斷點變化，並透過共用繪圖管線產生圖表。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 定義 CONDITIONS 與額外步數。
+#   2. 批次模擬並聚合指標。
+#   3. 呼叫 plot_rag_v2_enhanced_results。
+# ==============================================================================
 
 import csv
 import random

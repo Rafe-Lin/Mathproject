@@ -1,9 +1,22 @@
-"""
-Experiment 3 runner (Policy A: total-step relaxation only, multi-seed mode).
-
-RQ3: How many additional total steps are needed for weak students
-(C range) to reach B threshold (mastery >= 0.60), and what is the cost?
-"""
+# -*- coding: utf-8 -*-
+# ==============================================================================
+# ID: run_weak_foundation_support_experiment.py
+# Version: V1.0.0 (Experiment 3 Legacy Flow)
+# Last Updated: 2026-04-15
+# Author: *Steve
+#
+# [Description]:
+#   Exp3 早期／完整流程：多 seed、總步數放寬策略下分析 Weak 組達標所需步數與成本，
+#   產生多張 Exp3 圖表與表格（非最小 RQ3 單一入口，但保留可重現管線）。
+#
+# [Database Schema Usage]:
+#   無直接資料庫操作。
+#
+# [Logic Flow]:
+#   1. 設定 MAX_STEPS 清單與種子。
+#   2. 模擬並彙總。
+#   3. 呼叫 plot_experiment_results 輸出圖檔。
+# ==============================================================================
 
 from __future__ import annotations
 
