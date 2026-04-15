@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .textbook_progression import get_prerequisite_candidates
@@ -36,6 +37,64 @@ NUMBER_POWER_SUBSKILLS = {
 }
 
 
+def _has_power_signal(*, question_text: str, correct_answer: str, student_answer: str) -> bool:
+    text = " ".join(
+        [
+            str(question_text or ""),
+            str(correct_answer or ""),
+            str(student_answer or ""),
+        ]
+    ).lower()
+    if not text.strip():
+        return False
+    # Use strong keywords only; avoid treating generic polynomial x^2 as power-remediation trigger.
+    power_keywords = (
+        "次方",
+        "指數",
+        "乘方",
+        "冪",
+        "exponent",
+        "power rule",
+        "power of power",
+        "same base",
+        "i9",
+        "i10",
+    )
+    if any(k in text for k in power_keywords):
+        return True
+    if re.search(r"\(-?[a-z0-9]+\)\s*\^\s*\d+", text):
+        return True
+    return False
+
+
+def _rank_candidate_priority(code: str) -> int:
+    key = str(code or "").strip()
+    # Prefer remediation for distribution / bracket / sign / like-term / basic arithmetic first.
+    priority = {
+        "outer_minus_scope": 0,
+        "monomial_distribution": 1,
+        "like_term_combination": 2,
+        "combine_after_distribution": 3,
+        "nested_bracket_scope": 4,
+        "coefficient_sign_handling": 5,
+        "term_collection_with_constants": 6,
+        "sign_handling": 7,
+        "add_sub": 8,
+        "mul_div": 9,
+        "order_of_operations": 10,
+        "expand_structure": 11,
+    }
+    if key in priority:
+        return priority[key]
+    if key in LINEAR_SUBSKILLS:
+        return 20
+    if key in INTEGER_POWER_SUBSKILLS:
+        return 80
+    if key in NUMBER_POWER_SUBSKILLS:
+        return 90
+    return 50
+
+
 def _infer_candidate_skill(code: str) -> str:
     key = str(code or "").strip()
     if key in LINEAR_SUBSKILLS:
@@ -69,6 +128,22 @@ def retrieve_remediation_candidates(
         normalized["prereq_skill"] = str(normalized.get("prereq_skill") or _infer_candidate_skill(code))
         normalized["candidate_source"] = str(normalized.get("candidate_source") or "textbook_prerequisite")
         out.append(normalized)
+    # For polynomial families (especially F2/F5/F11), avoid accidental jump to power remediation
+    # unless there is explicit power/exponent diagnostic signal.
+    family = str(family_id or "").strip().upper()
+    if family in {"F2", "F5", "F11"}:
+        power_signal = _has_power_signal(
+            question_text=question_text,
+            correct_answer=correct_answer,
+            student_answer=student_answer,
+        )
+        if not power_signal:
+            out = sorted(
+                out,
+                key=lambda item: _rank_candidate_priority(
+                    str(item.get("code") or item.get("runtime_subskill") or "")
+                ),
+            )
     out = out[: max(1, int(top_k))]
     candidate_codes = [str(item.get("code") or item.get("runtime_subskill") or "").strip() for item in out]
     candidate_descriptions = {

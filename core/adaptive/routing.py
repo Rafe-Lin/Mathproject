@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Any
 
 from .agent_skill_schema import AGENT_SKILL_SUBSKILLS
@@ -79,6 +80,35 @@ ALLOWED_CROSS_SKILL_PATHS = {
     ("polynomial_arithmetic", "fraction_arithmetic"),
     ("fraction_arithmetic", "integer_arithmetic"),
 }
+
+_POWER_RUNTIME_SUBSKILLS = {
+    "power_notation_basics",
+    "signed_power_interpretation",
+    "parenthesized_negative_base",
+    "minus_outside_power",
+    "power_precedence_in_mixed_ops",
+    "signed_power_evaluation",
+    "mixed_power_arithmetic",
+    "same_base_multiplication_rule",
+    "power_building_from_repetition",
+    "power_of_power_rule",
+    "product_power_distribution",
+    "fraction_power_distribution",
+}
+
+
+def _has_power_signal(*, question_text: str, expected_answer: str, student_answer: str) -> bool:
+    text = " ".join([str(question_text or ""), str(expected_answer or ""), str(student_answer or "")]).lower()
+    if not text.strip():
+        return False
+    keywords = ("次方", "指數", "乘方", "冪", "exponent", "power rule", "power of power", "same base", "i9", "i10")
+    if any(k in text for k in keywords):
+        return True
+    return bool(re.search(r"\(-?[a-z0-9]+\)\s*\^\s*\d+", text))
+
+
+def _is_power_runtime_subskill(code: str) -> bool:
+    return str(code or "").strip() in _POWER_RUNTIME_SUBSKILLS
 
 
 def _infer_prereq_skill_from_runtime_subskill(runtime_subskill: str, default_skill: str = "integer_arithmetic") -> str:
@@ -221,6 +251,22 @@ def rag_diagnose(
 
             choice_index = {"A": 0, "B": 1, "C": 2}.get(str(choice), 0)
             selected = dict(candidates[min(choice_index, len(candidates) - 1)])
+            power_signal = _has_power_signal(
+                question_text=str(question_text or ""),
+                expected_answer=str(expected_answer or ""),
+                student_answer=str(student_answer or ""),
+            )
+            if (not power_signal) and _is_power_runtime_subskill(str(selected.get("runtime_subskill") or selected.get("code") or "")):
+                fallback_non_power = next(
+                    (
+                        dict(item)
+                        for item in candidates
+                        if not _is_power_runtime_subskill(str(item.get("runtime_subskill") or item.get("code") or ""))
+                    ),
+                    None,
+                )
+                if fallback_non_power is not None:
+                    selected = fallback_non_power
             selected_runtime = str(selected.get("runtime_subskill") or "add_sub")
             selected_diag = str(selected.get("diagnosis_label") or "basic_operations")
             selected_concept = str(selected.get("error_concept") or "basic_arithmetic_instability")
