@@ -711,6 +711,88 @@ def _normalize_question_payload(raw: dict[str, Any] | None, entry: CatalogEntry,
     }
 
 
+def _is_valid_question_payload(payload: dict[str, Any] | None) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    question_text = str(payload.get("question_text") or payload.get("question") or "").strip()
+    answer_text = str(payload.get("correct_answer") or payload.get("answer") or "").strip()
+    return bool(question_text and answer_text)
+
+
+def _build_ultimate_safe_question_payload(entry: CatalogEntry) -> dict[str, Any]:
+    family_id = str(entry.family_id or "").strip() or "SAFE"
+    question_text = "請先計算：1 + 1"
+    answer_text = "2"
+    return {
+        "question": question_text,
+        "question_text": question_text,
+        "latex": question_text,
+        "answer": answer_text,
+        "correct_answer": answer_text,
+        "explanation": "",
+        "solution": "",
+        "context_string": "系統已切換到安全題模式，以確保展示流程不中斷。",
+        "image_base64": "",
+        "visual_aids": [],
+        "family_id": family_id,
+        "family": family_id,
+        "family_name": str(entry.family_name or family_id),
+        "skill_id": str(entry.skill_id or ""),
+        "subskill_nodes": [],
+        "source": "ultimate_safe_question",
+    }
+
+
+def _ensure_safe_question_payload(
+    payload: dict[str, Any] | None,
+    *,
+    entry: CatalogEntry,
+    source_hint: str,
+    error_hint: str = "",
+) -> dict[str, Any]:
+    # Stage 1: try caller payload first
+    candidate = _normalize_question_payload(payload if isinstance(payload, dict) else {}, entry, source_hint)
+    if _is_valid_question_payload(candidate):
+        print(
+            f"[adaptive][question] family={entry.family_id} source={candidate.get('source') or source_hint} status=ok",
+            flush=True,
+        )
+        return candidate
+
+    print(
+        f"[adaptive][question] family={entry.family_id} source={source_hint} status=error error={error_hint or 'invalid_or_empty_payload'}",
+        flush=True,
+    )
+
+    # Stage 2: same-family safe fallback
+    try:
+        same_family_raw = _build_fallback_question(entry)
+        same_family_candidate = _normalize_question_payload(
+            same_family_raw,
+            entry,
+            f"{source_hint}:same_family_safe",
+        )
+        if _is_valid_question_payload(same_family_candidate):
+            print(
+                f"[adaptive][question] family={entry.family_id} fallback=same_family_safe status=ok",
+                flush=True,
+            )
+            return same_family_candidate
+    except Exception as exc:
+        print(
+            f"[adaptive][question] family={entry.family_id} fallback=same_family_safe status=error error={exc}",
+            flush=True,
+        )
+
+    # Stage 3: ultimate safe question
+    ultimate = _build_ultimate_safe_question_payload(entry)
+    print(
+        f"[adaptive][question] family={entry.family_id} fallback=ultimate_safe_question status=ok",
+        flush=True,
+    )
+    return ultimate
+
+
 def _question_preview(raw: dict[str, Any] | None, *, max_len: int = 90) -> str:
     if not isinstance(raw, dict):
         return ""
@@ -3257,7 +3339,30 @@ def submit_and_get_next(payload: dict[str, Any]) -> dict[str, Any]:
         )
 
     started = time.perf_counter()
-    question_payload = _generate_question_payload(next_entry, selected_subskill=selected_subskill)
+    raw_question_payload: dict[str, Any] | None = None
+    source_hint = "unknown"
+    error_hint = ""
+    try:
+        raw_question_payload = _generate_question_payload(next_entry, selected_subskill=selected_subskill)
+        if isinstance(raw_question_payload, dict):
+            source_hint = str(raw_question_payload.get("source") or "generated")
+        else:
+            source_hint = "generated_non_dict"
+            error_hint = "question_payload_not_dict"
+    except Exception as exc:
+        source_hint = "question_generation_exception"
+        error_hint = str(exc)
+        raw_question_payload = None
+        print(
+            f"[adaptive][question] family={next_entry.family_id} source=question_generation status=error error={exc}",
+            flush=True,
+        )
+    question_payload = _ensure_safe_question_payload(
+        raw_question_payload,
+        entry=next_entry,
+        source_hint=source_hint,
+        error_hint=error_hint,
+    )
     latency_ms = int((time.perf_counter() - started) * 1000)
 
     resolved_target_subskills = list(next_entry.subskill_nodes)

@@ -141,6 +141,112 @@ def _response_for_frontend(response: dict) -> dict:
     return sanitized
 
 
+def _pick_first_text(*values: object) -> str:
+    for value in values:
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
+
+
+def _build_demo_route_msg(response: dict, payload: dict) -> str:
+    """Build a teacher-friendly one-line routing explanation for demo display."""
+    try:
+        summary = response.get("summary") if isinstance(response.get("summary"), dict) else {}
+        routing_state = response.get("routing_state") if isinstance(response.get("routing_state"), dict) else {}
+        mode = str(response.get("mode") or payload.get("mode") or routing_state.get("mode") or "").strip().lower()
+
+        target_family = _pick_first_text(
+            response.get("display_family"),
+            response.get("selected_family_for_render"),
+            response.get("target_family_id"),
+            routing_state.get("origin_family"),
+            summary.get("origin_family"),
+            summary.get("origin_family_id"),
+        )
+        target_subskill = _pick_first_text(
+            response.get("display_subskill"),
+            response.get("detected_subskill_node"),
+            response.get("display_subskill_label"),
+        )
+        target_subskills = response.get("target_subskills")
+        if not target_subskill and isinstance(target_subskills, list) and target_subskills:
+            target_subskill = str(target_subskills[0] or "").strip()
+        remediation_skill = _pick_first_text(
+            response.get("display_skill"),
+            response.get("remediation_skill"),
+            summary.get("remediation_skill"),
+            routing_state.get("remediation_skill"),
+        )
+        remediation_subskill = _pick_first_text(
+            response.get("remediation_subskill"),
+            summary.get("remediation_subskill"),
+            routing_state.get("remediation_subskill"),
+            target_subskill,
+        )
+
+        completed = bool(response.get("completed"))
+        unit_completed = bool(response.get("unit_completed") or summary.get("unit_completed") or routing_state.get("unit_completed"))
+        local_remediation_completed = bool(
+            response.get("local_remediation_completed")
+            or summary.get("local_remediation_completed")
+            or routing_state.get("local_remediation_completed")
+        )
+        assessment_completed = bool(
+            response.get("assessment_completed")
+            or summary.get("assessment_completed")
+            or routing_state.get("assessment_completed")
+        )
+        teaching_completed = bool(completed and mode == "teaching")
+        display_mode = str(response.get("display_mode") or "").strip().lower()
+        milestone_state = str(response.get("milestone_state") or "").strip().lower()
+        current_mode = str(response.get("current_mode") or routing_state.get("current_mode") or "").strip().lower()
+        post_mode = str(response.get("post_mode") or "").strip().lower()
+        in_remediation = bool(response.get("in_remediation") or routing_state.get("in_remediation"))
+        return_to_mainline = bool(
+            response.get("return_to_mainline")
+            or summary.get("return_to_mainline")
+            or summary.get("has_returned_to_main")
+            or routing_state.get("return_to_mainline")
+            or milestone_state == "remediation_returned_success"
+            or (current_mode == "remediation" and post_mode == "mainline")
+        )
+
+        if completed or unit_completed or assessment_completed or (local_remediation_completed and completed):
+            if assessment_completed or mode == "assessment":
+                return "本次診斷已完成，系統已整理出本單元掌握情況與後續建議。"
+            if unit_completed or teaching_completed:
+                return "本單元主線已完成，系統已結束本次教學流程。"
+            if local_remediation_completed:
+                return "本次補救階段已完成，系統已整理目前掌握情況與下一步建議。"
+            return "本次流程已完成，系統已整理出本單元掌握情況與後續建議。"
+
+        if return_to_mainline:
+            if target_family:
+                return f"補救題表現已穩定，系統現在返回主線，重新檢核【{target_family}】。"
+            return "補救題表現已穩定，系統現在返回主線，重新檢核原本卡住的題型。"
+
+        remediation_active = bool(
+            display_mode == "remediation"
+            or in_remediation
+            or current_mode == "remediation"
+            or post_mode == "remediation"
+        )
+        if remediation_active:
+            family_text = f"【{target_family}】" if target_family else "主線題型"
+            subskill_text = f"【{target_subskill}】" if target_subskill else "關鍵子技能"
+            remed_text = remediation_skill or remediation_subskill
+            if remed_text:
+                return f"偵測到你在{family_text}持續失誤，系統判定卡在{subskill_text}；先切到補救模式加強【{remed_text}】。"
+            return f"偵測到你在{family_text}持續失誤，系統判定卡在{subskill_text}；先切到補救模式加強相關前置能力。"
+
+        if target_family:
+            return f"目前主線表現穩定，系統維持在【{target_family}】持續檢核。"
+        return "目前主線表現穩定，系統維持在本題型持續檢核。"
+    except Exception:
+        return "系統已更新目前學習狀態。"
+
+
 @practice_bp.route("/api/adaptive/submit_and_get_next", methods=["POST"])
 @login_required
 def adaptive_submit_and_get_next():
@@ -231,6 +337,9 @@ def adaptive_submit_and_get_next():
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:
         return jsonify({"error": f"adaptive engine failure: {exc}"}), 500
+    response["demo_route_msg"] = _build_demo_route_msg(response, payload)
+    if not str(response.get("demo_route_msg") or "").strip():
+        response["demo_route_msg"] = "系統已更新目前學習狀態。"
     return jsonify(_response_for_frontend(response))
 
 

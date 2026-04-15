@@ -40,30 +40,25 @@
       flex-direction:column;
       gap:16px;
     }
-    .top-layout {
+    .main-columns {
       display:grid;
       grid-template-columns:2fr 1fr;
       gap:16px;
       align-items:stretch;
     }
-    .top-left {
+    .main-left-column {
       display:flex;
       flex-direction:column;
       gap:16px;
       min-width:0;
     }
-    .top-right {
+    .main-right-column {
       display:flex;
-      height:100%;
+      flex-direction:column;
+      gap:16px;
       min-width:0;
     }
-    .bottom-layout {
-      display:grid;
-      grid-template-columns:2fr 1fr;
-      gap:16px;
-      align-items:start;
-    }
-    .bottom-left, .bottom-right { min-width:0; }
+    .main-right-column .ai-assistant-panel { height:100%; }
     .meta { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
     .chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
     .chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
@@ -94,8 +89,42 @@
     .overview-copy h2 { margin:0 0 4px; font-size:18px; }
     .overview-copy p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
     .soft-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#f7fbff; color:#31557d; font-size:12px; font-weight:700; }
-    .strategy-badge { display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); font-size:14px; font-weight:700; background:var(--accent-soft); color:#1e5faa; }
-    .strategy-badge.review { background:#fff7e8; color:#9a5800; border-color:#f0d39a; }
+    .top-kpi-row { display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap; }
+    .kpi-mini {
+      flex:0 0 auto;
+      padding:6px 10px;
+      border-radius:10px;
+      background:#f5f7fb;
+      border:1px solid var(--line);
+      font-size:14px;
+      color:#2f4566;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .kpi-mini span { font-weight:700; }
+    .kpi-strategy {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid #bfe4cc;
+      background:#e8f6ee;
+      color:#1f7a4d;
+      font-size:14px;
+      font-weight:700;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .kpi-strategy.review { background:#fff7e8; color:#9a5800; border-color:#f0d39a; }
+    .demo-route-msg { margin-top:10px; padding:10px 12px; border:1px solid #f3c8a8; border-radius:12px; background:#fff7ef; color:#7a3e1f; font-size:13px; line-height:1.6; }
+    @keyframes warmFlash {
+      0% { background:#fff1f0; border-color:#f5b7b1; box-shadow:0 0 0 rgba(245, 183, 177, 0); }
+      40% { background:#fff4e8; border-color:#f2b880; box-shadow:0 0 0 3px rgba(245, 183, 177, 0.25); }
+      100% { background:transparent; border-color:inherit; box-shadow:0 0 0 rgba(245, 183, 177, 0); }
+    }
+    .value-flash { animation:warmFlash 1.4s ease-out; }
+    .card-flash { animation:warmFlash 1.6s ease-out; }
     .question-box { min-height:128px; border:1px dashed #bdd1ec; border-radius:14px; background:#fbfdff; padding:14px; margin-bottom:10px; }
     .question-family { margin-bottom:10px; font-size:14px; color:var(--muted); }
     .question-text { white-space:pre-wrap; line-height:1.65; font-size:21px; font-weight:700; }
@@ -131,7 +160,8 @@
     .canvas-wrap { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:linear-gradient(90deg, rgba(21,101,192,.06) 1px, transparent 1px), linear-gradient(rgba(21,101,192,.06) 1px, transparent 1px), #ffffff; background-size:22px 22px; }
     #handwriting-canvas { display:block; width:100%; height:300px; background:transparent; cursor:crosshair; touch-action:none; user-select:none; }
     .assistant-title { color:#9b59b6; text-align:center; margin:0 0 12px; font-size:20px; font-weight:700; }
-    .assistant-rag-scope { margin:-2px 0 10px; text-align:center; font-size:12px; color:#8f5e18; background:#fff5da; border:1px solid #f1cf7e; border-radius:999px; padding:6px 10px; }
+    .assistant-rag-scope { margin:-2px 0 8px; text-align:center; font-size:12px; color:#8f5e18; background:#fff5da; border:1px solid #f1cf7e; border-radius:999px; padding:6px 10px; }
+    .assistant-route-hint { margin:0 0 10px; padding:7px 10px; border-radius:10px; border:1px solid #f2d7a6; background:#fff8eb; color:#875116; font-size:12px; line-height:1.5; }
     .assistant-banner { padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:#f5f8fd; font-size:14px; line-height:1.65; color:#334155; }
     .assistant-banner.review { background:var(--hint-bg); border-color:var(--hint-line); color:#784c00; box-shadow:0 10px 24px rgba(243,201,118,.18); }
     .hint-box { min-height:160px; padding:14px; border:1px solid var(--hint-line); border-radius:14px; background:var(--hint-bg); line-height:1.75; color:#5b4516; }
@@ -165,12 +195,45 @@
     .adv-rag-provider-btn:last-child { border-right:0; }
     .adv-rag-provider-btn.active { background:#2b83bd; color:#fff; }
     .adv-rag-provider-note { margin:-4px 0 10px; color:#60708c; font-size:12px; line-height:1.45; }
-    .nav-kpis { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .nav-chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
-    .nav-chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
-    .nav-chip span { font-size:18px; font-weight:700; }
-    .nav-panel { display:flex; flex-direction:column; justify-content:space-between; }
-    .nav-panel .nav-kpis { grid-template-columns:1fr; }
+    .nav-panel { display:flex; flex-direction:column; justify-content:flex-start; }
+    .nav-status-row { display:flex; gap:10px; margin-top:8px; }
+    .nav-mini-box {
+      flex:1;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px 10px;
+      background:#f5f7fb;
+      font-size:14px;
+      color:#2f4566;
+      line-height:1.4;
+      white-space:nowrap;
+    }
+    .nav-mini-box span { font-weight:700; }
+    .nav-progress-box {
+      margin:0 0 10px;
+      padding:10px 12px;
+      border:1px solid #cfe0f5;
+      border-radius:12px;
+      background:#f4f9ff;
+      color:#2d4668;
+      font-size:12.5px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
+    .nav-progress-box strong { font-size:13px; color:#1f3f63; }
+    .nav-progress-bar {
+      height:6px;
+      background:#e5eaf3;
+      border-radius:6px;
+      overflow:hidden;
+      margin-top:6px;
+    }
+    #navProgressFill {
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg, #4facfe, #00c6ff);
+      transition:width 0.3s ease;
+    }
     .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
     .assistant-card.idle { opacity:.92; }
     .assistant-card.review { border-color:#f0d39a; box-shadow:0 0 0 4px rgba(245, 158, 11, 0.18), 0 18px 44px rgba(18,44,99,.08); }
@@ -236,8 +299,7 @@
     @media (max-width:760px) { .diag-flex { flex-direction:column; } .diag-bar-row .label { width:140px; } }
     @media (max-width:1080px) {
       .top-grid { grid-template-columns:1fr; }
-      .top-layout, .bottom-layout { grid-template-columns:1fr; }
-      .top-right { height:auto; }
+      .main-columns { grid-template-columns:1fr; }
       .ai-assistant-panel { height:auto; }
     }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
@@ -275,33 +337,37 @@
             <div class="apr-ring" id="aprRing">
               <div class="apr-core">
                 <strong id="aprPercent">45%</strong>
-                <span>掌握度</span>
+                <span>能力掌握度</span>
               </div>
             </div>
             <div class="overview-copy">
               <h2>本單元學習導航</h2>
-              <p>系統會依你的作答表現調整題型。掌握度越高，代表你對目前微技能越穩定。</p>
+              <p>系統會依你的作答表現調整題型。能力掌握度越高，代表你對目前微技能越穩定。</p>
             </div>
           </div>
           <div class="soft-badge" id="familyBadge">微技能：待診斷</div>
         </div>
-        <div class="meta">
-          <div class="chip"><strong>目前題號</strong><div class="value" id="stepValue">0</div></div>
-          <div class="chip"><strong>挫折指數</strong><div class="value" id="frustrationValue">0</div></div>
+        <div class="top-kpi-row">
+          <div class="kpi-mini">題號：<span id="stepValue">0</span></div>
+          <div class="kpi-mini">挫折：<span id="frustrationValue">0</span></div>
+          <div class="kpi-strategy" id="strategyBadge">🟢 探索新知</div>
         </div>
-        <div class="strategy-badge" id="strategyBadge">🟢 當前策略：探索新知</div>
-        <div style="height:8px;"></div>
         <div class="status" id="statusText">尚未啟動。</div>
+        <div class="demo-route-msg" id="demoRouteMsgBox">系統尚未開始診斷。</div>
       </section>
 
       <section class="panel nav-panel">
         <div>
           <h2>系統導航狀態</h2>
-          <p class="panel-note">系統會依照你的掌握度與作答表現，決定現在要探索新知、維持熟練，或切換到補救教學。</p>
+          <div class="nav-progress-box" id="navProgressBox">📍 學習進度：尚未開始
+
+目前位置：待啟動
+下一站：待啟動</div>
+          <div class="nav-progress-bar"><div id="navProgressFill"></div></div>
         </div>
-        <div class="nav-kpis">
-          <div class="nav-chip"><strong>目前策略</strong><span id="strategyMini">探索</span></div>
-          <div class="nav-chip"><strong>連錯次數</strong><span id="frustrationMini">0</span></div>
+        <div class="nav-status-row">
+          <div class="nav-mini-box">目前策略：<span id="strategyMini">探索</span></div>
+          <div class="nav-mini-box">連錯次數：<span id="frustrationMini">0</span></div>
         </div>
       </section>
 
@@ -314,8 +380,8 @@
     </div>
 
     <div class="page-layout">
-      <div class="top-layout">
-        <div class="top-left">
+      <div class="main-columns">
+        <div class="main-left-column">
           <section class="panel question-section">
             <h2>題目與作答</h2>
             <div class="summary-card" id="summaryCard">
@@ -380,53 +446,10 @@
             </div>
             <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
           </section>
-        </div>
 
-        <div class="top-right">
-          <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
-            <div>
-              <div class="assistant-title">AI 助教（這題專用）</div>
-              <div class="assistant-rag-scope" id="ragScopeBadge">問問題會使用 RAG；AI 檢查手寫只讀取白板過程。</div>
-              <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
-              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
-              <div style="height:10px;"></div>
-              <div class="guide-buttons">
-                <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
-                <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
-                <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
-              </div>
-              <div style="height:10px;"></div>
-              <div class="adv-rag-provider-row">
-                <span class="adv-rag-provider-label">回答來源</span>
-                <div class="adv-rag-provider-toggle" role="group" aria-label="選擇 RAG 回答來源">
-                  <button type="button" class="adv-rag-provider-btn active" data-provider="local" onclick="setAdvRagProvider('local')">本地模型</button>
-                  <button type="button" class="adv-rag-provider-btn" data-provider="google" onclick="setAdvRagProvider('google')">API Key</button>
-                </div>
-              </div>
-              <div class="adv-rag-provider-note" id="adv-rag-provider-note">使用 config.py 的 tutor 本地模型回答。</div>
-              <div class="assistant-input">
-                <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
-                <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
-              </div>
-              <div id="adv-rag-loading" style="display: none; text-align: center; padding: 8px; color: #1565c0; font-size: 13px;">
-                正在檢索相關單元...
-              </div>
-              <div id="adv-rag-results" style="display: none; margin-top: 10px; margin-bottom: 10px; padding: 10px; background: #f0f7ff; border: 1px solid #cce1ff; border-radius: 8px;">
-                <div id="adv-rag-routing-badge" style="font-size: 0.75em; padding: 3px 6px; border-radius: 6px; background:#e6f4ff; color:#0958d9; margin-bottom: 8px; display:none; font-weight:bold;"></div>
-                <div style="font-size: 0.8em; color: #1565c0; font-weight: 700; margin-bottom: 6px;">最相關 5 個知識點：</div>
-                <div id="adv-rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
-              </div>
-              <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <div class="bottom-layout">
-        <div class="bottom-left">
           <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
             <h2>自適應決策狀態</h2>
-            <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程。</p>
+            <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程（系統內部狀態，供教師參考）。</p>
             <div class="adaptive-state-grid">
               <div class="adaptive-state-item">
                 <strong>目前模式（主線 / 補救 / 返回）</strong>
@@ -480,13 +503,52 @@
           </section>
         </div>
 
-        <div class="bottom-right">
+        <div class="main-right-column">
+          <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
+            <div>
+              <div class="assistant-title">AI 助教（這題專用）</div>
+              <div class="assistant-rag-scope" id="ragScopeBadge">問問題會使用 RAG；AI 檢查手寫只讀取白板過程。</div>
+              <div class="assistant-route-hint" id="assistantRouteHint">📍 系統判斷：尚未開始診斷。</div>
+              <div class="assistant-banner" id="assistantBanner">先自己做題就好。我會先在旁邊看著，只有在你卡住，或系統判定需要補救時，我才會跳出來提醒你。</div>
+              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+              <div style="height:10px;"></div>
+              <div class="guide-buttons">
+                <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
+                <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+                <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+              </div>
+              <div style="height:10px;"></div>
+              <div class="adv-rag-provider-row">
+                <span class="adv-rag-provider-label">回答來源</span>
+                <div class="adv-rag-provider-toggle" role="group" aria-label="選擇 RAG 回答來源">
+                  <button type="button" class="adv-rag-provider-btn active" data-provider="local" onclick="setAdvRagProvider('local')">本地模型</button>
+                  <button type="button" class="adv-rag-provider-btn" data-provider="google" onclick="setAdvRagProvider('google')">API Key</button>
+                </div>
+              </div>
+              <div class="adv-rag-provider-note" id="adv-rag-provider-note">使用 config.py 的 tutor 本地模型回答。</div>
+              <div class="assistant-input">
+                <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+                <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
+              </div>
+              <div id="adv-rag-loading" style="display: none; text-align: center; padding: 8px; color: #1565c0; font-size: 13px;">
+                正在檢索相關單元...
+              </div>
+              <div id="adv-rag-results" style="display: none; margin-top: 10px; margin-bottom: 10px; padding: 10px; background: #f0f7ff; border: 1px solid #cce1ff; border-radius: 8px;">
+                <div id="adv-rag-routing-badge" style="font-size: 0.75em; padding: 3px 6px; border-radius: 6px; background:#e6f4ff; color:#0958d9; margin-bottom: 8px; display:none; font-weight:bold;"></div>
+                <div style="font-size: 0.8em; color: #1565c0; font-weight: 700; margin-bottom: 6px;">最相關 5 個知識點：</div>
+                <div id="adv-rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+              </div>
+              <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
+            </div>
+          </section>
+
           <section class="panel question-json-panel">
             <h2>目前題目 JSON 摘要</h2>
             <pre class="json-box" id="jsonBox"></pre>
           </section>
         </div>
       </div>
+
     </div>
 </div>
 
@@ -549,6 +611,7 @@
       unitCompleted: false,
       assessmentCompleted: false,
       assessmentStopReason: "",
+      demoRouteMsg: "系統尚未開始診斷。",
     };
     const skillId = {{ skill_id|tojson }};
     const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
@@ -583,18 +646,76 @@
     function strategyLabel(code) { const map = {0:"最大資訊探索",1:"近側發展區",2:"多樣化抽樣",3:"觀念補救"}; return map[code] || String(code); }
     function strategyBadgeText(code) {
       const map = {
-        0: "🟢 當前策略：探索新知",
-        1: "🔵 當前策略：近側發展",
-        2: "🟣 當前策略：多樣抽樣",
-        3: "🛡️ 當前策略：觀念補救",
+        0: "🟢 探索新知",
+        1: "🔵 近側發展",
+        2: "🟣 多樣抽樣",
+        3: "🛡️ 觀念補救",
       };
       return map[code] || `策略：${code}`;
+    }
+    const POLY_MAINLINE_SEQUENCE = ["F1", "F2", "F5", "F11", "F9", "F10"];
+    const FLASH_TEXT_IDS = new Set([
+      "adaptiveModeValue",
+      "ppoActionValue",
+      "familyValue",
+      "detectedSubskillValue",
+      "remediationSkillValue",
+      "remediationSubskillValue",
+      "switchReasonValue",
+      "returnStateValue",
+      "milestoneValue",
+      "adaptiveRationaleValue",
+      "strategyBadge",
+      "strategyMini",
+      "statusText",
+      "demoRouteMsgBox",
+      "navProgressBox",
+    ]);
+    const FLASH_CARD_IDS = new Set(["strategyBadge", "demoRouteMsgBox"]);
+    function flashNode(node, asCard = false) {
+      if (!node) return;
+      const cls = asCard ? "card-flash" : "value-flash";
+      node.classList.remove(cls);
+      void node.offsetWidth;
+      node.classList.add(cls);
+      setTimeout(() => node.classList.remove(cls), asCard ? 1700 : 1400);
     }
     function setText(id, text) {
       const node = document.getElementById(id);
       if (node) node.textContent = text;
     }
-    function setStatus(text) { setText("statusText", text); }
+    function setTextWithFlash(id, text) {
+      const node = document.getElementById(id);
+      if (!node) return;
+      const next = String(text ?? "");
+      const prev = String(node.textContent ?? "");
+      node.textContent = next;
+      if (prev !== next && FLASH_TEXT_IDS.has(id)) {
+        flashNode(node, FLASH_CARD_IDS.has(id));
+      }
+    }
+    function applyDemoRouteMsg(msg) {
+      const text = String(msg || "").trim() || "系統已更新目前學習狀態。";
+      state.demoRouteMsg = text;
+      setTextWithFlash("demoRouteMsgBox", text);
+      setTextWithFlash("statusText", text);
+      setText("assistantRouteHint", summarizeDemoRouteMsg(text));
+    }
+    function summarizeDemoRouteMsg(text) {
+      const raw = String(text || "").trim();
+      if (!raw) return "📍 系統判斷：已更新目前學習狀態。";
+      const firstSentence = raw.split(/[。！？]/).find(Boolean) || raw;
+      return `📍 系統判斷：${firstSentence}。`;
+    }
+    function updateNavProgressBarFromText(text) {
+      const fill = document.getElementById("navProgressFill");
+      if (!fill) return;
+      const matched = String(text || "").match(/(\d+(?:\.\d+)?)\s*%/);
+      const value = matched ? Number(matched[1]) : 0;
+      const pct = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+      fill.style.width = `${pct}%`;
+    }
+    function setStatus(text) { setTextWithFlash("statusText", text); }
     function setAssistantBanner(text, isReview = false) {
       const banner = document.getElementById("assistantBanner");
       const card = document.getElementById("assistantCard");
@@ -1107,6 +1228,73 @@
       if (byName) return byName;
       return id || nameEn || "待載入";
     }
+    function extractMainlineFamilyCode(value) {
+      const text = String(value || "").toUpperCase();
+      const matched = text.match(/\bF\d+\b/);
+      return matched ? matched[0] : "";
+    }
+    function getMainlineAnchorFamilyCode() {
+      const fallbackChain = [
+        state.currentFamilyId,
+        state.selectedFamilyForRender,
+        state.displayFamily,
+        state.currentFamilyLabel,
+        state.originFamily,
+      ];
+      if (state.isRemediationActive || normalizeDisplayMode(state.displayMode) === "remediation") {
+        fallbackChain.unshift(state.originFamily);
+      }
+      for (const item of fallbackChain) {
+        const code = extractMainlineFamilyCode(item);
+        if (code && POLY_MAINLINE_SEQUENCE.includes(code)) return code;
+      }
+      return "";
+    }
+    function familyCodeToLabel(code) {
+      if (!code) return "待判定";
+      const skill = state.mainSkill || skillId;
+      const viaResolver = resolveFamilyLabel({ skillKey: skill, familyId: code });
+      return viaResolver || code;
+    }
+    function updateMainlineProgressBox() {
+      const boxId = "navProgressBox";
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      if (!hasStarted) {
+        setTextWithFlash(boxId, "📍 學習進度：尚未開始\n\n目前位置：待啟動\n下一站：待啟動");
+        updateNavProgressBarFromText("0%");
+        return;
+      }
+
+      const total = POLY_MAINLINE_SEQUENCE.length;
+      const currentCode = getMainlineAnchorFamilyCode();
+      const currentIndexRaw = POLY_MAINLINE_SEQUENCE.indexOf(currentCode);
+      const completedLike = Boolean(state.unitCompleted || state.isCompleted || state.assessmentCompleted);
+      const effectiveIndex = completedLike ? total - 1 : (currentIndexRaw >= 0 ? currentIndexRaw : 0);
+      const progressPct = ((effectiveIndex + 1) / total) * 100;
+      const currentLabel = (currentIndexRaw >= 0 || completedLike)
+        ? familyCodeToLabel(POLY_MAINLINE_SEQUENCE[effectiveIndex] || currentCode)
+        : "待判定（主線初始化中）";
+      const nextCode = effectiveIndex < total - 1 ? POLY_MAINLINE_SEQUENCE[effectiveIndex + 1] : "";
+      const nextLabel = nextCode ? familyCodeToLabel(nextCode) : "";
+      const remaining = Math.max(0, (total - 1) - effectiveIndex);
+      const detected = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "前置子技能";
+
+      let message = currentIndexRaw >= 0 || completedLike
+        ? `📍 學習進度：${progressPct.toFixed(1)}%（${effectiveIndex + 1} / ${total}）`
+        : `📍 學習進度：推估中（0 / ${total}）`;
+      message += `\n\n目前位置：${currentLabel}`;
+      if (completedLike && effectiveIndex >= total - 1) {
+        message += `\n本單元主線已完成`;
+      } else if (state.isRemediationActive || normalizeDisplayMode(state.displayMode) === "remediation") {
+        message += `\n目前狀態：補強「${detected}」`;
+        message += nextLabel ? `\n完成後：返回主線，前往 ${nextLabel}` : `\n完成後：返回主線，持續檢核目前題型`;
+      } else {
+        message += `\n下一站：${nextLabel || "即將完成主線"}`;
+        message += `\n距離完成：還剩 ${remaining} 個主線 family`;
+      }
+      setTextWithFlash(boxId, message);
+      updateNavProgressBarFromText(message);
+    }
     function buildAdaptiveRationale() {
       const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
       if (!hasStarted) return "尚未開始診斷，系統尚未做路由決策。";
@@ -1192,22 +1380,28 @@
         ? (state.hasReturnedToMain ? "已回主線後完成" : "已完成")
         : (state.hasReturnedToMain ? "已返回主技能" : (state.returnReady ? "已達返回條件" : "尚未達返回條件"));
       const ppoActionText = hasStarted ? toRouteActionLabel(state.ppoRouteAction) : "尚未開始";
-      setText("adaptiveModeValue", modeLabel || "尚未開始");
+      setTextWithFlash("adaptiveModeValue", modeLabel || "尚未開始");
       setText("mainSkillValue", mainSkillText);
-      setText("ppoActionValue", ppoActionText);
-      setText("familyValue", familyText);
-      setText("detectedSubskillValue", detectedText);
-      setText("remediationSkillValue", remediationText);
-      setText("remediationSubskillValue", remediationSubskillText);
-      setText("switchReasonValue", switchReasonText);
-      setText("returnStateValue", state.stepNumber > 0 ? returnText : "尚未判定");
+      setTextWithFlash("ppoActionValue", ppoActionText);
+      setTextWithFlash("familyValue", familyText);
+      setTextWithFlash("detectedSubskillValue", detectedText);
+      setTextWithFlash("remediationSkillValue", remediationText);
+      setTextWithFlash("remediationSubskillValue", remediationSubskillText);
+      setTextWithFlash("switchReasonValue", switchReasonText);
+      setTextWithFlash("returnStateValue", state.stepNumber > 0 ? returnText : "尚未判定");
       const milestoneEl = document.getElementById("milestoneValue");
       if (milestoneEl) {
+        const prevText = String(milestoneEl.textContent || "");
+        const nextText = milestoneLabel(milestoneState);
         milestoneEl.className = milestoneClass(milestoneState);
-        milestoneEl.textContent = milestoneLabel(milestoneState);
+        milestoneEl.textContent = nextText;
+        if (prevText !== nextText) {
+          flashNode(milestoneEl, false);
+        }
       }
-      setText("adaptiveRationaleValue", buildAdaptiveRationale());
+      setTextWithFlash("adaptiveRationaleValue", buildAdaptiveRationale());
       updateReturnCelebration();
+      updateMainlineProgressBox();
     }
     function scrollChatToBottom() {
       const box = document.getElementById("chatHistory");
@@ -1283,11 +1477,16 @@
       setText("frustrationValue", String(response.frustration_index));
       setText("frustrationMini", String(response.frustration_index));
       setText("familyBadge", `微技能：${response.target_family_id || "待診斷"}`);
-      setText("strategyMini", strategyLabel(response.ppo_strategy));
+      setTextWithFlash("strategyMini", strategyLabel(response.ppo_strategy));
       const strategyBadge = document.getElementById("strategyBadge");
       if (strategyBadge) {
-        strategyBadge.textContent = strategyBadgeText(response.ppo_strategy);
+        const prevBadge = String(strategyBadge.textContent || "");
+        const nextBadge = strategyBadgeText(response.ppo_strategy);
+        strategyBadge.textContent = nextBadge;
         strategyBadge.classList.toggle("review", response.ppo_strategy === 3);
+        if (prevBadge !== nextBadge) {
+          flashNode(strategyBadge, true);
+        }
       }
       if (q && q.family_name) {
         setText("questionFamily", `Family: ${response.target_family_id} · ${q.family_name}`);
@@ -1611,6 +1810,7 @@
       });
       updateOverview(response, q);
       updateAdaptiveStatePanel();
+      applyDemoRouteMsg(response.demo_route_msg);
       updateAnswerFormatHint(state.mainSkill || skillId, state.currentFamilyId, q.family_name || state.familyNameEn);
       const questionEl = document.getElementById("questionText");
       questionEl.textContent = state.currentQuestionText || "(no question)";
@@ -1879,6 +2079,7 @@
         );
       }
       updateAdaptiveStatePanel();
+      applyDemoRouteMsg(responseMeta?.demo_route_msg || summary?.demo_route_msg);
       card.classList.add("show");
       card.classList.toggle("pass", passed);
       card.classList.toggle("review", !passed);
@@ -1975,6 +2176,9 @@
         state.milestoneState = "";
         state.localRemediationCompleted = false;
         state.unitCompleted = false;
+        state.demoRouteMsg = "系統尚未開始診斷。";
+        setText("demoRouteMsgBox", state.demoRouteMsg);
+        setText("assistantRouteHint", summarizeDemoRouteMsg(state.demoRouteMsg));
         updateAdaptiveStatePanel();
         resetChatHistory();
         resetHintBox();

@@ -7,18 +7,36 @@ import re
 import unicodedata
 from typing import Any
 
+MAX_SYMBOLIC_INPUT_LEN = 200
+_SYMBOLIC_ALLOWED_CHARS_RE = re.compile(r"^[0-9a-zA-Z+\-*/^().,_\s]+$")
+_SYMBOLIC_BAD_TOKENS = (
+    "<script",
+    "</script",
+    "{{",
+    "}}",
+    "javascript:",
+    "import ",
+    "__",
+    "os.",
+    "sys.",
+)
+_SYMBOLIC_BAD_OPERATOR_RE = re.compile(r"(\+\+|\^\^|//|\*\*\^|\^\*|\*/|/\*)")
+
 
 def _normalize_text(value: object) -> str:
-    text = str(value or "").strip()
-    return (
-        text.replace(" ", "")
-        .replace("$", "")
-        .replace("\\left", "")
-        .replace("\\right", "")
-        .replace("{", "")
-        .replace("}", "")
-        .lower()
-    )
+    try:
+        text = str(value or "").strip()
+        return (
+            text.replace(" ", "")
+            .replace("$", "")
+            .replace("\\left", "")
+            .replace("\\right", "")
+            .replace("{", "")
+            .replace("}", "")
+            .lower()
+        )
+    except Exception:
+        return ""
 
 
 def _to_halfwidth(text: str) -> str:
@@ -87,24 +105,81 @@ def _repair_ambiguous_fraction_denominator(text: str) -> str:
 
 
 def _normalize_math_text(value: object) -> str:
-    text = str(value or "").strip()
-    if not text:
+    try:
+        text = str(value or "").strip()
+        if not text:
+            return ""
+        text = _to_halfwidth(text)
+        text = (
+            text.replace(" ", "")
+            .replace("$", "")
+            .replace("\\left", "")
+            .replace("\\right", "")
+            .replace("{", "")
+            .replace("}", "")
+            .replace("?", "*")
+            .replace("繩", "/")
+            .lower()
+        )
+        text = _repair_ambiguous_fraction_denominator(text)
+        text = _insert_implicit_multiplication(text)
+        return text
+    except Exception:
         return ""
-    text = _to_halfwidth(text)
-    text = (
-        text.replace(" ", "")
-        .replace("$", "")
-        .replace("\\left", "")
-        .replace("\\right", "")
-        .replace("{", "")
-        .replace("}", "")
-        .replace("?", "*")
-        .replace("繩", "/")
-        .lower()
-    )
-    text = _repair_ambiguous_fraction_denominator(text)
-    text = _insert_implicit_multiplication(text)
-    return text
+
+
+def _looks_safe_for_symbolic_parse(text: str) -> bool:
+    """
+    Guardrail for symbolic parse.
+    Edge-case examples to block/fallback:
+    x++2, x^, ((, 1//2, abc), <script>alert(1)</script>, {{7*7}}, whitespace, ......
+    """
+    raw = str(text or "")
+    t = raw.strip()
+    if not t:
+        return False
+    if len(t) > MAX_SYMBOLIC_INPUT_LEN:
+        return False
+    lowered = t.lower()
+    if any(tok in lowered for tok in _SYMBOLIC_BAD_TOKENS):
+        return False
+    if _SYMBOLIC_BAD_OPERATOR_RE.search(t):
+        return False
+    if not re.search(r"[0-9a-zA-Z]", t):
+        return False
+    if not _SYMBOLIC_ALLOWED_CHARS_RE.match(t):
+        return False
+    # Parentheses balance check.
+    balance = 0
+    for ch in t:
+        if ch == "(":
+            balance += 1
+        elif ch == ")":
+            balance -= 1
+            if balance < 0:
+                return False
+    if balance != 0:
+        return False
+    return True
+
+
+def _should_reject_user_input_early(value: object) -> bool:
+    raw = str(value or "")
+    t = raw.strip()
+    if not t:
+        return True
+    if len(t) > MAX_SYMBOLIC_INPUT_LEN:
+        return True
+    lowered = t.lower()
+    if any(tok in lowered for tok in _SYMBOLIC_BAD_TOKENS):
+        return True
+    # Explicitly block template/script-ish wrappers before normalization removes them.
+    if "{{" in t or "}}" in t or "<" in t or ">" in t:
+        return True
+    # Only punctuation/symbol-like content should be treated as unjudgeable.
+    if not re.search(r"[0-9a-zA-Z]", t):
+        return True
+    return False
 
 
 def _as_fraction(value: str) -> Fraction | None:
@@ -136,6 +211,9 @@ def _as_symbolic(value: str):
         text = _normalize_text(value)
         if not text:
             return None
+        if not _looks_safe_for_symbolic_parse(text):
+            print("[adaptive][judge] mode=symbolic status=skip reason=unsafe_input", flush=True)
+            return None
         local_dict = {
             "x": Symbol("x"),
             "sqrt": sqrt,
@@ -145,8 +223,11 @@ def _as_symbolic(value: str):
             convert_xor,
             implicit_multiplication_application,
         )
-        return parse_expr(text, local_dict=local_dict, transformations=transformations, evaluate=True)
+        expr = parse_expr(text, local_dict=local_dict, transformations=transformations, evaluate=True)
+        print("[adaptive][judge] mode=symbolic status=ok", flush=True)
+        return expr
     except Exception:
+        print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
         return None
 
 
@@ -163,6 +244,9 @@ def _as_symbolic_tolerant(value: object):
         text = _normalize_math_text(value)
         if not text:
             return None
+        if not _looks_safe_for_symbolic_parse(text):
+            print("[adaptive][judge] mode=symbolic status=skip reason=unsafe_input", flush=True)
+            return None
         local_dict = {
             "x": Symbol("x"),
             "sqrt": sqrt,
@@ -172,26 +256,37 @@ def _as_symbolic_tolerant(value: object):
             convert_xor,
             implicit_multiplication_application,
         )
-        return parse_expr(text, local_dict=local_dict, transformations=transformations, evaluate=True)
+        expr = parse_expr(text, local_dict=local_dict, transformations=transformations, evaluate=True)
+        print("[adaptive][judge] mode=symbolic status=ok", flush=True)
+        return expr
     except Exception:
+        print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
         return None
 
 
 def _symbolic_equal(lhs: object, rhs: object) -> bool:
-    left = _as_symbolic_tolerant(lhs)
-    right = _as_symbolic_tolerant(rhs)
-    if left is not None and right is not None:
-        try:
-            from sympy import simplify
-            return simplify(left - right) == 0
-        except Exception:
-            return False
+    try:
+        left = _as_symbolic_tolerant(lhs)
+        right = _as_symbolic_tolerant(rhs)
+        if left is not None and right is not None:
+            try:
+                from sympy import simplify
+                ok = simplify(left - right) == 0
+                if ok:
+                    print("[adaptive][judge] mode=symbolic status=ok", flush=True)
+                return ok
+            except Exception:
+                print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
+                return False
 
-    lnum = _as_float(_normalize_text(lhs))
-    rnum = _as_float(_normalize_text(rhs))
-    if lnum is not None and rnum is not None:
-        return math.isclose(lnum, rnum, rel_tol=1e-9, abs_tol=1e-9)
-    return False
+        lnum = _as_float(_normalize_text(lhs))
+        rnum = _as_float(_normalize_text(rhs))
+        if lnum is not None and rnum is not None:
+            return math.isclose(lnum, rnum, rel_tol=1e-9, abs_tol=1e-9)
+        return False
+    except Exception:
+        print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
+        return False
 
 
 def _normalize_qr_input(value: object) -> str:
@@ -289,74 +384,102 @@ def judge_answer_with_feedback(
 
     fid = str(family_id or "").strip()
     f9_family = fid in ("F9", "poly_div_poly_qr")
+    if _should_reject_user_input_early(user_answer):
+        result["is_correct"] = False
+        result["feedback"] = "答案格式無法判定，請再檢查一次。"
+        print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+        return result
 
     # Divisor hint from stem (F9/QR diagnostics); reserved for future remainder checks.
     _ = _extract_divisor_from_question(question_text)
 
-    correct_qr = _parse_quotient_remainder(correct_answer)
-    user_qr = _parse_quotient_remainder(user_answer)
-    if f9_family and correct_qr and not user_qr:
-        user_qr = _parse_quotient_remainder_f9_tolerant(user_answer)
+    try:
+        correct_qr = _parse_quotient_remainder(correct_answer)
+        user_qr = _parse_quotient_remainder(user_answer)
+        if f9_family and correct_qr and not user_qr:
+            user_qr = _parse_quotient_remainder_f9_tolerant(user_answer)
 
-    # F8/F9 style expected answer: compare quotient and remainder independently (_symbolic_equal).
-    if correct_qr:
-        cq, cr = correct_qr
-        if f9_family:
-            result["analysis_source"] = "text_answer_qr_parser"
-        if user_qr:
-            uq, ur = user_qr
-            result["is_correct"] = _symbolic_equal(uq, cq) and _symbolic_equal(ur, cr)
+        # F8/F9 style expected answer: compare quotient and remainder independently (_symbolic_equal).
+        if correct_qr:
+            cq, cr = correct_qr
+            if f9_family:
+                result["analysis_source"] = "text_answer_qr_parser"
+            if user_qr:
+                uq, ur = user_qr
+                result["is_correct"] = _symbolic_equal(uq, cq) and _symbolic_equal(ur, cr)
+                if not result["is_correct"]:
+                    print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+                return result
+
+            result["is_correct"] = False
+            result["feedback"] = "你的答案可能在數學上接近正確，但本題需用『商與餘數』格式表示，例如：3x+2 ... -3"
+            print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
             return result
 
-        result["is_correct"] = False
-        result["feedback"] = "你的答案可能在數學上接近正確，但本題需用『商與餘數』格式表示，例如：3x+2 ... -3"
-        return result
-
-    try:
         result["is_correct"] = judge_answer(user_answer, correct_answer)
+        if not result["is_correct"]:
+            result["feedback"] = result["feedback"] or "答案格式無法判定，請再檢查一次。"
+        return result
     except Exception:
         result["is_correct"] = False
-    return result
+        result["feedback"] = "答案格式無法判定，請再檢查一次。"
+        print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+        return result
 
 
 def judge_answer(user_answer: object, correct_answer: object) -> bool:
-    user_text = _normalize_text(user_answer)
-    correct_text = _normalize_text(correct_answer)
+    try:
+        if _should_reject_user_input_early(user_answer):
+            print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+            return False
+        user_text = _normalize_text(user_answer)
+        correct_text = _normalize_text(correct_answer)
 
-    if not user_text or not correct_text:
+        if not user_text or not correct_text:
+            print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+            return False
+        if user_text == correct_text:
+            return True
+
+        user_num = _as_float(user_text)
+        correct_num = _as_float(correct_text)
+        if user_num is not None and correct_num is not None:
+            return math.isclose(user_num, correct_num, rel_tol=1e-9, abs_tol=1e-9)
+
+        user_frac = _as_fraction(user_text)
+        correct_frac = _as_fraction(correct_text)
+        if user_frac is not None and correct_frac is not None:
+            return user_frac == correct_frac
+
+        user_sym = _as_symbolic(user_text)
+        correct_sym = _as_symbolic(correct_text)
+        if user_sym is not None and correct_sym is not None:
+            try:
+                from sympy import simplify
+                if simplify(user_sym - correct_sym) == 0:
+                    print("[adaptive][judge] mode=symbolic status=ok", flush=True)
+                    return True
+            except Exception:
+                print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
+
+        # Tolerant symbolic fallback for formatting ambiguity in algebraic inputs.
+        user_sym_tol = _as_symbolic_tolerant(user_answer)
+        correct_sym_tol = _as_symbolic_tolerant(correct_answer)
+        if user_sym_tol is not None and correct_sym_tol is not None:
+            try:
+                from sympy import simplify
+                ok = simplify(user_sym_tol - correct_sym_tol) == 0
+                if ok:
+                    print("[adaptive][judge] mode=symbolic status=ok", flush=True)
+                else:
+                    print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+                return ok
+            except Exception:
+                print("[adaptive][judge] mode=symbolic status=skip reason=parse_error", flush=True)
+
+        print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
         return False
-    if user_text == correct_text:
-        return True
-
-    user_num = _as_float(user_text)
-    correct_num = _as_float(correct_text)
-    if user_num is not None and correct_num is not None:
-        return math.isclose(user_num, correct_num, rel_tol=1e-9, abs_tol=1e-9)
-
-    user_frac = _as_fraction(user_text)
-    correct_frac = _as_fraction(correct_text)
-    if user_frac is not None and correct_frac is not None:
-        return user_frac == correct_frac
-
-    user_sym = _as_symbolic(user_text)
-    correct_sym = _as_symbolic(correct_text)
-    if user_sym is not None and correct_sym is not None:
-        try:
-            from sympy import simplify
-            if simplify(user_sym - correct_sym) == 0:
-                return True
-        except Exception:
-            pass
-
-    # Tolerant symbolic fallback for formatting ambiguity in algebraic inputs.
-    user_sym_tol = _as_symbolic_tolerant(user_answer)
-    correct_sym_tol = _as_symbolic_tolerant(correct_answer)
-    if user_sym_tol is not None and correct_sym_tol is not None:
-        try:
-            from sympy import simplify
-            return simplify(user_sym_tol - correct_sym_tol) == 0
-        except Exception:
-            pass
-
-    return False
+    except Exception:
+        print("[adaptive][judge] final=false reason=unparseable_input", flush=True)
+        return False
 
