@@ -1,339 +1,448 @@
-<!--
-=============================================================================
-模組名稱 (Module Name): templates/ai_prompt_settings.html
-功能說明 (Description): AI Prompt 參數設定
-後端呼叫 (Backend Call): core/routes/admin.py -> ai_prompt_settings_page
-版本資訊 (Version): V2.0
-更新日期 (Date): 2026-01-13
-維護團隊 (Maintainer): Math AI Project Team
-=============================================================================
--->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 參數設定 - 自適應性教學系統</title>
+    <title>AI設定 - 自適應性教學系統</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: #f4f6f8;
             min-height: 100vh;
-            padding-bottom: 50px;
+            color: #22313f;
+            padding-bottom: 48px;
         }
-
-        /* Navbar 樣式 */
-        /* Navbar - 參考自 admin_curriculum.html */
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .navbar .logo {
-            font-weight: bold;
-            font-size: 1.3em;
-        }
-
-        .navbar a {
-            color: #ecf0f1;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            transition: background 0.2s;
-            margin-left: 10px;
-        }
-
-        .navbar a:hover {
-            background: #34495e;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .page-header {
-            margin-bottom: 25px;
-        }
-
-        .page-header h1 {
-            color: #2c3e50;
-            font-size: 1.8rem;
-        }
+        .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+        .page-header { margin-bottom: 18px; }
+        .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+        .page-header p { color: #5b6b7a; font-size: 0.96rem; }
 
         .card {
             background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(17, 37, 58, 0.08);
+            margin-bottom: 16px;
             overflow: hidden;
-            margin-bottom: 20px;
         }
-
         .card-header {
-            background: #fff;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            font-weight: 600;
-            color: #2c3e50;
+            padding: 14px 18px;
+            font-weight: 700;
+            border-bottom: 1px solid #e8edf2;
+            background: #f9fbfd;
         }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .warning-box {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-
-        .warning-box strong {
-            color: #d32f2f;
-        }
-
-        .warning-box code {
-            background: #fff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            color: #d32f2f;
-            font-weight: bold;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 400px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+        .card-body { padding: 18px; }
+        .section-desc {
+            color: #5b6b7a;
+            margin-bottom: 14px;
+            font-size: 0.92rem;
             line-height: 1.6;
-            resize: vertical;
         }
 
-        textarea:focus {
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
+        }
+        .field { margin-bottom: 14px; }
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1f2d3d;
+        }
+        .hint {
+            color: #6c7a89;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            margin-top: 6px;
+        }
+        select, input[type="number"], textarea {
+            width: 100%;
+            border: 1px solid #d6dfe7;
+            border-radius: 8px;
+            padding: 10px 11px;
+            font-size: 0.94rem;
+            background: #fff;
+        }
+        select:focus, input:focus, textarea:focus {
             outline: none;
             border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.13);
         }
 
-        .button-group {
+        .checkbox-row {
+            display: flex;
+            gap: 9px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 9px 10px;
+            border: 1px solid #e8edf2;
+            border-radius: 8px;
+            background: #fbfcfd;
+        }
+        .checkbox-row input[type="checkbox"] { margin-top: 3px; }
+        .checkbox-row .label { font-weight: 600; }
+
+        .model-row {
+            border: 1px solid #e8edf2;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #fcfdff;
+        }
+        .model-row-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+        .code-tag {
+            color: #6f7f8f;
+            font-size: 0.82rem;
+            font-family: "Courier New", monospace;
+        }
+
+        .prompt-warning {
+            border-left: 4px solid #f39c12;
+            background: #fff8e8;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            color: #7a5c16;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        textarea {
+            min-height: 320px;
+            resize: vertical;
+            font-family: "Courier New", monospace;
+            line-height: 1.55;
+        }
+
+        .actions {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            flex-wrap: wrap;
+            margin-top: 14px;
         }
-
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 16px;
             cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
         }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-        }
-
-        .btn-warning {
-            background: #f39c12;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-
-        .info-text {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
+        .btn-primary { background: #2f80ed; }
+        .btn-primary:hover { background: #246dcf; }
+        .btn-warning { background: #f39c12; }
+        .btn-warning:hover { background: #d58307; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #cf3f30; }
+        .btn-secondary { background: #7f8c8d; }
+        .btn-secondary:hover { background: #6c7879; }
 
         .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 14px;
             display: none;
         }
-
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #e7f7ed;
+            border: 1px solid #bee8ca;
+            color: #155b30;
+        }
+        .alert-error {
+            background: #fdecea;
+            border: 1px solid #f8c8c2;
+            color: #7a2118;
         }
 
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        .muted { color: #6c7a89; font-size: 0.87rem; margin-top: 8px; }
     </style>
 </head>
-
 <body>
     {% include '_admin_navbar.html' %}
 
     <div class="container">
         <div class="page-header">
-            <h1>🤖 AI 參數設定</h1>
+            <h1>AI設定</h1>
+            <p>在此統一管理系統的 AI 模型、全域策略與 Prompt 模板。</p>
         </div>
 
         <div id="alert-container"></div>
 
         <div class="card">
-            <div class="card-header">
-                AI Prompt 模板編輯器
-            </div>
+            <div class="card-header">全域 AI 策略設定</div>
             <div class="card-body">
-                <div class="warning-box">
-                    <strong>⚠️ 重要提醒：</strong><br>
-                    此 Prompt 用於 AI 分析學生手寫答案。請務必保留以下兩個關鍵變數，否則系統將無法正常運作：
-                    <ul style="margin-top: 10px; margin-left: 20px;">
-                        <li><code>{context}</code> - 題目內容</li>
-                        <li><code>{prereq_text}</code> - 前置技能列表</li>
-                    </ul>
+                <p class="section-desc">先用這一層決定系統整體傾向。未在下方任務模型個別指定時，會跟隨這裡的預設。</p>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <label for="ai-global-strategy">AI 運行策略</label>
+                        <select id="ai-global-strategy">
+                            <option value="local_first">local_first（本地優先）</option>
+                            <option value="cloud_first">cloud_first（雲端高品質）</option>
+                            <option value="hybrid_balanced">hybrid_balanced（混合平衡）</option>
+                        </select>
+                        <div class="hint">本地優先：優先使用本地模型，節省 API 成本。<br>雲端高品質：優先使用 Gemini 等雲端模型。<br>混合平衡：依任務自動搭配本地 / 雲端模型。</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="ai-default-provider">預設 Provider</label>
+                        <select id="ai-default-provider">
+                            <option value="local">local</option>
+                            <option value="google">google</option>
+                        </select>
+                        <div class="hint">此設定作為全域 fallback 預設來源。</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="ai-rag-threshold">RAG 快速通道閾值</label>
+                        <input id="ai-rag-threshold" type="number" step="0.01" min="0" max="1">
+                        <div class="hint">對應 ADVANCED_RAG_NAIVE_THRESHOLD。數值越小越嚴格，越容易進入 Advanced RAG 救援。</div>
+                    </div>
                 </div>
 
-                <textarea id="prompt-editor" placeholder="載入中..."></textarea>
-
-                <div class="info-text" id="update-time">
-                    最後更新時間：載入中...
+                <div class="checkbox-row">
+                    <input id="ai-enable-tutor" type="checkbox">
+                    <div>
+                        <div class="label">啟用 AI 助教回答</div>
+                        <div class="hint">開啟後，系統可使用教學助教型任務進行回覆。</div>
+                    </div>
                 </div>
 
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="savePrompt()">💾 儲存變更</button>
-                    <button class="btn btn-warning" onclick="resetToDefault()">🔄 恢復預設值</button>
-                    <button class="btn btn-secondary"
-                        onclick="window.location.href='{{ url_for('teacher_dashboard') }}'">
-                        ← 返回後台
-                    </button>
+                <div class="checkbox-row">
+                    <input id="ai-enable-vision" type="checkbox">
+                    <div>
+                        <div class="label">啟用高精度 OCR / 視覺分析模式</div>
+                        <div class="hint">開啟後，視覺辨識任務會優先走較高精度策略。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">各 AI 任務模型配置</div>
+            <div class="card-body">
+                <p class="section-desc">這是進階覆寫層。若未個別指定，將跟隨上方「全域 AI 策略設定」。</p>
+                <div id="role-model-container"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Prompt 模板設定</div>
+            <div class="card-body">
+                <div class="prompt-warning">
+                    此模板會影響 AI 手寫批改解析。請務必保留 <code>{context}</code> 與 <code>{prereq_text}</code> 兩個必要變數。
+                </div>
+
+                <textarea id="prompt-editor" placeholder="請輸入 Prompt 模板"></textarea>
+                <div id="update-time" class="muted">最後更新時間：讀取中...</div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="saveSettings()">儲存全部 AI 設定</button>
+                    <button class="btn btn-warning" onclick="resetPromptOnly()">重設 Prompt</button>
+                    <button class="btn btn-danger" onclick="resetAllSettings()">重設全部 AI 設定</button>
+                    <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('teacher_dashboard') }}'">返回後台</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 頁面載入時取得當前 Prompt
-        window.addEventListener('DOMContentLoaded', function () {
-            loadPrompt();
-        });
+        const ROLE_ORDER = ['coder', 'tutor', 'vision_analyzer', 'classifier', 'default'];
+        const ROLE_LABELS = {
+            coder: '批改 / 解析 AI',
+            tutor: '教學助教 AI',
+            vision_analyzer: 'OCR / 手寫辨識 AI',
+            classifier: '題目分類 AI',
+            default: '預設備援 AI'
+        };
 
-        function loadPrompt() {
-            fetch('/admin/ai_prompt_settings/get')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('prompt-editor').value = data.prompt;
-                        document.getElementById('update-time').textContent =
-                            '最後更新時間：' + (data.updated_at || '未知');
-                    } else {
-                        showAlert('載入失敗：' + data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    showAlert('網路錯誤：' + error, 'error');
-                });
-        }
+        let availableModels = [];
 
-        function savePrompt() {
-            const promptValue = document.getElementById('prompt-editor').value;
-
-            // 前端驗證：檢查是否包含必要變數
-            if (!promptValue.includes('{context}') || !promptValue.includes('{prereq_text}')) {
-                showAlert('錯誤：Prompt 必須包含 {context} 和 {prereq_text} 變數！', 'error');
-                return;
-            }
-
-            fetch('/admin/ai_prompt_settings/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ prompt: promptValue })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('✅ 儲存成功！', 'success');
-                        loadPrompt(); // 重新載入以更新時間
-                    } else {
-                        showAlert('儲存失敗：' + data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    showAlert('網路錯誤：' + error, 'error');
-                });
-        }
-
-        function resetToDefault() {
-            if (!confirm('確定要恢復為預設 Prompt 嗎？\n\n此操作將覆蓋您目前的所有修改。')) {
-                return;
-            }
-
-            fetch('/admin/ai_prompt_settings/reset', {
-                method: 'POST'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('✅ 已恢復預設值！', 'success');
-                        loadPrompt();
-                    } else {
-                        showAlert('恢復失敗：' + data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    showAlert('網路錯誤：' + error, 'error');
-                });
-        }
+        window.addEventListener('DOMContentLoaded', loadSettings);
 
         function showAlert(message, type) {
             const container = document.getElementById('alert-container');
-            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const cls = type === 'success' ? 'alert-success' : 'alert-error';
+            container.innerHTML = `<div class="alert ${cls}" style="display:block;">${message}</div>`;
+            setTimeout(() => { container.innerHTML = ''; }, 3500);
+        }
 
-            container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
-            container.firstChild.style.display = 'block';
+        function buildModelSelect(roleKey, selectedValue) {
+            const select = document.createElement('select');
+            select.id = `role-model-${roleKey}`;
 
-            // 3 秒後自動隱藏
-            setTimeout(() => {
-                container.innerHTML = '';
-            }, 3000);
+            const inheritOption = document.createElement('option');
+            inheritOption.value = '';
+            inheritOption.textContent = '跟隨全域策略（預設）';
+            select.appendChild(inheritOption);
+
+            availableModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.key;
+                const desc = model.description ? `｜${model.description}` : '';
+                option.textContent = `${model.key}${desc}`;
+                select.appendChild(option);
+            });
+
+            if (selectedValue) {
+                select.value = selectedValue;
+            }
+
+            return select;
+        }
+
+        function renderRoleModels(modelRoles, roleDisplayNames) {
+            const container = document.getElementById('role-model-container');
+            container.innerHTML = '';
+
+            ROLE_ORDER.forEach(roleKey => {
+                const row = document.createElement('div');
+                row.className = 'model-row';
+
+                const head = document.createElement('div');
+                head.className = 'model-row-head';
+
+                const title = document.createElement('div');
+                title.textContent = (roleDisplayNames && roleDisplayNames[roleKey]) || ROLE_LABELS[roleKey] || roleKey;
+
+                const code = document.createElement('div');
+                code.className = 'code-tag';
+                code.textContent = `程式代號: ${roleKey}`;
+
+                head.appendChild(title);
+                head.appendChild(code);
+                row.appendChild(head);
+
+                const select = buildModelSelect(roleKey, modelRoles ? modelRoles[roleKey] : '');
+                row.appendChild(select);
+
+                const hint = document.createElement('div');
+                hint.className = 'hint';
+                hint.textContent = '若留空，將跟隨上方全域 AI 策略。';
+                row.appendChild(hint);
+
+                container.appendChild(row);
+            });
+        }
+
+        function loadSettings() {
+            fetch('/admin/ai_prompt_settings/get')
+                .then(resp => resp.json())
+                .then(data => {
+                    if (!data.success) {
+                        showAlert('讀取設定失敗：' + (data.message || '未知錯誤'), 'error');
+                        return;
+                    }
+
+                    availableModels = Array.isArray(data.available_models) ? data.available_models : [];
+                    document.getElementById('prompt-editor').value = data.prompt || '';
+                    document.getElementById('update-time').textContent = '最後更新時間：' + (data.updated_at || '尚未更新');
+
+                    document.getElementById('ai-global-strategy').value = data.ai_global_strategy || 'hybrid_balanced';
+                    document.getElementById('ai-default-provider').value = data.ai_default_provider || 'local';
+                    document.getElementById('ai-rag-threshold').value = data.ai_rag_naive_threshold ?? 0.35;
+                    document.getElementById('ai-enable-tutor').checked = !!data.ai_enable_tutor_response;
+                    document.getElementById('ai-enable-vision').checked = !!data.ai_enable_high_precision_vision;
+
+                    renderRoleModels(data.ai_model_roles || {}, data.role_display_names || {});
+                })
+                .catch(err => showAlert('讀取設定失敗：' + err, 'error'));
+        }
+
+        function collectRoleModels() {
+            const mapping = {};
+            ROLE_ORDER.forEach(roleKey => {
+                const el = document.getElementById(`role-model-${roleKey}`);
+                if (el && el.value) {
+                    mapping[roleKey] = el.value;
+                }
+            });
+            return mapping;
+        }
+
+        function saveSettings() {
+            const promptValue = document.getElementById('prompt-editor').value || '';
+            if (!promptValue.includes('{context}') || !promptValue.includes('{prereq_text}')) {
+                showAlert('Prompt 必須包含 {context} 與 {prereq_text}', 'error');
+                return;
+            }
+
+            const payload = {
+                prompt: promptValue,
+                ai_global_strategy: document.getElementById('ai-global-strategy').value,
+                ai_default_provider: document.getElementById('ai-default-provider').value,
+                ai_model_roles: collectRoleModels(),
+                ai_rag_naive_threshold: document.getElementById('ai-rag-threshold').value,
+                ai_enable_tutor_response: document.getElementById('ai-enable-tutor').checked,
+                ai_enable_high_precision_vision: document.getElementById('ai-enable-vision').checked
+            };
+
+            fetch('/admin/ai_prompt_settings/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message || '設定已儲存', 'success');
+                        loadSettings();
+                        return;
+                    }
+                    showAlert('儲存失敗：' + (data.message || '未知錯誤'), 'error');
+                })
+                .catch(err => showAlert('儲存失敗：' + err, 'error'));
+        }
+
+        function resetPromptOnly() {
+            if (!confirm('確定只重設 Prompt 模板？')) {
+                return;
+            }
+            fetch('/admin/ai_prompt_settings/reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scope: 'prompt_only' })
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message || 'Prompt 已重設', 'success');
+                        loadSettings();
+                        return;
+                    }
+                    showAlert('重設失敗：' + (data.message || '未知錯誤'), 'error');
+                })
+                .catch(err => showAlert('重設失敗：' + err, 'error'));
+        }
+
+        function resetAllSettings() {
+            if (!confirm('確定要重設 Prompt 與全部 AI 設定？\n此操作會清空任務模型覆寫設定。')) {
+                return;
+            }
+            fetch('/admin/ai_prompt_settings/reset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scope: 'all' })
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message || '全部設定已重設', 'success');
+                        loadSettings();
+                        return;
+                    }
+                    showAlert('重設失敗：' + (data.message || '未知錯誤'), 'error');
+                })
+                .catch(err => showAlert('重設失敗：' + err, 'error'));
         }
     </script>
 </body>
-
 </html>

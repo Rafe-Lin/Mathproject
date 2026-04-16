@@ -32,6 +32,19 @@ from . import core_bp
 from core.globals import TASK_QUEUES
 from core import textbook_processor
 from core.utils import handle_curriculum_filters
+from core.ai_settings import (
+    AI_ROLE_KEYS,
+    SETTING_AI_DEFAULT_PROVIDER,
+    SETTING_AI_ENABLE_HIGH_PRECISION_VISION,
+    SETTING_AI_ENABLE_TUTOR_RESPONSE,
+    SETTING_AI_GLOBAL_STRATEGY,
+    SETTING_AI_MODEL_ROLES,
+    SETTING_AI_RAG_NAIVE_THRESHOLD,
+    apply_ai_runtime_settings,
+    get_ai_settings_snapshot,
+    get_available_model_presets,
+    set_system_setting_value,
+)
 
 # [Fix] 只引用確定存在的函式，避免 ImportError
 from core.data_importer import import_excel_to_db
@@ -1035,78 +1048,188 @@ def api_check_ghost_skills():
 @core_bp.route('/admin/ai_prompt_settings')
 @login_required
 def ai_prompt_settings_page():
-    """顯示 AI Prompt 設定頁面"""
+    """Show AI settings page."""
     if not (current_user.is_admin or current_user.role == 'teacher'):
-        flash('權限不足', 'error')
+        flash('Permission denied', 'error')
         return redirect(url_for('dashboard'))
     return render_template('ai_prompt_settings.html', username=current_user.username)
+
+
+def _sanitize_role_overrides(raw_roles):
+    if not isinstance(raw_roles, dict):
+        return {}
+    valid_presets = set(Config.CODER_PRESETS.keys())
+    cleaned = {}
+    for role in AI_ROLE_KEYS:
+        value = raw_roles.get(role)
+        if isinstance(value, str) and value in valid_presets:
+            cleaned[role] = value
+    return cleaned
+
+
+def _to_bool(value, default=False):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return default
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text_value = str(value).strip().lower()
+    if text_value in ('true', '1', 'yes', 'on'):
+        return True
+    if text_value in ('false', '0', 'no', 'off'):
+        return False
+    return default
+
+
+def _build_ai_settings_payload(prompt, updated_at):
+    snapshot = get_ai_settings_snapshot()
+    return {
+        'success': True,
+        'prompt': prompt,
+        'updated_at': updated_at,
+        'ai_global_strategy': snapshot['ai_global_strategy'],
+        'ai_default_provider': snapshot['ai_default_provider'],
+        'ai_model_roles': snapshot['ai_model_roles'],
+        'ai_rag_naive_threshold': snapshot['ai_rag_naive_threshold'],
+        'ai_enable_tutor_response': snapshot['ai_enable_tutor_response'],
+        'ai_enable_high_precision_vision': snapshot['ai_enable_high_precision_vision'],
+        'available_models': get_available_model_presets(),
+    }
+
 
 @core_bp.route('/admin/ai_prompt_settings/get')
 @login_required
 def get_ai_prompt_setting():
-    """API: 取得當前的全域 AI Prompt 設定"""
+    """API: Return prompt + AI control center settings."""
     if not (current_user.is_admin or current_user.role == 'teacher'):
-        return jsonify({'success': False, 'message': '權限不足'}), 403
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
         from models import SystemSetting
+
+        apply_ai_runtime_settings()
         setting = SystemSetting.query.filter_by(key='ai_analyzer_prompt').first()
         if setting:
-            return jsonify({
-                'success': True,
-                'prompt': setting.value,
-                'updated_at': setting.updated_at.strftime('%Y-%m-%d %H:%M:%S') if setting.updated_at else None
-            })
-        else:
-            # 若無記錄則回傳預設值 (從 ai_analyzer 取得)
-            from core.ai_analyzer import get_ai_prompt
-            return jsonify({'success': True, 'prompt': get_ai_prompt(), 'updated_at': None})
+            return jsonify(_build_ai_settings_payload(
+                prompt=setting.value,
+                updated_at=setting.updated_at.strftime('%Y-%m-%d %H:%M:%S') if setting.updated_at else None,
+            ))
+
+        from core.ai_analyzer import get_ai_prompt
+        return jsonify(_build_ai_settings_payload(prompt=get_ai_prompt(), updated_at=None))
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
 
 @core_bp.route('/admin/ai_prompt_settings/update', methods=['POST'])
 @login_required
 def update_ai_prompt_setting():
-    """API: 更新全域 AI Prompt 設定"""
+    """API: Update prompt + AI control center settings."""
     if not (current_user.is_admin or current_user.role == 'teacher'):
-        return jsonify({'success': False, 'message': '權限不足'}), 403
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
-        data = request.get_json()
-        new_prompt = data.get('prompt', '').strip()
-        if not new_prompt: return jsonify({'success': False, 'message': 'Prompt 不能為空'}), 400
-        
-        # 驗證必要變數
-        if '{context}' not in new_prompt or '{prereq_text}' not in new_prompt:
-            return jsonify({'success': False, 'message': 'Prompt 必須包含 {context} 和 {prereq_text}'}), 400
-        
-        from models import SystemSetting
-        setting = SystemSetting.query.filter_by(key='ai_analyzer_prompt').first()
-        if setting:
-            setting.value = new_prompt
-            setting.updated_at = datetime.utcnow()
-        else:
-            setting = SystemSetting(key='ai_analyzer_prompt', value=new_prompt, description='AI 手寫分析 Prompt')
-            db.session.add(setting)
+        data = request.get_json() or {}
+
+        if 'prompt' in data:
+            new_prompt = str(data.get('prompt', '')).strip()
+            if not new_prompt:
+                return jsonify({'success': False, 'message': 'Prompt cannot be empty'}), 400
+            if '{context}' not in new_prompt or '{prereq_text}' not in new_prompt:
+                return jsonify({'success': False, 'message': 'Prompt must include {context} and {prereq_text}'}), 400
+            set_system_setting_value('ai_analyzer_prompt', new_prompt, 'AI analyzer prompt')
+
+        strategy = str(data.get('ai_global_strategy', '')).strip()
+        if strategy:
+            if strategy not in ('local_first', 'cloud_first', 'hybrid_balanced'):
+                return jsonify({'success': False, 'message': 'Invalid ai_global_strategy'}), 400
+            set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, strategy, 'Global AI strategy')
+
+        default_provider = str(data.get('ai_default_provider', '')).strip().lower()
+        if default_provider:
+            if default_provider not in ('local', 'google'):
+                return jsonify({'success': False, 'message': 'Invalid ai_default_provider'}), 400
+            set_system_setting_value(SETTING_AI_DEFAULT_PROVIDER, default_provider, 'Global default provider')
+
+        if 'ai_model_roles' in data:
+            cleaned_roles = _sanitize_role_overrides(data.get('ai_model_roles'))
+            set_system_setting_value(SETTING_AI_MODEL_ROLES, cleaned_roles, 'AI role model map (JSON)')
+
+        if 'ai_rag_naive_threshold' in data:
+            try:
+                rag_threshold = float(data.get('ai_rag_naive_threshold'))
+            except (TypeError, ValueError):
+                return jsonify({'success': False, 'message': 'RAG threshold must be numeric'}), 400
+            set_system_setting_value(
+                SETTING_AI_RAG_NAIVE_THRESHOLD,
+                str(rag_threshold),
+                'Advanced RAG naive threshold',
+            )
+
+        if 'ai_enable_tutor_response' in data:
+            set_system_setting_value(
+                SETTING_AI_ENABLE_TUTOR_RESPONSE,
+                'true' if _to_bool(data.get('ai_enable_tutor_response')) else 'false',
+                'Enable AI tutor response',
+            )
+
+        if 'ai_enable_high_precision_vision' in data:
+            set_system_setting_value(
+                SETTING_AI_ENABLE_HIGH_PRECISION_VISION,
+                'true' if _to_bool(data.get('ai_enable_high_precision_vision')) else 'false',
+                'Enable high precision vision',
+            )
+
         db.session.commit()
-        return jsonify({'success': True, 'message': '儲存成功'})
+        apply_ai_runtime_settings()
+        return jsonify({'success': True, 'message': 'AI settings updated'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
 @core_bp.route('/admin/ai_prompt_settings/reset', methods=['POST'])
 @login_required
 def reset_ai_prompt_setting():
-    """API: 恢復 AI Prompt 為預設值"""
+    """API: Reset prompt only or all AI settings."""
     if not (current_user.is_admin or current_user.role == 'teacher'):
-        return jsonify({'success': False, 'message': '權限不足'}), 403
+        return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
         from models import SystemSetting
         from core.ai_analyzer import DEFAULT_PROMPT
+
+        data = request.get_json(silent=True) or {}
+        reset_scope = str(data.get('scope', 'prompt_only')).strip().lower()
+        if reset_scope not in ('prompt_only', 'all'):
+            return jsonify({'success': False, 'message': 'Invalid reset scope'}), 400
+
         setting = SystemSetting.query.filter_by(key='ai_analyzer_prompt').first()
         if setting:
             setting.value = DEFAULT_PROMPT
             setting.updated_at = datetime.utcnow()
-            db.session.commit()
-        return jsonify({'success': True, 'message': '已恢復預設值'})
+        else:
+            db.session.add(SystemSetting(
+                key='ai_analyzer_prompt',
+                value=DEFAULT_PROMPT,
+                description='AI analyzer prompt',
+            ))
+
+        if reset_scope == 'all':
+            set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'hybrid_balanced', 'Global AI strategy')
+            set_system_setting_value(SETTING_AI_DEFAULT_PROVIDER, Config.DEFAULT_PROVIDER, 'Global default provider')
+            set_system_setting_value(SETTING_AI_MODEL_ROLES, {}, 'AI role model map (JSON)')
+            set_system_setting_value(
+                SETTING_AI_RAG_NAIVE_THRESHOLD,
+                str(getattr(Config, 'ADVANCED_RAG_NAIVE_THRESHOLD', 0.35)),
+                'Advanced RAG naive threshold',
+            )
+            set_system_setting_value(SETTING_AI_ENABLE_TUTOR_RESPONSE, 'true', 'Enable AI tutor response')
+            set_system_setting_value(SETTING_AI_ENABLE_HIGH_PRECISION_VISION, 'false', 'Enable high precision vision')
+
+        db.session.commit()
+        apply_ai_runtime_settings()
+        if reset_scope == 'all':
+            return jsonify({'success': True, 'message': 'Prompt and AI settings reset'})
+        return jsonify({'success': True, 'message': 'Prompt reset'})
     except Exception as e:
+        db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 500
-    

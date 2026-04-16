@@ -64,33 +64,7 @@
             -webkit-user-select: none;
         }
 
-        /* === Navbar === */
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar .logo {
-            font-weight: bold;
-            font-size: 1.3em;
-        }
-
-        .navbar a {
-            color: #ecf0f1;
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .navbar a:hover {
-            background: #34495e;
-        }
+        /* === Navbar（樣式由 body 內 _student_navbar 提供，勿在此寫 .navbar a 以免覆寫膠囊）=== */
 
         /* 新增：難度選擇按鈕樣式 */
         .level-selector {
@@ -1098,11 +1072,7 @@
 
 <body>
     {% set is_similar_practice = practice_mode == 'similar_practice' %}
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">自適應性教學系統練習</div>
-        <a href="/dashboard">返回儀表板</a>
-    </div>
+    {% include '_student_navbar.html' %}
     <!-- 主容器 -->
     <div class="container">
         <!-- 練習區 -->

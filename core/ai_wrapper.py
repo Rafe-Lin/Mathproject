@@ -18,6 +18,7 @@ import json
 import logging
 from flask import current_app
 from config import Config
+from core.ai_settings import get_effective_model_config
 
 # --- SDK Import Strategy ---
 # Priority: New SDK (google.genai) > Old SDK (google.generativeai)
@@ -522,7 +523,7 @@ def get_ai_client(role='default'):
     根據 config.py 中 MODEL_ROLES 的設定，實例化對應的 Client (Local 或 Google)。
     """
     # 1. 讀取角色設定
-    role_config = Config.MODEL_ROLES.get(role, Config.MODEL_ROLES.get('default'))
+    role_config = get_effective_model_config(role)
     
     provider = role_config.get('provider', 'local').lower()
     model_name = role_config.get('model', 'qwen2.5-coder:7b')

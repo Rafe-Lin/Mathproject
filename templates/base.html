@@ -11,38 +11,16 @@
         body {
             background: #f4f7f6;
             color: #2c3e50;
+            margin: 0;
         }
 
-        .page-navbar {
-            background: #2f3640;
-            color: #fff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .page-navbar a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .page-navbar .logo {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免全域覆寫 */
     </style>
     {% block styles %}{% endblock %}
 </head>
 
 <body>
-    <div class="page-navbar">
-        <a href="{{ url_for('dashboard') }}" class="logo">自適應性教學系統</a>
-        <div class="d-flex align-items-center gap-3">
-            <span>{{ username or current_user.username }}</span>
-            <a href="{{ url_for('dashboard') }}">返回儀表板</a>
-        </div>
-    </div>
+    {% include '_student_navbar.html' %}
 
     {% block content %}{% endblock %}
 

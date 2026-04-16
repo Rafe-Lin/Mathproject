@@ -2,6 +2,7 @@
 """Unified AI entrypoint controlled by config.py MODEL_ROLES."""
 
 from config import Config
+from core.ai_settings import get_effective_model_config
 from core.ai_wrapper import (
     GoogleAIClient,
     LocalAIClient,
@@ -10,7 +11,7 @@ from core.ai_wrapper import (
 
 
 def _get_role_config(role: str) -> dict:
-    cfg = Config.MODEL_ROLES.get(role)
+    cfg = get_effective_model_config(role)
     if not isinstance(cfg, dict):
         raise ValueError(f"Unknown role: {role}")
     return cfg
@@ -50,4 +51,3 @@ def call_ai(role: str, prompt: str, image_path=None, **kwargs):
         return call_google_model(cfg, prompt, image_path=image_path, **kwargs)
 
     raise ValueError(f"Unsupported provider: {provider} (role={role})")
-

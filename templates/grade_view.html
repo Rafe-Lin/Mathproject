@@ -18,9 +18,7 @@
     <style>
         /* (您可以複製 dashboard.html 的 <style> 標籤內容到這裡，或使用外部 CSS) */
         body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
-        .navbar { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; }
-        .navbar .logo { font-weight: bold; font-size: 1.2em; }
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
         .container { max-width: 900px; margin: 20px auto; padding: 20px; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .card { background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); padding: 20px; transition: transform 0.2s; }
@@ -32,10 +30,7 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="{{ url_for('dashboard') }}" class="logo">自適應性教學系統</a>
-        <a href="{{ url_for('logout') }}">登出</a>
-    </div>
+    {% include '_student_navbar.html' %}
 
     <div class="container">
         <!-- 麵包屑導覽 -->

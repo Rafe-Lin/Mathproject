@@ -21,24 +21,7 @@
             margin: 0;
         }
 
-        .navbar {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .navbar .logo {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
 
         .container {
             max-width: 1400px;
@@ -322,45 +305,7 @@
 </head>
 
 <body>
-    <div class="navbar">
-        <a href="{{ url_for('dashboard') }}" class="logo">
-            自適應性教學系統 ( <strong>{{ username }}</strong>！ )
-        </a>
-        <div>
-            {% if current_user.role == 'teacher' or current_user.is_admin %}
-            <a href="{{ url_for('teacher_dashboard') }}"
-                style="background-color: #f39c12; color: white; padding: 8px 15px; border-radius: 4px; margin-right: 15px; text-decoration: none;">
-                👨‍🏫 返回教師後台
-            </a>
-            <a href="{{ url_for('core.admin_curriculum') }}"
-                style="background: #3498db; padding: 8px 15px; border-radius: 4px;">📚 課程分類管理</a>
-            <a href="{{ url_for('core.admin_skills') }}"
-                style="background: #9b59b6; padding: 8px 15px; border-radius: 4px;">⚙️ 單元管理</a>
-            <a href="{{ url_for('core.admin_prerequisites') }}"
-                style="background: #1abc9c; padding: 8px 15px; border-radius: 4px;">🔗 技能關聯</a>
-            <a href="{{ url_for('core.db_maintenance') }}"
-                style="background: #e67e22; padding: 8px 15px; border-radius: 4px;">🗃️ 資料庫管理</a>
-            {% endif %}
-            <a href="{{ url_for('core.exam_upload_page') }}"
-                style="background: #e74c3c; padding: 8px 15px; border-radius: 4px;">📝 考卷診斷</a>
-            <a href="{{ url_for('core.mistake_notebook') }}"
-                style="background: #f1c40f; color: #333; padding: 8px 15px; border-radius: 4px;">📝 錯題本</a>
-            <a href="{{ url_for('core.student_diagnosis') }}"
-                style="background: #8e44ad; padding: 8px 15px; border-radius: 4px;">📊 學習診斷</a>
-            <a href="{{ url_for('core.knowledge_graph') }}"
-                style="background: #16a085; padding: 8px 15px; border-radius: 4px;">🌳 知識圖譜</a>
-            <a href="{{ url_for('practice.similar_questions') }}"
-                style="background: #8e44ad; padding: 8px 15px; border-radius: 4px; margin-left: 5px;">🧩 類題練習</a>
-
-            <!-- Dashboard Upload Question Button (Simplified to Link) -->
-            <a href="{{ url_for('practice.practice', skill_id='custom_upload') }}"
-                style="background-color: #9b59b6; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px; font-size: 1em; margin-right: 5px;">
-                <i class="fas fa-camera"></i> 上傳題目
-            </a>
-
-            <a href="{{ url_for('logout') }}">登出</a>
-        </div>
-    </div>
+    {% include '_student_navbar.html' %}
 
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}

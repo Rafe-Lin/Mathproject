@@ -6,8 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; }
-        .navbar { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; }
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
         .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
         .panel { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         h1 { margin: 0 0 10px 0; color: #333; }
@@ -35,9 +34,6 @@
             background: #8a8a8a;
             transform: translateY(-1px);
         }
-        .back-link { display: inline-block; margin-top: 16px; color: #007bff; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
-
         .modal {
             display: none;
             position: fixed;
@@ -72,10 +68,7 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="{{ url_for('dashboard') }}" class="logo">自適應性教學系統</a>
-        <a href="{{ url_for('dashboard') }}">返回學習儀表板</a>
-    </div>
+    {% include '_student_navbar.html' %}
 
     <div class="container">
         <div class="panel">
@@ -92,7 +85,6 @@
                 </button>
                 {% endfor %}
             </div>
-            <a class="back-link" href="{{ url_for('dashboard') }}">← 回到學習儀表板</a>
         </div>
     </div>
 

@@ -408,10 +408,12 @@
       .ai-assistant-panel { height:auto; }
     }
     @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
+    /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+  {% include '_student_navbar.html' %}
   <div class="shell">
     <div class="hero">
       <div>
@@ -429,9 +431,6 @@
             學習模式｜{{ unit_name }}
           {% endif %}
         </span>
-        <a href="/dashboard" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 14px; border-radius:999px; font-size:14px; font-weight:700; background:#fff; border:1px solid #cce1ff; color:#1565c0; text-decoration:none; box-shadow:0 2px 5px rgba(0,0,0,0.05); transition:all 0.2s;">
-          ⬅ 返回主畫面
-        </a>
       </div>
     </div>
 

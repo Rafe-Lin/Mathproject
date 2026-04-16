@@ -32,28 +32,7 @@
             padding-bottom: 50px;
         }
 
-        /* Navbar */
-        .navbar {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar a {
-            color: #ecf0f1;
-            text-decoration: none;
-            padding: 8px 15px;
-            margin-left: 10px;
-            transition: 0.2s;
-        }
-
-        .navbar a:hover {
-            color: #3498db;
-        }
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
 
         /* Container & Layout */
         .container {
@@ -237,7 +216,7 @@
         <div style="color: #555; font-weight: 500;">AI 正在分析您的學習記錄...</div>
     </div>
 
-    {% include '_admin_navbar.html' %}
+    {% include '_student_navbar.html' %}
 
     <div class="container">
         <div class="page-header">
