@@ -1,49 +1,49 @@
 # -*- coding: utf-8 -*-
 """
 =============================================================================
-璅∠??迂 (Module Name): config.py
-?隤芣? (Description): ?典??蔭瑼?嚗?銝剔恣???澈???摮葡??獢??唾楝敺??啗身摰誑??AI 璅∪????脫?瘣曇???蔭??
-?瑁?隤? (Usage): ?梁頂蝯梯矽??
-?鞈? (Version): V2.0
-?湔?交? (Date): 2026-01-13
-蝬剛風?? (Maintainer): Math AI Project Team
+模組名稱 (Module Name): config.py
+功能說明 (Description): 全域系統設定檔，集中管理資料庫、上傳路徑、模型角色、RAG 閾值與實驗參數。
+執行語法 (Usage): 由系統自動載入
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
 =============================================================================
 """
 import os
 
-# ???桀?瑼???函??桅? (蝯?頝臬?)
+# 專案根目錄絕對路徑（目前檔案所在資料夾）
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     """
-    ?典?閮剖?瑼?(Global Configuration)
-    ?嚗??澈??獢??喋誑??撅??函? AI ?芋蝯身摰?
+    全域設定類別（Global Configuration）
+    包含資料庫、上傳、角色模型映射、RAG 與實驗控制參數。
     """
 
     # ==========================================
-    # 1. 鞈?摨怨身摰?(SQLite)
+    # 1. 資料庫設定（SQLite）
     # ==========================================
-    # 撱箇? instance 鞈?憭?(憒?銝???
+    # 建立 instance 資料夾（若不存在）
     instance_path = os.path.join(basedir, 'instance')
     os.makedirs(instance_path, exist_ok=True)
     
-    # 瑽遣鞈?摨急?獢?蝯?頝臬?
+    # 組合資料庫檔案絕對路徑
     db_path = os.path.join(instance_path, 'kumon_math.db')
     
-    # 閮剖???? URI
+    # 資料庫連線 URI
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # ==========================================
-    # 2. 瑼?蝟餌絞閮剖?
+    # 2. 上傳資料夾設定
     # ==========================================
     UPLOAD_FOLDER = os.path.join(basedir, 'uploads')
     
-    # 蝣箔?銝?桅?摮
+    # 確保上傳資料夾存在
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
     # ==========================================
-    # 3. 摰閮剖?
+    # 3. 安全性設定
     # ==========================================
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-me'
 
@@ -60,12 +60,12 @@ class Config:
     # 4. 各種 AI 模型群配置 (本地與雲端端點) 各群組
     # ==========================================
     
-    # AI 璅∪?隤踹漲銝剖?
+    # AI 預設提供者設定
     DEFAULT_PROVIDER = 'local' 
 
-    # [撖阡?撠] 璅∪???澈 (Coder Presets)
-    # ?券?靘?scripts/run_experiment.py ?? Key ?湔霈?蒂????
-    # 蝯?嚗ictionary { 'safe-name': { config } }
+    # [實驗與開發] 模型預設集合（Coder Presets）
+    # 可在 scripts/run_experiment.py 透過 key 參照並切換設定
+    # 格式：dictionary { 'safe-name': { config } }
     CODER_PRESETS = {
         # 1. Google Gemini (Cloud)
         'gemini-3-flash': {
@@ -75,8 +75,8 @@ class Config:
             'max_tokens': 65536,
             'description': 'Gemini 3.0 Flash Preview (SOTA Cloud)',
 
-            # ????[NEW] 摰閮剖?嚗?券???(BLOCK_NONE) ????
-            # ??脫迫璅∪??隤文 "?梢?批捆" ??蝯??摮賊???
+            # [NEW] Gemini 安全性設定：全部門檻設為 BLOCK_NONE
+            # 用於避免題目中正常數學內容被安全機制誤擋
             'safety_settings': [
                 {
                     "category": "HARM_CATEGORY_HARASSMENT",
@@ -188,10 +188,10 @@ class Config:
             'temperature': 0.1,
             'max_tokens': 2048,
             'extra_body': {
-                'num_ctx': 4096,          # ?? 敺?8192 ? 4096嚗?撠楊憿臬??憤皞?
-                'num_gpu': -1,            # 撘瑕雿輻憿臬?券?銵?
+                'num_ctx': 4096,          # 從 8192 調整為 4096，降低記憶體壓力
+                'num_gpu': -1,            # 使用可用 GPU 層數（自動）
                 'num_thread': 8,
-                'keep_alive': "60m",      # 瞍內?遣霅唬??芋?虜擏?
+                'keep_alive': "60m",      # 延長模型常駐時間，減少冷啟動
                 'top_k': 20,
                 'top_p': 0.9,
             },
@@ -205,8 +205,8 @@ class Config:
             'temperature': 0.1,
             'max_tokens': 2048,
             'extra_body': {
-                'num_ctx': 4096,          # 閮擃?嚗隞乩??偌皞?
-                'num_gpu': -1,            # 100% VRAM ??
+                'num_ctx': 4096,          # 輕量配置，降低延遲並穩定執行
+                'num_gpu': -1,            # 盡量使用 GPU
                 'num_thread': 8,
                 'keep_alive': "60m",
                 'top_k': 20,
@@ -215,7 +215,7 @@ class Config:
             'description': 'Qwen3-VL 4B (Visual Reasoning Engine)'
         },
 
-        # 7. Qwen3.5 9B (Local) [Text-Only, 2026-03-11 ?啣?皜祈岫]
+        # 7. Qwen3.5 9B (Local) [Text-Only, 2026-03-11 新增測試]
         'qwen3.5-9b': {
             'provider': 'local',
             'model': 'qwen3.5:9b',
@@ -270,7 +270,7 @@ class Config:
         },
     }
 
-    # ???身隞?Ⅳ??璅∪? Preset Key嚗耨?寞迨??臬????
+    # 設定目前啟用的預設模型鍵值（對應 CODER_PRESETS）
     # [rollback] 原本：DEFAULT_CODER_PRESET = 'gemma4-e4b'
     DEFAULT_CODER_PRESET = 'qwen2.5-3b'
 
@@ -300,9 +300,9 @@ class Config:
         },
     })
 
-    # ??蝟餌絞閫?晷
-    # ? Web 隞?身雿輻?身摰?
-    # 瘜冽?嚗un_experiment.py ?瑁????撥?嗉??ㄐ??'coder'
+    # 模型角色對應設定
+    # 供 Web 路由依角色選擇模型使用
+    # 若在 run_experiment.py 另有指定，將以實驗設定優先
 
     # coder / tutor / classifier / default / vision_analyzer 統一為 CODER_PRESETS['qwen3-vl-8b']（各 role 有 gemma4-e4b rollback 註解）。
     MODEL_ROLES = {
@@ -313,11 +313,11 @@ class Config:
             'max_tokens': 1500,
         },
         
-        # ?身撌亦?撣?(Qwen 3 Tuned for RAM)
+        # 可切回文字模型（Qwen 3，記憶體優化）
         # 'coder': CODER_PRESETS['qwen3-8b'], 
 
-        # ?身撌亦?撣思??臭誑?湔?郊?? VL ?嚗???閫隞?Ⅳ??
-        # [rollback] coder 原本：CODER_PRESETS['qwen3-vl-8b']  # [2026-03-11] ?Ｗ儔雿輻蝯曹? VL ?嗆?
+        # 目前 coder 使用本地模型；下方保留回滾與替代選項
+        # [rollback] coder 原本：CODER_PRESETS['qwen3-vl-8b']  # [2026-03-11] 曾改為 VL 路線
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
         'coder': CODER_PRESETS['qwen2.5-3b'],
         # 'coder': CODER_PRESETS['gemma4-e4b'],
@@ -341,7 +341,7 @@ class Config:
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
         'tutor': CODER_PRESETS['qwen3-vl-8b'],
         
-        # 撠?閬箏??敺?Gemini ???典?? Qwen3-VL
+        # 視覺分析器：目前以 Qwen3-VL 為主，Gemini 為備選
         # [rollback] vision_analyzer 原本：CODER_PRESETS['qwen3-vl-8b']
         # [rollback] vision_analyzer 改回 qwen3-vl-8b（Gemma 在手寫 OCR 不穩）
         # [rollback] 原本：CODER_PRESETS['gemma4-e4b']
@@ -384,7 +384,7 @@ class Config:
     # --- [Local] Ollama API URL ---
     LOCAL_API_URL = "http://localhost:11434/api/generate"
     
-    # (???訾??誑?脣隞?獢??典?荔?雿遣霅啁敹恍蝘?
+    # （相容舊版變數）保留給舊流程與工具讀取
     AI_PROVIDER = DEFAULT_PROVIDER
     GEMINI_MODEL_NAME = "gemini-2.5-flash"
     #LOCAL_MODEL_NAME = "qwen2.5-coder:3b"
@@ -394,11 +394,11 @@ class Config:
     EXPERIMENT_BATCH = 'Run_V2.5_Elite'
 
     # ==========================================
-    # [NEW] 撖阡??閮剖? (Experiment Configuration)
+    # [NEW] 實驗執行設定 (Experiment Configuration)
     # ==========================================
-    # ?券?蝯曹?蝞∠?閰?????撖阡???銝剔?頞??帘摰批???
-    # ?芷?嚗?甈⊿?蝵殷??函頂蝯勗??剁???行?璅∪????寥ㄐ嚗??寧?撘Ⅳ
+    # 可於實驗流程中調整逾時與穩定性重試次數，避免長流程中斷
+    # 若本機資源較低，可提高 timeout 或降低 reps 以減少失敗率
     
-    EXECUTION_TIMEOUT = 10      # 閰??誨蝣澆銵?蝘? (??5s -> 撱箄降 10s)
-    OLLAMA_TIMEOUT = 600        # ?砍璅∪??函?頞?? (??300s -> 撱箄降 600s)
-    STABILITY_REPS = 3          # L1.2 蝛拙??扳葫閰阡?銴活?
+    EXECUTION_TIMEOUT = 10      # 單次程式執行逾時秒數（由 5s 提高為 10s）
+    OLLAMA_TIMEOUT = 600        # 本地模型請求逾時秒數（由 300s 提高為 600s）
+    STABILITY_REPS = 3          # L1.2 穩定性測試重複次數

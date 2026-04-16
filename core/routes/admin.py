@@ -1082,19 +1082,84 @@ def _to_bool(value, default=False):
     return default
 
 
+def _generate_model_roles(ai_mode, available_models):
+    roles = {}
+    ROLE_LIST = ['vision_analyzer', 'coder', 'tutor', 'classifier', 'system_coder', 'default']
+    
+    def pick_gemini_model():
+        if not available_models: return ''
+        keys = [m['key'] for m in available_models]
+        if 'gemini-3-flash' in keys: return 'gemini-3-flash'
+        for k in keys:
+            if 'gemini-3-flash' in k.lower(): return k
+        for k in keys:
+            if 'gemini' in k.lower(): return k
+        return keys[0]
+        
+    def pick_edge_model():
+        if not available_models: return ''
+        keys = [m['key'] for m in available_models]
+        if 'qwen3-vl-8b' in keys: return 'qwen3-vl-8b'
+        for k in keys:
+            if 'qwen3-vl-8b' in k.lower(): return k
+        for k in keys:
+            lk = k.lower()
+            if 'qwen' in lk and 'vl' in lk: return k
+        for k in keys:
+            if 'qwen3-8b' in k.lower(): return k
+        for k in keys:
+            if 'qwen' in k.lower(): return k
+        return keys[0]
+        
+    def pick_qwen_text_model():
+        if not available_models: return ''
+        keys = [m['key'] for m in available_models]
+        if 'qwen3-8b' in keys: return 'qwen3-8b'
+        for k in keys:
+            lk = k.lower()
+            if 'qwen3-8b' in lk and 'vl' not in lk: return k
+        for k in keys:
+            if 'qwen3' in k.lower(): return k
+        for k in keys:
+            if 'qwen' in k.lower(): return k
+        return keys[0]
+
+    if ai_mode == 'cloud':
+        g_model = pick_gemini_model()
+        for r in ROLE_LIST:
+            roles[r] = g_model
+    elif ai_mode == 'edge':
+        e_model = pick_edge_model()
+        for r in ROLE_LIST:
+            roles[r] = e_model
+    else: # hybrid
+        g_model = pick_gemini_model()
+        q_model = pick_qwen_text_model()
+        roles['vision_analyzer'] = g_model
+        roles['coder'] = q_model
+        roles['tutor'] = g_model
+        roles['classifier'] = q_model
+        roles['system_coder'] = q_model
+        roles['default'] = q_model
+
+    return roles
+
+
 def _build_ai_settings_payload(prompt, updated_at):
-    snapshot = get_ai_settings_snapshot()
+    from models import SystemSetting
+    ai_mode_setting = SystemSetting.query.filter_by(key='ai_mode').first()
+    ai_mode = ai_mode_setting.value if ai_mode_setting else 'cloud'
+
+    available_models = get_available_model_presets()
+    model_roles = _generate_model_roles(ai_mode, available_models)
+
     return {
         'success': True,
         'prompt': prompt,
         'updated_at': updated_at,
-        'ai_global_strategy': snapshot['ai_global_strategy'],
-        'ai_default_provider': snapshot['ai_default_provider'],
-        'ai_model_roles': snapshot['ai_model_roles'],
-        'ai_rag_naive_threshold': snapshot['ai_rag_naive_threshold'],
-        'ai_enable_tutor_response': snapshot['ai_enable_tutor_response'],
-        'ai_enable_high_precision_vision': snapshot['ai_enable_high_precision_vision'],
-        'available_models': get_available_model_presets(),
+        'ai_mode': ai_mode,
+        'ai_model_roles': model_roles,
+        'available_models': available_models,
     }
 
 
@@ -1128,6 +1193,7 @@ def update_ai_prompt_setting():
     if not (current_user.is_admin or current_user.role == 'teacher'):
         return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
+        from models import SystemSetting
         data = request.get_json() or {}
 
         if 'prompt' in data:
@@ -1138,46 +1204,23 @@ def update_ai_prompt_setting():
                 return jsonify({'success': False, 'message': 'Prompt must include {context} and {prereq_text}'}), 400
             set_system_setting_value('ai_analyzer_prompt', new_prompt, 'AI analyzer prompt')
 
-        strategy = str(data.get('ai_global_strategy', '')).strip()
-        if strategy:
-            if strategy not in ('local_first', 'cloud_first', 'hybrid_balanced'):
-                return jsonify({'success': False, 'message': 'Invalid ai_global_strategy'}), 400
-            set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, strategy, 'Global AI strategy')
+        ai_mode = str(data.get('ai_mode', '')).strip()
+        if ai_mode:
+            if ai_mode not in ('cloud', 'edge', 'hybrid'):
+                return jsonify({'success': False, 'message': 'Invalid ai_mode'}), 400
+            set_system_setting_value('ai_mode', ai_mode, 'Global AI Mode')
 
-        default_provider = str(data.get('ai_default_provider', '')).strip().lower()
-        if default_provider:
-            if default_provider not in ('local', 'google'):
-                return jsonify({'success': False, 'message': 'Invalid ai_default_provider'}), 400
-            set_system_setting_value(SETTING_AI_DEFAULT_PROVIDER, default_provider, 'Global default provider')
+            # Backwards compatibility / map updates
+            if ai_mode == 'cloud':
+                set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'cloud_first', 'Global AI strategy')
+            elif ai_mode == 'edge':
+                set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'local_first', 'Global AI strategy')
+            elif ai_mode == 'hybrid':
+                set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'hybrid_balanced', 'Global AI strategy')
 
-        if 'ai_model_roles' in data:
-            cleaned_roles = _sanitize_role_overrides(data.get('ai_model_roles'))
+            model_roles = _generate_model_roles(ai_mode, get_available_model_presets())
+            cleaned_roles = _sanitize_role_overrides(model_roles)
             set_system_setting_value(SETTING_AI_MODEL_ROLES, cleaned_roles, 'AI role model map (JSON)')
-
-        if 'ai_rag_naive_threshold' in data:
-            try:
-                rag_threshold = float(data.get('ai_rag_naive_threshold'))
-            except (TypeError, ValueError):
-                return jsonify({'success': False, 'message': 'RAG threshold must be numeric'}), 400
-            set_system_setting_value(
-                SETTING_AI_RAG_NAIVE_THRESHOLD,
-                str(rag_threshold),
-                'Advanced RAG naive threshold',
-            )
-
-        if 'ai_enable_tutor_response' in data:
-            set_system_setting_value(
-                SETTING_AI_ENABLE_TUTOR_RESPONSE,
-                'true' if _to_bool(data.get('ai_enable_tutor_response')) else 'false',
-                'Enable AI tutor response',
-            )
-
-        if 'ai_enable_high_precision_vision' in data:
-            set_system_setting_value(
-                SETTING_AI_ENABLE_HIGH_PRECISION_VISION,
-                'true' if _to_bool(data.get('ai_enable_high_precision_vision')) else 'false',
-                'Enable high precision vision',
-            )
 
         db.session.commit()
         apply_ai_runtime_settings()
@@ -1214,16 +1257,10 @@ def reset_ai_prompt_setting():
             ))
 
         if reset_scope == 'all':
-            set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'hybrid_balanced', 'Global AI strategy')
-            set_system_setting_value(SETTING_AI_DEFAULT_PROVIDER, Config.DEFAULT_PROVIDER, 'Global default provider')
-            set_system_setting_value(SETTING_AI_MODEL_ROLES, {}, 'AI role model map (JSON)')
-            set_system_setting_value(
-                SETTING_AI_RAG_NAIVE_THRESHOLD,
-                str(getattr(Config, 'ADVANCED_RAG_NAIVE_THRESHOLD', 0.35)),
-                'Advanced RAG naive threshold',
-            )
-            set_system_setting_value(SETTING_AI_ENABLE_TUTOR_RESPONSE, 'true', 'Enable AI tutor response')
-            set_system_setting_value(SETTING_AI_ENABLE_HIGH_PRECISION_VISION, 'false', 'Enable high precision vision')
+            set_system_setting_value('ai_mode', 'cloud', 'Global AI Mode')
+            set_system_setting_value(SETTING_AI_GLOBAL_STRATEGY, 'cloud_first', 'Global AI strategy')
+            model_roles = _generate_model_roles('cloud', get_available_model_presets())
+            set_system_setting_value(SETTING_AI_MODEL_ROLES, _sanitize_role_overrides(model_roles), 'AI role model map')
 
         db.session.commit()
         apply_ai_runtime_settings()

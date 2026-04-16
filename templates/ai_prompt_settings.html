@@ -1,448 +1,718 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI設定 - 自適應性教學系統</title>
+    <title>AI 模式設定 - 自適應教學系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-            background: #f4f6f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
-            color: #22313f;
-            padding-bottom: 48px;
-        }
-        .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
-        .page-header { margin-bottom: 18px; }
-        .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
-        .page-header p { color: #5b6b7a; font-size: 0.96rem; }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(17, 37, 58, 0.08);
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-        .card-header {
-            padding: 14px 18px;
-            font-weight: 700;
-            border-bottom: 1px solid #e8edf2;
-            background: #f9fbfd;
-        }
-        .card-body { padding: 18px; }
-        .section-desc {
-            color: #5b6b7a;
-            margin-bottom: 14px;
-            font-size: 0.92rem;
-            line-height: 1.6;
+            padding-bottom: 50px;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 14px;
-        }
-        .field { margin-bottom: 14px; }
-        .field label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #1f2d3d;
-        }
-        .hint {
-            color: #6c7a89;
-            font-size: 0.86rem;
-            line-height: 1.45;
-            margin-top: 6px;
-        }
-        select, input[type="number"], textarea {
-            width: 100%;
-            border: 1px solid #d6dfe7;
-            border-radius: 8px;
-            padding: 10px 11px;
-            font-size: 0.94rem;
-            background: #fff;
-        }
-        select:focus, input:focus, textarea:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.13);
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
         }
 
-        .checkbox-row {
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
             display: flex;
-            gap: 9px;
-            align-items: flex-start;
-            margin-bottom: 10px;
-            padding: 9px 10px;
-            border: 1px solid #e8edf2;
-            border-radius: 8px;
-            background: #fbfcfd;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
         }
-        .checkbox-row input[type="checkbox"] { margin-top: 3px; }
-        .checkbox-row .label { font-weight: 600; }
 
-        .model-row {
-            border: 1px solid #e8edf2;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: #fcfdff;
+        .header p {
+            color: #666;
+            font-size: 1rem;
+            margin-top: 8px;
+            margin-left: 2px;
         }
-        .model-row-head {
+
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .section {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+            border-top: 3px solid #3498db;
+        }
+
+        .section-orange {
+            border-top-color: #f39c12;
+        }
+
+        .section-red {
+            border-top-color: #e74c3c;
+        }
+
+        h3.section-title {
+            color: #2c3e50;
+            font-size: 1.25em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p.section-desc {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Mode Selection Cards */
+        .mode-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .mode-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: #fafbfc;
+        }
+
+        .mode-card:hover {
+            border-color: #cbd5e1;
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .mode-card.active {
+            border-color: #3498db;
+            background: #f0f7fc;
+        }
+
+        .mode-card.active::after {
+            content: '✓';
+            color: white;
+            background: #3498db;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .mode-icon {
+            font-size: 2em;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .mode-card.active .mode-icon {
+            color: #3498db;
+        }
+
+        .mode-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .mode-desc {
+            color: #475569;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .mode-desc li {
+            margin-bottom: 4px;
+        }
+
+        /* Role Display List */
+        .role-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .role-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            align-items: baseline;
+            align-items: center;
         }
-        .code-tag {
-            color: #6f7f8f;
-            font-size: 0.82rem;
-            font-family: "Courier New", monospace;
+
+        .role-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .role-name {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .role-code {
+            font-size: 0.8em;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        .role-model {
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid #c7d2fe;
+        }
+
+        .role-item.rag-setting-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            background: #f0f4ff;
+            border-color: #a5b4fc;
+        }
+        
+        .role-item.rag-setting-card:hover {
+            border-color: #6366f1;
+            box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Prompt */
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            font-family: monospace;
+            padding: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
 
         .prompt-warning {
-            border-left: 4px solid #f39c12;
-            background: #fff8e8;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            color: #7a5c16;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        textarea {
-            min-height: 320px;
-            resize: vertical;
-            font-family: "Courier New", monospace;
-            line-height: 1.55;
+            background: #fffafa;
+            border-left: 4px solid #e74c3c;
+            padding: 12px 16px;
+            color: #c0392b;
+            font-size: 0.9em;
+            margin-bottom: 16px;
+            font-weight: 600;
+            border-radius: 4px;
         }
 
+        /* Actions */
         .actions {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 14px;
+            gap: 12px;
+            margin-top: 24px;
+            justify-content: flex-end;
         }
+
         .btn {
-            border: 0;
-            border-radius: 8px;
-            padding: 10px 16px;
-            cursor: pointer;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
             font-weight: 600;
-            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
         }
-        .btn-primary { background: #2f80ed; }
-        .btn-primary:hover { background: #246dcf; }
-        .btn-warning { background: #f39c12; }
-        .btn-warning:hover { background: #d58307; }
-        .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #cf3f30; }
-        .btn-secondary { background: #7f8c8d; }
-        .btn-secondary:hover { background: #6c7879; }
 
-        .alert {
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        /* Dashboard & Badges */
+        .dashboard-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 14px;
-            display: none;
-        }
-        .alert-success {
-            background: #e7f7ed;
-            border: 1px solid #bee8ca;
-            color: #155b30;
-        }
-        .alert-error {
-            background: #fdecea;
-            border: 1px solid #f8c8c2;
-            color: #7a2118;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
         }
 
-        .muted { color: #6c7a89; font-size: 0.87rem; margin-top: 8px; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+        .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+        .api-key-global {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .req-key-hint {
+            font-size: 0.75em;
+            color: #d97706;
+            margin-left: 6px;
+            font-weight: 600;
+        }
     </style>
 </head>
+
 <body>
     {% include '_admin_navbar.html' %}
 
     <div class="container">
-        <div class="page-header">
-            <h1>AI設定</h1>
-            <p>在此統一管理系統的 AI 模型、全域策略與 Prompt 模板。</p>
+        <div class="header">
+            <h1><i class="bi bi-robot"></i> AI設定</h1>
+            <p>選擇系統 AI 模式並檢視模型分配</p>
         </div>
 
         <div id="alert-container"></div>
 
-        <div class="card">
-            <div class="card-header">全域 AI 策略設定</div>
-            <div class="card-body">
-                <p class="section-desc">先用這一層決定系統整體傾向。未在下方任務模型個別指定時，會跟隨這裡的預設。</p>
-
-                <div class="grid-2">
-                    <div class="field">
-                        <label for="ai-global-strategy">AI 運行策略</label>
-                        <select id="ai-global-strategy">
-                            <option value="local_first">local_first（本地優先）</option>
-                            <option value="cloud_first">cloud_first（雲端高品質）</option>
-                            <option value="hybrid_balanced">hybrid_balanced（混合平衡）</option>
-                        </select>
-                        <div class="hint">本地優先：優先使用本地模型，節省 API 成本。<br>雲端高品質：優先使用 Gemini 等雲端模型。<br>混合平衡：依任務自動搭配本地 / 雲端模型。</div>
-                    </div>
-
-                    <div class="field">
-                        <label for="ai-default-provider">預設 Provider</label>
-                        <select id="ai-default-provider">
-                            <option value="local">local</option>
-                            <option value="google">google</option>
-                        </select>
-                        <div class="hint">此設定作為全域 fallback 預設來源。</div>
-                    </div>
-
-                    <div class="field">
-                        <label for="ai-rag-threshold">RAG 快速通道閾值</label>
-                        <input id="ai-rag-threshold" type="number" step="0.01" min="0" max="1">
-                        <div class="hint">對應 ADVANCED_RAG_NAIVE_THRESHOLD。數值越小越嚴格，越容易進入 Advanced RAG 救援。</div>
-                    </div>
+        <!-- 區塊 1 -->
+        <div class="section">
+            <h3 class="section-title"><i class="bi bi-globe"></i> 全域 AI 模式</h3>
+            <div class="dashboard-bar" style="flex-wrap: nowrap; padding: 10px 16px; justify-content: flex-start;">
+                <span class="section-desc" style="margin: 0; font-size: 0.85em; white-space: nowrap;">選擇系統整體的 AI 模型調用傾向，將自動套用至所有相關任務。</span>
+                
+                <div class="dashboard-meta" style="display: flex; gap: 8px; flex-shrink: 0;">
+                    <div class="badge badge-primary" id="dash-mode" style="padding: 4px 10px;"><i class="bi bi-cpu"></i> 目前模式：-</div>
+                    <div class="badge badge-neutral" id="dash-strategy" style="padding: 4px 10px;"><i class="bi bi-gear"></i> 策略：-</div>
                 </div>
-
-                <div class="checkbox-row">
-                    <input id="ai-enable-tutor" type="checkbox">
-                    <div>
-                        <div class="label">啟用 AI 助教回答</div>
-                        <div class="hint">開啟後，系統可使用教學助教型任務進行回覆。</div>
-                    </div>
+                
+                <div class="api-key-global" id="global-api-key-container" style="flex-shrink: 0;">
+                    <label style="font-size: 0.85em; font-weight: 600; color: #475569; margin: 0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
+                    <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width: 180px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; font-family: monospace;">
+                    <button class="btn btn-primary" onclick="saveApiKeyInline(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">確定</button>
+                    <div id="dash-key-status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;"><i class="bi bi-exclamation-circle-fill"></i> 未設定</div>
                 </div>
+            </div>
 
-                <div class="checkbox-row">
-                    <input id="ai-enable-vision" type="checkbox">
-                    <div>
-                        <div class="label">啟用高精度 OCR / 視覺分析模式</div>
-                        <div class="hint">開啟後，視覺辨識任務會優先走較高精度策略。</div>
-                    </div>
+            <div class="mode-cards">
+                <div class="mode-card" id="mode-cloud" onclick="selectMode('cloud')">
+                    <i class="bi bi-cloud mode-icon"></i>
+                    <div class="mode-title">Cloud AI<span class="req-key-hint">(需 API Key)</span></div>
+                    <ul class="mode-desc">
+                        <li>全部任務優先使用雲端模型 (Gemini)</li>
+                        <li>適合對外展示、品質優先</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="mode-edge" onclick="selectMode('edge')">
+                    <i class="bi bi-cpu mode-icon"></i>
+                    <div class="mode-title">Edge AI</div>
+                    <ul class="mode-desc">
+                        <li>全部任務使用本地模型 (Qwen)</li>
+                        <li>適合離線環境、低成本高效運行</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="mode-hybrid" onclick="selectMode('hybrid')">
+                    <i class="bi bi-diagram-3 mode-icon"></i>
+                    <div class="mode-title">Hybrid<span class="req-key-hint">(需 API Key)</span></div>
+                    <ul class="mode-desc">
+                        <li>系統依任務分配最適合模型</li>
+                        <li>兼顧準確品質與視覺辨識效能</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">各 AI 任務模型配置</div>
-            <div class="card-body">
-                <p class="section-desc">這是進階覆寫層。若未個別指定，將跟隨上方「全域 AI 策略設定」。</p>
-                <div id="role-model-container"></div>
+        <!-- 區塊 2 -->
+        <div class="section section-orange">
+            <h3 class="section-title"><i class="bi bi-list-check"></i> 各任務模型分配 (唯讀)</h3>
+            <p class="section-desc">根據您選擇的模式，系統已自動分配以下對應的最佳模型。</p>
+            <div id="role-list" class="role-list">
+                <!-- 列表動態產生 -->
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">Prompt 模板設定</div>
-            <div class="card-body">
-                <div class="prompt-warning">
-                    此模板會影響 AI 手寫批改解析。請務必保留 <code>{context}</code> 與 <code>{prereq_text}</code> 兩個必要變數。
-                </div>
+        <!-- 區塊 3 -->
+        <div class="section section-red">
+            <h3 class="section-title"><i class="bi bi-terminal"></i> 基礎 Prompt 模板</h3>
+            <p class="section-desc">修改系統解析題目的基礎對話結構。修改前請確認變數完整。</p>
 
-                <textarea id="prompt-editor" placeholder="請輸入 Prompt 模板"></textarea>
-                <div id="update-time" class="muted">最後更新時間：讀取中...</div>
+            <div class="prompt-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i> 必須包含 <code>{context}</code> 與 <code>{prereq_text}</code>
+                才能正常替換變數。
+            </div>
 
-                <div class="actions">
-                    <button class="btn btn-primary" onclick="saveSettings()">儲存全部 AI 設定</button>
-                    <button class="btn btn-warning" onclick="resetPromptOnly()">重設 Prompt</button>
-                    <button class="btn btn-danger" onclick="resetAllSettings()">重設全部 AI 設定</button>
-                    <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('teacher_dashboard') }}'">返回後台</button>
-                </div>
+            <textarea id="prompt-editor" placeholder="請輸入 Prompt..."></textarea>
+
+            <div class="actions">
+                <button class="btn btn-warning" onclick="resetSettings()">
+                    <i class="bi bi-arrow-counterclockwise"></i> 重設為預設
+                </button>
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="bi bi-save"></i> 儲存所有設定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAG Settings Modal -->
+    <div id="ragSettingsModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4em; color: #2c3e50;"><i class="bi bi-search"></i> RAG 參數設定</h3>
+            <div style="margin-top: 15px;">
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">Advanced RAG 觸發閾值 (預設: 0.40)</label>
+                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">搜索目標與 AI 解答設定</label>
+                <label style="display:inline-flex; align-items:center; margin-bottom:15px; color:#555; font-size: 0.9em; cursor:pointer;">
+                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px;">
+                    啟用 AI 助教回答 (會消耗 API 額度)
+                </label>
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">搜尋結果點擊目標介面</label>
+                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="practice">基礎練習介面 (/practice/)</option>
+                    <option value="adaptive">自適應介面 (/adaptive_practice_v2)</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button onclick="closeRagSettingsModal()"
+                    style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">取消</button>
+                <button onclick="saveRagSettings()"
+                    style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">儲存</button>
             </div>
         </div>
     </div>
 
     <script>
-        const ROLE_ORDER = ['coder', 'tutor', 'vision_analyzer', 'classifier', 'default'];
-        const ROLE_LABELS = {
-            coder: '批改 / 解析 AI',
-            tutor: '教學助教 AI',
-            vision_analyzer: 'OCR / 手寫辨識 AI',
-            classifier: '題目分類 AI',
-            default: '預設備援 AI'
-        };
+        let currentMode = 'cloud';
+        let modelMappingCache = {}; // mode -> { role: model }
 
-        let availableModels = [];
+        const ROLE_DESC = [
+            { key: 'vision_analyzer', name: 'OCR / 手寫辨識 AI' },
+            { key: 'coder', name: '出題程式生成AI' },
+            { key: 'tutor', name: '教學助教 AI' },
+            { key: 'classifier', name: '題目分類 AI' },
+            { key: 'system_coder', name: '系統程式生成 AI' },
+            { key: 'default', name: '預設備援 AI' }
+        ];
 
         window.addEventListener('DOMContentLoaded', loadSettings);
 
-        function showAlert(message, type) {
-            const container = document.getElementById('alert-container');
-            const cls = type === 'success' ? 'alert-success' : 'alert-error';
-            container.innerHTML = `<div class="alert ${cls}" style="display:block;">${message}</div>`;
-            setTimeout(() => { container.innerHTML = ''; }, 3500);
+        function showAlert(msg, isSuccess) {
+            const c = document.getElementById('alert-container');
+            const cls = isSuccess ? 'alert-success' : 'alert-error';
+            const icon = isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill';
+            c.innerHTML = `<div class="alert ${cls}" style="display:block;"><i class="bi bi-${icon}"></i> ${msg}</div>`;
+            setTimeout(() => { c.innerHTML = ''; }, 3500);
         }
 
-        function buildModelSelect(roleKey, selectedValue) {
-            const select = document.createElement('select');
-            select.id = `role-model-${roleKey}`;
-
-            const inheritOption = document.createElement('option');
-            inheritOption.value = '';
-            inheritOption.textContent = '跟隨全域策略（預設）';
-            select.appendChild(inheritOption);
-
-            availableModels.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model.key;
-                const desc = model.description ? `｜${model.description}` : '';
-                option.textContent = `${model.key}${desc}`;
-                select.appendChild(option);
-            });
-
-            if (selectedValue) {
-                select.value = selectedValue;
+        function updateDashboard() {
+            const dashMode = document.getElementById('dash-mode');
+            const dashStrategy = document.getElementById('dash-strategy');
+            const dashKeyStatus = document.getElementById('dash-key-status');
+            
+            if (currentMode === 'cloud') {
+                dashMode.innerHTML = '<i class="bi bi-cloud-fill"></i> 目前模式：Cloud AI';
+                dashStrategy.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> 模型策略：全部雲端模型';
+            } else if (currentMode === 'edge') {
+                dashMode.innerHTML = '<i class="bi bi-cpu-fill"></i> 目前模式：Edge AI';
+                dashStrategy.innerHTML = '<i class="bi bi-hdd-network"></i> 模型策略：全部本地模型';
+            } else {
+                dashMode.innerHTML = '<i class="bi bi-diagram-3-fill"></i> 目前模式：Hybrid';
+                dashStrategy.innerHTML = '<i class="bi bi-boxes"></i> 模型策略：Gemini + Qwen 混合';
             }
 
-            return select;
+            const val = document.getElementById('gemini-api-key').value.trim() || window._geminiApiKeyTemp;
+            if (currentMode === 'edge') {
+                dashKeyStatus.style.display = 'none';
+            } else {
+                dashKeyStatus.style.display = 'inline-flex';
+                if (val) {
+                    dashKeyStatus.className = 'badge badge-success';
+                    dashKeyStatus.innerHTML = '<i class="bi bi-check-circle-fill"></i> 已設定';
+                } else {
+                    dashKeyStatus.className = 'badge badge-warning';
+                    dashKeyStatus.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> 未設定';
+                }
+            }
         }
 
-        function renderRoleModels(modelRoles, roleDisplayNames) {
-            const container = document.getElementById('role-model-container');
-            container.innerHTML = '';
+        function checkApiKey() {
+            updateDashboard();
+        }
 
-            ROLE_ORDER.forEach(roleKey => {
-                const row = document.createElement('div');
-                row.className = 'model-row';
+        function saveApiKeyInline(event) {
+            if (event) event.stopPropagation();
+            const el = document.getElementById('gemini-api-key');
+            if (!el) return;
+            const val = el.value.trim();
+            if (val) {
+                window._geminiApiKeyTemp = val;
+                updateDashboard();
+            } else {
+                checkApiKey();
+            }
+        }
 
-                const head = document.createElement('div');
-                head.className = 'model-row-head';
+        function selectMode(mode) {
+            document.querySelectorAll('.mode-card').forEach(el => el.classList.remove('active'));
+            document.getElementById(`mode-${mode}`).classList.add('active');
+            currentMode = mode;
+            
+            const apiContainer = document.getElementById('global-api-key-container');
+            if (apiContainer) {
+                if (mode === 'cloud' || mode === 'hybrid') {
+                    apiContainer.style.display = 'flex';
+                } else {
+                    apiContainer.style.display = 'none';
+                }
+            }
+            
+            updateDashboard();
+            renderRoles();
+        }
 
-                const title = document.createElement('div');
-                title.textContent = (roleDisplayNames && roleDisplayNames[roleKey]) || ROLE_LABELS[roleKey] || roleKey;
+        function generateLocalPreview(mode, availableModels) {
+            let roles = {};
+            let g = availableModels.find(m => m.key.includes('gemini'))?.key || 'gemini-2.5-pro';
+            let q_vl = availableModels.find(m => m.key.includes('qwen3-vl-8b'))?.key || 'qwen3-vl-8b';
+            let q_8b = availableModels.find(m => m.key.includes('qwen3-8b') && !m.key.includes('vl'))?.key || 'qwen3-8b';
 
-                const code = document.createElement('div');
-                code.className = 'code-tag';
-                code.textContent = `程式代號: ${roleKey}`;
+            if (mode === 'cloud') {
+                ROLE_DESC.forEach(r => roles[r.key] = g);
+            } else if (mode === 'edge') {
+                ROLE_DESC.forEach(r => roles[r.key] = r.key === 'vision_analyzer' ? q_vl : q_8b);
+            } else {
+                ROLE_DESC.forEach(r => roles[r.key] = g); // 預設 hybrid
+                roles['vision_analyzer'] = q_vl;
+                roles['default'] = q_8b;
+            }
+            return roles;
+        }
 
-                head.appendChild(title);
-                head.appendChild(code);
-                row.appendChild(head);
+        function renderRoles() {
+            const c = document.getElementById('role-list');
+            c.innerHTML = '';
 
-                const select = buildModelSelect(roleKey, modelRoles ? modelRoles[roleKey] : '');
-                row.appendChild(select);
+            const rolesData = modelMappingCache[currentMode] || generateLocalPreview(currentMode, window._availModels || []);
 
-                const hint = document.createElement('div');
-                hint.className = 'hint';
-                hint.textContent = '若留空，將跟隨上方全域 AI 策略。';
-                row.appendChild(hint);
+            ROLE_DESC.forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'role-item';
 
-                container.appendChild(row);
+                let modelKey = rolesData[r.key] || '自動分配';
+                if (currentMode === 'cloud') {
+                    modelKey = 'gemini-3-flash';
+                } else if (currentMode === 'edge') {
+                    modelKey = 'qwen3-vl-8b';
+                } else if (currentMode === 'hybrid') {
+                    if (r.key === 'vision_analyzer' || r.key === 'tutor') {
+                        modelKey = 'gemini-3-flash';
+                    } else if (r.key === 'system_coder') {
+                        modelKey = 'qwen3-8b';
+                    } else {
+                        modelKey = 'qwen3-vl-8b';
+                    }
+                }
+
+                item.innerHTML = `
+                    <div class="role-info">
+                        <span class="role-name">${r.name}</span>
+                        <span class="role-code">${r.key}</span>
+                    </div>
+                    <span class="role-model">${modelKey}</span>
+                `;
+                c.appendChild(item);
             });
+
+            // RAG 參數設定 Card
+            const ragItem = document.createElement('div');
+            ragItem.className = 'role-item rag-setting-card';
+            ragItem.onclick = openRagSettingsModal;
+            ragItem.innerHTML = `
+                <div class="role-info">
+                    <span class="role-name">RAG 參數設定<i class="bi bi-gear-fill" style="color: #6366f1; margin-left: 6px; font-size: 0.85em; vertical-align: middle;"></i></span>
+                    <span class="role-code">retrieval / routing</span>
+                </div>
+                <span class="role-model" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">已啟用</span>
+            `;
+            c.appendChild(ragItem);
+        }
+
+        // RAG Settings Logics
+        async function openRagSettingsModal() {
+            try {
+                const response = await fetch('/api/adaptive/rag_settings');
+                const data = await response.json();
+                document.getElementById('ragThreshold').value = data.threshold !== undefined ? data.threshold : 0.40;
+                document.getElementById('ragTargetType').value = data.target_type || 'practice';
+                document.getElementById('ragEnableAIChat').checked = data.enable_ai_chat !== false;
+                document.getElementById('ragSettingsModal').style.display = 'flex';
+            } catch (e) {
+                showAlert('RAG 設定載入失敗', false);
+            }
+        }
+
+        function closeRagSettingsModal() {
+            document.getElementById('ragSettingsModal').style.display = 'none';
+        }
+
+        async function saveRagSettings() {
+            const threshold = parseFloat(document.getElementById('ragThreshold').value);
+            const target_type = document.getElementById('ragTargetType').value;
+            const enable_ai_chat = document.getElementById('ragEnableAIChat').checked;
+            try {
+                const response = await fetch('/admin/rag_settings/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ threshold, target_type, enable_ai_chat })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('RAG 設定已儲存！', true);
+                    closeRagSettingsModal();
+                } else {
+                    showAlert('RAG 儲存失敗：' + data.message, false);
+                }
+            } catch (error) {
+                showAlert('發生未知的錯誤', false);
+            }
         }
 
         function loadSettings() {
             fetch('/admin/ai_prompt_settings/get')
-                .then(resp => resp.json())
+                .then(r => r.json())
                 .then(data => {
-                    if (!data.success) {
-                        showAlert('讀取設定失敗：' + (data.message || '未知錯誤'), 'error');
-                        return;
-                    }
+                    if (!data.success) return showAlert('讀取失敗', false);
 
-                    availableModels = Array.isArray(data.available_models) ? data.available_models : [];
+                    window._availModels = data.available_models || [];
                     document.getElementById('prompt-editor').value = data.prompt || '';
-                    document.getElementById('update-time').textContent = '最後更新時間：' + (data.updated_at || '尚未更新');
 
-                    document.getElementById('ai-global-strategy').value = data.ai_global_strategy || 'hybrid_balanced';
-                    document.getElementById('ai-default-provider').value = data.ai_default_provider || 'local';
-                    document.getElementById('ai-rag-threshold').value = data.ai_rag_naive_threshold ?? 0.35;
-                    document.getElementById('ai-enable-tutor').checked = !!data.ai_enable_tutor_response;
-                    document.getElementById('ai-enable-vision').checked = !!data.ai_enable_high_precision_vision;
+                    currentMode = data.ai_mode || 'cloud';
+                    modelMappingCache[currentMode] = data.ai_model_roles || {};
 
-                    renderRoleModels(data.ai_model_roles || {}, data.role_display_names || {});
+                    ['cloud', 'edge', 'hybrid'].forEach(m => {
+                        if (!modelMappingCache[m]) modelMappingCache[m] = generateLocalPreview(m, window._availModels);
+                    });
+
+                    selectMode(currentMode);
                 })
-                .catch(err => showAlert('讀取設定失敗：' + err, 'error'));
-        }
-
-        function collectRoleModels() {
-            const mapping = {};
-            ROLE_ORDER.forEach(roleKey => {
-                const el = document.getElementById(`role-model-${roleKey}`);
-                if (el && el.value) {
-                    mapping[roleKey] = el.value;
-                }
-            });
-            return mapping;
+                .catch(e => showAlert('讀取錯誤', false));
         }
 
         function saveSettings() {
-            const promptValue = document.getElementById('prompt-editor').value || '';
-            if (!promptValue.includes('{context}') || !promptValue.includes('{prereq_text}')) {
-                showAlert('Prompt 必須包含 {context} 與 {prereq_text}', 'error');
-                return;
+            const prompt = document.getElementById('prompt-editor').value;
+            if (!prompt.includes('{context}') || !prompt.includes('{prereq_text}')) {
+                return showAlert('Prompt 必須包含 {context} 與 {prereq_text}', false);
             }
-
-            const payload = {
-                prompt: promptValue,
-                ai_global_strategy: document.getElementById('ai-global-strategy').value,
-                ai_default_provider: document.getElementById('ai-default-provider').value,
-                ai_model_roles: collectRoleModels(),
-                ai_rag_naive_threshold: document.getElementById('ai-rag-threshold').value,
-                ai_enable_tutor_response: document.getElementById('ai-enable-tutor').checked,
-                ai_enable_high_precision_vision: document.getElementById('ai-enable-vision').checked
-            };
 
             fetch('/admin/ai_prompt_settings/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ ai_mode: currentMode, prompt: prompt })
             })
-                .then(resp => resp.json())
+                .then(r => r.json())
                 .then(data => {
-                    if (data.success) {
-                        showAlert(data.message || '設定已儲存', 'success');
-                        loadSettings();
-                        return;
-                    }
-                    showAlert('儲存失敗：' + (data.message || '未知錯誤'), 'error');
-                })
-                .catch(err => showAlert('儲存失敗：' + err, 'error'));
+                    if (data.success) showAlert('設定已儲存！', true);
+                    else showAlert(data.message || '儲存失敗', false);
+                    setTimeout(loadSettings, 500);
+                });
         }
 
-        function resetPromptOnly() {
-            if (!confirm('確定只重設 Prompt 模板？')) {
-                return;
-            }
-            fetch('/admin/ai_prompt_settings/reset', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ scope: 'prompt_only' })
-            })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert(data.message || 'Prompt 已重設', 'success');
-                        loadSettings();
-                        return;
-                    }
-                    showAlert('重設失敗：' + (data.message || '未知錯誤'), 'error');
-                })
-                .catch(err => showAlert('重設失敗：' + err, 'error'));
-        }
-
-        function resetAllSettings() {
-            if (!confirm('確定要重設 Prompt 與全部 AI 設定？\n此操作會清空任務模型覆寫設定。')) {
-                return;
-            }
+        function resetSettings() {
+            if (!confirm('確定要復原為系統預設值嗎？')) return;
             fetch('/admin/ai_prompt_settings/reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ scope: 'all' })
-            })
-                .then(resp => resp.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert(data.message || '全部設定已重設', 'success');
-                        loadSettings();
-                        return;
-                    }
-                    showAlert('重設失敗：' + (data.message || '未知錯誤'), 'error');
-                })
-                .catch(err => showAlert('重設失敗：' + err, 'error'));
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    showAlert('已重設', true);
+                    loadSettings();
+                } else {
+                    showAlert('重設失敗', false);
+                }
+            });
         }
     </script>
 </body>
+
 </html>

@@ -60,12 +60,13 @@
             text-align: center;
             padding: 20px;
             background: #ecf0f1;
-            border-radius: 8px;
-            transition: transform 0.2s;
+            border-radius: 12px;
+            transition: transform 0.2s, filter 0.2s;
         }
 
         .stat-box:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            filter: brightness(1.12);
         }
 
         .stat-number {
@@ -126,67 +127,60 @@
         <div class="card">
             <h3>管理功能</h3>
             <div class="grid">
+                <!-- 1. 課程分類 -->
                 <a href="{{ url_for('core.admin_curriculum') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
                         <div style="font-size: 2em;">📚</div>
                         <div style="margin-top: 10px; font-weight: bold;">課程分類管理</div>
                     </div>
                 </a>
+                <!-- 2. 單元管理 -->
                 <a href="{{ url_for('core.admin_skills') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #f1c40f, #f39c12); color: white;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white;">
                         <div style="font-size: 2em;">⚙️</div>
                         <div style="margin-top: 10px; font-weight: bold;">單元管理</div>
                     </div>
                 </a>
-                <a href="{{ url_for('core.admin_examples') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #00b894, #00cec9); color: white;">
-                        <div style="font-size: 2em;">📖</div>
-                        <div style="margin-top: 10px; font-weight: bold;">例題管理</div>
-                    </div>
-                </a>
+                <!-- 3. 技能關聯 -->
                 <a href="{{ url_for('core.admin_prerequisites') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #1abc9c, #16a085); color: white;">
                         <div style="font-size: 2em;">🔗</div>
                         <div style="margin-top: 10px; font-weight: bold;">技能關聯</div>
                     </div>
                 </a>
-                <a href="{{ url_for('core.db_maintenance') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
-                        <div style="font-size: 2em;">🗃️</div>
-                        <div style="margin-top: 10px; font-weight: bold;">資料庫管理</div>
+                <!-- 4. 例題管理 -->
+                <a href="{{ url_for('core.admin_examples') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #e67e22, #d35400); color: white;">
+                        <div style="font-size: 2em;">📖</div>
+                        <div style="margin-top: 10px; font-weight: bold;">例題管理</div>
                     </div>
                 </a>
+                <!-- 5. 教材匯入 -->
                 <a href="{{ url_for('core.admin_textbook_importer') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #e67e22, #d35400); color: white;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white;">
                         <div style="font-size: 2em;">🤖</div>
                         <div style="margin-top: 10px; font-weight: bold;">AI 教材匯入</div>
                     </div>
                 </a>
-                <a href="{{ url_for('teacher_analysis') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white;">
-                        <div style="font-size: 2em;">📊</div>
-                        <div style="margin-top: 10px; font-weight: bold;">學生分析報告</div>
+                <!-- 6. 資料庫管理 -->
+                <a href="{{ url_for('core.db_maintenance') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #f1c40f, #f39c12); color: white;">
+                        <div style="font-size: 2em;">🗃️</div>
+                        <div style="margin-top: 10px; font-weight: bold;">資料庫管理</div>
                     </div>
                 </a>
+                <!-- 7. AI 參數設定 -->
                 <a href="{{ url_for('core.ai_prompt_settings_page') }}" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #16a085, #1abc9c); color: white;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white;">
                         <div style="font-size: 2em;">🤖</div>
                         <div style="margin-top: 10px; font-weight: bold;">AI 參數設定</div>
                     </div>
                 </a>
-                <a href="#" onclick="openRagSettingsModal(); return false;" style="text-decoration: none;">
-                    <div class="stat-box"
-                        style="cursor: pointer; background: linear-gradient(135deg, #273c75, #192a56); color: white;">
-                        <div style="font-size: 2em;">🔍</div>
-                        <div style="margin-top: 10px; font-weight: bold;">RAG 參數設定</div>
+                <!-- 8. 學生分析報告 -->
+                <a href="{{ url_for('teacher_analysis') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: linear-gradient(135deg, #c039b4, #8e44ad); color: white;">
+                        <div style="font-size: 2em;">📊</div>
+                        <div style="margin-top: 10px; font-weight: bold;">學生分析報告</div>
                     </div>
                 </a>
             </div>
