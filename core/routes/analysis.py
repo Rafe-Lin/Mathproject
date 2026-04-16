@@ -1553,7 +1553,7 @@ def chat_ai():
 
 
 
-        return jsonify({"reply": "?ｇ???鈭??選??"}), 400
+        return jsonify({"reply": "缺少必要參數：question"}), 400
 
 
 
@@ -1626,14 +1626,25 @@ def chat_ai():
         and not str(structured_analysis.get("main_issue") or "").strip()
         and str(structured_analysis.get("error_mechanism") or "") == "unknown"
     )
+    payload_keys = list(data.keys()) if isinstance(data, dict) else []
+    current_app.logger.info(f"[chat_ai] payload keys={payload_keys}")
+
     if not _has_handwriting and _sa_empty:
-        current_app.logger.info("[chat_ai] skipped due to empty structured_analysis")
-        return jsonify(
-            {
-                "reply": "我目前還沒有足夠的分析結果 👉 請先按「AI檢查手寫」或送出答案，我再幫你更精準地找錯誤！",
-                "follow_up_prompts": [],
-            }
-        )
+        current_app.logger.info("[chat_ai] structured_analysis empty, using fallback")
+        structured_analysis = {
+            "status": "unknown",
+            "main_issue": user_question,
+            "issue_tag": "",
+            "expected_answer": "",
+            "error_mechanism": "unknown",
+            "step_focus": "",
+            "family_id": family_id,
+            "analysis_source": "fallback",
+            "question_text": full_question_context,
+            "student_message": user_question,
+            "analysis": ""
+        }
+        current_app.logger.info("[chat_ai] calling AI with fallback context")
     structured_summary = (
         f"status={structured_analysis.get('status','unknown')}; "
         f"main_issue={structured_analysis.get('main_issue','')}; "
@@ -1856,22 +1867,33 @@ def chat_ai():
 
     # Tutor compliance gate: bounded language layer only.
     structured_analysis = _tutor_extract_structured_analysis(data)
-    guidance = None
-    if isinstance(result, dict):
-        if all(k in result for k in ("hint_focus", "guided_question", "micro_step", "forbidden")):
-            guidance = {
-                "hint_focus": result.get("hint_focus"),
-                "guided_question": result.get("guided_question"),
-                "micro_step": result.get("micro_step"),
-                "forbidden": result.get("forbidden"),
-            }
-        else:
-            # Backward compatibility: old tutor may still return only reply.
-            guidance = None
-
-    if not _tutor_guidance_is_compliant(guidance, structured_analysis):
+    
+    if not isinstance(result, dict) or not result:
         current_app.logger.info("[chat_ai] tutor output non-compliant; fallback to deterministic guidance")
         guidance = _tutor_deterministic_fallback(structured_analysis)
+    else:
+        guidance = {
+            "hint_focus": str(result.get("hint_focus") or "").strip(),
+            "guided_question": str(result.get("guided_question") or "").strip(),
+            "micro_step": str(result.get("micro_step") or "").strip(),
+            "forbidden": result.get("forbidden") if "forbidden" in result else False
+        }
+        
+        has_focus = bool(guidance["hint_focus"])
+        has_question = bool(guidance["guided_question"])
+        has_step = bool(guidance["micro_step"])
+        
+        if not has_focus and not has_question and not has_step:
+            current_app.logger.info("[chat_ai] tutor output non-compliant; fallback to deterministic guidance")
+            guidance = _tutor_deterministic_fallback(structured_analysis)
+        else:
+            current_app.logger.info("[chat_ai] tutor output partial but accepted")
+            if not has_focus or not has_question or not has_step:
+                current_app.logger.info("[chat_ai] tutor output missing fields auto-filled")
+                fb = _tutor_deterministic_fallback(structured_analysis)
+                if not has_focus: guidance["hint_focus"] = fb["hint_focus"]
+                if not has_question: guidance["guided_question"] = fb["guided_question"]
+                if not has_step: guidance["micro_step"] = fb["micro_step"]
 
     result = result if isinstance(result, dict) else {}
     result["hint_focus"] = guidance["hint_focus"]

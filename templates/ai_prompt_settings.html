@@ -322,6 +322,7 @@
         .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
         .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
         .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
         .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
 
         .api-key-global {
@@ -364,8 +365,8 @@
                 <div class="api-key-global" id="global-api-key-container" style="flex-shrink: 0;">
                     <label style="font-size: 0.85em; font-weight: 600; color: #475569; margin: 0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
                     <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width: 180px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; font-family: monospace;">
-                    <button class="btn btn-primary" onclick="saveApiKeyInline(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">確定</button>
-                    <div id="dash-key-status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;"><i class="bi bi-exclamation-circle-fill"></i> 未設定</div>
+                    <button class="btn btn-primary" onclick="testApiKey(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">確定</button>
+                    <span id="api_key_status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;">🟡 未設定</span>
                 </div>
             </div>
 
@@ -487,7 +488,7 @@
         function updateDashboard() {
             const dashMode = document.getElementById('dash-mode');
             const dashStrategy = document.getElementById('dash-strategy');
-            const dashKeyStatus = document.getElementById('dash-key-status');
+            const dashKeyStatus = document.getElementById('api_key_status');
             
             if (currentMode === 'cloud') {
                 dashMode.innerHTML = '<i class="bi bi-cloud-fill"></i> 目前模式：Cloud AI';
@@ -505,31 +506,58 @@
                 dashKeyStatus.style.display = 'none';
             } else {
                 dashKeyStatus.style.display = 'inline-flex';
-                if (val) {
-                    dashKeyStatus.className = 'badge badge-success';
-                    dashKeyStatus.innerHTML = '<i class="bi bi-check-circle-fill"></i> 已設定';
-                } else {
+                if (!val) {
                     dashKeyStatus.className = 'badge badge-warning';
-                    dashKeyStatus.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> 未設定';
+                    dashKeyStatus.innerText = '🟡 未設定';
                 }
             }
         }
 
         function checkApiKey() {
-            updateDashboard();
+            const val = document.getElementById('gemini-api-key').value.trim();
+            const dashKeyStatus = document.getElementById('api_key_status');
+            if (!val) {
+                dashKeyStatus.className = 'badge badge-warning';
+                dashKeyStatus.innerText = '🟡 未設定';
+            }
         }
 
-        function saveApiKeyInline(event) {
+        function testApiKey(event) {
             if (event) event.stopPropagation();
-            const el = document.getElementById('gemini-api-key');
-            if (!el) return;
-            const val = el.value.trim();
-            if (val) {
-                window._geminiApiKeyTemp = val;
-                updateDashboard();
-            } else {
-                checkApiKey();
+            const apiKey = document.getElementById("gemini-api-key").value.trim();
+            const statusBadge = document.getElementById("api_key_status");
+
+            if (!apiKey) {
+                statusBadge.innerText = "❌ 請輸入 Key";
+                statusBadge.className = "badge badge-danger";
+                return;
             }
+
+            statusBadge.innerText = "🟡 測試中...";
+            statusBadge.className = "badge badge-warning";
+
+            fetch("/test_api_key", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ api_key: apiKey })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window._geminiApiKeyTemp = apiKey;
+                    statusBadge.innerText = "🟢 ✔ 設定成功";
+                    statusBadge.className = "badge badge-success";
+                } else {
+                    statusBadge.innerText = "🔴 ❌ 無效 Key";
+                    statusBadge.className = "badge badge-danger";
+                }
+            })
+            .catch(() => {
+                statusBadge.innerText = "🔴 ⚠️ 測試失敗";
+                statusBadge.className = "badge badge-danger";
+            });
         }
 
         function selectMode(mode) {

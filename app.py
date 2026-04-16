@@ -280,6 +280,62 @@ def create_app():
                                mistake_data=mistake_data,
                                diagnoses=diagnoses)
 
+    @app.route('/test_api_key', methods=["POST"])
+    def test_api_key():
+        from flask import request, jsonify, session
+        import google.generativeai as genai
+
+        data = request.get_json(silent=True) or {}
+        api_key = (data.get("api_key") or "").strip()
+
+        if not api_key:
+            return jsonify({
+                "success": False,
+                "message": "API key is empty"
+            })
+
+        # 依照需求，指定使用 gemini-3-flash 這組 Preset 進行測試
+        try:
+            model_name = Config.CODER_PRESETS['gemini-3-flash']['model']
+        except Exception:
+            model_name = "gemini-3-flash-preview"
+
+        try:
+            genai.configure(api_key=api_key)
+
+            app.logger.info(f"[API KEY TEST] testing model: {model_name}")
+
+            model = genai.GenerativeModel(model_name)
+            _ = model.generate_content("1+1=?")
+
+            # 測試成功後存入 session
+            session["GEMINI_API_KEY"] = api_key
+
+            return jsonify({
+                "success": True,
+                "message": "API key valid",
+                "model": model_name
+            })
+
+        except Exception as e:
+            app.logger.error(f"[API KEY TEST ERROR] model={model_name} err={repr(e)}")
+            return jsonify({
+                "success": False,
+                "message": str(e),
+                "model": model_name
+            })
+
+    @app.route('/debug/session_key_status')
+    def debug_session_key_status():
+        from flask import jsonify, session
+
+        key = session.get("GEMINI_API_KEY")
+        return jsonify({
+            "has_key": bool(key),
+            "key_len": len(key) if key else 0,
+            "key_prefix": key[:6] if key else ""
+        })
+
     @app.route('/dashboard')
     @login_required
     def dashboard():

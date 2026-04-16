@@ -558,8 +558,18 @@ JSON:
         }
 
 def get_model():
+    global gemini_model
     if gemini_model is None:
         raise RuntimeError("Gemini 尚未初始化！")
+        
+    try:
+        from core.ai_wrapper import resolve_gemini_api_key
+        api_key = resolve_gemini_api_key()
+        if api_key:
+            genai.configure(api_key=api_key)
+    except Exception as e:
+        pass
+        
     return gemini_model
 
 def get_ai_prompt():

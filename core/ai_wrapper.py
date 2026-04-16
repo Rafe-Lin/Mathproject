@@ -16,7 +16,7 @@ import os
 import requests
 import json
 import logging
-from flask import current_app
+from flask import current_app, has_request_context, session
 from config import Config
 from core.ai_settings import get_effective_model_config
 
@@ -298,6 +298,27 @@ class LocalAIClient:
         except requests.exceptions.RequestException as e:
             yield {"type": "error", "text": str(e)}
 
+def resolve_gemini_api_key():
+    """
+    優先使用 session 中的 GEMINI_API_KEY。
+    若當前不在 request context，或 session 中沒有值，
+    則 fallback 到 Config.GEMINI_API_KEY。
+    """
+    if has_request_context():
+        key = session.get("GEMINI_API_KEY")
+        if key:
+            try:
+                current_app.logger.info("[AI KEY] source=session")
+            except Exception:
+                pass
+            return key
+            
+    try:
+        current_app.logger.info("[AI KEY] source=config")
+    except Exception:
+        pass
+    return getattr(Config, 'GEMINI_API_KEY', None)
+
 class GoogleAIClient:
     """
     處理 Google Gemini API 的客戶端 (Modernized for google.genai SDK)
@@ -305,10 +326,14 @@ class GoogleAIClient:
     """
     def __init__(self, model_name, temperature=0.7, **kwargs):
         # 1. Config & API Key
-        # Try multiple sources: kwargs > Config > environment variable
-        api_key = kwargs.get('api_key') or getattr(Config, 'GEMINI_API_KEY', None)
+        # Try multiple sources: kwargs > session > Config > environment variable
+        api_key = kwargs.get('api_key')
+        if not api_key:
+            api_key = resolve_gemini_api_key()
+            
         if not api_key:
             api_key = os.environ.get("GEMINI_API_KEY")
+            
         if not api_key:
             logger.error("❌ GEMINI_API_KEY not found! Please check your config.py or .env file.")
             raise ValueError("GEMINI_API_KEY is missing. 無法啟動 Google AI Client。")
