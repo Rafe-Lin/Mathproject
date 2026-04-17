@@ -196,6 +196,38 @@
         </div>
     </div>
 
+    <!-- RAG Settings Modal -->
+    <div id="ragSettingsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4em; color: #2c3e50;"><i class="bi bi-search"></i> RAG 參數設定</h3>
+            <div style="margin-top: 15px;">
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">Advanced RAG 門檻值 (預設: 0.40)</label>
+                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">進階 AI 助教設定</label>
+                <label style="display:flex; align-items:flex-start; margin-bottom:0; color:#555; font-size: 0.95em; cursor:pointer;">
+                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px; margin-top: 3px;">
+                    <div>
+                        <div style="font-weight:600; color:#334155;">啟用進階 AI 助教（使用雲端 / API 回答）</div>
+                        <small style="display:block; color:#64748b; margin-top:5px; line-height:1.4;">需已設定可用 API Key。開啟後，此情境可使用雲端 AI 助教進行較完整的對話與引導；未啟用時，僅使用一般頁面流程。</small>
+                    </div>
+                </label>
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">目標套用情境</label>
+                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="practice">一般練習情境 (/practice/)</option>
+                    <option value="adaptive">自適應評量 (/adaptive_practice_v2)</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button type="button" onclick="closeRagSettingsModal()" style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">取消</button>
+                <button type="button" onclick="saveRagSettings()" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">儲存</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentMode = "cloud";
         let modelMappingCache = {};
@@ -460,9 +492,71 @@
                 `;
                 c.appendChild(item);
             });
+
+            // RAG 參數設定 Card
+            const ragItem = document.createElement("div");
+            ragItem.className = "role-item rag-setting-card";
+            ragItem.onclick = openRagSettingsModal;
+            ragItem.innerHTML = `
+                <div class="role-info">
+                    <span class="role-name">RAG 參數設定<i class="bi bi-gear-fill" style="color: #6366f1; margin-left: 6px; font-size: 0.85em; vertical-align: middle;"></i></span>
+                    <span class="role-code">retrieval / routing</span>
+                </div>
+                <span class="role-model" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">已啟用</span>
+            `;
+            c.appendChild(ragItem);
         }
 
         // saveModeOnly function removed during UX unification.
+
+        function openRagSettingsModal() {
+            document.getElementById("ragSettingsModal").style.display = "flex";
+            
+            // Set fallbacks first
+            document.getElementById("ragThreshold").value = 0.40;
+            document.getElementById("ragEnableAIChat").checked = false;
+            document.getElementById("ragTargetType").value = "practice";
+
+            // Fetch actual values from JSON DB
+            fetch("/api/adaptive/rag_settings")
+                .then(r => {
+                    if (!r.ok) throw new Error("Fetch failed");
+                    return r.json();
+                })
+                .then(data => {
+                    if (data.threshold !== undefined) document.getElementById("ragThreshold").value = data.threshold;
+                    if (data.enable_ai_chat !== undefined) document.getElementById("ragEnableAIChat").checked = data.enable_ai_chat;
+                    if (data.target_type !== undefined) document.getElementById("ragTargetType").value = data.target_type;
+                })
+                .catch(err => console.warn("Failed to load RAG settings, using fallback", err));
+        }
+
+        function closeRagSettingsModal() {
+            document.getElementById("ragSettingsModal").style.display = "none";
+        }
+
+        async function saveRagSettings() {
+            const threshold = document.getElementById("ragThreshold").value;
+            const targetType = document.getElementById("ragTargetType").value;
+            const enableAIChat = document.getElementById("ragEnableAIChat").checked;
+
+            try {
+                const response = await fetch("/admin/rag_settings/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ threshold: parseFloat(threshold), target_type: targetType, enable_ai_chat: enableAIChat })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert("RAG 設定已更新！", true);
+                    closeRagSettingsModal();
+                } else {
+                    showAlert("RAG 設定更新失敗：" + data.message, false);
+                }
+            } catch (error) {
+                showAlert("發生未知錯誤", false);
+            }
+        }
 
         function loadSettings() {
             fetch("/admin/ai_prompt_settings/get")

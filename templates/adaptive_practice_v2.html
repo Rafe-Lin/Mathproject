@@ -710,7 +710,7 @@
       assessmentStopReason: "",
       demoRouteMsg: "系統尚未開始診斷。",
     };
-    const skillId = {{ skill_id|tojson }};
+    const skillId = {{ (skill_id or '')|tojson }};
     const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
     const basePayload = {};
     if (skillId) basePayload.skill_id = skillId;

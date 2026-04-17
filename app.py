@@ -516,6 +516,11 @@ def create_app():
 
     with app.app_context():
         init_db(db.engine)
+        
+        # 確保 PromptTemplate 已經載入，使得 SQLAlchemy 能識別並在 create_all() 中建立這個資料表
+        from core.models.prompt_template import PromptTemplate
+        db.create_all()
+
         try:
             created_count = bootstrap_prompt_templates()
             app.logger.info(f"Prompt template bootstrap done. created={created_count}")

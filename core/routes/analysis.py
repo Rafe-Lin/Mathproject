@@ -278,10 +278,15 @@ def _handwriting_expression_is_usable(expr):
 
 def _handwriting_expected_answer(data, state, question_text, question_context=""):
     """Resolve expected answer with strict priority:
+    0) POST expected_answer
     1) adaptive runtime current question correct_answer
     2) POST correct_answer
+    2.5) session correct_answer
     3) answer parsed from question_context
     """
+    # 0) POST expected_answer
+    ca = str(data.get("expected_answer") or "").strip()
+    if ca: return ca
 
     def _extract_from_question_context(ctx):
         raw = str(ctx or "").strip()
@@ -331,6 +336,12 @@ def _handwriting_expected_answer(data, state, question_text, question_context=""
     ca = str(data.get("correct_answer") or "").strip()
     if ca:
         return ca
+
+    # 2.5) session correct_answer
+    if isinstance(state, dict):
+        ca = str(state.get("correct_answer") or state.get("expected_answer") or "").strip()
+        if ca:
+            return ca
 
     # 3) question_context answer
     return _extract_from_question_context(question_context)
@@ -2582,8 +2593,10 @@ def analyze_handwriting():
             return _handwriting_not_recognized_response()
 
         expected_answer = _handwriting_expected_answer(data, state, question_text, question_context)
-        print("[HW DEBUG] expected_answer:", expected_answer)
-        print("[HW DEBUG] question_text:", question_text)
+        print("[HW DEBUG] payload keys:", list(data.keys()))
+        print("[HW DEBUG] session current_question:", state.get("question_text"))
+        print("[HW DEBUG] session expected_answer:", state.get("correct_answer"))
+        print("[HW DEBUG] final expected_answer:", expected_answer)
         analysis_result = _handwriting_structured_analysis(
             expr, expected_answer, question_text, family_id
         )

@@ -119,6 +119,7 @@ def adaptive_practice_page():
     """自適應練習的主頁面。"""
     mode = request.args.get('mode', 'single')
     skill_ids = request.args.get('skill_ids', '')
+    skill_id = request.args.get('skill_id') or skill_ids
     curriculum = request.args.get('curriculum', '')
     
     unit_name = "自適應練習"
@@ -131,10 +132,11 @@ def adaptive_practice_page():
         curriculum_map = {'general': '普高', 'vocational': '技高', 'junior_high': '國中'}
         unit_name = f"{curriculum_map.get(curriculum, '')} 總複習"
 
-    return render_template('adaptive_practice.html', 
+    return render_template('adaptive_practice_v2.html', 
                            unit_name=unit_name,
                            mode=mode,
                            skill_ids=skill_ids,
+                           skill_id=skill_id,
                            curriculum=curriculum)
 
 
@@ -273,18 +275,30 @@ def get_adaptive_question():
     
     try:
         if mode == 'review':
-            # 總複習模式：獲取整個課程的所有技能
+            # Phase 8: 總複習模式：弱點優先與關聯導航 RAG Skill Routing
             curriculum = request.args.get('curriculum')
             if not curriculum:
                 return jsonify({"error": "總複習模式需要 curriculum 參數"}), 400
             
-            current_app.logger.info(f"[Review Mode] Curriculum: {curriculum}")
-            from models import SkillCurriculum
-            skills = db.session.query(SkillCurriculum.skill_id).filter_by(
-                curriculum=curriculum
-            ).distinct().all()
-            target_skill_ids = [s.skill_id for s in skills]
-            current_app.logger.info(f"[Review Mode] Found {len(target_skill_ids)} skills")
+            if 'review_skill_pool' not in session or not session['review_skill_pool']:
+                current_app.logger.info(f"[Review Mode] Initializing skill pool for Curriculum: {curriculum}")
+                from models import SkillCurriculum
+                skills = db.session.query(SkillCurriculum.skill_id).filter_by(
+                    curriculum=curriculum
+                ).distinct().all()
+                session['review_skill_pool'] = [s.skill_id for s in skills]
+                session.modified = True
+
+            pool = session.get('review_skill_pool', [])
+            stats = session.get('skill_stats', {})
+            history = session.get('review_history', [])
+            last_skill = history[-1]['skill_id'] if history else None
+
+            from core.adaptive_engine import select_review_skill
+            selected_skill = select_review_skill(pool, stats, last_skill)
+            
+            target_skill_ids = [selected_skill] if selected_skill else pool
+            current_app.logger.info(f"[Review Mode] Selected Skill via Weakness Routing: {selected_skill}")
             
         elif mode in ['single', 'multiple']:
             # 單一或多章節模式：根據章節名稱獲取技能
@@ -485,6 +499,10 @@ def next_question():
         
         set_current(skill_id, session_data)
         
+        # [HW DEBUG]
+        current_app.logger.info(f"[HW DEBUG] generated question: {data.get('question_text')}")
+        current_app.logger.info(f"[HW DEBUG] generated expected_answer: {data.get('correct_answer')}")
+
         return jsonify({
             "new_question_text": data["question_text"],
             "context_string": data.get("context_string", ""),
@@ -550,6 +568,25 @@ def check_answer():
         }
         
     is_correct = result.get('correct', False)
+
+    # --- [Phase 8] Update Review History and Stats ---
+    import time
+    history = session.get('review_history', [])
+    history.append({'skill_id': skill_id, 'correct': is_correct, 'timestamp': time.time()})
+    session['review_history'] = history[-50:]
+
+    stats = session.get('skill_stats', {})
+    st = stats.get(skill_id, {'attempts': 0, 'correct': 0, 'wrong': 0, 'fail_streak': 0})
+    st['attempts'] += 1
+    if is_correct:
+        st['correct'] += 1
+        st['fail_streak'] = 0
+    else:
+        st['wrong'] += 1
+        st['fail_streak'] += 1
+    stats[skill_id] = st
+    session['skill_stats'] = stats
+    session.modified = True
 
     # --- [Phase 2 & 5] 自適應學習模式整合 ---
     is_adaptive_mode = request.json.get('mode') == 'adaptive'

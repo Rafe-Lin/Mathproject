@@ -36,6 +36,67 @@ def get_all_prerequisites(initial_skill_ids: list) -> set:
                 
     return all_skills
 
+def select_review_skill(pool: list, stats: dict, last_skill: str) -> str:
+    """
+    [Phase 8] 在 Review 總複習模式中，根據 weakness score 挑選最需要補救的技能。
+    若最弱技能與上一題相同，則進行同章節、先備技能等 RAG routing rule 關聯導航。
+    """
+    if not pool:
+        return None
+        
+    scored_pool = []
+    for skill_id in pool:
+        stat = stats.get(skill_id, {'attempts': 0, 'correct': 0, 'wrong': 0, 'fail_streak': 0})
+        attempts = stat['attempts']
+        acc = stat['correct'] / attempts if attempts > 0 else 1.0
+        # Weakness Score Formula 
+        score = stat['wrong'] * 2 + stat['fail_streak'] * 3 + (1.0 - acc) * 5
+        scored_pool.append((score, skill_id))
+        
+    # 根據 score 降冪排序，越弱排越前面
+    scored_pool.sort(key=lambda x: x[0], reverse=True)
+    
+    # 狀況 1：如果大家都在 0 分 (尚未練習或全對的乾淨狀態) -> 排除上一題後隨機抽
+    if scored_pool[0][0] == 0:
+        candidates = [s for _, s in scored_pool if s != last_skill]
+        if not candidates:
+            return random.choice(pool)
+        return random.choice(candidates)
+        
+    best_candidate = scored_pool[0][1]
+    # 狀況 2：最弱的不是上一題，可以直接派發
+    if best_candidate != last_skill:
+        return best_candidate
+        
+    # 狀況 3：最弱的剛好就是上一題，觸發關聯機制尋找「被波及」或「同家族」的共同弱點
+    from models import db, SkillCurriculum, SkillPrerequisites
+    related_skills = set()
+    
+    # - 規則 1：同章節 (同領域)
+    curr = db.session.query(SkillCurriculum.chapter).filter_by(skill_id=last_skill).first()
+    if curr and curr[0]:
+        same_chapter = db.session.query(SkillCurriculum.skill_id).filter_by(chapter=curr[0]).all()
+        related_skills.update([s.skill_id for s in same_chapter])
+        
+    # - 規則 2：先備技能 (Prerequisite)
+    prereqs = db.session.query(SkillPrerequisites.prerequisite_id).filter_by(skill_id=last_skill).all()
+    related_skills.update([p.prerequisite_id for p in prereqs])
+    
+    # 從有關聯的技能中尋找出「並非上一題」，且身處於可用 pool 中的技能
+    related_candidates = [
+        item for item in scored_pool 
+        if item[1] in related_skills and item[1] != last_skill and item[1] in pool
+    ]
+    
+    if related_candidates:
+        return related_candidates[0][1]
+        
+    # 若查無關聯或無能出的題目，出排名第二的技能
+    if len(scored_pool) > 1:
+        return scored_pool[1][1]
+        
+    return last_skill
+
 def recommend_question(user_id, skill_ids: list):
     """
     [V2] 根據學生當前能力和指定的技能範圍，推薦最合適的下一道題目。
