@@ -1,0 +1,152 @@
+# ==========================================
+# 專案特定 (Project Specific) - 最重要放在前面
+# ==========================================
+# 忽略上傳的檔案 (Word/PDF)
+uploads/
+*.docx
+*.pdf
+
+# 忽略轉檔產生的暫存圖片資料夾
+media/
+
+# 忽略靜態資料夾中生成的圖表和圖片
+static/diagram_*.svg
+static/generated_plots/
+
+
+# 忽略環境變數設定檔 (包含 API Key 等敏感資訊)
+.env
+.flaskenv
+
+# ==========================================
+# 資料庫 (Database) - 不要上傳 DB 檔
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+instance/
+migrations/
+
+# ==========================================
+# Python 編譯與暫存檔 (Python Standard)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff (保留以防萬一)
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# OS Generated Files
+.DS_Store
+Thumbs.db

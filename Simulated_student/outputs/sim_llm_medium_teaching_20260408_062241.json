@@ -1,0 +1,574 @@
+{
+  "metadata": {
+    "student_label": "llm_medium_teaching",
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "mode": "teaching",
+    "ability": "medium",
+    "correct_probability": 0.55,
+    "answer_strategy": "llm",
+    "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+    "total_steps": 10,
+    "created_at": "2026-04-07T22:26:35.216195"
+  },
+  "steps": [
+    {
+      "step_number": 0,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": null,
+      "target_family_id": "F1",
+      "target_subskills": [
+        "normalize_terms",
+        "combine_like_terms"
+      ],
+      "current_apr": 0.45,
+      "frustration_index": 0,
+      "ppo_strategy": 1,
+      "current_mode": "mainline",
+      "display_mode": "mainline",
+      "display_family": "F1",
+      "display_skill": "polynomial_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "forced_start_f1",
+      "mastery_snapshot": {
+        "apr": 0.45,
+        "frustration_index": 0,
+        "ppo_strategy": 1,
+        "remediation_mastery": 0.0,
+        "local_apr": 0.45,
+        "in_remediation": false
+      },
+      "routing_summary": {
+        "total_routing_decisions": 1,
+        "ppo_routing_decisions": 1,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 0,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "請化簡：2x + 1 + 4x - 9",
+        "correct_answer": "6x - 8",
+        "family_name": "poly_add_sub_flat",
+        "source": "micro_generator"
+      },
+      "timestamp": "2026-04-07T22:25:18.048374"
+    },
+    {
+      "step_number": 1,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "F1",
+      "target_subskills": [
+        "normalize_terms",
+        "combine_like_terms"
+      ],
+      "current_apr": 0.31,
+      "frustration_index": 1,
+      "ppo_strategy": 1,
+      "current_mode": "mainline",
+      "display_mode": "mainline",
+      "display_family": "F1",
+      "display_skill": "polynomial_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.31,
+        "frustration_index": 1,
+        "ppo_strategy": 1,
+        "remediation_mastery": 0.0,
+        "local_apr": 0.31,
+        "in_remediation": false
+      },
+      "routing_summary": {
+        "total_routing_decisions": 2,
+        "ppo_routing_decisions": 2,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 0,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "請化簡：-1x - 2 + 6x + 1",
+        "correct_answer": "5x - 1",
+        "family_name": "poly_add_sub_flat",
+        "source": "micro_generator"
+      },
+      "timestamp": "2026-04-07T22:25:39.526557",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "6x - 8",
+        "thinking": "首先，我會將所有含x的項和常數項分開。然後，因為是加減運算，所以可以直接相加或相減。我可能會忘記負號的存在或者搞混正負號。在這裡，2x 和 4x 都是含x的項，所以我會把他們相加得到6x。1和-9是常數項，我會直接相加得到-8。總體來說，我的答案應該是6x - 8，但我可能會犯一些基本運算的錯誤。",
+        "confidence": 0.5,
+        "raw_response": "{\"thinking\": \"首先，我會將所有含x的項和常數項分開。然後，因為是加減運算，所以可以直接相加或相減。我可能會忘記負號的存在或者搞混正負號。在這裡，2x 和 4x 都是含x的項，所以我會把他們相加得到6x。1和-9是常數項，我會直接相加得到-8。總體來說，我的答案應該是6x - 8，但我可能會犯一些基本運算的錯誤。\", \"student_answer\": \"6x - 8\", \"is_correct\": false, \"confidence\": 0.5}",
+        "latency_ms": 21467
+      }
+    },
+    {
+      "step_number": 2,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": true,
+      "target_family_id": "F2",
+      "target_subskills": [
+        "sign_distribution",
+        "combine_like_terms",
+        "family_isomorphism"
+      ],
+      "current_apr": 0.41,
+      "frustration_index": 0,
+      "ppo_strategy": 1,
+      "current_mode": "mainline",
+      "display_mode": "mainline",
+      "display_family": "F2",
+      "display_skill": "polynomial_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.41,
+        "frustration_index": 0,
+        "ppo_strategy": 1,
+        "remediation_mastery": 0.0,
+        "local_apr": 0.41,
+        "in_remediation": false
+      },
+      "routing_summary": {
+        "total_routing_decisions": 3,
+        "ppo_routing_decisions": 3,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 0,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "請化簡：-(7x - 1) + 5x",
+        "correct_answer": "-2x + 1",
+        "family_name": "poly_add_sub_nested",
+        "source": "micro_generator"
+      },
+      "timestamp": "2026-04-07T22:25:44.942167",
+      "llm_detail": {
+        "is_correct": true,
+        "student_answer": "-5x + 3",
+        "thinking": "首先我會把所有的x項和常數項分開。-1x 和 6x 組合成 -5x，而 -2 和 +1 組合成 +3。因此我的答案是 -5x + 3。這顯然是錯的，因為正確的答案是 5x - 1。我可能在計算 x 的項時犯了錯誤，將-1和6誤認為要相加而不是相減。",
+        "confidence": 0.2,
+        "raw_response": "{\"thinking\": \"首先我會把所有的x項和常數項分開。-1x 和 6x 組合成 -5x，而 -2 和 +1 組合成 +3。因此我的答案是 -5x + 3。這顯然是錯的，因為正確的答案是 5x - 1。我可能在計算 x 的項時犯了錯誤，將-1和6誤認為要相加而不是相減。\", \"student_answer\": \"-5x + 3\", \"is_correct\": \"false\", \"confidence\": 0.2}",
+        "latency_ms": 5401
+      }
+    },
+    {
+      "step_number": 3,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "F2",
+      "target_subskills": [
+        "sign_distribution",
+        "combine_like_terms",
+        "family_isomorphism"
+      ],
+      "current_apr": 0.26,
+      "frustration_index": 1,
+      "ppo_strategy": 1,
+      "current_mode": "mainline",
+      "display_mode": "mainline",
+      "display_family": "F2",
+      "display_skill": "polynomial_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.26,
+        "frustration_index": 1,
+        "ppo_strategy": 1,
+        "remediation_mastery": 0.0,
+        "local_apr": 0.26,
+        "in_remediation": false
+      },
+      "routing_summary": {
+        "total_routing_decisions": 4,
+        "ppo_routing_decisions": 4,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 0,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "請化簡：-(6x - 3) + 6x - 7",
+        "correct_answer": "-4",
+        "family_name": "poly_add_sub_nested",
+        "source": "micro_generator"
+      },
+      "timestamp": "2026-04-07T22:25:51.226801",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "-2x + 1",
+        "thinking": "首先看到式子 -(7x - 1) + 5x, 我會開始化簡。我可能會犯錯的地方是負號的處理和連乘運算的順序。首先我會將括號內的項進行分配，也就是將-(7x-1)寫作 -7x+1。然後把得到的式子與 5x 合併，我認為這一步可能會搞混，尤其是負號的處理。在這個過程中，我可能不會注意到需要重新分配負號來正確地合併 x 的項。因此，最終答案可能是 -2x + 1 或者是其他錯誤的答案。",
+        "confidence": 0.4,
+        "raw_response": "{\"thinking\": \"首先看到式子 -(7x - 1) + 5x, 我會開始化簡。我可能會犯錯的地方是負號的處理和連乘運算的順序。首先我會將括號內的項進行分配，也就是將-(7x-1)寫作 -7x+1。然後把得到的式子與 5x 合併，我認為這一步可能會搞混，尤其是負號的處理。在這個過程中，我可能不會注意到需要重新分配負號來正確地合併 x 的項。因此，最終答案可能是 -2x + 1 或者是其他錯誤的答案。\", \"student_answer\": \"-2x + 1\", \"is_correct\": false, \"confidence\": 0.4}",
+        "latency_ms": 6274
+      }
+    },
+    {
+      "step_number": 4,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.09,
+      "frustration_index": 2,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": true,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.09,
+        "frustration_index": 2,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.0,
+        "local_apr": 0.09,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 1,
+        "ppo_routing_decisions": 1,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：-2y - (2y)",
+        "correct_answer": "-4y",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:02.565000",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "-4",
+        "thinking": "首先我會將括號中的負號和6x - 3相乘，得到-6x + 3。然後加上6x - 7。這時我可能會犯錯在加法運算上，例如忘記分配負號或是搞混加減運算順序。接下來我會嘗試化簡這個式子，但可能有誤。",
+        "confidence": 0.2,
+        "raw_response": "{\"thinking\": \"首先我會將括號中的負號和6x - 3相乘，得到-6x + 3。然後加上6x - 7。這時我可能會犯錯在加法運算上，例如忘記分配負號或是搞混加減運算順序。接下來我會嘗試化簡這個式子，但可能有誤。\", \"student_answer\": \"-4\", \"is_correct\": false, \"confidence\": 0.2}",
+        "latency_ms": 5082
+      }
+    },
+    {
+      "step_number": 5,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.05,
+      "frustration_index": 3,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.05,
+        "frustration_index": 3,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.015,
+        "local_apr": 0.05,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 2,
+        "ppo_routing_decisions": 2,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：-2/3y + 4y",
+        "correct_answer": "10/3y",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:11.324723",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "-4y",
+        "thinking": "首先看到題目中的 -2y 和 (2y)，我會將它們視為同類項。由於兩者都是y的係數是 -2 和 2，在加起來時，-2 + 2 等於 0，所以最終答案應該是 -4y。但在計算過程中，我可能會犯一些小錯，例如忽略掉 -2 和 2 的相減過程或者不恰當地使用負號，因此我的答案可能與正確答案不同。",
+        "confidence": 0.5,
+        "raw_response": "{\"thinking\": \"首先看到題目中的 -2y 和 (2y)，我會將它們視為同類項。由於兩者都是y的係數是 -2 和 2，在加起來時，-2 + 2 等於 0，所以最終答案應該是 -4y。但在計算過程中，我可能會犯一些小錯，例如忽略掉 -2 和 2 的相減過程或者不恰當地使用負號，因此我的答案可能與正確答案不同。\",\n \"student_answer\": \"-4y\",\n \"is_correct\": false,\n \"confidence\": 0.5}",
+        "latency_ms": 8728
+      }
+    },
+    {
+      "step_number": 6,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.05,
+      "frustration_index": 4,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.05,
+        "frustration_index": 4,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.015,
+        "local_apr": 0.05,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 3,
+        "ppo_routing_decisions": 3,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：12x + 3/4x",
+        "correct_answer": "51/4x",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:17.007351",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "-2/3y + 4y",
+        "thinking": "首先看到這個問題，我認為需要將y的項合併起來。對於-2/3y + 4y，我會想到把分母相同的部分合併。這裡兩個項的分數不同，所以我可能會先處理4y這一部分，然後試著把它轉換成與-2/3y相加的形式。在嘗試將4y轉換為等於-2/3y時，我可能會犯錯。最後，我會把計算結果寫出來。",
+        "confidence": 0.1,
+        "raw_response": "{\"thinking\": \"首先看到這個問題，我認為需要將y的項合併起來。對於-2/3y + 4y，我會想到把分母相同的部分合併。這裡兩個項的分數不同，所以我可能會先處理4y這一部分，然後試著把它轉換成與-2/3y相加的形式。在嘗試將4y轉換為等於-2/3y時，我可能會犯錯。最後，我會把計算結果寫出來。\", \"student_answer\": \"-2/3y + 4y\", \"is_correct\": false, \"confidence\": 0.1}",
+        "latency_ms": 5664
+      }
+    },
+    {
+      "step_number": 7,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.05,
+      "frustration_index": 5,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.05,
+        "frustration_index": 5,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.015,
+        "local_apr": 0.05,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 4,
+        "ppo_routing_decisions": 4,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：9/2x + 15x",
+        "correct_answer": "39/2x",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:22.746877",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "51/4x",
+        "thinking": "首先，我看到題目是要合併同類項：12x + 3/4x。我應該將 x 系數相加。12可以寫成12/1, 那麼12/1 + 3/4 = (12*4+3)/4 = 51/4. 所以答案是 51/4x，但是我在計算的時候可能會犯錯，例如誤以為3/4直接加到12上。",
+        "confidence": 0.6,
+        "raw_response": "{\"thinking\": \"首先，我看到題目是要合併同類項：12x + 3/4x。我應該將 x 系數相加。12可以寫成12/1, 那麼12/1 + 3/4 = (12*4+3)/4 = 51/4. 所以答案是 51/4x，但是我在計算的時候可能會犯錯，例如誤以為3/4直接加到12上。\", \"student_answer\": \"51/4x\", \"is_correct\": false, \"confidence\": 0.6}",
+        "latency_ms": 5722
+      }
+    },
+    {
+      "step_number": 8,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.05,
+      "frustration_index": 6,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.05,
+        "frustration_index": 6,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.015,
+        "local_apr": 0.05,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 5,
+        "ppo_routing_decisions": 5,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：13x - (-8/5x)",
+        "correct_answer": "73/5x",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:28.574410",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "39/2x",
+        "thinking": "首先，我注意到題目中有兩個項：9/2x 和 15x。為了合併這些項，我需要把他們轉換為同一形式。這裡，15x 可以寫作 (30/2)x。現在，我們有兩種形式的 x，這意味著我應該加起來。所以，9/2x + 30/2x 等於 (9+30)/2x = 39/2x。最後一步，我得到了答案，但我會再次檢查是否正確。",
+        "confidence": 0.8,
+        "raw_response": "{\"thinking\": \"首先，我注意到題目中有兩個項：9/2x 和 15x。為了合併這些項，我需要把他們轉換為同一形式。這裡，15x 可以寫作 (30/2)x。現在，我們有兩種形式的 x，這意味著我應該加起來。所以，9/2x + 30/2x 等於 (9+30)/2x = 39/2x。最後一步，我得到了答案，但我會再次檢查是否正確。\", \"student_answer\": \"39/2x\", \"is_correct\": false, \"confidence\": 0.8}",
+        "latency_ms": 5810
+      }
+    },
+    {
+      "step_number": 9,
+      "session_id": "fc1486fd-2940-42c8-8dd7-718d9c2721d8",
+      "is_correct": false,
+      "target_family_id": "L2",
+      "target_subskills": [
+        "like_term_combination"
+      ],
+      "current_apr": 0.05,
+      "frustration_index": 7,
+      "ppo_strategy": 3,
+      "current_mode": "remediation",
+      "display_mode": "remediation",
+      "display_family": "L2",
+      "display_skill": "linear_expression_arithmetic",
+      "remediation_triggered": false,
+      "return_to_mainline": false,
+      "completed": false,
+      "unit_completed": false,
+      "scenario_stage": "open_demo_pool",
+      "mastery_snapshot": {
+        "apr": 0.05,
+        "frustration_index": 7,
+        "ppo_strategy": 3,
+        "remediation_mastery": 0.015,
+        "local_apr": 0.05,
+        "in_remediation": true
+      },
+      "routing_summary": {
+        "total_routing_decisions": 6,
+        "ppo_routing_decisions": 6,
+        "fallback_routing_decisions": 0,
+        "remediation_entries": 1,
+        "successful_returns": 0,
+        "bridge_completions": 0,
+        "ppo_usage_rate": 1.0,
+        "return_success_rate": 0.0
+      },
+      "question_data": {
+        "question_text": "合併同類項：9/2a - (3a)",
+        "correct_answer": "3/2a",
+        "family_name": "linear_combine_like_terms",
+        "source": "script_dispatch"
+      },
+      "timestamp": "2026-04-07T22:26:35.215137",
+      "llm_detail": {
+        "is_correct": false,
+        "student_answer": "73/5x",
+        "thinking": "首先看到這個問題，我會開始計算 -(-8/5x)。這部分應該是加上8/5x，因為兩個負號相乘等於1。接下來，我將 13x 和 8/5x 合併在一起。為了合併，我需要找到一個共同的分母，即5。因此，13x 可以寫作 (65/5)x。然後加上 8/5x 得到 (65+8)/5x 或者說73/5x。在這個過程中，我可能犯了一個簡單的錯誤，把數字計算搞錯了。所以我的答案是：73/5x。\n\n",
+        "confidence": 0.6,
+        "raw_response": "{\"thinking\": \"首先看到這個問題，我會開始計算 -(-8/5x)。這部分應該是加上8/5x，因為兩個負號相乘等於1。接下來，我將 13x 和 8/5x 合併在一起。為了合併，我需要找到一個共同的分母，即5。因此，13x 可以寫作 (65/5)x。然後加上 8/5x 得到 (65+8)/5x 或者說73/5x。在這個過程中，我可能犯了一個簡單的錯誤，把數字計算搞錯了。所以我的答案是：73/5x。\\n\\n\", \"student_answer\": \"73/5x\", \"is_correct\": false, \"confidence\": 0.6}",
+        "latency_ms": 6623
+      }
+    }
+  ],
+  "summary": {
+    "total_steps": 10,
+    "answered_steps": 9,
+    "correct_count": 1,
+    "accuracy": 0.1111,
+    "final_apr": 0.05,
+    "min_apr": 0.05,
+    "max_apr": 0.45,
+    "families_visited": [
+      "F1",
+      "F2",
+      "L2"
+    ],
+    "unique_families_count": 3,
+    "remediation_trigger_steps": [
+      4
+    ],
+    "return_to_mainline_steps": [],
+    "completed": false,
+    "unit_completed": false
+  }
+}

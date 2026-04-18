@@ -1,0 +1,550 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/admin_prerequisites.html
+功能說明 (Description): 後台前置技能管理
+後端呼叫 (Backend Call): core/routes/admin.py -> admin_prerequisites
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>前置技能關聯管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* --- Master Styles (V2.0 Standard) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar 樣式改由 _admin_navbar.html 提供，避免頁面覆寫 */
+
+        /* Container & Header */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-remove {
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-remove:hover {
+            color: #c0392b;
+            background: #fadbd8;
+            border-radius: 4px;
+        }
+
+        /* Layout */
+        .manager-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .left-panel {
+            flex: 4;
+        }
+
+        .right-panel {
+            flex: 3;
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Cards (Styled to match admin_curriculum container/table look) */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header small {
+            color: #ecf0f1;
+            opacity: 0.8;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Filter Section */
+        .filter-bar {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        /* List Styles */
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .skill-item:hover {
+            background: #f8f9fa;
+        }
+
+        .skill-item.active {
+            background: #e8f4fc;
+            border-left: 4px solid #3498db;
+        }
+
+        .skill-info h4 {
+            font-size: 1em;
+            margin-bottom: 4px;
+            color: #2c3e50;
+        }
+
+        .skill-meta {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge-count {
+            background: #95a5a6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+        }
+
+        .badge-count.has-data {
+            background: #27ae60;
+        }
+
+        /* Editor Styles */
+        .editor-placeholder {
+            text-align: center;
+            color: #bdc3c7;
+            padding: 40px 0;
+        }
+
+        .editor-content {
+            display: none;
+        }
+
+        .current-skill-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .prereq-list {
+            list-style: none;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .prereq-item {
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prereq-item:hover {
+            border-color: #bdc3c7;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Select2 Customization */
+        .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ddd;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px;
+        }
+
+        /* Filter override for pixel perfection */
+        .filter-select {
+            padding: 6px 10px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .filter-sidebar-label {
+            font-size: 0.85rem !important;
+            margin-bottom: 6px !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div style="color: #555; font-weight: 500;">處理中...</div>
+    </div>
+
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-diagram-3" style="color: #e67e22;"></i> 前置技能關聯管理</h1>
+        </div>
+
+        {% include '_filter_sidebar.html' %}
+
+        <div class="manager-layout">
+
+            <div class="left-panel card">
+                <div class="card-header">
+                    <span>目標技能列表 ({{ skills|length }})</span>
+                    <small style="color:#7f8c8d;">點擊以編輯關聯</small>
+                </div>
+                <div style="max-height: 700px; overflow-y: auto;">
+                    {% if skills %}
+                    {% for skill in skills %}
+                    <div class="skill-item"
+                        onclick="loadPrerequisites('{{ skill.skill_id }}', '{{ skill.skill_ch_name }}', this)">
+                        <div class="skill-info">
+                            <h4>{{ skill.skill_ch_name }}</h4>
+                            <div class="skill-meta">
+                                <span>{{ skill.skill_id }}</span>
+                                <span>• {{ skill.grade }}年級</span>
+                                <span>• {{ skill.chapter }}</span>
+                            </div>
+                        </div>
+                        <span class="badge-count {{ 'has-data' if skill.prereq_count > 0 else '' }}">
+                            {{ skill.prereq_count }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="padding: 30px; text-align: center; color: #999;">沒有符合條件的技能</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="right-panel card">
+                <div class="card-header">
+                    <span><i class="bi bi-diagram-2"></i> 關聯編輯區</span>
+                </div>
+                <div class="card-body">
+                    <div id="editor-placeholder" class="editor-placeholder">
+                        <i class="bi bi-arrow-left-circle" style="font-size: 3rem;"></i>
+                        <p style="margin-top: 10px;">請從左側選擇一個技能開始編輯</p>
+                    </div>
+
+                    <div id="editor-content" class="editor-content">
+                        <div id="current-skill-title" class="current-skill-title"></div>
+                        <input type="hidden" id="current-skill-id">
+
+                        <div style="background: #e8f4fc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                            <label
+                                style="display:block; margin-bottom:8px; font-weight:600; font-size:0.9em; color:#2980b9;">新增前置技能
+                                (搜尋)：</label>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="search-skill-select" style="width: 100%;"></select>
+                                <button onclick="addPrerequisite()"
+                                    style="background:#2980b9; color:white; border:none; padding:0 15px; border-radius:4px; cursor:pointer; white-space:nowrap;">
+                                    <i class="bi bi-plus-lg"></i> 加入
+                                </button>
+                            </div>
+                        </div>
+
+                        <h5 style="color:#7f8c8d; font-size:0.95em;">目前的前置技能：</h5>
+                        <ul id="prereq-list" class="prereq-list">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        // Loading Control
+        function showLoading() { $('#loading-overlay').css('display', 'flex'); }
+        function hideLoading() { $('#loading-overlay').hide(); }
+
+        // Initialize Select2 for searching ALL skills
+        $(document).ready(function () {
+            $('#search-skill-select').select2({
+                placeholder: '輸入關鍵字搜尋技能...',
+                allowClear: true,
+                ajax: {
+                    url: '/api/skills/search',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { term: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data.results };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1
+            });
+        });
+
+        // Load Prerequisites for a selected skill
+        function loadPrerequisites(skillId, skillName, element) {
+            // UI Update
+            $('.skill-item').removeClass('active');
+            $(element).addClass('active');
+
+            $('#editor-placeholder').hide();
+            $('#editor-content').show();
+            $('#current-skill-title').text(skillName + " (" + skillId + ")");
+            $('#current-skill-id').val(skillId);
+
+            // Clear previous list
+            $('#prereq-list').html('<div style="text-align:center; padding:20px; color:#aaa;"><div class="spinner" style="width:20px;height:20px;margin:0 auto;"></div></div>');
+
+            // API Call
+            fetch(`/api/skills/${skillId}/prerequisites`)
+                .then(res => res.json())
+                .then(data => {
+                    renderPrereqList(data.data);
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('錯誤', '無法載入關聯資料', 'error');
+                });
+        }
+
+        // Render List Logic
+        function renderPrereqList(list) {
+            const container = $('#prereq-list');
+            container.empty();
+
+            if (list.length === 0) {
+                container.html('<li style="text-align:center; padding:20px; color:#aaa;">此技能目前沒有前置設定</li>');
+                return;
+            }
+
+            list.forEach(item => {
+                const li = `
+                    <li class="prereq-item">
+                        <div>
+                            <div style="font-weight:600; color:#34495e;">${item.skill_ch_name}</div>
+                            <div style="font-size:0.8em; color:#95a5a6;">${item.skill_id}</div>
+                        </div>
+                        <i class="bi bi-trash btn-remove" onclick="removePrerequisite('${item.skill_id}')" title="移除關聯"></i>
+                    </li>
+                `;
+                container.append(li);
+            });
+        }
+
+        // Add Prerequisite
+        function addPrerequisite() {
+            const targetId = $('#current-skill-id').val();
+            const prereqId = $('#search-skill-select').val();
+
+            if (!prereqId) {
+                Swal.fire('提示', '請先搜尋並選擇一個前置技能', 'warning');
+                return;
+            }
+
+            showLoading();
+            fetch(`/api/skills/${targetId}/prerequisites`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prereq_id: prereqId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.success) {
+                        // Reload list
+                        // Trigger click on active item to refresh
+                        $('.skill-item.active').click();
+                        $('#search-skill-select').val(null).trigger('change');
+
+                        // Update badge count visually (optional optimization)
+                        const badge = $('.skill-item.active .badge-count');
+                        badge.text(parseInt(badge.text()) + 1).addClass('has-data');
+
+                        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                        Toast.fire({ icon: 'success', title: '已新增關聯' });
+                    } else {
+                        Swal.fire('新增失敗', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    hideLoading();
+                    Swal.fire('錯誤', '系統錯誤', 'error');
+                });
+        }
+
+        // Remove Prerequisite
+        function removePrerequisite(prereqId) {
+            const targetId = $('#current-skill-id').val();
+
+            Swal.fire({
+                title: '確定移除?',
+                text: "移除後將解除兩個技能間的關聯",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#95a5a6',
+                confirmButtonText: '移除'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    showLoading();
+                    fetch(`/api/skills/${targetId}/prerequisites/${prereqId}`, {
+                        method: 'DELETE'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            hideLoading();
+                            if (data.success) {
+                                $('.skill-item.active').click(); // Refresh list
+
+                                // Update badge
+                                const badge = $('.skill-item.active .badge-count');
+                                let count = parseInt(badge.text()) - 1;
+                                badge.text(count);
+                                if (count === 0) badge.removeClass('has-data');
+
+                                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                                Toast.fire({ icon: 'success', title: '已移除' });
+                            } else {
+                                Swal.fire('錯誤', data.message, 'error');
+                            }
+                        });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

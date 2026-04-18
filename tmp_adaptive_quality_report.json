@@ -1,0 +1,358 @@
+{
+  "summary": {
+    "skills_scanned": 4,
+    "families_scanned": 54,
+    "samples_checked": 432,
+    "issues_found": 0
+  },
+  "skills": {
+    "jh_數學1上_FourArithmeticOperationsOfIntegers": {
+      "families": {
+        "I1": {
+          "family_name": "int_numberline_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I2": {
+          "family_name": "int_flat_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I3": {
+          "family_name": "int_flat_mul_div_exact",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I4": {
+          "family_name": "int_flat_mixed_four_ops",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I5": {
+          "family_name": "int_bracket_mixed",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I6": {
+          "family_name": "int_abs_value",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I7": {
+          "family_name": "int_division_exact_nested",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I8": {
+          "family_name": "int_composite_structure",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 64
+    },
+    "jh_數學1上_FourArithmeticOperationsOfNumbers": {
+      "families": {
+        "F1": {
+          "family_name": "Fraction Simplification",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F2": {
+          "family_name": "Equivalent Fraction Fill-Blank",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F3": {
+          "family_name": "Preserve-Value Fraction Invariance",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F4": {
+          "family_name": "Fraction Comparison",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F5": {
+          "family_name": "Fraction Add/Subtract",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F6": {
+          "family_name": "Fraction Multiply",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F7": {
+          "family_name": "Fraction Divide",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F8": {
+          "family_name": "Reciprocal",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F9": {
+          "family_name": "Decimal-Fraction Mixed Evaluation",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F10": {
+          "family_name": "Fraction Word Problems",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 80
+    },
+    "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+      "families": {
+        "F1": {
+          "family_name": "poly_add_sub_flat",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F2": {
+          "family_name": "poly_add_sub_nested",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F3": {
+          "family_name": "poly_add_sub_unknown",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F4": {
+          "family_name": "poly_mul_monomial",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F5": {
+          "family_name": "poly_mul_poly",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F6": {
+          "family_name": "poly_mul_special_identity",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F7": {
+          "family_name": "poly_div_monomial_eval",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F8": {
+          "family_name": "poly_div_monomial_qr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F9": {
+          "family_name": "poly_div_poly_qr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F10": {
+          "family_name": "poly_div_reverse",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F11": {
+          "family_name": "poly_mixed_simplify",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F12": {
+          "family_name": "poly_geom_formula_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F13": {
+          "family_name": "poly_geom_region_composite",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 104
+    },
+    "jh_數學2上_FourOperationsOfRadicals": {
+      "families": {
+        "p0": {
+          "family_name": "p0_simplify",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1": {
+          "family_name": "p1_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1b": {
+          "family_name": "p1b_add_sub_bracket",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1c": {
+          "family_name": "p1c_mixed_frac_rad_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2a": {
+          "family_name": "p2a_mult_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2b": {
+          "family_name": "p2b_mult_distrib",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2c": {
+          "family_name": "p2c_mult_binomial",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2d": {
+          "family_name": "p2d_perfect_square",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2e": {
+          "family_name": "p2e_diff_of_squares",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2f": {
+          "family_name": "p2f_int_mult_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2g": {
+          "family_name": "p2g_rad_mult_frac",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2h": {
+          "family_name": "p2h_frac_mult_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3a": {
+          "family_name": "p3a_div_expr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3b": {
+          "family_name": "p3b_div_simple",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3c": {
+          "family_name": "p3c_div_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4": {
+          "family_name": "p4_frac_mult",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4b": {
+          "family_name": "p4b_frac_rad_div",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4c": {
+          "family_name": "p4c_nested_frac_chain",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4d": {
+          "family_name": "p4d_frac_rad_div_mixed",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p5a": {
+          "family_name": "p5a_conjugate_int",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p5b": {
+          "family_name": "p5b_conjugate_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p6": {
+          "family_name": "p6_combo",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p7": {
+          "family_name": "p7_mixed_rad_add",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 184
+    }
+  }
+}

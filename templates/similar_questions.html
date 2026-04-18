@@ -1,0 +1,215 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/similar_questions.html
+功能說明 (Description): 相似題生成練習
+後端呼叫 (Backend Call): core/routes/practice.py -> similar_questions_page
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尋找相似題</title>
+    <script>
+    
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+        }
+        /* 頂部導覽樣式由 _student_navbar.html（.sn-root）提供，勿重複 .navbar a 以免覆寫膠囊按鈕 */
+        .container {
+            padding: 30px;
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.07);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            font-size: 1em;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover:not(:disabled) { background: #2980b9; }
+        button:disabled { background: #95a5a6; cursor: not-allowed; }
+        #results-container {
+            margin-top: 30px;
+        }
+        .question-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-card h3 {
+            color: #34495e;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .question-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .answer-section {
+            background: #e9f7ef;
+            border: 1px solid #a8e6c1;
+            padding: 10px;
+            border-radius: 6px;
+            color: #27ae60;
+        }
+        .answer-section strong {
+            color: #2c3e50;
+        }
+        #loading-indicator {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #7f8c8d;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    {% include '_student_navbar.html' %}
+
+    <div class="container">
+        <h1>輸入您想練習的題目</h1>
+        <textarea id="problem-input" placeholder="請在此貼上數學題目..."></textarea>
+        <button id="generate-button">產生相似題</button>
+
+        <div id="loading-indicator">
+            AI 正在分析並產生題目中，請稍候...
+        </div>
+
+        <div id="results-container"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generate-button');
+            const problemInput = document.getElementById('problem-input');
+            const resultsContainer = document.getElementById('results-container');
+            const loadingIndicator = document.getElementById('loading-indicator');
+
+            generateBtn.addEventListener('click', () => {
+                const problemText = problemInput.value.trim();
+                if (!problemText) {
+                    alert('請輸入題目內容！');
+                    return;
+                }
+
+                // UI updates
+                generateBtn.disabled = true;
+                generateBtn.textContent = '產生中...';
+                resultsContainer.innerHTML = '';
+                loadingIndicator.style.display = 'block';
+
+                fetch('/generate-similar-questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problem_text: problemText })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.questions && data.questions.length > 0) {
+                        displayQuestions(data.questions);
+                    } else {
+                        resultsContainer.innerHTML = '<p style="text-align:center; color: #7f8c8d;">找不到相關的技能或無法產生題目。</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error generating questions:', error);
+                    resultsContainer.innerHTML = '<p style="text-align:center; color: #c0392b;">產生題目時發生錯誤，請稍後再試。</p>';
+                })
+                .finally(() => {
+                    // Restore UI
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = '產生相似題';
+                    loadingIndicator.style.display = 'none';
+                });
+            });
+
+            function displayQuestions(questions) {
+                questions.forEach(q => {
+                    const card = document.createElement('div');
+                    card.className = 'question-card';
+
+                    const skillName = document.createElement('h3');
+                    skillName.textContent = `相關技能：${q.skill_ch_name || q.skill_id}`;
+                    
+                    const questionText = document.createElement('div');
+                    questionText.className = 'question-text';
+                    questionText.textContent = q.question_text;
+
+                    const answerSection = document.createElement('div');
+                    answerSection.className = 'answer-section';
+                    answerSection.innerHTML = `<strong>答案：</strong> ${q.correct_answer || q.answer}`;
+
+                    card.appendChild(skillName);
+                    card.appendChild(questionText);
+                    card.appendChild(answerSection);
+                    resultsContainer.appendChild(card);
+                });
+
+                // Ask MathJax to typeset the new content
+                if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                    MathJax.typesetPromise([resultsContainer]);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

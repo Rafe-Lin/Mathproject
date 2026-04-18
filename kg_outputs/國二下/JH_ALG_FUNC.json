@@ -1,0 +1,318 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "第2章_函數與圖形",
+    "l2_unit_id": "JH_ALG_FUNC"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_FUNC",
+      "level": "L2",
+      "name": "第2章_函數與圖形",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01",
+      "level": "L3",
+      "name": "認識函數",
+      "parent_id": "JH_ALG_FUNC",
+      "description": "理解函數的定義，即對於給定的每一個輸入x，都恰有一個輸出y與之對應。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01_a",
+      "level": "L4",
+      "name": "正比與反比的複習",
+      "parent_id": "JH_ALG_FUNC_L3_01",
+      "description": "回顧並理解正比 (y=kx) 和反比 (xy=k) 的概念，作為函數概念的基礎。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01_b",
+      "level": "L4",
+      "name": "函數的定義",
+      "parent_id": "JH_ALG_FUNC_L3_01",
+      "description": "學習函數的核心定義：對於給定的每一個x，都恰有一個y與它對應。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01_c",
+      "level": "L4",
+      "name": "判斷是否為函數",
+      "parent_id": "JH_ALG_FUNC_L3_01",
+      "description": "透過具體例子（如購買瓶數與總價、月分與天數、電信費用）判斷兩個變數之間的關係是否符合函數定義。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01_d",
+      "level": "L4",
+      "name": "函數的表示法",
+      "parent_id": "JH_ALG_FUNC_L3_01",
+      "description": "理解函數可以用表格、文字敘述等方式表示。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_01_e",
+      "level": "L4",
+      "name": "函數與非函數的區別",
+      "parent_id": "JH_ALG_FUNC_L3_01",
+      "description": "辨別「一對一」、「多對一」關係為函數，而「一對多」、「一對無」關係不是函數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02",
+      "level": "L3",
+      "name": "函數值",
+      "parent_id": "JH_ALG_FUNC",
+      "description": "理解函數值是當x確定時，y所對應的唯一值，並學習如何計算函數值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02_a",
+      "level": "L4",
+      "name": "函數值的計算",
+      "parent_id": "JH_ALG_FUNC_L3_02",
+      "description": "學習如何將特定的x值代入函數關係式中，計算出對應的y值（函數值）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02_b",
+      "level": "L4",
+      "name": "函數值相等的應用",
+      "parent_id": "JH_ALG_FUNC_L3_02",
+      "description": "解決兩個函數在特定x值時函數值相等的問題，通常涉及解方程式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02_c",
+      "level": "L4",
+      "name": "利用函數值求一次函數",
+      "parent_id": "JH_ALG_FUNC_L3_02",
+      "description": "根據給定的兩個x值及其對應的函數值，建立二元一次聯立方程式，求出一次函數的關係式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02_d",
+      "level": "L4",
+      "name": "函數值的實際應用",
+      "parent_id": "JH_ALG_FUNC_L3_02",
+      "description": "將函數值概念應用於實際情境，如氣溫隨高度變化、標準體重計算等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_02_e",
+      "level": "L4",
+      "name": "常數函數的函數值",
+      "parent_id": "JH_ALG_FUNC_L3_02",
+      "description": "理解常數函數的函數值不隨x的變化而變化，始終為一個定值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03",
+      "level": "L3",
+      "name": "函數圖形",
+      "parent_id": "JH_ALG_FUNC",
+      "description": "學習如何將函數關係表示在直角坐標平面上，形成函數圖形，並理解線型函數的特性。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_a",
+      "level": "L4",
+      "name": "函數圖形的繪製",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "學習將函數的對應關係轉換為坐標點(x,y)，並在坐標平面上描點連線，繪製函數圖形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_b",
+      "level": "L4",
+      "name": "一次函數的圖形",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "理解一次函數 y=ax+b (a≠0) 的圖形是一條直線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_c",
+      "level": "L4",
+      "name": "常數函數的圖形",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "理解常數函數 y=b 的圖形是一條平行於x軸的水平直線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_d",
+      "level": "L4",
+      "name": "線型函數的定義與特性",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "學習線型函數的定義，即圖形為直線的函數，包含一次函數和常數函數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_e",
+      "level": "L4",
+      "name": "由圖形求一次函數",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "根據圖形上給定的兩點坐標，求出一次函數 y=ax+b 的關係式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_f",
+      "level": "L4",
+      "name": "由圖形求常數函數",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "根據圖形是平行x軸的直線且通過某點，求出常數函數 y=b 的關係式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_FUNC_L3_03_g",
+      "level": "L4",
+      "name": "線型函數的應用",
+      "parent_id": "JH_ALG_FUNC_L3_03",
+      "description": "將線型函數應用於實際問題，如高速公路收費、影印機複印時間與張數等。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_FUNC",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC",
+      "to_id": "JH_ALG_FUNC_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC",
+      "to_id": "JH_ALG_FUNC_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC",
+      "to_id": "JH_ALG_FUNC_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_03",
+      "to_id": "JH_ALG_FUNC_L3_03_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_01",
+      "to_id": "JH_ALG_FUNC_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_FUNC_L3_02",
+      "to_id": "JH_ALG_FUNC_L3_03",
+      "type": "sequence"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 23,
+    "total_edges": 24,
+    "l3_count": 3,
+    "l4_count": 17,
+    "l4_avg_per_l3": 5.666666666666667
+  }
+}

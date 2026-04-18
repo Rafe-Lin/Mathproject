@@ -1,0 +1,27 @@
+{
+  "skill_id": "jh_數學1上_OperationsOnLinearExpressions",
+  "display_name": "一元一次式化簡",
+  "family": "linear_expression",
+  "level_range": [
+    1,
+    3
+  ],
+  "injected_apis": [
+    "LinearExpressionOps"
+  ],
+  "required_imports": [
+    "random",
+    "fractions.Fraction"
+  ],
+  "modes": [
+    "BENCHMARK",
+    "LIVESHOW"
+  ],
+  "vision_input": false,
+  "aliases": [
+    "Linear Expressions",
+    "一元一次式",
+    "代數式化簡"
+  ],
+  "schema_version": "1.0"
+}

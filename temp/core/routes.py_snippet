@@ -1,0 +1,13 @@
+
+@core_bp.route('/admin/init_db', methods=['POST'])
+@login_required
+def init_db_route():
+    """執行資料庫初始化"""
+    try:
+        # 使用 current_app 取得 engine
+        init_db(db.engine)
+        flash('資料庫初始化成功！', 'success')
+    except Exception as e:
+        flash(f'初始化失敗: {str(e)}', 'error')
+        print(f"Init DB Error: {e}")
+    return redirect(url_for('core.db_maintenance'))

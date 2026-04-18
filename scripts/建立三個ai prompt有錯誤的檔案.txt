@@ -1,0 +1,38 @@
+📊 根據您的篩選，共找到 130 個技能需要處理。
+
+處理進度:  15%|██████████▉                                                            | 20/130 [03:29<19:39, 10.72s/it]Error generating prompt for jh_數學1下_IntroductionToOneVariableLinearInequalities: Invalid \escape: line 2 column 65 (char 66)
+處理進度:  23%|████████████████▍                                                      | 30/130 [05:10<18:02, 10.83s/it]Error generating prompt for jh_數學1下_PointsLinesAnglesAndNotation: Invalid \escape: line 4 column 30 (char 131)
+處理進度:  27%|███████████████████                                                    | 35/130 [06:06<17:59, 11.36s/it]Error generating prompt for jh_數學2上_ComprehensiveApplications: Invalid \escape: line 2 column 44 (char 45)
+處理進度:  32%|██████████████████████▍                                                | 41/130 [07:21<18:43, 12.62s/it]Error generating prompt for jh_數學2上_MeaningOfSquareRootSymbol: Invalid \escape: line 2 column 20 (char 21)
+處理進度:  32%|██████████████████████▉                                                | 42/130 [07:39<20:51, 14.22s/it]Error generating prompt for jh_數學2上_ValueOfSquareRootA: Invalid \escape: line 2 column 23 (char 24)
+處理進度:  48%|██████████████████████████████████▍                                    | 63/130 [12:33<14:07, 12.65s/it]Error generating prompt for jh_數學2上_RelativeAndCumulativeRelativeFrequencyDistributionAndLineChart: Invalid \escape: line 4 column 25 (char 100)
+處理進度:  59%|██████████████████████████████████████████                             | 77/130 [15:21<11:12, 12.70s/it]Error generating prompt for jh_數學2下_PolygonInteriorAndExteriorAngles: Invalid \escape: line 4 column 44 (char 135)
+處理進度:  88%|█████████████████████████████████████████████████████████████▍        | 114/130 [22:50<03:06, 11.64s/it]Error generating prompt for jh_數學3上_RelationshipBetweenCentralAngleAndArc: Invalid \escape: line 3 column 39 (char 80)
+處理進度:  90%|███████████████████████████████████████████████████████████████       | 117/130 [23:33<02:54, 13.45s/it]Error generating prompt for jh_數學3上_IncenterOfTriangle: Invalid \escape: line 3 column 31 (char 75)
+處理進度:  98%|████████████████████████████████████████████████████████████████████▉ | 128/130 [25:48<00:23, 11.53s/it]Error generating prompt for jh_數學3下_SpatialVerticalParallelAndSkewRelationships: Invalid \escape: line 4 column 45 (char 122)
+處理進度: 100%|██████████████████████████████████████████████████████████████████████| 130/130 [26:13<00:00, 12.10s/it]
+
+✅ 作業完成！
+(venv) (base) PS D:\Python\Mathproject>
+unknown>:133: SyntaxWarning: invalid escape sequence '\ '
+<unknown>:140: SyntaxWarning: invalid escape sequence '\ '
+D:\Python\Mathproject\skills\gh_VectorAdditionAndSubtraction.py:133: SyntaxWarning: invalid escape sequence '\ '
+  correct_answers_display.append(f"$(1)\ u+v = {format_vector(result_add)}$。$|u+v| = {magnitude_add_str}$。")
+D:\Python\Mathproject\skills\gh_VectorAdditionAndSubtraction.py:140: SyntaxWarning: invalid escape sequence '\ '
+  correct_answers_display.append(f"$(2)\ u-v = {format_vector(result_sub)}$。$|u-v| = {magnitude_sub_str}$。")
+Generating:  66%|██████████████████████████████████████████████                        | 23/35 [32:04<18:24, 92.05s/it]<unknown>:337: SyntaxWarning: invalid escape sequence '\p'
+D:\Python\Mathproject\skills\gh_VectorDotProduct.py:337: SyntaxWarning: invalid escape sequence '\p'
+  """
+Generating:  69%|███████████████████████████████████████████████▎                     | 24/35 [34:14<18:54, 103.18s/it][2025-12-05 15:31:43,414] WARNING in code_generator: 語法錯誤: unterminated string literal (detected at line 119) (Line 119)，嘗試修復...
+[2025-12-05 15:31:43,414] ERROR in code_generator: 自動修復失敗: f-string: single '}' is not allowed (Line 15)
+   ❌ 失敗: gh_ArcLengthAndAreaOfASector
+Generating:  94%|██████████████████████████████████████████████████████████████████    | 33/35 [47:17<02:42, 81.15s/it][2025-12-05 15:45:25,046] WARNING in code_generator: 語法錯誤: f-string: single '}' is not allowed (Line 199)，嘗試修復...
+[2025-12-05 15:45:25,062] ERROR in code_generator: 自動修復失敗: f-string: single '}' is not allowed (Line 162)
+   ❌ 失敗: gh_SineAndCosineSumAndDifferenceFormulas
+Generating:  97%|████████████████████████████████████████████████████████████████████  | 34/35 [49:01<01:28, 88.03s/it][2025-12-05 15:46:42,234] WARNING in code_generator: 語法錯誤: f-string: single '}' is not allowed (Line 204)，嘗試修復...
+[2025-12-05 15:46:42,234] ERROR in code_generator: 自動修復失敗: f-string: single '}' is not allowed (Line 79)
+   ❌ 失敗: gh_TangentSumAndDifferenceFormulas
+Generating: 100%|██████████████████████████████████████████████████████████████████████| 35/35 [50:19<00:00, 86.26s/it]
+--------------------------------------------------
+🎉 作業完成！ 成功: 32 / 失敗: 3
+(venv) (base) PS D:\Python\Mathproject>

@@ -1,0 +1,191 @@
+﻿unit_skill_id: jh_數學2上_FourArithmeticOperationsOfPolynomial
+
+mainline_sequence:
+  - F1
+  - F2
+  - F5
+  - F11
+  - F9
+  - F10
+assessment_sequence:
+  - F1
+  - F2
+  - F5
+  - F11
+  - F7
+  - F8
+  - F9
+  - F10
+
+families:
+  F1:
+    family_name: poly_add_sub_flat
+    textbook_section: "1-2 polynomial add/sub"
+    textbook_examples: ["P.6 ex1", "P.7 ex2", "P.8 ex3"]
+    difficulty_level: 1
+    main_subskills: [combine_like_terms, normalize_terms]
+    prerequisite_candidates: [add_sub, sign_handling, mul_div, order_of_operations]
+    prerequisite_candidate_descriptions:
+      add_sub: "base integer add/sub instability"
+      sign_handling: "sign handling instability"
+      mul_div: "base integer mul/div instability"
+      order_of_operations: "order of operations instability"
+    next_on_success: F2
+    fallback_on_repeat_failure: F1
+
+  F2:
+    family_name: poly_add_sub_nested
+    textbook_section: "1-2 polynomial add/sub"
+    textbook_examples: ["P.9 ex4", "P.9 ex5"]
+    difficulty_level: 2
+    main_subskills: [sign_distribution, combine_like_terms]
+    prerequisite_candidates:
+      - outer_minus_scope
+      - monomial_distribution
+      - like_term_combination
+      - nested_bracket_scope
+      - order_of_operations
+      - structure_isomorphism
+      - combine_after_distribution
+    prerequisite_candidate_descriptions:
+      outer_minus_scope: "outer minus scope instability"
+      monomial_distribution: "distribution instability"
+      like_term_combination: "combine like terms after distribution instability"
+      nested_bracket_scope: "nested bracket scope instability"
+      order_of_operations: "operation order instability in nested expressions"
+      structure_isomorphism: "structure transfer instability"
+      combine_after_distribution: "post-distribution combine instability"
+    next_on_success: F5
+    fallback_on_repeat_failure: F1
+
+  F5:
+    family_name: poly_mul_poly
+    textbook_section: "1-3 polynomial mul/div"
+    textbook_examples: ["P.36 ex1", "P.37 ex2", "P.38 ex3", "P.39 ex4"]
+    difficulty_level: 3
+    main_subskills: [expand_binomial, sign_distribution, combine_like_terms]
+    prerequisite_candidates:
+      - power_notation_basics
+      - signed_power_interpretation
+      - power_precedence_in_mixed_ops
+      - same_base_multiplication_rule
+      - power_of_power_rule
+      - product_power_distribution
+      - mul_div
+      - expand_structure
+      - sign_handling
+      - add_sub
+      - order_of_operations
+      - combine_after_distribution
+    prerequisite_candidate_descriptions:
+      mul_div: "coefficient mul/div instability"
+      expand_structure: "expansion structure instability"
+      power_notation_basics: "power notation basics instability"
+      signed_power_interpretation: "signed power interpretation instability"
+      power_precedence_in_mixed_ops: "power precedence instability"
+      same_base_multiplication_rule: "same-base multiplication rule instability"
+      power_of_power_rule: "power-of-power rule instability"
+      product_power_distribution: "product-power distribution instability"
+      sign_handling: "sign handling instability"
+      add_sub: "add/sub instability"
+      order_of_operations: "operation order instability"
+      combine_after_distribution: "post-distribution combine instability"
+    next_on_success: F11
+    fallback_on_repeat_failure: F2
+
+  F11:
+    family_name: poly_mixed_simplify
+    textbook_section: "1-3 polynomial mul/div"
+    textbook_examples: ["P.47 ex10", "P.48 ex11", "P.50 self-check 5"]
+    difficulty_level: 4
+    main_subskills: [expand_binomial, combine_like_terms, family_isomorphism]
+    prerequisite_candidates:
+      - power_notation_basics
+      - signed_power_interpretation
+      - power_precedence_in_mixed_ops
+      - same_base_multiplication_rule
+      - power_of_power_rule
+      - product_power_distribution
+      - nested_bracket_scope
+      - structure_isomorphism
+      - outer_minus_scope
+      - monomial_distribution
+      - like_term_combination
+      - order_of_operations
+      - bracket_scope
+      - sign_handling
+      - mul_div
+      - add_sub
+      - combine_after_distribution
+      - expand_structure
+    prerequisite_candidate_descriptions:
+      nested_bracket_scope: "nested bracket scope instability"
+      structure_isomorphism: "structure transfer instability"
+      outer_minus_scope: "outer minus scope instability"
+      monomial_distribution: "distribution instability"
+      like_term_combination: "like-term combine instability"
+      power_notation_basics: "power notation basics instability"
+      signed_power_interpretation: "signed power interpretation instability"
+      power_precedence_in_mixed_ops: "power precedence instability"
+      same_base_multiplication_rule: "same-base multiplication rule instability"
+      power_of_power_rule: "power-of-power rule instability"
+      product_power_distribution: "product-power distribution instability"
+      order_of_operations: "operation order instability"
+      bracket_scope: "bracket scope instability"
+      sign_handling: "sign handling instability"
+      mul_div: "mul/div instability"
+      add_sub: "add/sub instability"
+      combine_after_distribution: "post-distribution combine instability"
+      expand_structure: "expansion structure instability"
+    next_on_success: F9
+    fallback_on_repeat_failure: F5
+
+  F9:
+    family_name: poly_div_poly_qr
+    textbook_section: "1-3 polynomial mul/div"
+    difficulty_level: 5
+    main_subskills: [quotient_remainder_format]
+    prerequisite_candidates: []
+    prerequisite_candidate_descriptions: {}
+    next_on_success: F10
+    fallback_on_repeat_failure: F11
+
+  F10:
+    family_name: poly_div_reverse
+    textbook_section: "1-3 polynomial mul/div"
+    difficulty_level: 6
+    main_subskills: [reverse_division_reconstruction]
+    prerequisite_candidates: []
+    prerequisite_candidate_descriptions: {}
+    next_on_success: null
+    fallback_on_repeat_failure: F9
+
+progression_rules:
+  success_to_next_after_n_correct: 1
+  stay_on_same_family_after_n_wrong: 1
+  remediation_trigger_after_consecutive_wrong: 2
+  fallback_to_previous_family_if_no_remediation: true
+
+completion_gate:
+  required_core_families: [F1, F2, F5, F11]
+  optional_extension_families: [F6, F7, F8, F9, F10]
+  integrative_family_id: F11
+  assessment:
+    required_core_families: [F1, F2, F5, F11, F7, F8, F9, F10]
+    minimum_covered_core_families: 8
+    minimum_passed_core_families: 8
+    require_integrative_family_pass: false
+  teaching:
+    required_core_families: [F1, F2, F5, F11, F9, F10]
+    minimum_covered_core_families: 6
+    minimum_passed_core_families: 6
+    require_integrative_family_pass: true
+    integrative_family_id: F10
+
+remediation_rules:
+  enabled: true
+  use_candidate_count: 3
+  classifier: qwen3_8b
+  classifier_mode: multiple_choice
+  return_mastery_threshold: 0.85
+  return_mastery_with_recent_correct_threshold: 0.75

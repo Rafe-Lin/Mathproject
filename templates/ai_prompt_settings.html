@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 模式設定 - 自適應教學系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f7fa; min-height: 100vh; padding-bottom: 50px; }
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .header { margin-bottom: 30px; }
+        .header h1 { color: #2c3e50; display: flex; align-items: center; gap: 12px; font-size: 1.8em; }
+        .header p { color: #666; font-size: 1rem; margin-top: 8px; margin-left: 2px; }
+        .alert { padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; display: none; font-weight: 500; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .section { background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); border-top: 3px solid #3498db; }
+        .section-orange { border-top-color: #f39c12; }
+        .section-red { border-top-color: #e74c3c; }
+        h3.section-title { color: #2c3e50; font-size: 1.25em; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        p.section-desc { color: #666; font-size: 0.95em; margin-bottom: 20px; line-height: 1.5; }
+        .mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .mode-card { border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.2s; position: relative; background: #fafbfc; }
+        .mode-card:hover { border-color: #cbd5e1; background: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .mode-card.active { border-color: #3498db; background: #f0f7fc; }
+        .mode-card.active::after { content: "✓"; color: white; background: #3498db; position: absolute; top: 16px; right: 16px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .mode-icon { font-size: 2em; color: #64748b; margin-bottom: 12px; }
+        .mode-card.active .mode-icon { color: #3498db; }
+        .mode-title { font-size: 1.2em; font-weight: 600; color: #1e293b; margin-bottom: 8px; }
+        .mode-desc { color: #475569; font-size: 0.9em; line-height: 1.5; margin: 0; padding-left: 20px; }
+        .mode-desc li { margin-bottom: 4px; }
+        .role-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .role-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .role-info { display: flex; flex-direction: column; gap: 4px; }
+        .role-name { font-weight: 600; color: #334155; }
+        .role-code { font-size: 0.8em; color: #64748b; font-family: monospace; }
+        .role-model { background: #eef2ff; color: #4338ca; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600; border: 1px solid #c7d2fe; }
+        .role-item.rag-setting-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; background: #f0f4ff; border-color: #a5b4fc; }
+        .role-item.rag-setting-card:hover { border-color: #6366f1; box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.15); transform: translateY(-2px); }
+        textarea { width: 100%; min-height: 180px; resize: vertical; font-family: monospace; padding: 16px; border: 1px solid #cbd5e1; border-radius: 6px; line-height: 1.5; }
+        textarea:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); }
+        .prompt-warning { background: #fffafa; border-left: 4px solid #e74c3c; padding: 12px 16px; color: #c0392b; font-size: 0.9em; margin-bottom: 16px; font-weight: 600; border-radius: 4px; }
+        .actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
+        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-warning:hover { background: #d68910; }
+        .dashboard-bar { display: flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; flex-wrap: wrap; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+        .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+        .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+        .api-key-global { display: flex; align-items: center; gap: 8px; }
+        .req-key-hint { font-size: 0.75em; color: #d97706; margin-left: 6px; font-weight: 600; }
+        .prompt-template-list { display: flex; flex-direction: column; gap: 14px; }
+        .prompt-template-card { border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; overflow: hidden; }
+        .prompt-template-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #e2e8f0; background: #fff; }
+        .prompt-template-key { font-family: monospace; font-size: 0.85em; color: #475569; }
+        .prompt-template-body { padding: 14px 16px 16px; }
+        .prompt-meta { color: #475569; font-size: 0.9em; margin-bottom: 10px; line-height: 1.5; }
+        .prompt-detail-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; }
+        .prompt-detail-item { font-size: 0.9em; color: #334155; line-height: 1.5; }
+        .prompt-detail-item strong { color: #0f172a; margin-right: 4px; }
+        .prompt-template-editor { min-height: 160px; margin-top: 8px; margin-bottom: 12px; }
+        .prompt-template-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    </style>
+</head>
+<body>
+    {% include '_admin_navbar.html' %}
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-robot"></i> AI 後台設定</h1>
+            <p>管理 AI 模式、角色模型配置與教學 Prompt。</p>
+        </div>
+        <div id="alert-container"></div>
+
+        <div class="section">
+            <h3 class="section-title"><i class="bi bi-globe"></i> 全域 AI 模式</h3>
+            <div class="dashboard-bar" style="display:flex; flex-direction:column; gap:12px; padding:16px; align-items:stretch;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <span class="section-desc" style="margin:0; font-size:0.85em;">切換系統運行模式，並檢查 runtime 實際生效狀態。</span>
+                    <div class="api-key-global" id="global-api-key-container" style="flex-shrink:0; display:flex; align-items:center; gap:8px;">
+                        <label id="key-label" style="font-size:0.85em; font-weight:600; color:#475569; margin:0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
+                        <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width:180px; padding:4px 8px; border:1px solid #cbd5e1; border-radius:4px; outline:none; font-family:monospace;">
+                        <span id="api_key_status" class="req-key-hint">尚未輸入 Key</span>
+                        <button id="btn-mode-action" class="btn btn-primary" onclick="testAndSaveMode()" style="padding:4px 10px; font-size:0.8em; min-height:unset; height:auto;"><i class="bi bi-check-circle"></i> 測試並儲存</button>
+                    </div>
+                </div>
+                <div class="dashboard-meta" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <div class="badge badge-success" id="dash-active-mode" style="padding:6px 12px; font-size:0.9em;"><i class="bi bi-play-circle-fill"></i> runtime：-</div>
+                    <div class="badge badge-neutral" id="dash-strategy" style="padding:6px 12px; font-size:0.9em;"><i class="bi bi-gear"></i> 策略：-</div>
+                    <div class="badge" id="dash-selected-mode" style="padding:6px 12px; font-size:0.9em; margin-left:auto; display:none;"></div>
+                </div>
+            </div>
+
+            <div class="mode-cards">
+                <div class="mode-card" id="mode-cloud" onclick="selectMode('cloud')">
+                    <i class="bi bi-cloud mode-icon"></i>
+                    <div class="mode-title">Cloud AI<span class="req-key-hint">(需 API Key)</span></div>
+                    <ul class="mode-desc">
+                        <li>主要使用雲端模型（Gemini）</li>
+                        <li>回覆品質佳、依賴網路</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="mode-edge" onclick="selectMode('edge')">
+                    <i class="bi bi-cpu mode-icon"></i>
+                    <div class="mode-title">Edge AI</div>
+                    <ul class="mode-desc">
+                        <li>主要使用本地模型（Qwen）</li>
+                        <li>離線可運作、速度穩定</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="mode-hybrid" onclick="selectMode('hybrid')">
+                    <i class="bi bi-diagram-3 mode-icon"></i>
+                    <div class="mode-title">Hybrid<span class="req-key-hint">(需 API Key)</span></div>
+                    <ul class="mode-desc">
+                        <li>雲端與本地混合分工</li>
+                        <li>兼顧品質與效能</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section section-orange">
+            <h3 class="section-title"><i class="bi bi-list-check"></i> 角色模型配置（預覽）</h3>
+            <p class="section-desc">依目前模式顯示各任務角色所使用的模型。</p>
+            <div id="role-list" class="role-list"></div>
+        </div>
+
+        <!-- 主 Prompt 區塊 -->
+        <div class="section" style="border-top-color: #10b981;">
+            <h3 class="section-title"><i class="bi bi-star-fill" style="color: #f59e0b;"></i> AI 助教主 Prompt（practice / adaptive_summative）</h3>
+            <p class="section-desc">此 Prompt 主要影響 /practice 與 /adaptive_summative 兩個頁面的 AI 助教回覆風格。一般情況下只需要修改這個。</p>
+            <div id="prompt-main-container" class="prompt-template-list">
+                <div class="prompt-meta">讀取中...</div>
+            </div>
+        </div>
+
+        <!-- 進階 Prompt 區塊 -->
+        <div class="section" style="border-top-color: #8b5cf6;">
+            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleSection('advanced')">
+                <div>
+                    <h3 class="section-title" style="margin-bottom:0;"><i class="bi bi-tools"></i> 進階 Prompt（概念 / 診斷）</h3>
+                    <p class="section-desc" style="margin-bottom:0; margin-top:4px;">這些 Prompt 僅在特定概念講解或錯誤診斷情境下使用，一般情況不需修改。</p>
+                </div>
+                <i id="icon-advanced" class="bi bi-chevron-down" style="font-size:1.5em; color:#64748b;"></i>
+            </div>
+            <div id="content-advanced" style="display:none; margin-top:20px;">
+                <div id="prompt-advanced-container" class="prompt-template-list"></div>
+            </div>
+        </div>
+
+        <!-- 系統 / 舊版 Prompt 區塊 -->
+        <div class="section section-red">
+            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleSection('system')">
+                <div>
+                    <h3 class="section-title" style="margin-bottom:0;"><i class="bi bi-server"></i> 系統 / 舊版 Prompt</h3>
+                    <p class="section-desc" style="margin-bottom:0; margin-top:4px;">此區塊屬於系統底層或舊版流程，不建議日常修改。</p>
+                </div>
+                <i id="icon-system" class="bi bi-chevron-down" style="font-size:1.5em; color:#64748b;"></i>
+            </div>
+            <div id="content-system" style="display:none; margin-top:20px;">
+                <!-- 舊版綜合教學 Prompt (Static Legacy Block) -->
+                <div class="prompt-template-card" style="margin-bottom: 20px;">
+                    <div class="prompt-template-head">
+                        <div>
+                            <div class="role-name">舊版綜合教學 Prompt</div>
+                            <div class="prompt-template-key">old_system_prompt | legacy</div>
+                        </div>
+                        <span class="badge badge-warning">舊系統保留區</span>
+                    </div>
+                    <div class="prompt-template-body">
+                        <div class="prompt-warning" style="background:#fff3cd; border-left-color:#856404; color:#856404; margin-bottom:12px;">
+                            <strong><i class="bi bi-info-circle-fill"></i> 注意：這是舊版綜合教學 Prompt</strong><br>
+                            <ul style="margin-top: 6px; padding-left: 20px;">
+                                <li>此區塊尚未完全納入新 Prompt Registry。</li>
+                                <li>若要調整學生端提示、核心觀念解說、或錯誤診斷，<strong>請優先修改上方的新版區塊</strong>。</li>
+                            </ul>
+                        </div>
+                        <div class="prompt-warning"><i class="bi bi-exclamation-triangle-fill"></i> 必須保留 <code>{context}</code> 與 <code>{prereq_text}</code>。</div>
+                        <textarea class="prompt-template-editor" id="prompt-editor" placeholder="請輸入 Prompt..."></textarea>
+                        <div class="prompt-template-actions">
+                            <button class="btn btn-warning" onclick="resetSettings()"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                            <button class="btn btn-primary" onclick="saveSettings()"><i class="bi bi-save"></i> 儲存舊版 Prompt</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 動態注入的系統 Prompt (base_prompt 等等) -->
+                <div id="prompt-system-container" class="prompt-template-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAG Settings Modal -->
+    <div id="ragSettingsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4em; color: #2c3e50;"><i class="bi bi-search"></i> RAG 參數設定</h3>
+            <div style="margin-top: 15px;">
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">Advanced RAG 門檻值 (預設: 0.40)</label>
+                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">進階 AI 助教設定</label>
+                <label style="display:flex; align-items:flex-start; margin-bottom:0; color:#555; font-size: 0.95em; cursor:pointer;">
+                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px; margin-top: 3px;">
+                    <div>
+                        <div style="font-weight:600; color:#334155;">啟用進階 AI 助教（使用雲端 / API 回答）</div>
+                        <small style="display:block; color:#64748b; margin-top:5px; line-height:1.4;">需已設定可用 API Key。開啟後，此情境可使用雲端 AI 助教進行較完整的對話與引導；未啟用時，僅使用一般頁面流程。</small>
+                    </div>
+                </label>
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">目標套用情境</label>
+                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="practice">一般練習情境 (/practice/)</option>
+                    <option value="adaptive">自適應評量 (/adaptive_practice_v2)</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button type="button" onclick="closeRagSettingsModal()" style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">取消</button>
+                <button type="button" onclick="saveRagSettings()" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = "cloud";
+        let modelMappingCache = {};
+        let promptTemplatesCache = [];
+        const ROLE_DESC = [
+            { key: "vision_analyzer", name: "OCR / 視覺分析" },
+            { key: "coder", name: "程式生成" },
+            { key: "tutor", name: "教學助教" },
+            { key: "classifier", name: "題型分類" },
+            { key: "system_coder", name: "系統程式任務" },
+            { key: "default", name: "預設任務" }
+        ];
+
+        window.addEventListener("DOMContentLoaded", () => {
+            loadSettings();
+            loadPromptTemplateList();
+        });
+
+        function showAlert(msg, isSuccess) {
+            const c = document.getElementById("alert-container");
+            const cls = isSuccess ? "alert-success" : "alert-error";
+            const icon = isSuccess ? "check-circle-fill" : "exclamation-triangle-fill";
+            c.innerHTML = `<div class="alert ${cls}" style="display:block;"><i class="bi bi-${icon}"></i> ${msg}</div>`;
+            setTimeout(() => { c.innerHTML = ""; }, 3500);
+        }
+
+        function escapeHtml(value) {
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function getModeDisplayName(mode) {
+            const map = { cloud: "Cloud AI", edge: "Edge AI", hybrid: "Hybrid AI" };
+            return map[mode] || mode;
+        }
+
+        async function refreshEffectiveModeStatus() {
+            const modeBadge = document.getElementById("dash-active-mode");
+            const strategyBadge = document.getElementById("dash-strategy");
+            if (!modeBadge || !strategyBadge) return;
+            try {
+                const response = await fetch("/api/runtime_ai_status");
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                if (!data.success) throw new Error(data.message || "failed");
+                modeBadge.className = "badge badge-success";
+                modeBadge.innerHTML = `<i class="bi bi-play-circle-fill"></i> runtime：${escapeHtml(getModeDisplayName(data.ai_mode || "-"))}`;
+                const provider = data.tutor_provider || "-";
+                const model = data.tutor_display_name || data.tutor_model || "-";
+                strategyBadge.className = "badge badge-neutral";
+                strategyBadge.innerHTML = `<i class="bi bi-gear"></i> tutor：${escapeHtml(provider)} / ${escapeHtml(model)}`;
+            } catch (e) {
+                modeBadge.className = "badge badge-warning";
+                modeBadge.innerHTML = '<i class="bi bi-exclamation-triangle"></i> runtime：讀取失敗';
+            }
+        }
+
+        function updateDashboard() {
+            const selectedBadge = document.getElementById("dash-selected-mode");
+            const keyStatus = document.getElementById("api_key_status");
+            if (selectedBadge) {
+                selectedBadge.style.display = "inline-flex";
+                selectedBadge.className = "badge badge-primary";
+                selectedBadge.innerHTML = `目前選擇：${escapeHtml(getModeDisplayName(currentMode))}`;
+            }
+
+            const keyLabel = document.getElementById("key-label");
+            const keyInput = document.getElementById("gemini-api-key");
+            
+            if (currentMode === "edge") {
+                if (keyLabel) keyLabel.style.display = "none";
+                if (keyInput) keyInput.style.display = "none";
+                if (keyStatus) keyStatus.style.display = "none";
+            } else {
+                if (keyLabel) keyLabel.style.display = "";
+                if (keyInput) keyInput.style.display = "";
+                if (keyStatus) keyStatus.style.display = "";
+            }
+
+            if (keyStatus && currentMode !== "edge") {
+                const val = (document.getElementById("gemini-api-key")?.value || "").trim();
+                if (!val && !keyStatus.innerText.includes("✔")) {
+                    keyStatus.style.color = "#d97706";
+                    keyStatus.innerText = "尚未填寫 Key";
+                }
+            }
+        }
+
+        function checkApiKey() {
+            const keyStatus = document.getElementById("api_key_status");
+            const val = (document.getElementById("gemini-api-key")?.value || "").trim();
+            if (keyStatus && currentMode !== "edge") {
+                if (!val) {
+                    keyStatus.style.color = "#d97706";
+                    keyStatus.innerText = "尚未填寫 Key";
+                } else {
+                    keyStatus.style.color = "#475569";
+                    keyStatus.innerText = "未驗證";
+                }
+            }
+        }
+
+        async function testAndSaveMode() {
+            const btn = document.getElementById("btn-mode-action");
+            const originalBtnText = btn.innerHTML;
+            const statusText = document.getElementById("api_key_status");
+            const selectedBadge = document.getElementById("dash-selected-mode");
+
+            if (currentMode === "edge") {
+                btn.innerHTML = `<i class="bi bi-hourglass-split"></i> 儲存中...`;
+                btn.disabled = true;
+                if (statusText) statusText.innerText = "";
+                
+                try {
+                    const res = await fetch("/admin/ai_prompt_settings/update", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ ai_mode: currentMode })
+                    });
+                    const data = await res.json();
+                    if (!res.ok || !data.success) throw new Error(data.message || "儲存失敗");
+                    
+                    showAlert(`模式已成功切換為 ${getModeDisplayName(currentMode)}`, true);
+                    if (selectedBadge) {
+                        selectedBadge.className = "badge badge-success";
+                        selectedBadge.innerHTML = `<i class="bi bi-check-circle-fill"></i> 已套用：${getModeDisplayName(currentMode)}`;
+                    }
+                    await refreshEffectiveModeStatus();
+                } catch (e) {
+                    showAlert(e.message || "模式儲存失敗", false);
+                } finally {
+                    btn.innerHTML = originalBtnText;
+                    btn.disabled = false;
+                }
+                return;
+            }
+
+            const apiKey = (document.getElementById("gemini-api-key")?.value || "").trim();
+            if (!apiKey) {
+                if (statusText) {
+                    statusText.style.color = "#dc2626";
+                    statusText.innerText = "✖ 請先輸入 API Key";
+                }
+                showAlert("請先輸入 API Key", false);
+                return;
+            }
+
+            btn.innerHTML = `<i class="bi bi-hourglass-split"></i> 測試中...`;
+            btn.disabled = true;
+            if (statusText) {
+                statusText.style.color = "#d97706";
+                statusText.innerText = "測試中...";
+            }
+            
+            try {
+                const testRes = await fetch("/test_api_key", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ api_key: apiKey })
+                });
+                const testData = await testRes.json();
+                
+                if (!testData.success) {
+                    if (statusText) {
+                        statusText.style.color = "#dc2626";
+                        statusText.innerText = "✖ Key 無效";
+                    }
+                    throw new Error("API Key 測試失敗或無效");
+                }
+                if (statusText) {
+                    statusText.style.color = "#16a34a";
+                    statusText.innerText = "✔ 測試成功";
+                }
+
+                btn.innerHTML = `<i class="bi bi-hourglass-split"></i> 儲存模式中...`;
+                
+                const saveRes = await fetch("/admin/ai_prompt_settings/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ai_mode: currentMode })
+                });
+                const saveData = await saveRes.json();
+                
+                if (!saveRes.ok || !saveData.success) {
+                    throw new Error(saveData.message || "模式儲存失敗");
+                }
+                
+                showAlert(`已驗證 Key，且模式成功切換為 ${getModeDisplayName(currentMode)}`, true);
+                if (selectedBadge) {
+                    selectedBadge.className = "badge badge-success";
+                    selectedBadge.innerHTML = `<i class="bi bi-check-circle-fill"></i> 已套用：${getModeDisplayName(currentMode)}`;
+                }
+                await refreshEffectiveModeStatus();
+            } catch (e) {
+                showAlert(e.message || "作業失敗", false);
+                if (statusText && statusText.innerText === "測試中...") {
+                    statusText.style.color = "#dc2626";
+                    statusText.innerText = "✖ 驗證發生錯誤";
+                }
+            } finally {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+            }
+        }
+
+        function selectMode(mode) {
+            document.querySelectorAll(".mode-card").forEach(el => el.classList.remove("active"));
+            const target = document.getElementById(`mode-${mode}`);
+            if (target) target.classList.add("active");
+            currentMode = mode;
+
+            const actionBtn = document.getElementById("btn-mode-action");
+            if (actionBtn) {
+                if (mode === "edge") {
+                    actionBtn.innerHTML = `<i class="bi bi-save"></i> 直接儲存`;
+                    actionBtn.className = "btn btn-success";
+                } else {
+                    actionBtn.innerHTML = `<i class="bi bi-check-circle"></i> 測試並儲存`;
+                    actionBtn.className = "btn btn-primary";
+                }
+            }
+
+            updateDashboard();
+            renderRoles();
+        }
+
+        function generateLocalPreview(mode, availableModels) {
+            const roles = {};
+            const g = availableModels.find(m => (m.key || "").includes("gemini"))?.key || "gemini-3-flash";
+            const qVl = availableModels.find(m => (m.key || "").includes("qwen3-vl-8b"))?.key || "qwen3-vl-8b";
+            const q8b = availableModels.find(m => (m.key || "").includes("qwen3-8b") && !(m.key || "").includes("vl"))?.key || "qwen3-8b";
+            if (mode === "cloud") {
+                ROLE_DESC.forEach(r => roles[r.key] = g);
+            } else if (mode === "edge") {
+                ROLE_DESC.forEach(r => roles[r.key] = qVl);
+            } else {
+                ROLE_DESC.forEach(r => roles[r.key] = g);
+                roles.vision_analyzer = qVl;
+                roles.default = q8b;
+            }
+            return roles;
+        }
+
+        function renderRoles() {
+            const c = document.getElementById("role-list");
+            if (!c) return;
+            c.innerHTML = "";
+            const rolesData = modelMappingCache[currentMode] || generateLocalPreview(currentMode, window._availModels || []);
+            ROLE_DESC.forEach(r => {
+                const item = document.createElement("div");
+                item.className = "role-item";
+                item.innerHTML = `
+                    <div class="role-info">
+                        <span class="role-name">${escapeHtml(r.name)}</span>
+                        <span class="role-code">${escapeHtml(r.key)}</span>
+                    </div>
+                    <span class="role-model">${escapeHtml(rolesData[r.key] || "未配置")}</span>
+                `;
+                c.appendChild(item);
+            });
+
+            // RAG 參數設定 Card
+            const ragItem = document.createElement("div");
+            ragItem.className = "role-item rag-setting-card";
+            ragItem.onclick = openRagSettingsModal;
+            ragItem.innerHTML = `
+                <div class="role-info">
+                    <span class="role-name">RAG 參數設定<i class="bi bi-gear-fill" style="color: #6366f1; margin-left: 6px; font-size: 0.85em; vertical-align: middle;"></i></span>
+                    <span class="role-code">retrieval / routing</span>
+                </div>
+                <span class="role-model" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">已啟用</span>
+            `;
+            c.appendChild(ragItem);
+        }
+
+        // saveModeOnly function removed during UX unification.
+
+        function openRagSettingsModal() {
+            document.getElementById("ragSettingsModal").style.display = "flex";
+            
+            // Set fallbacks first
+            document.getElementById("ragThreshold").value = 0.40;
+            document.getElementById("ragEnableAIChat").checked = false;
+            document.getElementById("ragTargetType").value = "practice";
+
+            // Fetch actual values from JSON DB
+            fetch("/api/adaptive/rag_settings")
+                .then(r => {
+                    if (!r.ok) throw new Error("Fetch failed");
+                    return r.json();
+                })
+                .then(data => {
+                    if (data.threshold !== undefined) document.getElementById("ragThreshold").value = data.threshold;
+                    if (data.enable_ai_chat !== undefined) document.getElementById("ragEnableAIChat").checked = data.enable_ai_chat;
+                    if (data.target_type !== undefined) document.getElementById("ragTargetType").value = data.target_type;
+                })
+                .catch(err => console.warn("Failed to load RAG settings, using fallback", err));
+        }
+
+        function closeRagSettingsModal() {
+            document.getElementById("ragSettingsModal").style.display = "none";
+        }
+
+        async function saveRagSettings() {
+            const threshold = document.getElementById("ragThreshold").value;
+            const targetType = document.getElementById("ragTargetType").value;
+            const enableAIChat = document.getElementById("ragEnableAIChat").checked;
+
+            try {
+                const response = await fetch("/admin/rag_settings/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ threshold: parseFloat(threshold), target_type: targetType, enable_ai_chat: enableAIChat })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showAlert("RAG 設定已更新！", true);
+                    closeRagSettingsModal();
+                } else {
+                    showAlert("RAG 設定更新失敗：" + data.message, false);
+                }
+            } catch (error) {
+                showAlert("發生未知錯誤", false);
+            }
+        }
+
+        function loadSettings() {
+            fetch("/admin/ai_prompt_settings/get")
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) return showAlert("設定讀取失敗", false);
+                    window._availModels = data.available_models || [];
+                    document.getElementById("prompt-editor").value = data.prompt || "";
+                    currentMode = data.ai_mode || "cloud";
+                    modelMappingCache[currentMode] = data.ai_model_roles || {};
+                    ["cloud", "edge", "hybrid"].forEach(m => {
+                        if (!modelMappingCache[m]) modelMappingCache[m] = generateLocalPreview(m, window._availModels);
+                    });
+                    selectMode(currentMode);
+                    refreshEffectiveModeStatus();
+                })
+                .catch(() => showAlert("設定讀取失敗", false));
+        }
+
+        function saveSettings() {
+            const prompt = document.getElementById("prompt-editor").value;
+            if (!prompt.includes("{context}") || !prompt.includes("{prereq_text}")) {
+                return showAlert("Prompt 必須包含 {context} 與 {prereq_text}", false);
+            }
+            fetch("/admin/ai_prompt_settings/update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert("Prompt 已更新", true);
+                    loadSettings();
+                } else {
+                    showAlert(data.message || "Prompt 更新失敗", false);
+                }
+            })
+            .catch(() => showAlert("Prompt 更新失敗", false));
+        }
+
+        function resetSettings() {
+            if (!confirm("確定要重設 Prompt 與模式設定嗎？")) return;
+            fetch("/admin/ai_prompt_settings/reset", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ scope: "all" })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert("已重設", true);
+                    loadSettings();
+                    loadPromptTemplateList();
+                } else {
+                    showAlert(data.message || "重設失敗", false);
+                }
+            })
+            .catch(() => showAlert("重設失敗", false));
+        }
+
+        const PROMPT_META_MAPPING = {
+            "base_prompt": {
+                title: "全域教學人格 Prompt",
+                description: "定義 AI 助教的整體人格、語氣與安全規範",
+                usage_context: "所有學生可見教學 prompt 的底層規則",
+                used_in: "core/prompts/registry.py",
+                example_trigger: "任何學生可見教學回覆生成前",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "tutor_hint_prompt": {
+                title: "提示下一步 Prompt",
+                description: "學生卡住時只提供下一步提示，不直接給答案",
+                usage_context: "Adaptive 教學頁、AI 助教、RAG 對話",
+                used_in: "core/advanced_rag_engine.py → adv_rag_chat\ncore/ai_analyzer.py → hint path",
+                example_trigger: "學生問「這題怎麼做？」、「下一步是什麼？」",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "concept_prompt": {
+                title: "核心觀念講解 Prompt",
+                description: "解釋某個數學概念或名詞",
+                usage_context: "點「看核心觀念」或概念型詢問",
+                used_in: "core/ai_analyzer.py → ask_ai_text",
+                example_trigger: "學生想知道概念是什麼",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "mistake_prompt": {
+                title: "錯誤診斷 Prompt",
+                description: "分析學生錯誤原因並給修正方向",
+                usage_context: "點「提醒易錯點」或學生答錯後",
+                used_in: "core/ai_analyzer.py → ask_ai_text_with_context (error path)",
+                example_trigger: "學生答錯、請求錯誤分析",
+                status: "已接管",
+                status_class: "badge-success"
+            }
+        };
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`content-${sectionId}`);
+            const icon = document.getElementById(`icon-${sectionId}`);
+            if (content.style.display === "none") {
+                content.style.display = "block";
+                icon.classList.replace("bi-chevron-down", "bi-chevron-up");
+            } else {
+                content.style.display = "none";
+                icon.classList.replace("bi-chevron-up", "bi-chevron-down");
+            }
+        }
+
+        function renderPromptTemplateList(items) {
+            const mainContainer = document.getElementById("prompt-main-container");
+            const advContainer = document.getElementById("prompt-advanced-container");
+            const sysContainer = document.getElementById("prompt-system-container");
+            
+            // if we are called before DOM is completely ready or if element is missing, fallback gracefully
+            // but the placeholders should exist in the HTML structure
+            
+            const sourceItems = Array.isArray(items) ? items : [];
+
+            const createCardHTML = (item) => {
+                const safeKey = escapeHtml(item.prompt_key);
+                const mapping = PROMPT_META_MAPPING[item.prompt_key] || {};
+                
+                const title = mapping.title || item.title || item.prompt_key;
+                const description = mapping.description || item.description || "未提供";
+                const usage = mapping.usage_context || item.usage_context || "未提供";
+                const usedIn = mapping.used_in || item.used_in || "未提供";
+                const trigger = mapping.example_trigger || item.example_trigger || "未提供";
+                
+                const status = mapping.status || "未接管";
+                const statusClass = mapping.status_class || "badge-neutral";
+                
+                const usedInHtml = escapeHtml(usedIn).replace(/\n/g, '<br>');
+
+                const required = escapeHtml(item.required_variables || "");
+                const requiredView = required
+                    ? `<div class="prompt-meta"><strong>required_variables:</strong> <code>${required}</code></div>`
+                    : "";
+                const activeBadge = item.is_active
+                    ? '<span class="badge badge-success">啟用中</span>'
+                    : '<span class="badge badge-neutral">已停用</span>';
+                
+                const managedBadge = `<span class="badge ${statusClass}">${escapeHtml(status)}</span>`;
+
+                return `
+                    <div class="prompt-template-card" data-prompt-key="${safeKey}">
+                        <div class="prompt-template-head">
+                            <div>
+                                <div class="role-name">${escapeHtml(title)}</div>
+                                <div class="prompt-template-key">${safeKey} | ${escapeHtml(item.category || "")}</div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                ${managedBadge}
+                                ${activeBadge}
+                            </div>
+                        </div>
+                        <div class="prompt-template-body">
+                            <div class="prompt-detail-group">
+                                <div class="prompt-detail-item"><strong>🧠 用途：</strong>${escapeHtml(description)}</div>
+                                <div class="prompt-detail-item"><strong>📍 使用時機：</strong>${escapeHtml(usage)}</div>
+                                <div class="prompt-detail-item"><strong>⚙️ 使用程式：</strong><br>${usedInHtml}</div>
+                                <div class="prompt-detail-item"><strong>🎯 觸發情境：</strong>${escapeHtml(trigger)}</div>
+                            </div>
+                            ${requiredView}
+                            <div class="prompt-meta"><strong>updated_at:</strong> ${escapeHtml(item.updated_at || "")}</div>
+                            <textarea class="prompt-template-editor" id="prompt-content-${safeKey}">${escapeHtml(item.content || "")}</textarea>
+                            <div class="prompt-template-actions">
+                                <button class="btn btn-warning" onclick="resetPromptTemplate('${safeKey}')"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
+                                <button class="btn btn-primary" onclick="savePromptTemplate('${safeKey}')"><i class="bi bi-save"></i> 儲存</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const emptyHTML = '<div class="prompt-meta">目前無資料</div>';
+
+            if (mainContainer) {
+                const mainItems = sourceItems.filter(i => i.prompt_key === "tutor_hint_prompt");
+                mainContainer.innerHTML = mainItems.length > 0 ? mainItems.map(createCardHTML).join("") : emptyHTML;
+            }
+
+            if (advContainer) {
+                const advItems = sourceItems.filter(i => i.prompt_key === "concept_prompt" || i.prompt_key === "mistake_prompt");
+                advContainer.innerHTML = advItems.length > 0 ? advItems.map(createCardHTML).join("") : emptyHTML;
+            }
+
+            if (sysContainer) {
+                const sysItems = sourceItems.filter(i => i.prompt_key !== "tutor_hint_prompt" && i.prompt_key !== "concept_prompt" && i.prompt_key !== "mistake_prompt");
+                sysContainer.innerHTML = sysItems.length > 0 ? sysItems.map(createCardHTML).join("") : emptyHTML;
+            }
+        }
+
+        async function loadPromptTemplateList() {
+            try {
+                const res = await fetch("/admin/ai_prompt_settings/list");
+                const data = await res.json();
+                console.log("[PROMPT LIST RESPONSE]", data);
+                console.log("[PROMPT LIST ITEMS]", data.prompts);
+                if (!data.success) {
+                    showAlert(data.message || "Prompt 清單讀取失敗", false);
+                    return;
+                }
+                const prompts = Array.isArray(data.prompts)
+                    ? data.prompts
+                    : (Array.isArray(data.items) ? data.items : []);
+                promptTemplatesCache = prompts;
+                renderPromptTemplateList(promptTemplatesCache);
+            } catch (e) {
+                showAlert("Prompt 清單讀取失敗", false);
+            }
+        }
+
+        async function savePromptTemplate(promptKey) {
+            const textarea = document.getElementById(`prompt-content-${promptKey}`);
+            if (!textarea) return;
+            try {
+                const res = await fetch("/admin/ai_prompt_settings/prompt/update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt_key: promptKey, content: textarea.value || "" })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showAlert(data.message || "Prompt 儲存失敗", false);
+                    return;
+                }
+                showAlert(`${promptKey} 儲存成功`, true);
+                loadPromptTemplateList();
+            } catch (e) {
+                showAlert("Prompt 儲存失敗", false);
+            }
+        }
+
+        async function resetPromptTemplate(promptKey) {
+            try {
+                const res = await fetch("/admin/ai_prompt_settings/prompt/reset", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt_key: promptKey })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showAlert(data.message || "Prompt 重設失敗", false);
+                    return;
+                }
+                const textarea = document.getElementById(`prompt-content-${promptKey}`);
+                if (textarea && typeof data.content === "string") {
+                    textarea.value = data.content;
+                }
+                showAlert(`${promptKey} 已重設`, true);
+                loadPromptTemplateList();
+            } catch (e) {
+                showAlert("Prompt 重設失敗", false);
+            }
+        }
+    </script>
+</body>
+</html>

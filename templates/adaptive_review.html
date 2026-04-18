@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自適應複習模式 - 智學平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+        }
+
+        .navbar {
+            background: #f5f5f5;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-links a {
+            color: #555;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            transition: background 0.3s;
+        }
+
+        .navbar-links a:hover {
+            background: #e8e8e8;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .review-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .sidebar {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            position: sticky;
+            top: 30px;
+        }
+
+        .sidebar h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #fafafa;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-card .label {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .stat-card .value {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .progress-section {
+            margin-bottom: 25px;
+        }
+
+        .progress-section h4 {
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #0066cc;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75em;
+            color: #888;
+            text-align: right;
+        }
+
+        .control-section {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #0066cc;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0052a3;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #ececec;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .main-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .review-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .review-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .review-header p {
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .session-info {
+            background: #f9f9f9;
+            border-left: 3px solid #0066cc;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+
+        .session-info strong {
+            color: #0066cc;
+        }
+
+        .recommendations-section {
+            margin-bottom: 30px;
+        }
+
+        .recommendations-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .recommendation-card {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .recommendation-card:hover {
+            border-color: #0066cc;
+            background: #f5fbff;
+        }
+
+        .recommendation-card.selected {
+            background: #f0f7ff;
+            border-color: #0066cc;
+            border-width: 2px;
+        }
+
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1em;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .difficulty-easy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .difficulty-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .difficulty-hard {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .recommendation-description {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8em;
+            color: #999;
+        }
+
+        .feedback-section {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .feedback-section.show {
+            display: block;
+        }
+
+        .feedback-section h3 {
+            margin-bottom: 12px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .feedback-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .feedback-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .feedback-btn:hover {
+            border-color: #0066cc;
+            color: #0066cc;
+        }
+
+        .feedback-btn.selected {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+
+        .plan-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .plan-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .plan-timeline {
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .plan-item {
+            background: #fafafa;
+            border-left: 3px solid #0066cc;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .empty-state h3 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .error-message {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            color: #1565c0;
+        }
+
+        @media (max-width: 1024px) {
+            .review-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .navbar {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 導航列 -->
+    <div class="navbar">
+        <div class="navbar-brand">自適應複習模式</div>
+        <div class="navbar-links">
+            <a href="{{ url_for('dashboard') }}">返回儀表板</a>
+            <a href="{{ url_for('logout') }}">登出</a>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 布局：左側統計 + 右側內容 -->
+        <div class="review-layout">
+            <!-- ═════ 左側面板 ═════ -->
+            <aside class="sidebar">
+                <h2>複習進度</h2>
+
+                <!-- 統計卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">當前掌握度</div>
+                        <div class="value" id="currentAPR">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">目標掌握度</div>
+                        <div class="value" id="targetAPR">80%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">已答題數</div>
+                        <div class="value" id="answeredCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">正確率</div>
+                        <div class="value" id="correctRate">-</div>
+                    </div>
+                </div>
+
+                <!-- 進度條 -->
+                <div class="progress-section">
+                    <h4>總體掌握度進度</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="progress-text"><span id="progressPercent">0%</span> / 80%</div>
+                </div>
+
+                <!-- 控制區 -->
+                <div class="control-section">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="startReviewBtn" onclick="startReview()">
+                            開始複習
+                        </button>
+                        <button class="btn btn-primary" id="submitFeedbackBtn" onclick="showFeedback()" style="display: none;">
+                            提交答案
+                        </button>
+                        <button class="btn btn-secondary" id="generatePlanBtn" onclick="generatePlan()">
+                            生成計畫
+                        </button>
+                        <button class="btn btn-secondary" onclick="backToDashboard()">
+                            返回
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ═════ 右側主內容 ═════ -->
+            <main class="main-content">
+                <!-- 初始歡迎狀態 -->
+                <div id="welcomeState" style="text-align: center; padding: 60px 20px;">
+                    <h1 style="color: #333; margin-bottom: 15px;">自適應複習模式</h1>
+                    <p style="color: #888; font-size: 1.05em; margin-bottom: 30px;">
+                        系統將根據您的學習歷史，<br>推薦最適合您的複習題目。
+                    </p>
+                    <p style="color: #999; font-size: 0.95em;">
+                        點擊左側「開始複習」按鈕開始吧！
+                    </p>
+                </div>
+
+                <!-- 複習會話內容（初始隱藏） -->
+                <div id="reviewState" style="display: none;">
+                    <!-- 會話信息 -->
+                    <div class="review-header">
+                        <h1>推薦題目</h1>
+                        <p id="sessionInfo">會話已啟動，為您準備最佳複習題目...</p>
+                    </div>
+
+                    <!-- 推薦列表 -->
+                    <div class="recommendations-section">
+                        <h3>RL 引擎推薦 (基於您的學習狀況)</h3>
+                        <div id="recommendationsList" class="recommendations-list">
+                            <!-- 推薦項目會在此插入 -->
+                        </div>
+                    </div>
+
+                    <!-- 反饋區 -->
+                    <div class="feedback-section" id="feedbackSection">
+                        <h3>您對這道題目的感受如何？</h3>
+                        <div class="feedback-options">
+                            <button class="feedback-btn" onclick="submitFeedback(true)">答對了</button>
+                            <button class="feedback-btn" onclick="submitFeedback(false)">答錯了</button>
+                            <button class="feedback-btn" onclick="requestHint()">需要提示</button>
+                        </div>
+                    </div>
+
+                    <!-- 計畫區 -->
+                    <div class="plan-section" id="planSection" style="display: none;">
+                        <h3>建議的複習計畫</h3>
+                        <div id="planContent">
+                            <!-- 計畫項目會在此插入 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 加載狀態 -->
+                <div id="loadingState" style="display: none;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>正在為您準備複習內容...</p>
+                    </div>
+                </div>
+
+                <!-- 錯誤狀態 -->
+                <div id="errorState" style="display: none;">
+                    <div class="empty-state">
+                        <h3>發生錯誤</h3>
+                        <p id="errorMessage">無法載入複習內容，請稍後重試。</p>
+                        <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 20px;">
+                            重新載入
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // ════════════════════════════════════════════════════════════════
+        // 全局變數
+        // ════════════════════════════════════════════════════════════════
+        let currentSession = null;
+        let currentStudentId = '{{ current_user.id }}' || 'guest';
+        let learningHistory = {
+            item_history: [],
+            skill_history: [],
+            resp_history: []
+        };
+        let selectedRecommendation = null;
+
+        // ════════════════════════════════════════════════════════════════
+        // 狀態管理
+        // ════════════════════════════════════════════════════════════════
+        function showState(state) {
+            document.getElementById('welcomeState').style.display = state === 'welcome' ? 'block' : 'none';
+            document.getElementById('reviewState').style.display = state === 'review' ? 'block' : 'none';
+            document.getElementById('loadingState').style.display = state === 'loading' ? 'block' : 'none';
+            document.getElementById('errorState').style.display = state === 'error' ? 'block' : 'none';
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 開始複習
+        // ════════════════════════════════════════════════════════════════
+        async function startReview() {
+            showState('loading');
+            document.getElementById('startReviewBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/adaptive-review/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        student_id: currentStudentId,
+                        history: learningHistory,
+                        n_recommendations: 5,
+                        use_rl: true
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API 錯誤: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    currentSession = data.data;
+                    updateStats(data.data);
+                    displayRecommendations(data.data.recommendations);
+                    showState('review');
+                    document.getElementById('submitFeedbackBtn').style.display = 'block';
+                } else {
+                    throw new Error(data.message || '啟動複習失敗');
+                }
+            } catch (error) {
+                console.error('錯誤:', error);
+                document.getElementById('errorMessage').textContent = error.message;
+                showState('error');
+            } finally {
+                document.getElementById('startReviewBtn').disabled = false;
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 更新統計數據
+        // ════════════════════════════════════════════════════════════════
+        function updateStats(sessionData) {
+            const apr = (sessionData.current_apr * 100).toFixed(1);
+            document.getElementById('currentAPR').textContent = apr + '%';
+            document.getElementById('answeredCount').textContent = learningHistory.resp_history.length;
+
+            // 計算正確率
+            if (learningHistory.resp_history.length > 0) {
+                const correctCount = learningHistory.resp_history.filter(r => r === 1).length;
+                const correctRate = ((correctCount / learningHistory.resp_history.length) * 100).toFixed(1);
+                document.getElementById('correctRate').textContent = correctRate + '%';
+            }
+
+            // 更新進度條
+            document.getElementById('progressFill').style.width = apr + '%';
+            document.getElementById('progressPercent').textContent = apr + '%';
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 顯示推薦題目
+        // ════════════════════════════════════════════════════════════════
+        function displayRecommendations(recommendations) {
+            const list = document.getElementById('recommendationsList');
+            list.innerHTML = '';
+
+            if (!recommendations || recommendations.length === 0) {
+                list.innerHTML = '<div class="empty-state"><p>暫無推薦題目</p></div>';
+                return;
+            }
+
+            recommendations.forEach((rec, index) => {
+                const difficultyClass = rec.predicted_difficulty < 0.4
+                    ? 'difficulty-easy'
+                    : rec.predicted_difficulty < 0.65
+                        ? 'difficulty-medium'
+                        : 'difficulty-hard';
+
+                const difficultyText = rec.predicted_difficulty < 0.4
+                    ? '簡單'
+                    : rec.predicted_difficulty < 0.65
+                        ? '中等'
+                        : '困難';
+
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                card.onclick = () => selectRecommendation(index, rec);
+                card.innerHTML = `
+                    <div class="recommendation-header">
+                        <span class="skill-name">${rec.skill_name || '技能 ' + rec.skill_id}</span>
+                        <span class="difficulty-badge ${difficultyClass}">${difficultyText}</span>
+                    </div>
+                    <div class="recommendation-description">
+                        題目 ID: ${rec.item_id} | 難度預估: ${(rec.predicted_difficulty * 100).toFixed(0)}%
+                    </div>
+                    <div class="recommendation-meta">
+                        <span>RL 分數: ${(rec.rl_score || 0).toFixed(2)}</span>
+                        <span>推薦指數: ${(rec.recommendation_score || 0).toFixed(1)}</span>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 選擇推薦題目
+        // ════════════════════════════════════════════════════════════════
+        function selectRecommendation(index, rec) {
+            selectedRecommendation = rec;
+
+            // 更新視覺反饋
+            document.querySelectorAll('.recommendation-card').forEach((card, i) => {
+                card.classList.toggle('selected', i === index);
+            });
+
+            // 顯示反饋區
+            document.getElementById('feedbackSection').classList.add('show');
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 顯示反饋選項
+        // ════════════════════════════════════════════════════════════════
+        function showFeedback() {
+            if (!selectedRecommendation) {
+                alert('請先選擇一道題目');
+                return;
+            }
+            document.getElementById('feedbackSection').classList.add('show');
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 提交反饋
+        // ════════════════════════════════════════════════════════════════
+        async function submitFeedback(isCorrect) {
+            if (!selectedRecommendation) return;
+
+            try {
+                // 更新本地歷史
+                learningHistory.item_history.push(selectedRecommendation.item_id);
+                learningHistory.skill_history.push(selectedRecommendation.skill_id);
+                learningHistory.resp_history.push(isCorrect ? 1 : 0);
+
+                // 發送反饋到 API
+                const response = await fetch('/api/adaptive-review/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        student_id: currentStudentId,
+                        history: learningHistory,
+                        item_id: selectedRecommendation.item_id,
+                        correct: isCorrect ? 1 : 0
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const feedbackData = data.data;
+                    updateStats(feedbackData);
+
+                    // 顯示反饋訊息
+                    alert(feedbackData.feedback);
+
+                    // 如果達到目標
+                    if (feedbackData.reached_target) {
+                        alert('恭喜！已達到目標掌握度！');
+                        startReview(); // 重新開始
+                    } else {
+                        // 重新開始複習
+                        startReview();
+                    }
+                }
+            } catch (error) {
+                console.error('提交反饋失敗:', error);
+                alert('提交反饋失敗，請重試');
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 請求提示
+        // ════════════════════════════════════════════════════════════════
+        function requestHint() {
+            alert('提示功能即將推出！');
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 生成複習計畫
+        // ════════════════════════════════════════════════════════════════
+        async function generatePlan() {
+            showState('loading');
+
+            try {
+                const historyJson = encodeURIComponent(JSON.stringify(learningHistory));
+                const response = await fetch(`/api/adaptive-review/plan/${currentStudentId}?history_json=${historyJson}&num_sessions=3`);
+
+                if (!response.ok) {
+                    throw new Error(`API 錯誤: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const plan = data.data;
+                    displayPlan(plan);
+                    showState('review');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('生成計畫失敗:', error);
+                alert('生成計畫失敗: ' + error.message);
+                showState('review');
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 顯示計畫
+        // ════════════════════════════════════════════════════════════════
+        function displayPlan(plan) {
+            const planSection = document.getElementById('planSection');
+            const planContent = document.getElementById('planContent');
+
+            planContent.innerHTML = `
+                <div class="alert alert-info">
+                    <strong>計畫摘要:</strong><br>
+                    初始掌握度: ${(plan.overall_stats.apr_initial * 100).toFixed(1)}% 
+                    → 目標掌握度: ${(plan.overall_stats.apr_final * 100).toFixed(1)}%<br>
+                    預計提升: ${(plan.overall_stats.apr_gain * 100).toFixed(1)}% 
+                    | 建議練習: ${plan.overall_stats.total_items_practiced} 題
+                </div>
+                <div class="plan-timeline">
+                    ${plan.sessions.map((session, idx) => `
+                        <div class="plan-item">
+                            <strong>會話 ${idx + 1}: ${session.session_name}</strong><br>
+                            掌握度進度: ${(session.apr_initial * 100).toFixed(1)}% → ${(session.apr_final * 100).toFixed(1)}%<br>
+                            建議練習: ${session.items_per_session || 5} 題 | 預期正確率: ${(session.correct_rate * 100).toFixed(1)}%
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            planSection.style.display = 'block';
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 工具函數
+        // ════════════════════════════════════════════════════════════════
+        function backToDashboard() {
+            window.location.href = '{{ url_for("dashboard") }}';
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // 初始化
+        // ════════════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            showState('welcome');
+            console.log('自適應複習模式已初始化');
+        });
+    </script>
+</body>
+
+</html>

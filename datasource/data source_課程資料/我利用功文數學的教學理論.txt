@@ -1,0 +1,13 @@
+我利用功文數學的教學理論
+編寫了這個數學網站
+讓學生可以在上面練習
+主要目的是要讓考不及跟數學不好的同學
+能夠有基本運算跟解題能力
+目標是讓他們數學及格
+請你再思考看看 
+這是要給基礎不好的同學做練習 
+是否要切得更小更仔細一點呢?
+
+記住我專案里目前有的數學技能單元 我接著會匯入普高的課本 給你解析 並且切分出skills_info的資料內容跟skill_curriculum 的資料內容 如果有skills_info重複的部分 可以理念相近的部分 我們就不用另外再設計出題程式了 可以共用 然後要標示出來 先試看看 這份資料的skill_curriculum.curriculum="general" skill_curriculum.grade="10" skill_curriculum.volume="數學3A"
+
+「數學B2」(技職) 的完整教材 這是這個系統的使用者主要會使用的部分 依功文數學的精神 將單元(技能)切得更細更清楚 幫助學生從及格變不及格 skill_curriculum.curriculum="vocational" skill_curriculum.grade="10" skill_curriculum.volume="數學B2"

@@ -1,0 +1,50 @@
+{
+  "episodes_per_prototype": 100,
+  "max_steps_per_episode": 30,
+  "success_polynomial_threshold": 0.8,
+  "success_consecutive_polynomial_correct": 2,
+  "perturbation": 0.03,
+  "random_seed": 42,
+  "output_dir": "outputs_ab3_v3",
+  "difficulty_by_skill": {
+    "integer": 0.55,
+    "fraction": 0.6,
+    "radical": 0.65,
+    "polynomial": 0.68
+  },
+  "difficulty_jitter": 0.05,
+  "update_scale": 0.08,
+  "correct_reward": 1.0,
+  "incorrect_reward": 0.3,
+  "primary_weight": 1.0,
+  "transfer_weight_integer_to_polynomial": 0.2,
+  "prototypes": [
+    {
+      "name": "A",
+      "base_abilities": {
+        "integer": 0.7,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial": 0.5
+      }
+    },
+    {
+      "name": "B",
+      "base_abilities": {
+        "integer": 0.3,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial": 0.5
+      }
+    },
+    {
+      "name": "C",
+      "base_abilities": {
+        "integer": 0.5,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial": 0.5
+      }
+    }
+  ]
+}

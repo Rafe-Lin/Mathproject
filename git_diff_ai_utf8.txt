@@ -1,0 +1,2499 @@
+﻿commit f8db38f10063803ad7e7b920c9c165e8b618ed86
+Author: ysw001 <yeh.ivan@hlbh.hlc.edu.tw>
+Date:   Fri Apr 17 16:31:07 2026 +0800
+
+    *靽格摰?皜祈岫銝?..
+
+diff --git a/templates/ai_prompt_settings.html b/templates/ai_prompt_settings.html
+index 9ca8047..bc5b633 100644
+--- a/templates/ai_prompt_settings.html
++++ b/templates/ai_prompt_settings.html
+@@ -1,372 +1,99 @@
+ <!DOCTYPE html>
+ <html lang="zh-Hant">
+-
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>AI 璅∪?閮剖? - ?芷??摮貊頂蝯?/title>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+     <style>
+-        * {
+-            box-sizing: border-box;
+-            margin: 0;
+-            padding: 0;
+-        }
+-
+-        body {
+-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+-            background: #f5f7fa;
+-            min-height: 100vh;
+-            padding-bottom: 50px;
+-        }
+-
+-        .container {
+-            max-width: 1400px;
+-            margin: 30px auto;
+-            padding: 0 20px;
+-        }
+-
+-        .header {
+-            margin-bottom: 30px;
+-        }
+-
+-        .header h1 {
+-            color: #2c3e50;
+-            display: flex;
+-            align-items: center;
+-            gap: 12px;
+-            font-size: 1.8em;
+-        }
+-
+-        .header p {
+-            color: #666;
+-            font-size: 1rem;
+-            margin-top: 8px;
+-            margin-left: 2px;
+-        }
+-
+-        .alert {
+-            padding: 15px 20px;
+-            margin-bottom: 20px;
+-            border-radius: 6px;
+-            display: none;
+-            font-weight: 500;
+-        }
+-
+-        .alert-success {
+-            background: #d4edda;
+-            color: #155724;
+-            border: 1px solid #c3e6cb;
+-        }
+-
+-        .alert-error {
+-            background: #f8d7da;
+-            color: #721c24;
+-            border: 1px solid #f5c6cb;
+-        }
+-
+-        .section {
+-            background: #fff;
+-            border: 1px solid #e9ecef;
+-            border-radius: 8px;
+-            padding: 24px;
+-            margin-bottom: 24px;
+-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+-            border-top: 3px solid #3498db;
+-        }
+-
+-        .section-orange {
+-            border-top-color: #f39c12;
+-        }
+-
+-        .section-red {
+-            border-top-color: #e74c3c;
+-        }
+-
+-        h3.section-title {
+-            color: #2c3e50;
+-            font-size: 1.25em;
+-            margin-bottom: 8px;
+-            display: flex;
+-            align-items: center;
+-            gap: 8px;
+-        }
+-
+-        p.section-desc {
+-            color: #666;
+-            font-size: 0.95em;
+-            margin-bottom: 20px;
+-            line-height: 1.5;
+-        }
+-
+-        /* Mode Selection Cards */
+-        .mode-cards {
+-            display: grid;
+-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+-            gap: 16px;
+-        }
+-
+-        .mode-card {
+-            border: 2px solid #e2e8f0;
+-            border-radius: 8px;
+-            padding: 20px;
+-            cursor: pointer;
+-            transition: all 0.2s;
+-            position: relative;
+-            background: #fafbfc;
+-        }
+-
+-        .mode-card:hover {
+-            border-color: #cbd5e1;
+-            background: #fff;
+-            transform: translateY(-2px);
+-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+-        }
+-
+-        .mode-card.active {
+-            border-color: #3498db;
+-            background: #f0f7fc;
+-        }
+-
+-        .mode-card.active::after {
+-            content: '??;
+-            color: white;
+-            background: #3498db;
+-            position: absolute;
+-            top: 16px;
+-            right: 16px;
+-            width: 24px;
+-            height: 24px;
+-            border-radius: 50%;
+-            display: flex;
+-            align-items: center;
+-            justify-content: center;
+-            font-weight: bold;
+-        }
+-
+-        .mode-icon {
+-            font-size: 2em;
+-            color: #64748b;
+-            margin-bottom: 12px;
+-        }
+-
+-        .mode-card.active .mode-icon {
+-            color: #3498db;
+-        }
+-
+-        .mode-title {
+-            font-size: 1.2em;
+-            font-weight: 600;
+-            color: #1e293b;
+-            margin-bottom: 8px;
+-        }
+-
+-        .mode-desc {
+-            color: #475569;
+-            font-size: 0.9em;
+-            line-height: 1.5;
+-            margin: 0;
+-            padding-left: 20px;
+-        }
+-
+-        .mode-desc li {
+-            margin-bottom: 4px;
+-        }
+-
+-        /* Role Display List */
+-        .role-list {
+-            display: grid;
+-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+-            gap: 16px;
+-        }
+-
+-        .role-item {
+-            background: #f8fafc;
+-            border: 1px solid #e2e8f0;
+-            border-radius: 6px;
+-            padding: 14px 16px;
+-            display: flex;
+-            justify-content: space-between;
+-            align-items: center;
+-        }
+-
+-        .role-info {
+-            display: flex;
+-            flex-direction: column;
+-            gap: 4px;
+-        }
+-
+-        .role-name {
+-            font-weight: 600;
+-            color: #334155;
+-        }
+-
+-        .role-code {
+-            font-size: 0.8em;
+-            color: #64748b;
+-            font-family: monospace;
+-        }
+-
+-        .role-model {
+-            background: #eef2ff;
+-            color: #4338ca;
+-            padding: 4px 10px;
+-            border-radius: 12px;
+-            font-size: 0.85em;
+-            font-weight: 600;
+-            border: 1px solid #c7d2fe;
+-        }
+-
+-        .role-item.rag-setting-card {
+-            cursor: pointer;
+-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+-            background: #f0f4ff;
+-            border-color: #a5b4fc;
+-        }
+-        
+-        .role-item.rag-setting-card:hover {
+-            border-color: #6366f1;
+-            box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.15);
+-            transform: translateY(-2px);
+-        }
+-
+-        /* Prompt */
+-        textarea {
+-            width: 100%;
+-            min-height: 180px;
+-            resize: vertical;
+-            font-family: monospace;
+-            padding: 16px;
+-            border: 1px solid #cbd5e1;
+-            border-radius: 6px;
+-            line-height: 1.5;
+-        }
+-
+-        textarea:focus {
+-            outline: none;
+-            border-color: #3498db;
+-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+-        }
+-
+-        .prompt-warning {
+-            background: #fffafa;
+-            border-left: 4px solid #e74c3c;
+-            padding: 12px 16px;
+-            color: #c0392b;
+-            font-size: 0.9em;
+-            margin-bottom: 16px;
+-            font-weight: 600;
+-            border-radius: 4px;
+-        }
+-
+-        /* Actions */
+-        .actions {
+-            display: flex;
+-            gap: 12px;
+-            margin-top: 24px;
+-            justify-content: flex-end;
+-        }
+-
+-        .btn {
+-            padding: 10px 24px;
+-            border: none;
+-            border-radius: 6px;
+-            font-weight: 600;
+-            cursor: pointer;
+-            display: inline-flex;
+-            align-items: center;
+-            gap: 8px;
+-            transition: 0.2s;
+-        }
+-
+-        .btn-primary {
+-            background: #3498db;
+-            color: white;
+-        }
+-
+-        .btn-primary:hover {
+-            background: #2980b9;
+-        }
+-
+-        .btn-warning {
+-            background: #f39c12;
+-            color: white;
+-        }
+-
+-        .btn-warning:hover {
+-            background: #d68910;
+-        }
+-
+-        /* Dashboard & Badges */
+-        .dashboard-bar {
+-            display: flex;
+-            align-items: center;
+-            gap: 8px;
+-            background: #f8fafc;
+-            border: 1px solid #e2e8f0;
+-            border-radius: 8px;
+-            padding: 12px 20px;
+-            margin-bottom: 24px;
+-            flex-wrap: wrap;
+-        }
+-
+-        .badge {
+-            display: inline-flex;
+-            align-items: center;
+-            gap: 6px;
+-            padding: 6px 12px;
+-            border-radius: 20px;
+-            font-size: 0.85em;
+-            font-weight: 600;
+-        }
++        * { box-sizing: border-box; margin: 0; padding: 0; }
++        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f5f7fa; min-height: 100vh; padding-bottom: 50px; }
++        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
++        .header { margin-bottom: 30px; }
++        .header h1 { color: #2c3e50; display: flex; align-items: center; gap: 12px; font-size: 1.8em; }
++        .header p { color: #666; font-size: 1rem; margin-top: 8px; margin-left: 2px; }
++        .alert { padding: 15px 20px; margin-bottom: 20px; border-radius: 6px; display: none; font-weight: 500; }
++        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
++        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
++        .section { background: #fff; border: 1px solid #e9ecef; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); border-top: 3px solid #3498db; }
++        .section-orange { border-top-color: #f39c12; }
++        .section-red { border-top-color: #e74c3c; }
++        h3.section-title { color: #2c3e50; font-size: 1.25em; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
++        p.section-desc { color: #666; font-size: 0.95em; margin-bottom: 20px; line-height: 1.5; }
++        .mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
++        .mode-card { border: 2px solid #e2e8f0; border-radius: 8px; padding: 20px; cursor: pointer; transition: all 0.2s; position: relative; background: #fafbfc; }
++        .mode-card:hover { border-color: #cbd5e1; background: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
++        .mode-card.active { border-color: #3498db; background: #f0f7fc; }
++        .mode-card.active::after { content: "??; color: white; background: #3498db; position: absolute; top: 16px; right: 16px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
++        .mode-icon { font-size: 2em; color: #64748b; margin-bottom: 12px; }
++        .mode-card.active .mode-icon { color: #3498db; }
++        .mode-title { font-size: 1.2em; font-weight: 600; color: #1e293b; margin-bottom: 8px; }
++        .mode-desc { color: #475569; font-size: 0.9em; line-height: 1.5; margin: 0; padding-left: 20px; }
++        .mode-desc li { margin-bottom: 4px; }
++        .role-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
++        .role-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
++        .role-info { display: flex; flex-direction: column; gap: 4px; }
++        .role-name { font-weight: 600; color: #334155; }
++        .role-code { font-size: 0.8em; color: #64748b; font-family: monospace; }
++        .role-model { background: #eef2ff; color: #4338ca; padding: 4px 10px; border-radius: 12px; font-size: 0.85em; font-weight: 600; border: 1px solid #c7d2fe; }
++        .role-item.rag-setting-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; background: #f0f4ff; border-color: #a5b4fc; }
++        .role-item.rag-setting-card:hover { border-color: #6366f1; box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.15); transform: translateY(-2px); }
++        textarea { width: 100%; min-height: 180px; resize: vertical; font-family: monospace; padding: 16px; border: 1px solid #cbd5e1; border-radius: 6px; line-height: 1.5; }
++        textarea:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); }
++        .prompt-warning { background: #fffafa; border-left: 4px solid #e74c3c; padding: 12px 16px; color: #c0392b; font-size: 0.9em; margin-bottom: 16px; font-weight: 600; border-radius: 4px; }
++        .actions { display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end; }
++        .btn { padding: 10px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
++        .btn-primary { background: #3498db; color: white; }
++        .btn-primary:hover { background: #2980b9; }
++        .btn-warning { background: #f39c12; color: white; }
++        .btn-warning:hover { background: #d68910; }
++        .dashboard-bar { display: flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 20px; margin-bottom: 24px; flex-wrap: wrap; }
++        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+         .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+         .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+         .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+         .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+         .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+-
+-        .api-key-global {
+-            display: flex;
+-            align-items: center;
+-            gap: 8px;
+-        }
+-
+-        .req-key-hint {
+-            font-size: 0.75em;
+-            color: #d97706;
+-            margin-left: 6px;
+-            font-weight: 600;
+-        }
++        .api-key-global { display: flex; align-items: center; gap: 8px; }
++        .req-key-hint { font-size: 0.75em; color: #d97706; margin-left: 6px; font-weight: 600; }
++        .prompt-template-list { display: flex; flex-direction: column; gap: 14px; }
++        .prompt-template-card { border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; overflow: hidden; }
++        .prompt-template-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #e2e8f0; background: #fff; }
++        .prompt-template-key { font-family: monospace; font-size: 0.85em; color: #475569; }
++        .prompt-template-body { padding: 14px 16px 16px; }
++        .prompt-meta { color: #475569; font-size: 0.9em; margin-bottom: 10px; line-height: 1.5; }
++        .prompt-detail-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; }
++        .prompt-detail-item { font-size: 0.9em; color: #334155; line-height: 1.5; }
++        .prompt-detail-item strong { color: #0f172a; margin-right: 4px; }
++        .prompt-template-editor { min-height: 160px; margin-top: 8px; margin-bottom: 12px; }
++        .prompt-template-actions { display: flex; justify-content: flex-end; gap: 10px; }
+     </style>
+ </head>
+-
+ <body>
+     {% include '_admin_navbar.html' %}
+-
+     <div class="container">
+         <div class="header">
+-            <h1><i class="bi bi-robot"></i> AI閮剖?</h1>
+-            <p>?豢?蝟餌絞 AI 璅∪?銝行炎閬芋????/p>
++            <h1><i class="bi bi-robot"></i> AI 敺閮剖?</h1>
++            <p>蝞∠? AI 璅∪????脫芋??蝵株??飛 Prompt??/p>
+         </div>
+-
+         <div id="alert-container"></div>
+ 
+-        <!-- ?憛?1 -->
+         <div class="section">
+             <h3 class="section-title"><i class="bi bi-globe"></i> ?典? AI 璅∪?</h3>
+-            <div class="dashboard-bar" style="flex-wrap: nowrap; padding: 10px 16px; justify-content: flex-start;">
+-                <span class="section-desc" style="margin: 0; font-size: 0.85em; white-space: nowrap;">?豢?蝟餌絞?湧???AI 璅∪?隤輻?曉?嚗??芸?憟?單???遙??/span>
+-                
+-                <div class="dashboard-meta" style="display: flex; gap: 8px; flex-shrink: 0;">
+-                    <div class="badge badge-primary" id="dash-mode" style="padding: 4px 10px;"><i class="bi bi-cpu"></i> ?桀?璅∪?嚗?</div>
+-                    <div class="badge badge-neutral" id="dash-strategy" style="padding: 4px 10px;"><i class="bi bi-gear"></i> 蝑嚗?</div>
++            <div class="dashboard-bar" style="display:flex; flex-direction:column; gap:12px; padding:16px; align-items:stretch;">
++                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
++                    <span class="section-desc" style="margin:0; font-size:0.85em;">??蝟餌絞??璅∪?嚗蒂瑼Ｘ runtime 撖阡??????/span>
++                    <div class="api-key-global" id="global-api-key-container" style="flex-shrink:0; display:flex; align-items:center; gap:8px;">
++                        <label id="key-label" style="font-size:0.85em; font-weight:600; color:#475569; margin:0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
++                        <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width:180px; padding:4px 8px; border:1px solid #cbd5e1; border-radius:4px; outline:none; font-family:monospace;">
++                        <span id="api_key_status" class="req-key-hint">撠頛詨 Key</span>
++                        <button id="btn-mode-action" class="btn btn-primary" onclick="testAndSaveMode()" style="padding:4px 10px; font-size:0.8em; min-height:unset; height:auto;"><i class="bi bi-check-circle"></i> 皜祈岫銝血摮?/button>
++                    </div>
+                 </div>
+-                
+-                <div class="api-key-global" id="global-api-key-container" style="flex-shrink: 0;">
+-                    <label style="font-size: 0.85em; font-weight: 600; color: #475569; margin: 0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
+-                    <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width: 180px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; font-family: monospace;">
+-                    <button class="btn btn-primary" onclick="testApiKey(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">蝣箏?</button>
+-                    <span id="api_key_status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;">? ?芾身摰?/span>
++                <div class="dashboard-meta" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
++                    <div class="badge badge-success" id="dash-active-mode" style="padding:6px 12px; font-size:0.9em;"><i class="bi bi-play-circle-fill"></i> runtime嚗?</div>
++                    <div class="badge badge-neutral" id="dash-strategy" style="padding:6px 12px; font-size:0.9em;"><i class="bi bi-gear"></i> 蝑嚗?</div>
++                    <div class="badge" id="dash-selected-mode" style="padding:6px 12px; font-size:0.9em; margin-left:auto; display:none;"></div>
+                 </div>
+             </div>
+ 
+@@ -375,372 +102,626 @@
+                     <i class="bi bi-cloud mode-icon"></i>
+                     <div class="mode-title">Cloud AI<span class="req-key-hint">(? API Key)</span></div>
+                     <ul class="mode-desc">
+-                        <li>?券隞餃??芸?雿輻?脩垢璅∪? (Gemini)</li>
+-                        <li>?拙?撠?撅內??鞈芸??/li>
++                        <li>銝餉?雿輻?脩垢璅∪?嚗emini嚗?/li>
++                        <li>???釭雿喋?鞈渡雯頝?/li>
+                     </ul>
+                 </div>
+                 <div class="mode-card" id="mode-edge" onclick="selectMode('edge')">
+                     <i class="bi bi-cpu mode-icon"></i>
+                     <div class="mode-title">Edge AI</div>
+                     <ul class="mode-desc">
+-                        <li>?券隞餃?雿輻?砍璅∪? (Qwen)</li>
+-                        <li>?拙??Ｙ??啣????擃???</li>
++                        <li>銝餉?雿輻?砍璅∪?嚗wen嚗?/li>
++                        <li>?Ｙ??舫?雿漲蝛拙?</li>
+                     </ul>
+                 </div>
+                 <div class="mode-card" id="mode-hybrid" onclick="selectMode('hybrid')">
+                     <i class="bi bi-diagram-3 mode-icon"></i>
+                     <div class="mode-title">Hybrid<span class="req-key-hint">(? API Key)</span></div>
+                     <ul class="mode-desc">
+-                        <li>蝟餌絞靘遙?????拙?璅∪?</li>
+-                        <li>?潮“皞Ⅱ?釭??閬箄儘霅???/li>
++                        <li>?脩垢??唳毽??撌?/li>
++                        <li>?潮“?釭????/li>
+                     </ul>
+                 </div>
+             </div>
+         </div>
+ 
+-        <!-- ?憛?2 -->
+         <div class="section section-orange">
+-            <h3 class="section-title"><i class="bi bi-list-check"></i> ?遙?芋????(?航?)</h3>
+-            <p class="section-desc">?寞??券??璅∪?嚗頂蝯勗歇?芸???隞乩?撠???雿單芋??/p>
+-            <div id="role-list" class="role-list">
+-                <!-- ?”???Ｙ? -->
+-            </div>
++            <h3 class="section-title"><i class="bi bi-list-check"></i> 閫璅∪??蔭嚗?閬踝?</h3>
++            <p class="section-desc">靘?芋撘＊蝷箏?隞餃?閫?雿輻?芋??/p>
++            <div id="role-list" class="role-list"></div>
+         </div>
+ 
+-        <!-- ?憛?3 -->
+-        <div class="section section-red">
+-            <h3 class="section-title"><i class="bi bi-terminal"></i> ?箇? Prompt 璅⊥</h3>
+-            <p class="section-desc">靽格蝟餌絞閫??憿?蝷?閰梁?瑽耨?孵?隢Ⅱ隤??詨??氬?/p>
+-
+-            <div class="prompt-warning">
+-                <i class="bi bi-exclamation-triangle-fill"></i> 敹?? <code>{context}</code> ??<code>{prereq_text}</code>
+-                ?甇?虜?踵?霈??-            </div>
+-
+-            <textarea id="prompt-editor" placeholder="隢撓??Prompt..."></textarea>
+-
+-            <div class="actions">
+-                <button class="btn btn-warning" onclick="resetSettings()">
+-                    <i class="bi bi-arrow-counterclockwise"></i> ?身?粹?閮?-                </button>
+-                <button class="btn btn-primary" onclick="saveSettings()">
+-                    <i class="bi bi-save"></i> ?脣???身摰?-                </button>
++        <!-- 銝?Prompt ?憛?-->
++        <div class="section" style="border-top-color: #10b981;">
++            <h3 class="section-title"><i class="bi bi-star-fill" style="color: #f59e0b;"></i> AI ?拇?銝?Prompt嚗ractice / adaptive_summative嚗?/h3>
++            <p class="section-desc">甇?Prompt 銝餉?敶梢 /practice ??/adaptive_summative ?拙??Ｙ? AI ?拇???憸冽???祆?瘜??芷?閬耨?寥?/p>
++            <div id="prompt-main-container" class="prompt-template-list">
++                <div class="prompt-meta">霈?葉...</div>
+             </div>
+         </div>
+-    </div>
+ 
+-    <!-- RAG Settings Modal -->
+-    <div id="ragSettingsModal"
+-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+-        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+-            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4em; color: #2c3e50;"><i class="bi bi-search"></i> RAG ?閮剖?</h3>
+-            <div style="margin-top: 15px;">
+-                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">Advanced RAG 閫貊?曉?(?身: 0.40)</label>
+-                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
++        <!-- ?脤? Prompt ?憛?-->
++        <div class="section" style="border-top-color: #8b5cf6;">
++            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleSection('advanced')">
++                <div>
++                    <h3 class="section-title" style="margin-bottom:0;"><i class="bi bi-tools"></i> ?脤? Prompt嚗?敹?/ 閮箸嚗?/h3>
++                    <p class="section-desc" style="margin-bottom:0; margin-top:4px;">?? Prompt ??孵?璁艙雓圾?隤方那?瑟?憓?雿輻嚗??祆?瘜??靽格??/p>
++                </div>
++                <i id="icon-advanced" class="bi bi-chevron-down" style="font-size:1.5em; color:#64748b;"></i>
+             </div>
+-            <div>
+-                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">?揣?格???AI 閫??閮剖?</label>
+-                <label style="display:inline-flex; align-items:center; margin-bottom:15px; color:#555; font-size: 0.9em; cursor:pointer;">
+-                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px;">
+-                    ? AI ?拇??? (????API 憿漲)
+-                </label>
++            <div id="content-advanced" style="display:none; margin-top:20px;">
++                <div id="prompt-advanced-container" class="prompt-template-list"></div>
+             </div>
+-            <div>
+-                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">??蝯?暺??格?隞</label>
+-                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+-                    <option value="practice">?箇?蝺渡?隞 (/practice/)</option>
+-                    <option value="adaptive">?芷????(/adaptive_practice_v2)</option>
+-                </select>
++        </div>
++
++        <!-- 蝟餌絞 / ?? Prompt ?憛?-->
++        <div class="section section-red">
++            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleSection('system')">
++                <div>
++                    <h3 class="section-title" style="margin-bottom:0;"><i class="bi bi-server"></i> 蝟餌絞 / ?? Prompt</h3>
++                    <p class="section-desc" style="margin-bottom:0; margin-top:4px;">甇文?憛惇?潛頂蝯勗?撅斗???瘚?嚗?撱箄降?亙虜靽格??/p>
++                </div>
++                <i id="icon-system" class="bi bi-chevron-down" style="font-size:1.5em; color:#64748b;"></i>
+             </div>
+-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+-                <button onclick="closeRagSettingsModal()"
+-                    style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">??</button>
+-                <button onclick="saveRagSettings()"
+-                    style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">?脣?</button>
++            <div id="content-system" style="display:none; margin-top:20px;">
++                <!-- ??蝬??飛 Prompt (Static Legacy Block) -->
++                <div class="prompt-template-card" style="margin-bottom: 20px;">
++                    <div class="prompt-template-head">
++                        <div>
++                            <div class="role-name">??蝬??飛 Prompt</div>
++                            <div class="prompt-template-key">old_system_prompt | legacy</div>
++                        </div>
++                        <span class="badge badge-warning">?頂蝯曹???</span>
++                    </div>
++                    <div class="prompt-template-body">
++                        <div class="prompt-warning" style="background:#fff3cd; border-left-color:#856404; color:#856404; margin-bottom:12px;">
++                            <strong><i class="bi bi-info-circle-fill"></i> 瘜冽?嚗??蝬??飛 Prompt</strong><br>
++                            <ul style="margin-top: 6px; padding-left: 20px;">
++                                <li>甇文?憛??芸??函??交 Prompt Registry??/li>
++                                <li>?亥?隤踵摮貊?蝡舀?蝷箝敹?敹菔圾隤芥??航炊閮箸嚗?strong>隢?耨?嫣??寧??啁??憛?/strong>??/li>
++                            </ul>
++                        </div>
++                        <div class="prompt-warning"><i class="bi bi-exclamation-triangle-fill"></i> 敹?靽? <code>{context}</code> ??<code>{prereq_text}</code>??/div>
++                        <textarea class="prompt-template-editor" id="prompt-editor" placeholder="隢撓??Prompt..."></textarea>
++                        <div class="prompt-template-actions">
++                            <button class="btn btn-warning" onclick="resetSettings()"><i class="bi bi-arrow-counterclockwise"></i> ?身</button>
++                            <button class="btn btn-primary" onclick="saveSettings()"><i class="bi bi-save"></i> ?脣??? Prompt</button>
++                        </div>
++                    </div>
++                </div>
++
++                <!-- ??瘜典?頂蝯?Prompt (base_prompt 蝑?) -->
++                <div id="prompt-system-container" class="prompt-template-list"></div>
+             </div>
+         </div>
+     </div>
+ 
+     <script>
+-        let currentMode = 'cloud';
+-        let modelMappingCache = {}; // mode -> { role: model }
+-
++        let currentMode = "cloud";
++        let modelMappingCache = {};
++        let promptTemplatesCache = [];
+         const ROLE_DESC = [
+-            { key: 'vision_analyzer', name: 'OCR / ?神颲刻? AI' },
+-            { key: 'coder', name: '?粹?蝔???AI' },
+-            { key: 'tutor', name: '?飛?拇? AI' },
+-            { key: 'classifier', name: '憿?? AI' },
+-            { key: 'system_coder', name: '蝟餌絞蝔??? AI' },
+-            { key: 'default', name: '?身? AI' }
++            { key: "vision_analyzer", name: "OCR / 閬死??" },
++            { key: "coder", name: "蝔???" },
++            { key: "tutor", name: "?飛?拇?" },
++            { key: "classifier", name: "憿???" },
++            { key: "system_coder", name: "蝟餌絞蝔?隞餃?" },
++            { key: "default", name: "?身隞餃?" }
+         ];
+ 
+-        window.addEventListener('DOMContentLoaded', loadSettings);
++        window.addEventListener("DOMContentLoaded", () => {
++            loadSettings();
++            loadPromptTemplateList();
++        });
+ 
+         function showAlert(msg, isSuccess) {
+-            const c = document.getElementById('alert-container');
+-            const cls = isSuccess ? 'alert-success' : 'alert-error';
+-            const icon = isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill';
++            const c = document.getElementById("alert-container");
++            const cls = isSuccess ? "alert-success" : "alert-error";
++            const icon = isSuccess ? "check-circle-fill" : "exclamation-triangle-fill";
+             c.innerHTML = `<div class="alert ${cls}" style="display:block;"><i class="bi bi-${icon}"></i> ${msg}</div>`;
+-            setTimeout(() => { c.innerHTML = ''; }, 3500);
++            setTimeout(() => { c.innerHTML = ""; }, 3500);
++        }
++
++        function escapeHtml(value) {
++            return String(value || "")
++                .replace(/&/g, "&amp;")
++                .replace(/</g, "&lt;")
++                .replace(/>/g, "&gt;")
++                .replace(/"/g, "&quot;")
++                .replace(/'/g, "&#39;");
++        }
++
++        function getModeDisplayName(mode) {
++            const map = { cloud: "Cloud AI", edge: "Edge AI", hybrid: "Hybrid AI" };
++            return map[mode] || mode;
++        }
++
++        async function refreshEffectiveModeStatus() {
++            const modeBadge = document.getElementById("dash-active-mode");
++            const strategyBadge = document.getElementById("dash-strategy");
++            if (!modeBadge || !strategyBadge) return;
++            try {
++                const response = await fetch("/api/runtime_ai_status");
++                if (!response.ok) throw new Error(`HTTP ${response.status}`);
++                const data = await response.json();
++                if (!data.success) throw new Error(data.message || "failed");
++                modeBadge.className = "badge badge-success";
++                modeBadge.innerHTML = `<i class="bi bi-play-circle-fill"></i> runtime嚗?{escapeHtml(getModeDisplayName(data.ai_mode || "-"))}`;
++                const provider = data.tutor_provider || "-";
++                const model = data.tutor_display_name || data.tutor_model || "-";
++                strategyBadge.className = "badge badge-neutral";
++                strategyBadge.innerHTML = `<i class="bi bi-gear"></i> tutor嚗?{escapeHtml(provider)} / ${escapeHtml(model)}`;
++            } catch (e) {
++                modeBadge.className = "badge badge-warning";
++                modeBadge.innerHTML = '<i class="bi bi-exclamation-triangle"></i> runtime嚗??仃??;
++            }
+         }
+ 
+         function updateDashboard() {
+-            const dashMode = document.getElementById('dash-mode');
+-            const dashStrategy = document.getElementById('dash-strategy');
+-            const dashKeyStatus = document.getElementById('api_key_status');
++            const selectedBadge = document.getElementById("dash-selected-mode");
++            const keyStatus = document.getElementById("api_key_status");
++            if (selectedBadge) {
++                selectedBadge.style.display = "inline-flex";
++                selectedBadge.className = "badge badge-primary";
++                selectedBadge.innerHTML = `?桀??豢?嚗?{escapeHtml(getModeDisplayName(currentMode))}`;
++            }
++
++            const keyLabel = document.getElementById("key-label");
++            const keyInput = document.getElementById("gemini-api-key");
+             
+-            if (currentMode === 'cloud') {
+-                dashMode.innerHTML = '<i class="bi bi-cloud-fill"></i> ?桀?璅∪?嚗loud AI';
+-                dashStrategy.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> 璅∪?蝑嚗?券蝡舀芋??;
+-            } else if (currentMode === 'edge') {
+-                dashMode.innerHTML = '<i class="bi bi-cpu-fill"></i> ?桀?璅∪?嚗dge AI';
+-                dashStrategy.innerHTML = '<i class="bi bi-hdd-network"></i> 璅∪?蝑嚗?冽?唳芋??;
++            if (currentMode === "edge") {
++                if (keyLabel) keyLabel.style.display = "none";
++                if (keyInput) keyInput.style.display = "none";
++                if (keyStatus) keyStatus.style.display = "none";
+             } else {
+-                dashMode.innerHTML = '<i class="bi bi-diagram-3-fill"></i> ?桀?璅∪?嚗ybrid';
+-                dashStrategy.innerHTML = '<i class="bi bi-boxes"></i> 璅∪?蝑嚗emini + Qwen 瘛瑕?';
++                if (keyLabel) keyLabel.style.display = "";
++                if (keyInput) keyInput.style.display = "";
++                if (keyStatus) keyStatus.style.display = "";
+             }
+ 
+-            const val = document.getElementById('gemini-api-key').value.trim() || window._geminiApiKeyTemp;
+-            if (currentMode === 'edge') {
+-                dashKeyStatus.style.display = 'none';
+-            } else {
+-                dashKeyStatus.style.display = 'inline-flex';
+-                if (!val) {
+-                    dashKeyStatus.className = 'badge badge-warning';
+-                    dashKeyStatus.innerText = '? ?芾身摰?;
++            if (keyStatus && currentMode !== "edge") {
++                const val = (document.getElementById("gemini-api-key")?.value || "").trim();
++                if (!val && !keyStatus.innerText.includes("??)) {
++                    keyStatus.style.color = "#d97706";
++                    keyStatus.innerText = "撠憛怠神 Key";
+                 }
+             }
+         }
+ 
+         function checkApiKey() {
+-            const val = document.getElementById('gemini-api-key').value.trim();
+-            const dashKeyStatus = document.getElementById('api_key_status');
+-            if (!val) {
+-                dashKeyStatus.className = 'badge badge-warning';
+-                dashKeyStatus.innerText = '? ?芾身摰?;
++            const keyStatus = document.getElementById("api_key_status");
++            const val = (document.getElementById("gemini-api-key")?.value || "").trim();
++            if (keyStatus && currentMode !== "edge") {
++                if (!val) {
++                    keyStatus.style.color = "#d97706";
++                    keyStatus.innerText = "撠憛怠神 Key";
++                } else {
++                    keyStatus.style.color = "#475569";
++                    keyStatus.innerText = "?芷?霅?;
++                }
+             }
+         }
+ 
+-        function testApiKey(event) {
+-            if (event) event.stopPropagation();
+-            const apiKey = document.getElementById("gemini-api-key").value.trim();
+-            const statusBadge = document.getElementById("api_key_status");
++        async function testAndSaveMode() {
++            const btn = document.getElementById("btn-mode-action");
++            const originalBtnText = btn.innerHTML;
++            const statusText = document.getElementById("api_key_status");
++            const selectedBadge = document.getElementById("dash-selected-mode");
++
++            if (currentMode === "edge") {
++                btn.innerHTML = `<i class="bi bi-hourglass-split"></i> ?脣?銝?..`;
++                btn.disabled = true;
++                if (statusText) statusText.innerText = "";
++                
++                try {
++                    const res = await fetch("/admin/ai_prompt_settings/update", {
++                        method: "POST",
++                        headers: { "Content-Type": "application/json" },
++                        body: JSON.stringify({ ai_mode: currentMode })
++                    });
++                    const data = await res.json();
++                    if (!res.ok || !data.success) throw new Error(data.message || "?脣?憭望?");
++                    
++                    showAlert(`璅∪?撌脫???? ${getModeDisplayName(currentMode)}`, true);
++                    if (selectedBadge) {
++                        selectedBadge.className = "badge badge-success";
++                        selectedBadge.innerHTML = `<i class="bi bi-check-circle-fill"></i> 撌脣??剁?${getModeDisplayName(currentMode)}`;
++                    }
++                    await refreshEffectiveModeStatus();
++                } catch (e) {
++                    showAlert(e.message || "璅∪??脣?憭望?", false);
++                } finally {
++                    btn.innerHTML = originalBtnText;
++                    btn.disabled = false;
++                }
++                return;
++            }
+ 
++            const apiKey = (document.getElementById("gemini-api-key")?.value || "").trim();
+             if (!apiKey) {
+-                statusBadge.innerText = "??隢撓??Key";
+-                statusBadge.className = "badge badge-danger";
++                if (statusText) {
++                    statusText.style.color = "#dc2626";
++                    statusText.innerText = "??隢?頛詨 API Key";
++                }
++                showAlert("隢?頛詨 API Key", false);
+                 return;
+             }
+ 
+-            statusBadge.innerText = "? 皜祈岫銝?..";
+-            statusBadge.className = "badge badge-warning";
++            btn.innerHTML = `<i class="bi bi-hourglass-split"></i> 皜祈岫銝?..`;
++            btn.disabled = true;
++            if (statusText) {
++                statusText.style.color = "#d97706";
++                statusText.innerText = "皜祈岫銝?..";
++            }
++            
++            try {
++                const testRes = await fetch("/test_api_key", {
++                    method: "POST",
++                    headers: { "Content-Type": "application/json" },
++                    body: JSON.stringify({ api_key: apiKey })
++                });
++                const testData = await testRes.json();
++                
++                if (!testData.success) {
++                    if (statusText) {
++                        statusText.style.color = "#dc2626";
++                        statusText.innerText = "??Key ?⊥?";
++                    }
++                    throw new Error("API Key 皜祈岫憭望????);
++                }
++                if (statusText) {
++                    statusText.style.color = "#16a34a";
++                    statusText.innerText = "??皜祈岫??";
++                }
+ 
+-            fetch("/test_api_key", {
+-                method: "POST",
+-                headers: {
+-                    "Content-Type": "application/json"
+-                },
+-                body: JSON.stringify({ api_key: apiKey })
+-            })
+-            .then(res => res.json())
+-            .then(data => {
+-                if (data.success) {
+-                    window._geminiApiKeyTemp = apiKey;
+-                    statusBadge.innerText = "? ??閮剖???";
+-                    statusBadge.className = "badge badge-success";
+-                } else {
+-                    statusBadge.innerText = "? ???⊥? Key";
+-                    statusBadge.className = "badge badge-danger";
++                btn.innerHTML = `<i class="bi bi-hourglass-split"></i> ?脣?璅∪?銝?..`;
++                
++                const saveRes = await fetch("/admin/ai_prompt_settings/update", {
++                    method: "POST",
++                    headers: { "Content-Type": "application/json" },
++                    body: JSON.stringify({ ai_mode: currentMode })
++                });
++                const saveData = await saveRes.json();
++                
++                if (!saveRes.ok || !saveData.success) {
++                    throw new Error(saveData.message || "璅∪??脣?憭望?");
+                 }
+-            })
+-            .catch(() => {
+-                statusBadge.innerText = "? ?? 皜祈岫憭望?";
+-                statusBadge.className = "badge badge-danger";
+-            });
++                
++                showAlert(`撌脤?霅?Key嚗?璅∪???????${getModeDisplayName(currentMode)}`, true);
++                if (selectedBadge) {
++                    selectedBadge.className = "badge badge-success";
++                    selectedBadge.innerHTML = `<i class="bi bi-check-circle-fill"></i> 撌脣??剁?${getModeDisplayName(currentMode)}`;
++                }
++                await refreshEffectiveModeStatus();
++            } catch (e) {
++                showAlert(e.message || "雿平憭望?", false);
++                if (statusText && statusText.innerText === "皜祈岫銝?..") {
++                    statusText.style.color = "#dc2626";
++                    statusText.innerText = "??撽??潛??航炊";
++                }
++            } finally {
++                btn.innerHTML = originalBtnText;
++                btn.disabled = false;
++            }
+         }
+ 
+         function selectMode(mode) {
+-            document.querySelectorAll('.mode-card').forEach(el => el.classList.remove('active'));
+-            document.getElementById(`mode-${mode}`).classList.add('active');
++            document.querySelectorAll(".mode-card").forEach(el => el.classList.remove("active"));
++            const target = document.getElementById(`mode-${mode}`);
++            if (target) target.classList.add("active");
+             currentMode = mode;
+-            
+-            const apiContainer = document.getElementById('global-api-key-container');
+-            if (apiContainer) {
+-                if (mode === 'cloud' || mode === 'hybrid') {
+-                    apiContainer.style.display = 'flex';
++
++            const actionBtn = document.getElementById("btn-mode-action");
++            if (actionBtn) {
++                if (mode === "edge") {
++                    actionBtn.innerHTML = `<i class="bi bi-save"></i> ?湔?脣?`;
++                    actionBtn.className = "btn btn-success";
+                 } else {
+-                    apiContainer.style.display = 'none';
++                    actionBtn.innerHTML = `<i class="bi bi-check-circle"></i> 皜祈岫銝血摮;
++                    actionBtn.className = "btn btn-primary";
+                 }
+             }
+-            
++
+             updateDashboard();
+             renderRoles();
+         }
+ 
+         function generateLocalPreview(mode, availableModels) {
+-            let roles = {};
+-            let g = availableModels.find(m => m.key.includes('gemini'))?.key || 'gemini-2.5-pro';
+-            let q_vl = availableModels.find(m => m.key.includes('qwen3-vl-8b'))?.key || 'qwen3-vl-8b';
+-            let q_8b = availableModels.find(m => m.key.includes('qwen3-8b') && !m.key.includes('vl'))?.key || 'qwen3-8b';
+-
+-            if (mode === 'cloud') {
++            const roles = {};
++            const g = availableModels.find(m => (m.key || "").includes("gemini"))?.key || "gemini-3-flash";
++            const qVl = availableModels.find(m => (m.key || "").includes("qwen3-vl-8b"))?.key || "qwen3-vl-8b";
++            const q8b = availableModels.find(m => (m.key || "").includes("qwen3-8b") && !(m.key || "").includes("vl"))?.key || "qwen3-8b";
++            if (mode === "cloud") {
+                 ROLE_DESC.forEach(r => roles[r.key] = g);
+-            } else if (mode === 'edge') {
+-                ROLE_DESC.forEach(r => roles[r.key] = r.key === 'vision_analyzer' ? q_vl : q_8b);
++            } else if (mode === "edge") {
++                ROLE_DESC.forEach(r => roles[r.key] = qVl);
+             } else {
+-                ROLE_DESC.forEach(r => roles[r.key] = g); // ?身 hybrid
+-                roles['vision_analyzer'] = q_vl;
+-                roles['default'] = q_8b;
++                ROLE_DESC.forEach(r => roles[r.key] = g);
++                roles.vision_analyzer = qVl;
++                roles.default = q8b;
+             }
+             return roles;
+         }
+ 
+         function renderRoles() {
+-            const c = document.getElementById('role-list');
+-            c.innerHTML = '';
+-
++            const c = document.getElementById("role-list");
++            if (!c) return;
++            c.innerHTML = "";
+             const rolesData = modelMappingCache[currentMode] || generateLocalPreview(currentMode, window._availModels || []);
+-
+             ROLE_DESC.forEach(r => {
+-                const item = document.createElement('div');
+-                item.className = 'role-item';
+-
+-                let modelKey = rolesData[r.key] || '?芸???';
+-                if (currentMode === 'cloud') {
+-                    modelKey = 'gemini-3-flash';
+-                } else if (currentMode === 'edge') {
+-                    modelKey = 'qwen3-vl-8b';
+-                } else if (currentMode === 'hybrid') {
+-                    if (r.key === 'vision_analyzer' || r.key === 'tutor') {
+-                        modelKey = 'gemini-3-flash';
+-                    } else if (r.key === 'system_coder') {
+-                        modelKey = 'qwen3-8b';
+-                    } else {
+-                        modelKey = 'qwen3-vl-8b';
+-                    }
+-                }
+-
++                const item = document.createElement("div");
++                item.className = "role-item";
+                 item.innerHTML = `
+                     <div class="role-info">
+-                        <span class="role-name">${r.name}</span>
+-                        <span class="role-code">${r.key}</span>
++                        <span class="role-name">${escapeHtml(r.name)}</span>
++                        <span class="role-code">${escapeHtml(r.key)}</span>
+                     </div>
+-                    <span class="role-model">${modelKey}</span>
++                    <span class="role-model">${escapeHtml(rolesData[r.key] || "?芷?蝵?)}</span>
+                 `;
+                 c.appendChild(item);
+             });
+-
+-            // RAG ?閮剖? Card
+-            const ragItem = document.createElement('div');
+-            ragItem.className = 'role-item rag-setting-card';
+-            ragItem.onclick = openRagSettingsModal;
+-            ragItem.innerHTML = `
+-                <div class="role-info">
+-                    <span class="role-name">RAG ?閮剖?<i class="bi bi-gear-fill" style="color: #6366f1; margin-left: 6px; font-size: 0.85em; vertical-align: middle;"></i></span>
+-                    <span class="role-code">retrieval / routing</span>
+-                </div>
+-                <span class="role-model" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">撌脣???/span>
+-            `;
+-            c.appendChild(ragItem);
+         }
+ 
+-        // RAG Settings Logics
+-        async function openRagSettingsModal() {
+-            try {
+-                const response = await fetch('/api/adaptive/rag_settings');
+-                const data = await response.json();
+-                document.getElementById('ragThreshold').value = data.threshold !== undefined ? data.threshold : 0.40;
+-                document.getElementById('ragTargetType').value = data.target_type || 'practice';
+-                document.getElementById('ragEnableAIChat').checked = data.enable_ai_chat !== false;
+-                document.getElementById('ragSettingsModal').style.display = 'flex';
+-            } catch (e) {
+-                showAlert('RAG 閮剖?頛憭望?', false);
+-            }
+-        }
+-
+-        function closeRagSettingsModal() {
+-            document.getElementById('ragSettingsModal').style.display = 'none';
+-        }
+-
+-        async function saveRagSettings() {
+-            const threshold = parseFloat(document.getElementById('ragThreshold').value);
+-            const target_type = document.getElementById('ragTargetType').value;
+-            const enable_ai_chat = document.getElementById('ragEnableAIChat').checked;
+-            try {
+-                const response = await fetch('/admin/rag_settings/update', {
+-                    method: 'POST',
+-                    headers: { 'Content-Type': 'application/json' },
+-                    body: JSON.stringify({ threshold, target_type, enable_ai_chat })
+-                });
+-                const data = await response.json();
+-                if (data.success) {
+-                    showAlert('RAG 閮剖?撌脣摮?', true);
+-                    closeRagSettingsModal();
+-                } else {
+-                    showAlert('RAG ?脣?憭望?嚗? + data.message, false);
+-                }
+-            } catch (error) {
+-                showAlert('?潛??芰?隤?, false);
+-            }
+-        }
++        // saveModeOnly function removed during UX unification.
+ 
+         function loadSettings() {
+-            fetch('/admin/ai_prompt_settings/get')
++            fetch("/admin/ai_prompt_settings/get")
+                 .then(r => r.json())
+                 .then(data => {
+-                    if (!data.success) return showAlert('霈?仃??, false);
+-
++                    if (!data.success) return showAlert("閮剖?霈?仃??, false);
+                     window._availModels = data.available_models || [];
+-                    document.getElementById('prompt-editor').value = data.prompt || '';
+-
+-                    currentMode = data.ai_mode || 'cloud';
++                    document.getElementById("prompt-editor").value = data.prompt || "";
++                    currentMode = data.ai_mode || "cloud";
+                     modelMappingCache[currentMode] = data.ai_model_roles || {};
+-
+-                    ['cloud', 'edge', 'hybrid'].forEach(m => {
++                    ["cloud", "edge", "hybrid"].forEach(m => {
+                         if (!modelMappingCache[m]) modelMappingCache[m] = generateLocalPreview(m, window._availModels);
+                     });
+-
+                     selectMode(currentMode);
++                    refreshEffectiveModeStatus();
+                 })
+-                .catch(e => showAlert('霈?隤?, false));
++                .catch(() => showAlert("閮剖?霈?仃??, false));
+         }
+ 
+         function saveSettings() {
+-            const prompt = document.getElementById('prompt-editor').value;
+-            if (!prompt.includes('{context}') || !prompt.includes('{prereq_text}')) {
+-                return showAlert('Prompt 敹?? {context} ??{prereq_text}', false);
++            const prompt = document.getElementById("prompt-editor").value;
++            if (!prompt.includes("{context}") || !prompt.includes("{prereq_text}")) {
++                return showAlert("Prompt 敹?? {context} ??{prereq_text}", false);
+             }
+-
+-            fetch('/admin/ai_prompt_settings/update', {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({ ai_mode: currentMode, prompt: prompt })
++            fetch("/admin/ai_prompt_settings/update", {
++                method: "POST",
++                headers: { "Content-Type": "application/json" },
++                body: JSON.stringify({ prompt })
+             })
+-                .then(r => r.json())
+-                .then(data => {
+-                    if (data.success) showAlert('閮剖?撌脣摮?', true);
+-                    else showAlert(data.message || '?脣?憭望?', false);
+-                    setTimeout(loadSettings, 500);
+-                });
++            .then(r => r.json())
++            .then(data => {
++                if (data.success) {
++                    showAlert("Prompt 撌脫??, true);
++                    loadSettings();
++                } else {
++                    showAlert(data.message || "Prompt ?湔憭望?", false);
++                }
++            })
++            .catch(() => showAlert("Prompt ?湔憭望?", false));
+         }
+ 
+         function resetSettings() {
+-            if (!confirm('蝣箏?閬儔?蝟餌絞?身?澆?嚗?)) return;
+-            fetch('/admin/ai_prompt_settings/reset', {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({ scope: 'all' })
+-            }).then(r => r.json()).then(data => {
++            if (!confirm("蝣箏?閬?閮?Prompt ?芋撘身摰?嚗?)) return;
++            fetch("/admin/ai_prompt_settings/reset", {
++                method: "POST",
++                headers: { "Content-Type": "application/json" },
++                body: JSON.stringify({ scope: "all" })
++            })
++            .then(r => r.json())
++            .then(data => {
+                 if (data.success) {
+-                    showAlert('撌脤?閮?, true);
++                    showAlert("撌脤?閮?, true);
+                     loadSettings();
++                    loadPromptTemplateList();
+                 } else {
+-                    showAlert('?身憭望?', false);
++                    showAlert(data.message || "?身憭望?", false);
+                 }
+-            });
++            })
++            .catch(() => showAlert("?身憭望?", false));
++        }
++
++        const PROMPT_META_MAPPING = {
++            "base_prompt": {
++                title: "?典??飛鈭箸 Prompt",
++                description: "摰儔 AI ?拇??擃犖?潦?瘞??摰閬?",
++                usage_context: "??飛?閬?摮?prompt ??撅方???,
++                used_in: "core/prompts/registry.py",
++                example_trigger: "隞颱?摮貊??航??飛??????,
++                status: "撌脫蝞?,
++                status_class: "badge-success"
++            },
++            "tutor_hint_prompt": {
++                title: "?內銝?甇?Prompt",
++                description: "摮貊??∩????銝?甇交?蝷綽?銝?亦策蝑?",
++                usage_context: "Adaptive ?飛?I ?拇??AG 撠店",
++                used_in: "core/advanced_rag_engine.py ??adv_rag_chat\ncore/ai_analyzer.py ??hint path",
++                example_trigger: "摮貊????獐????銝甇交隞暻潘???,
++                status: "撌脫蝞?,
++                status_class: "badge-success"
++            },
++            "concept_prompt": {
++                title: "?詨?閫敹菔?閫?Prompt",
++                description: "閫???摮豢?敹菜???",
++                usage_context: "暺??詨?閫敹萸?璁艙?岷??,
++                used_in: "core/ai_analyzer.py ??ask_ai_text",
++                example_trigger: "摮貊??喟??敹菜隞暻?,
++                status: "撌脫蝞?,
++                status_class: "badge-success"
++            },
++            "mistake_prompt": {
++                title: "?航炊閮箸 Prompt",
++                description: "??摮貊??航炊??銝衣策靽格迤?孵?",
++                usage_context: "暺????舫???摮貊?蝑敺?,
++                used_in: "core/ai_analyzer.py ??ask_ai_text_with_context (error path)",
++                example_trigger: "摮貊?蝑??瘙隤文???,
++                status: "撌脫蝞?,
++                status_class: "badge-success"
++            }
++        };
++
++        function toggleSection(sectionId) {
++            const content = document.getElementById(`content-${sectionId}`);
++            const icon = document.getElementById(`icon-${sectionId}`);
++            if (content.style.display === "none") {
++                content.style.display = "block";
++                icon.classList.replace("bi-chevron-down", "bi-chevron-up");
++            } else {
++                content.style.display = "none";
++                icon.classList.replace("bi-chevron-up", "bi-chevron-down");
++            }
++        }
++
++        function renderPromptTemplateList(items) {
++            const mainContainer = document.getElementById("prompt-main-container");
++            const advContainer = document.getElementById("prompt-advanced-container");
++            const sysContainer = document.getElementById("prompt-system-container");
++            
++            // if we are called before DOM is completely ready or if element is missing, fallback gracefully
++            // but the placeholders should exist in the HTML structure
++            
++            const sourceItems = Array.isArray(items) ? items : [];
++
++            const createCardHTML = (item) => {
++                const safeKey = escapeHtml(item.prompt_key);
++                const mapping = PROMPT_META_MAPPING[item.prompt_key] || {};
++                
++                const title = mapping.title || item.title || item.prompt_key;
++                const description = mapping.description || item.description || "?芣?靘?;
++                const usage = mapping.usage_context || item.usage_context || "?芣?靘?;
++                const usedIn = mapping.used_in || item.used_in || "?芣?靘?;
++                const trigger = mapping.example_trigger || item.example_trigger || "?芣?靘?;
++                
++                const status = mapping.status || "?芣蝞?;
++                const statusClass = mapping.status_class || "badge-neutral";
++                
++                const usedInHtml = escapeHtml(usedIn).replace(/\n/g, '<br>');
++
++                const required = escapeHtml(item.required_variables || "");
++                const requiredView = required
++                    ? `<div class="prompt-meta"><strong>required_variables:</strong> <code>${required}</code></div>`
++                    : "";
++                const activeBadge = item.is_active
++                    ? '<span class="badge badge-success">?銝?/span>'
++                    : '<span class="badge badge-neutral">撌脣???/span>';
++                
++                const managedBadge = `<span class="badge ${statusClass}">${escapeHtml(status)}</span>`;
++
++                return `
++                    <div class="prompt-template-card" data-prompt-key="${safeKey}">
++                        <div class="prompt-template-head">
++                            <div>
++                                <div class="role-name">${escapeHtml(title)}</div>
++                                <div class="prompt-template-key">${safeKey} | ${escapeHtml(item.category || "")}</div>
++                            </div>
++                            <div style="display:flex; gap:8px;">
++                                ${managedBadge}
++                                ${activeBadge}
++                            </div>
++                        </div>
++                        <div class="prompt-template-body">
++                            <div class="prompt-detail-group">
++                                <div class="prompt-detail-item"><strong>?? ?券?</strong>${escapeHtml(description)}</div>
++                                <div class="prompt-detail-item"><strong>?? 雿輻??嚗?/strong>${escapeHtml(usage)}</div>
++                                <div class="prompt-detail-item"><strong>?? 雿輻蝔?嚗?/strong><br>${usedInHtml}</div>
++                                <div class="prompt-detail-item"><strong>? 閫貊??嚗?/strong>${escapeHtml(trigger)}</div>
++                            </div>
++                            ${requiredView}
++                            <div class="prompt-meta"><strong>updated_at:</strong> ${escapeHtml(item.updated_at || "")}</div>
++                            <textarea class="prompt-template-editor" id="prompt-content-${safeKey}">${escapeHtml(item.content || "")}</textarea>
++                            <div class="prompt-template-actions">
++                                <button class="btn btn-warning" onclick="resetPromptTemplate('${safeKey}')"><i class="bi bi-arrow-counterclockwise"></i> ?身</button>
++                                <button class="btn btn-primary" onclick="savePromptTemplate('${safeKey}')"><i class="bi bi-save"></i> ?脣?</button>
++                            </div>
++                        </div>
++                    </div>
++                `;
++            };
++
++            const emptyHTML = '<div class="prompt-meta">?桀??∟???/div>';
++
++            if (mainContainer) {
++                const mainItems = sourceItems.filter(i => i.prompt_key === "tutor_hint_prompt");
++                mainContainer.innerHTML = mainItems.length > 0 ? mainItems.map(createCardHTML).join("") : emptyHTML;
++            }
++
++            if (advContainer) {
++                const advItems = sourceItems.filter(i => i.prompt_key === "concept_prompt" || i.prompt_key === "mistake_prompt");
++                advContainer.innerHTML = advItems.length > 0 ? advItems.map(createCardHTML).join("") : emptyHTML;
++            }
++
++            if (sysContainer) {
++                const sysItems = sourceItems.filter(i => i.prompt_key !== "tutor_hint_prompt" && i.prompt_key !== "concept_prompt" && i.prompt_key !== "mistake_prompt");
++                sysContainer.innerHTML = sysItems.length > 0 ? sysItems.map(createCardHTML).join("") : emptyHTML;
++            }
++        }
++
++        async function loadPromptTemplateList() {
++            try {
++                const res = await fetch("/admin/ai_prompt_settings/list");
++                const data = await res.json();
++                console.log("[PROMPT LIST RESPONSE]", data);
++                console.log("[PROMPT LIST ITEMS]", data.prompts);
++                if (!data.success) {
++                    showAlert(data.message || "Prompt 皜霈?仃??, false);
++                    return;
++                }
++                const prompts = Array.isArray(data.prompts)
++                    ? data.prompts
++                    : (Array.isArray(data.items) ? data.items : []);
++                promptTemplatesCache = prompts;
++                renderPromptTemplateList(promptTemplatesCache);
++            } catch (e) {
++                showAlert("Prompt 皜霈?仃??, false);
++            }
++        }
++
++        async function savePromptTemplate(promptKey) {
++            const textarea = document.getElementById(`prompt-content-${promptKey}`);
++            if (!textarea) return;
++            try {
++                const res = await fetch("/admin/ai_prompt_settings/prompt/update", {
++                    method: "POST",
++                    headers: { "Content-Type": "application/json" },
++                    body: JSON.stringify({ prompt_key: promptKey, content: textarea.value || "" })
++                });
++                const data = await res.json();
++                if (!res.ok || !data.success) {
++                    showAlert(data.message || "Prompt ?脣?憭望?", false);
++                    return;
++                }
++                showAlert(`${promptKey} ?脣???`, true);
++                loadPromptTemplateList();
++            } catch (e) {
++                showAlert("Prompt ?脣?憭望?", false);
++            }
++        }
++
++        async function resetPromptTemplate(promptKey) {
++            try {
++                const res = await fetch("/admin/ai_prompt_settings/prompt/reset", {
++                    method: "POST",
++                    headers: { "Content-Type": "application/json" },
++                    body: JSON.stringify({ prompt_key: promptKey })
++                });
++                const data = await res.json();
++                if (!res.ok || !data.success) {
++                    showAlert(data.message || "Prompt ?身憭望?", false);
++                    return;
++                }
++                const textarea = document.getElementById(`prompt-content-${promptKey}`);
++                if (textarea && typeof data.content === "string") {
++                    textarea.value = data.content;
++                }
++                showAlert(`${promptKey} 撌脤?閮苜, true);
++                loadPromptTemplateList();
++            } catch (e) {
++                showAlert("Prompt ?身憭望?", false);
++            }
+         }
+     </script>
+ </body>
+-
+-</html>
+\ No newline at end of file
++</html>
+
+commit 73ec117800df29b060cabec39b6092c60716813e
+Author: yyfsunnyboy <s310160@hlhs.hlc.edu.tw>
+Date:   Thu Apr 16 23:53:29 2026 +0800
+
+    *靽格AI 閮剖?銝?
+diff --git a/templates/ai_prompt_settings.html b/templates/ai_prompt_settings.html
+index a9571ae..9ca8047 100644
+--- a/templates/ai_prompt_settings.html
++++ b/templates/ai_prompt_settings.html
+@@ -322,6 +322,7 @@
+         .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+         .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
+         .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
++        .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+         .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+ 
+         .api-key-global {
+@@ -364,8 +365,8 @@
+                 <div class="api-key-global" id="global-api-key-container" style="flex-shrink: 0;">
+                     <label style="font-size: 0.85em; font-weight: 600; color: #475569; margin: 0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
+                     <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width: 180px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; font-family: monospace;">
+-                    <button class="btn btn-primary" onclick="saveApiKeyInline(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">蝣箏?</button>
+-                    <div id="dash-key-status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;"><i class="bi bi-exclamation-circle-fill"></i> ?芾身摰?/div>
++                    <button class="btn btn-primary" onclick="testApiKey(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">蝣箏?</button>
++                    <span id="api_key_status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;">? ?芾身摰?/span>
+                 </div>
+             </div>
+ 
+@@ -487,7 +488,7 @@
+         function updateDashboard() {
+             const dashMode = document.getElementById('dash-mode');
+             const dashStrategy = document.getElementById('dash-strategy');
+-            const dashKeyStatus = document.getElementById('dash-key-status');
++            const dashKeyStatus = document.getElementById('api_key_status');
+             
+             if (currentMode === 'cloud') {
+                 dashMode.innerHTML = '<i class="bi bi-cloud-fill"></i> ?桀?璅∪?嚗loud AI';
+@@ -505,31 +506,58 @@
+                 dashKeyStatus.style.display = 'none';
+             } else {
+                 dashKeyStatus.style.display = 'inline-flex';
+-                if (val) {
+-                    dashKeyStatus.className = 'badge badge-success';
+-                    dashKeyStatus.innerHTML = '<i class="bi bi-check-circle-fill"></i> 撌脰身摰?;
+-                } else {
++                if (!val) {
+                     dashKeyStatus.className = 'badge badge-warning';
+-                    dashKeyStatus.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> ?芾身摰?;
++                    dashKeyStatus.innerText = '? ?芾身摰?;
+                 }
+             }
+         }
+ 
+         function checkApiKey() {
+-            updateDashboard();
++            const val = document.getElementById('gemini-api-key').value.trim();
++            const dashKeyStatus = document.getElementById('api_key_status');
++            if (!val) {
++                dashKeyStatus.className = 'badge badge-warning';
++                dashKeyStatus.innerText = '? ?芾身摰?;
++            }
+         }
+ 
+-        function saveApiKeyInline(event) {
++        function testApiKey(event) {
+             if (event) event.stopPropagation();
+-            const el = document.getElementById('gemini-api-key');
+-            if (!el) return;
+-            const val = el.value.trim();
+-            if (val) {
+-                window._geminiApiKeyTemp = val;
+-                updateDashboard();
+-            } else {
+-                checkApiKey();
++            const apiKey = document.getElementById("gemini-api-key").value.trim();
++            const statusBadge = document.getElementById("api_key_status");
++
++            if (!apiKey) {
++                statusBadge.innerText = "??隢撓??Key";
++                statusBadge.className = "badge badge-danger";
++                return;
+             }
++
++            statusBadge.innerText = "? 皜祈岫銝?..";
++            statusBadge.className = "badge badge-warning";
++
++            fetch("/test_api_key", {
++                method: "POST",
++                headers: {
++                    "Content-Type": "application/json"
++                },
++                body: JSON.stringify({ api_key: apiKey })
++            })
++            .then(res => res.json())
++            .then(data => {
++                if (data.success) {
++                    window._geminiApiKeyTemp = apiKey;
++                    statusBadge.innerText = "? ??閮剖???";
++                    statusBadge.className = "badge badge-success";
++                } else {
++                    statusBadge.innerText = "? ???⊥? Key";
++                    statusBadge.className = "badge badge-danger";
++                }
++            })
++            .catch(() => {
++                statusBadge.innerText = "? ?? 皜祈岫憭望?";
++                statusBadge.className = "badge badge-danger";
++            });
+         }
+ 
+         function selectMode(mode) {
+
+commit 43cba0f4b008d38d9bf9375a0cbc4e2e7a445c92
+Author: ysw001 <yeh.ivan@hlbh.hlc.edu.tw>
+Date:   Thu Apr 16 16:36:02 2026 +0800
+
+    *靽格蝬脤???
+
+diff --git a/templates/ai_prompt_settings.html b/templates/ai_prompt_settings.html
+index 3012716..a9571ae 100644
+--- a/templates/ai_prompt_settings.html
++++ b/templates/ai_prompt_settings.html
+@@ -1,448 +1,718 @@
+-嚜?!DOCTYPE html>
++<!DOCTYPE html>
+ <html lang="zh-Hant">
++
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-    <title>AI閮剖? - ?芷?扳?摮貊頂蝯?/title>
++    <title>AI 璅∪?閮剖? - ?芷??摮貊頂蝯?/title>
++    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+     <style>
+-        * { box-sizing: border-box; margin: 0; padding: 0; }
++        * {
++            box-sizing: border-box;
++            margin: 0;
++            padding: 0;
++        }
++
+         body {
+-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+-            background: #f4f6f8;
++            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
++            background: #f5f7fa;
+             min-height: 100vh;
+-            color: #22313f;
+-            padding-bottom: 48px;
++            padding-bottom: 50px;
++        }
++
++        .container {
++            max-width: 1400px;
++            margin: 30px auto;
++            padding: 0 20px;
++        }
++
++        .header {
++            margin-bottom: 30px;
++        }
++
++        .header h1 {
++            color: #2c3e50;
++            display: flex;
++            align-items: center;
++            gap: 12px;
++            font-size: 1.8em;
++        }
++
++        .header p {
++            color: #666;
++            font-size: 1rem;
++            margin-top: 8px;
++            margin-left: 2px;
+         }
+-        .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+-        .page-header { margin-bottom: 18px; }
+-        .page-header h1 { font-size: 1.9rem; margin-bottom: 6px; }
+-        .page-header p { color: #5b6b7a; font-size: 0.96rem; }
+ 
+-        .card {
++        .alert {
++            padding: 15px 20px;
++            margin-bottom: 20px;
++            border-radius: 6px;
++            display: none;
++            font-weight: 500;
++        }
++
++        .alert-success {
++            background: #d4edda;
++            color: #155724;
++            border: 1px solid #c3e6cb;
++        }
++
++        .alert-error {
++            background: #f8d7da;
++            color: #721c24;
++            border: 1px solid #f5c6cb;
++        }
++
++        .section {
+             background: #fff;
+-            border-radius: 12px;
+-            box-shadow: 0 4px 16px rgba(17, 37, 58, 0.08);
+-            margin-bottom: 16px;
+-            overflow: hidden;
++            border: 1px solid #e9ecef;
++            border-radius: 8px;
++            padding: 24px;
++            margin-bottom: 24px;
++            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
++            border-top: 3px solid #3498db;
+         }
+-        .card-header {
+-            padding: 14px 18px;
+-            font-weight: 700;
+-            border-bottom: 1px solid #e8edf2;
+-            background: #f9fbfd;
++
++        .section-orange {
++            border-top-color: #f39c12;
+         }
+-        .card-body { padding: 18px; }
+-        .section-desc {
+-            color: #5b6b7a;
+-            margin-bottom: 14px;
+-            font-size: 0.92rem;
+-            line-height: 1.6;
++
++        .section-red {
++            border-top-color: #e74c3c;
+         }
+ 
+-        .grid-2 {
+-            display: grid;
+-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+-            gap: 14px;
++        h3.section-title {
++            color: #2c3e50;
++            font-size: 1.25em;
++            margin-bottom: 8px;
++            display: flex;
++            align-items: center;
++            gap: 8px;
+         }
+-        .field { margin-bottom: 14px; }
+-        .field label {
+-            display: block;
+-            font-weight: 600;
+-            margin-bottom: 6px;
+-            color: #1f2d3d;
++
++        p.section-desc {
++            color: #666;
++            font-size: 0.95em;
++            margin-bottom: 20px;
++            line-height: 1.5;
+         }
+-        .hint {
+-            color: #6c7a89;
+-            font-size: 0.86rem;
+-            line-height: 1.45;
+-            margin-top: 6px;
++
++        /* Mode Selection Cards */
++        .mode-cards {
++            display: grid;
++            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
++            gap: 16px;
+         }
+-        select, input[type="number"], textarea {
+-            width: 100%;
+-            border: 1px solid #d6dfe7;
++
++        .mode-card {
++            border: 2px solid #e2e8f0;
+             border-radius: 8px;
+-            padding: 10px 11px;
+-            font-size: 0.94rem;
++            padding: 20px;
++            cursor: pointer;
++            transition: all 0.2s;
++            position: relative;
++            background: #fafbfc;
++        }
++
++        .mode-card:hover {
++            border-color: #cbd5e1;
+             background: #fff;
++            transform: translateY(-2px);
++            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+         }
+-        select:focus, input:focus, textarea:focus {
+-            outline: none;
++
++        .mode-card.active {
+             border-color: #3498db;
+-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.13);
++            background: #f0f7fc;
+         }
+ 
+-        .checkbox-row {
++        .mode-card.active::after {
++            content: '??;
++            color: white;
++            background: #3498db;
++            position: absolute;
++            top: 16px;
++            right: 16px;
++            width: 24px;
++            height: 24px;
++            border-radius: 50%;
+             display: flex;
+-            gap: 9px;
+-            align-items: flex-start;
+-            margin-bottom: 10px;
+-            padding: 9px 10px;
+-            border: 1px solid #e8edf2;
+-            border-radius: 8px;
+-            background: #fbfcfd;
++            align-items: center;
++            justify-content: center;
++            font-weight: bold;
++        }
++
++        .mode-icon {
++            font-size: 2em;
++            color: #64748b;
++            margin-bottom: 12px;
++        }
++
++        .mode-card.active .mode-icon {
++            color: #3498db;
+         }
+-        .checkbox-row input[type="checkbox"] { margin-top: 3px; }
+-        .checkbox-row .label { font-weight: 600; }
+ 
+-        .model-row {
+-            border: 1px solid #e8edf2;
+-            border-radius: 10px;
+-            padding: 12px;
+-            margin-bottom: 10px;
+-            background: #fcfdff;
++        .mode-title {
++            font-size: 1.2em;
++            font-weight: 600;
++            color: #1e293b;
++            margin-bottom: 8px;
++        }
++
++        .mode-desc {
++            color: #475569;
++            font-size: 0.9em;
++            line-height: 1.5;
++            margin: 0;
++            padding-left: 20px;
++        }
++
++        .mode-desc li {
++            margin-bottom: 4px;
+         }
+-        .model-row-head {
++
++        /* Role Display List */
++        .role-list {
++            display: grid;
++            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
++            gap: 16px;
++        }
++
++        .role-item {
++            background: #f8fafc;
++            border: 1px solid #e2e8f0;
++            border-radius: 6px;
++            padding: 14px 16px;
+             display: flex;
+             justify-content: space-between;
+-            gap: 10px;
+-            margin-bottom: 8px;
+-            flex-wrap: wrap;
+-            align-items: baseline;
++            align-items: center;
+         }
+-        .code-tag {
+-            color: #6f7f8f;
+-            font-size: 0.82rem;
+-            font-family: "Courier New", monospace;
++
++        .role-info {
++            display: flex;
++            flex-direction: column;
++            gap: 4px;
+         }
+ 
+-        .prompt-warning {
+-            border-left: 4px solid #f39c12;
+-            background: #fff8e8;
+-            padding: 12px;
+-            border-radius: 8px;
+-            margin-bottom: 12px;
+-            color: #7a5c16;
+-            font-size: 0.9rem;
+-            line-height: 1.6;
++        .role-name {
++            font-weight: 600;
++            color: #334155;
++        }
++
++        .role-code {
++            font-size: 0.8em;
++            color: #64748b;
++            font-family: monospace;
++        }
++
++        .role-model {
++            background: #eef2ff;
++            color: #4338ca;
++            padding: 4px 10px;
++            border-radius: 12px;
++            font-size: 0.85em;
++            font-weight: 600;
++            border: 1px solid #c7d2fe;
+         }
++
++        .role-item.rag-setting-card {
++            cursor: pointer;
++            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
++            background: #f0f4ff;
++            border-color: #a5b4fc;
++        }
++        
++        .role-item.rag-setting-card:hover {
++            border-color: #6366f1;
++            box-shadow: 0 6px 12px -2px rgba(99, 102, 241, 0.15);
++            transform: translateY(-2px);
++        }
++
++        /* Prompt */
+         textarea {
+-            min-height: 320px;
++            width: 100%;
++            min-height: 180px;
+             resize: vertical;
+-            font-family: "Courier New", monospace;
+-            line-height: 1.55;
++            font-family: monospace;
++            padding: 16px;
++            border: 1px solid #cbd5e1;
++            border-radius: 6px;
++            line-height: 1.5;
+         }
+ 
++        textarea:focus {
++            outline: none;
++            border-color: #3498db;
++            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
++        }
++
++        .prompt-warning {
++            background: #fffafa;
++            border-left: 4px solid #e74c3c;
++            padding: 12px 16px;
++            color: #c0392b;
++            font-size: 0.9em;
++            margin-bottom: 16px;
++            font-weight: 600;
++            border-radius: 4px;
++        }
++
++        /* Actions */
+         .actions {
+             display: flex;
+-            gap: 10px;
+-            flex-wrap: wrap;
+-            margin-top: 14px;
++            gap: 12px;
++            margin-top: 24px;
++            justify-content: flex-end;
+         }
++
+         .btn {
+-            border: 0;
+-            border-radius: 8px;
+-            padding: 10px 16px;
+-            cursor: pointer;
++            padding: 10px 24px;
++            border: none;
++            border-radius: 6px;
+             font-weight: 600;
+-            color: #fff;
++            cursor: pointer;
++            display: inline-flex;
++            align-items: center;
++            gap: 8px;
++            transition: 0.2s;
+         }
+-        .btn-primary { background: #2f80ed; }
+-        .btn-primary:hover { background: #246dcf; }
+-        .btn-warning { background: #f39c12; }
+-        .btn-warning:hover { background: #d58307; }
+-        .btn-danger { background: #e74c3c; }
+-        .btn-danger:hover { background: #cf3f30; }
+-        .btn-secondary { background: #7f8c8d; }
+-        .btn-secondary:hover { background: #6c7879; }
+ 
+-        .alert {
++        .btn-primary {
++            background: #3498db;
++            color: white;
++        }
++
++        .btn-primary:hover {
++            background: #2980b9;
++        }
++
++        .btn-warning {
++            background: #f39c12;
++            color: white;
++        }
++
++        .btn-warning:hover {
++            background: #d68910;
++        }
++
++        /* Dashboard & Badges */
++        .dashboard-bar {
++            display: flex;
++            align-items: center;
++            gap: 8px;
++            background: #f8fafc;
++            border: 1px solid #e2e8f0;
+             border-radius: 8px;
+-            padding: 12px;
+-            margin-bottom: 14px;
+-            display: none;
++            padding: 12px 20px;
++            margin-bottom: 24px;
++            flex-wrap: wrap;
+         }
+-        .alert-success {
+-            background: #e7f7ed;
+-            border: 1px solid #bee8ca;
+-            color: #155b30;
++
++        .badge {
++            display: inline-flex;
++            align-items: center;
++            gap: 6px;
++            padding: 6px 12px;
++            border-radius: 20px;
++            font-size: 0.85em;
++            font-weight: 600;
+         }
+-        .alert-error {
+-            background: #fdecea;
+-            border: 1px solid #f8c8c2;
+-            color: #7a2118;
++        .badge-primary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
++        .badge-success { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }
++        .badge-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
++        .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
++
++        .api-key-global {
++            display: flex;
++            align-items: center;
++            gap: 8px;
+         }
+ 
+-        .muted { color: #6c7a89; font-size: 0.87rem; margin-top: 8px; }
++        .req-key-hint {
++            font-size: 0.75em;
++            color: #d97706;
++            margin-left: 6px;
++            font-weight: 600;
++        }
+     </style>
+ </head>
++
+ <body>
+     {% include '_admin_navbar.html' %}
+ 
+     <div class="container">
+-        <div class="page-header">
+-            <h1>AI閮剖?</h1>
+-            <p>?冽迨蝯曹?蝞∠?蝟餌絞??AI 璅∪?????亥? Prompt 璅⊥??/p>
++        <div class="header">
++            <h1><i class="bi bi-robot"></i> AI閮剖?</h1>
++            <p>?豢?蝟餌絞 AI 璅∪?銝行炎閬芋????/p>
+         </div>
+ 
+         <div id="alert-container"></div>
+ 
+-        <div class="card">
+-            <div class="card-header">?典? AI 蝑閮剖?</div>
+-            <div class="card-body">
+-                <p class="section-desc">???撅斗捱摰頂蝯望擃??其??嫣遙?芋????????券ㄐ??閮准?/p>
+-
+-                <div class="grid-2">
+-                    <div class="field">
+-                        <label for="ai-global-strategy">AI ??蝑</label>
+-                        <select id="ai-global-strategy">
+-                            <option value="local_first">local_first嚗?啣??</option>
+-                            <option value="cloud_first">cloud_first嚗蝡舫??釭嚗?/option>
+-                            <option value="hybrid_balanced">hybrid_balanced嚗毽?像銵∴?</option>
+-                        </select>
+-                        <div class="hint">?砍?芸?嚗?蝙?冽?唳芋??蝭??API ???br>?脩垢擃?鞈迎??芸?雿輻 Gemini 蝑蝡舀芋??br>瘛瑕?撟唾﹛嚗?隞餃??芸??剝??砍 / ?脩垢璅∪???/div>
+-                    </div>
+-
+-                    <div class="field">
+-                        <label for="ai-default-provider">?身 Provider</label>
+-                        <select id="ai-default-provider">
+-                            <option value="local">local</option>
+-                            <option value="google">google</option>
+-                        </select>
+-                        <div class="hint">甇方身摰??箏??fallback ?身靘???/div>
+-                    </div>
+-
+-                    <div class="field">
+-                        <label for="ai-rag-threshold">RAG 敹恍??曉?/label>
+-                        <input id="ai-rag-threshold" type="number" step="0.01" min="0" max="1">
+-                        <div class="hint">撠? ADVANCED_RAG_NAIVE_THRESHOLD??潸?撠??湔嚗?摰寞??脣 Advanced RAG ???/div>
+-                    </div>
++        <!-- ?憛?1 -->
++        <div class="section">
++            <h3 class="section-title"><i class="bi bi-globe"></i> ?典? AI 璅∪?</h3>
++            <div class="dashboard-bar" style="flex-wrap: nowrap; padding: 10px 16px; justify-content: flex-start;">
++                <span class="section-desc" style="margin: 0; font-size: 0.85em; white-space: nowrap;">?豢?蝟餌絞?湧???AI 璅∪?隤輻?曉?嚗??芸?憟?單???遙??/span>
++                
++                <div class="dashboard-meta" style="display: flex; gap: 8px; flex-shrink: 0;">
++                    <div class="badge badge-primary" id="dash-mode" style="padding: 4px 10px;"><i class="bi bi-cpu"></i> ?桀?璅∪?嚗?</div>
++                    <div class="badge badge-neutral" id="dash-strategy" style="padding: 4px 10px;"><i class="bi bi-gear"></i> 蝑嚗?</div>
+                 </div>
+-
+-                <div class="checkbox-row">
+-                    <input id="ai-enable-tutor" type="checkbox">
+-                    <div>
+-                        <div class="label">? AI ?拇???</div>
+-                        <div class="hint">??敺?蝟餌絞?臭蝙?冽?摮詨??隞餃??脰?????/div>
+-                    </div>
++                
++                <div class="api-key-global" id="global-api-key-container" style="flex-shrink: 0;">
++                    <label style="font-size: 0.85em; font-weight: 600; color: #475569; margin: 0;"><i class="bi bi-key-fill"></i> Gemini API Key</label>
++                    <input type="password" id="gemini-api-key" placeholder="Enter API Key" oninput="checkApiKey()" style="width: 180px; padding: 4px 8px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; font-family: monospace;">
++                    <button class="btn btn-primary" onclick="saveApiKeyInline(event)" style="padding: 4px 10px; font-size: 0.8em; min-height: unset; height: auto;">蝣箏?</button>
++                    <div id="dash-key-status" class="badge badge-warning" style="margin-left: 0; padding: 4px 10px;"><i class="bi bi-exclamation-circle-fill"></i> ?芾身摰?/div>
+                 </div>
++            </div>
+ 
+-                <div class="checkbox-row">
+-                    <input id="ai-enable-vision" type="checkbox">
+-                    <div>
+-                        <div class="label">?擃移摨?OCR / 閬死??璅∪?</div>
+-                        <div class="hint">??敺?閬死颲刻?隞餃???粥頛?蝎曉漲蝑??/div>
+-                    </div>
++            <div class="mode-cards">
++                <div class="mode-card" id="mode-cloud" onclick="selectMode('cloud')">
++                    <i class="bi bi-cloud mode-icon"></i>
++                    <div class="mode-title">Cloud AI<span class="req-key-hint">(? API Key)</span></div>
++                    <ul class="mode-desc">
++                        <li>?券隞餃??芸?雿輻?脩垢璅∪? (Gemini)</li>
++                        <li>?拙?撠?撅內??鞈芸??/li>
++                    </ul>
++                </div>
++                <div class="mode-card" id="mode-edge" onclick="selectMode('edge')">
++                    <i class="bi bi-cpu mode-icon"></i>
++                    <div class="mode-title">Edge AI</div>
++                    <ul class="mode-desc">
++                        <li>?券隞餃?雿輻?砍璅∪? (Qwen)</li>
++                        <li>?拙??Ｙ??啣????擃???</li>
++                    </ul>
++                </div>
++                <div class="mode-card" id="mode-hybrid" onclick="selectMode('hybrid')">
++                    <i class="bi bi-diagram-3 mode-icon"></i>
++                    <div class="mode-title">Hybrid<span class="req-key-hint">(? API Key)</span></div>
++                    <ul class="mode-desc">
++                        <li>蝟餌絞靘遙?????拙?璅∪?</li>
++                        <li>?潮“皞Ⅱ?釭??閬箄儘霅???/li>
++                    </ul>
+                 </div>
+             </div>
+         </div>
+ 
+-        <div class="card">
+-            <div class="card-header">??AI 隞餃?璅∪??蔭</div>
+-            <div class="card-body">
+-                <p class="section-desc">??脤?閬神撅扎?芸??嚗?頝銝???AI 蝑閮剖???/p>
+-                <div id="role-model-container"></div>
++        <!-- ?憛?2 -->
++        <div class="section section-orange">
++            <h3 class="section-title"><i class="bi bi-list-check"></i> ?遙?芋????(?航?)</h3>
++            <p class="section-desc">?寞??券??璅∪?嚗頂蝯勗歇?芸???隞乩?撠???雿單芋??/p>
++            <div id="role-list" class="role-list">
++                <!-- ?”???Ｙ? -->
+             </div>
+         </div>
+ 
+-        <div class="card">
+-            <div class="card-header">Prompt 璅⊥閮剖?</div>
+-            <div class="card-body">
+-                <div class="prompt-warning">
+-                    甇斗芋?踵?敶梢 AI ?神?寞閫??????靽? <code>{context}</code> ??<code>{prereq_text}</code> ?拙?閬??詻?-                </div>
++        <!-- ?憛?3 -->
++        <div class="section section-red">
++            <h3 class="section-title"><i class="bi bi-terminal"></i> ?箇? Prompt 璅⊥</h3>
++            <p class="section-desc">靽格蝟餌絞閫??憿?蝷?閰梁?瑽耨?孵?隢Ⅱ隤??詨??氬?/p>
+ 
+-                <textarea id="prompt-editor" placeholder="隢撓??Prompt 璅⊥"></textarea>
+-                <div id="update-time" class="muted">?敺?唳???霈?葉...</div>
++            <div class="prompt-warning">
++                <i class="bi bi-exclamation-triangle-fill"></i> 敹?? <code>{context}</code> ??<code>{prereq_text}</code>
++                ?甇?虜?踵?霈??+            </div>
+ 
+-                <div class="actions">
+-                    <button class="btn btn-primary" onclick="saveSettings()">?脣??券 AI 閮剖?</button>
+-                    <button class="btn btn-warning" onclick="resetPromptOnly()">?身 Prompt</button>
+-                    <button class="btn btn-danger" onclick="resetAllSettings()">?身?券 AI 閮剖?</button>
+-                    <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('teacher_dashboard') }}'">餈?敺</button>
+-                </div>
++            <textarea id="prompt-editor" placeholder="隢撓??Prompt..."></textarea>
++
++            <div class="actions">
++                <button class="btn btn-warning" onclick="resetSettings()">
++                    <i class="bi bi-arrow-counterclockwise"></i> ?身?粹?閮?+                </button>
++                <button class="btn btn-primary" onclick="saveSettings()">
++                    <i class="bi bi-save"></i> ?脣???身摰?+                </button>
+             </div>
+         </div>
+     </div>
+ 
+-    <script>
+-        const ROLE_ORDER = ['coder', 'tutor', 'vision_analyzer', 'classifier', 'default'];
+-        const ROLE_LABELS = {
+-            coder: '?寞 / 閫?? AI',
+-            tutor: '?飛?拇? AI',
+-            vision_analyzer: 'OCR / ?神颲刻? AI',
+-            classifier: '憿?? AI',
+-            default: '?身? AI'
+-        };
++    <!-- RAG Settings Modal -->
++    <div id="ragSettingsModal"
++        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
++        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
++            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.4em; color: #2c3e50;"><i class="bi bi-search"></i> RAG ?閮剖?</h3>
++            <div style="margin-top: 15px;">
++                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">Advanced RAG 閫貊?曉?(?身: 0.40)</label>
++                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
++            </div>
++            <div>
++                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">?揣?格???AI 閫??閮剖?</label>
++                <label style="display:inline-flex; align-items:center; margin-bottom:15px; color:#555; font-size: 0.9em; cursor:pointer;">
++                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px;">
++                    ? AI ?拇??? (????API 憿漲)
++                </label>
++            </div>
++            <div>
++                <label style="display:block; margin-bottom:5px; color:#555; font-weight:600;">??蝯?暺??格?隞</label>
++                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
++                    <option value="practice">?箇?蝺渡?隞 (/practice/)</option>
++                    <option value="adaptive">?芷????(/adaptive_practice_v2)</option>
++                </select>
++            </div>
++            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
++                <button onclick="closeRagSettingsModal()"
++                    style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">??</button>
++                <button onclick="saveRagSettings()"
++                    style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;">?脣?</button>
++            </div>
++        </div>
++    </div>
+ 
+-        let availableModels = [];
++    <script>
++        let currentMode = 'cloud';
++        let modelMappingCache = {}; // mode -> { role: model }
++
++        const ROLE_DESC = [
++            { key: 'vision_analyzer', name: 'OCR / ?神颲刻? AI' },
++            { key: 'coder', name: '?粹?蝔???AI' },
++            { key: 'tutor', name: '?飛?拇? AI' },
++            { key: 'classifier', name: '憿?? AI' },
++            { key: 'system_coder', name: '蝟餌絞蝔??? AI' },
++            { key: 'default', name: '?身? AI' }
++        ];
+ 
+         window.addEventListener('DOMContentLoaded', loadSettings);
+ 
+-        function showAlert(message, type) {
+-            const container = document.getElementById('alert-container');
+-            const cls = type === 'success' ? 'alert-success' : 'alert-error';
+-            container.innerHTML = `<div class="alert ${cls}" style="display:block;">${message}</div>`;
+-            setTimeout(() => { container.innerHTML = ''; }, 3500);
++        function showAlert(msg, isSuccess) {
++            const c = document.getElementById('alert-container');
++            const cls = isSuccess ? 'alert-success' : 'alert-error';
++            const icon = isSuccess ? 'check-circle-fill' : 'exclamation-triangle-fill';
++            c.innerHTML = `<div class="alert ${cls}" style="display:block;"><i class="bi bi-${icon}"></i> ${msg}</div>`;
++            setTimeout(() => { c.innerHTML = ''; }, 3500);
+         }
+ 
+-        function buildModelSelect(roleKey, selectedValue) {
+-            const select = document.createElement('select');
+-            select.id = `role-model-${roleKey}`;
+-
+-            const inheritOption = document.createElement('option');
+-            inheritOption.value = '';
+-            inheritOption.textContent = '頝?典?蝑嚗?閮哨?';
+-            select.appendChild(inheritOption);
+-
+-            availableModels.forEach(model => {
+-                const option = document.createElement('option');
+-                option.value = model.key;
+-                const desc = model.description ? `嚚?{model.description}` : '';
+-                option.textContent = `${model.key}${desc}`;
+-                select.appendChild(option);
+-            });
++        function updateDashboard() {
++            const dashMode = document.getElementById('dash-mode');
++            const dashStrategy = document.getElementById('dash-strategy');
++            const dashKeyStatus = document.getElementById('dash-key-status');
++            
++            if (currentMode === 'cloud') {
++                dashMode.innerHTML = '<i class="bi bi-cloud-fill"></i> ?桀?璅∪?嚗loud AI';
++                dashStrategy.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> 璅∪?蝑嚗?券蝡舀芋??;
++            } else if (currentMode === 'edge') {
++                dashMode.innerHTML = '<i class="bi bi-cpu-fill"></i> ?桀?璅∪?嚗dge AI';
++                dashStrategy.innerHTML = '<i class="bi bi-hdd-network"></i> 璅∪?蝑嚗?冽?唳芋??;
++            } else {
++                dashMode.innerHTML = '<i class="bi bi-diagram-3-fill"></i> ?桀?璅∪?嚗ybrid';
++                dashStrategy.innerHTML = '<i class="bi bi-boxes"></i> 璅∪?蝑嚗emini + Qwen 瘛瑕?';
++            }
+ 
+-            if (selectedValue) {
+-                select.value = selectedValue;
++            const val = document.getElementById('gemini-api-key').value.trim() || window._geminiApiKeyTemp;
++            if (currentMode === 'edge') {
++                dashKeyStatus.style.display = 'none';
++            } else {
++                dashKeyStatus.style.display = 'inline-flex';
++                if (val) {
++                    dashKeyStatus.className = 'badge badge-success';
++                    dashKeyStatus.innerHTML = '<i class="bi bi-check-circle-fill"></i> 撌脰身摰?;
++                } else {
++                    dashKeyStatus.className = 'badge badge-warning';
++                    dashKeyStatus.innerHTML = '<i class="bi bi-exclamation-circle-fill"></i> ?芾身摰?;
++                }
+             }
++        }
+ 
+-            return select;
++        function checkApiKey() {
++            updateDashboard();
+         }
+ 
+-        function renderRoleModels(modelRoles, roleDisplayNames) {
+-            const container = document.getElementById('role-model-container');
+-            container.innerHTML = '';
++        function saveApiKeyInline(event) {
++            if (event) event.stopPropagation();
++            const el = document.getElementById('gemini-api-key');
++            if (!el) return;
++            const val = el.value.trim();
++            if (val) {
++                window._geminiApiKeyTemp = val;
++                updateDashboard();
++            } else {
++                checkApiKey();
++            }
++        }
+ 
+-            ROLE_ORDER.forEach(roleKey => {
+-                const row = document.createElement('div');
+-                row.className = 'model-row';
++        function selectMode(mode) {
++            document.querySelectorAll('.mode-card').forEach(el => el.classList.remove('active'));
++            document.getElementById(`mode-${mode}`).classList.add('active');
++            currentMode = mode;
++            
++            const apiContainer = document.getElementById('global-api-key-container');
++            if (apiContainer) {
++                if (mode === 'cloud' || mode === 'hybrid') {
++                    apiContainer.style.display = 'flex';
++                } else {
++                    apiContainer.style.display = 'none';
++                }
++            }
++            
++            updateDashboard();
++            renderRoles();
++        }
+ 
+-                const head = document.createElement('div');
+-                head.className = 'model-row-head';
++        function generateLocalPreview(mode, availableModels) {
++            let roles = {};
++            let g = availableModels.find(m => m.key.includes('gemini'))?.key || 'gemini-2.5-pro';
++            let q_vl = availableModels.find(m => m.key.includes('qwen3-vl-8b'))?.key || 'qwen3-vl-8b';
++            let q_8b = availableModels.find(m => m.key.includes('qwen3-8b') && !m.key.includes('vl'))?.key || 'qwen3-8b';
++
++            if (mode === 'cloud') {
++                ROLE_DESC.forEach(r => roles[r.key] = g);
++            } else if (mode === 'edge') {
++                ROLE_DESC.forEach(r => roles[r.key] = r.key === 'vision_analyzer' ? q_vl : q_8b);
++            } else {
++                ROLE_DESC.forEach(r => roles[r.key] = g); // ?身 hybrid
++                roles['vision_analyzer'] = q_vl;
++                roles['default'] = q_8b;
++            }
++            return roles;
++        }
+ 
+-                const title = document.createElement('div');
+-                title.textContent = (roleDisplayNames && roleDisplayNames[roleKey]) || ROLE_LABELS[roleKey] || roleKey;
++        function renderRoles() {
++            const c = document.getElementById('role-list');
++            c.innerHTML = '';
++
++            const rolesData = modelMappingCache[currentMode] || generateLocalPreview(currentMode, window._availModels || []);
++
++            ROLE_DESC.forEach(r => {
++                const item = document.createElement('div');
++                item.className = 'role-item';
++
++                let modelKey = rolesData[r.key] || '?芸???';
++                if (currentMode === 'cloud') {
++                    modelKey = 'gemini-3-flash';
++                } else if (currentMode === 'edge') {
++                    modelKey = 'qwen3-vl-8b';
++                } else if (currentMode === 'hybrid') {
++                    if (r.key === 'vision_analyzer' || r.key === 'tutor') {
++                        modelKey = 'gemini-3-flash';
++                    } else if (r.key === 'system_coder') {
++                        modelKey = 'qwen3-8b';
++                    } else {
++                        modelKey = 'qwen3-vl-8b';
++                    }
++                }
+ 
+-                const code = document.createElement('div');
+-                code.className = 'code-tag';
+-                code.textContent = `蝔?隞??: ${roleKey}`;
++                item.innerHTML = `
++                    <div class="role-info">
++                        <span class="role-name">${r.name}</span>
++                        <span class="role-code">${r.key}</span>
++                    </div>
++                    <span class="role-model">${modelKey}</span>
++                `;
++                c.appendChild(item);
++            });
+ 
+-                head.appendChild(title);
+-                head.appendChild(code);
+-                row.appendChild(head);
++            // RAG ?閮剖? Card
++            const ragItem = document.createElement('div');
++            ragItem.className = 'role-item rag-setting-card';
++            ragItem.onclick = openRagSettingsModal;
++            ragItem.innerHTML = `
++                <div class="role-info">
++                    <span class="role-name">RAG ?閮剖?<i class="bi bi-gear-fill" style="color: #6366f1; margin-left: 6px; font-size: 0.85em; vertical-align: middle;"></i></span>
++                    <span class="role-code">retrieval / routing</span>
++                </div>
++                <span class="role-model" style="background: #ecfdf5; color: #059669; border-color: #a7f3d0;">撌脣???/span>
++            `;
++            c.appendChild(ragItem);
++        }
+ 
+-                const select = buildModelSelect(roleKey, modelRoles ? modelRoles[roleKey] : '');
+-                row.appendChild(select);
++        // RAG Settings Logics
++        async function openRagSettingsModal() {
++            try {
++                const response = await fetch('/api/adaptive/rag_settings');
++                const data = await response.json();
++                document.getElementById('ragThreshold').value = data.threshold !== undefined ? data.threshold : 0.40;
++                document.getElementById('ragTargetType').value = data.target_type || 'practice';
++                document.getElementById('ragEnableAIChat').checked = data.enable_ai_chat !== false;
++                document.getElementById('ragSettingsModal').style.display = 'flex';
++            } catch (e) {
++                showAlert('RAG 閮剖?頛憭望?', false);
++            }
++        }
+ 
+-                const hint = document.createElement('div');
+-                hint.className = 'hint';
+-                hint.textContent = '?亦?蝛綽?撠??其??孵??AI 蝑??;
+-                row.appendChild(hint);
++        function closeRagSettingsModal() {
++            document.getElementById('ragSettingsModal').style.display = 'none';
++        }
+ 
+-                container.appendChild(row);
+-            });
++        async function saveRagSettings() {
++            const threshold = parseFloat(document.getElementById('ragThreshold').value);
++            const target_type = document.getElementById('ragTargetType').value;
++            const enable_ai_chat = document.getElementById('ragEnableAIChat').checked;
++            try {
++                const response = await fetch('/admin/rag_settings/update', {
++                    method: 'POST',
++                    headers: { 'Content-Type': 'application/json' },
++                    body: JSON.stringify({ threshold, target_type, enable_ai_chat })
++                });
++                const data = await response.json();
++                if (data.success) {
++                    showAlert('RAG 閮剖?撌脣摮?', true);
++                    closeRagSettingsModal();
++                } else {
++                    showAlert('RAG ?脣?憭望?嚗? + data.message, false);
++                }
++            } catch (error) {
++                showAlert('?潛??芰?隤?, false);
++            }
+         }
+ 
+         function loadSettings() {
+             fetch('/admin/ai_prompt_settings/get')
+-                .then(resp => resp.json())
++                .then(r => r.json())
+                 .then(data => {
+-                    if (!data.success) {
+-                        showAlert('霈?身摰仃??' + (data.message || '?芰?航炊'), 'error');
+-                        return;
+-                    }
++                    if (!data.success) return showAlert('霈?仃??, false);
+ 
+-                    availableModels = Array.isArray(data.available_models) ? data.available_models : [];
++                    window._availModels = data.available_models || [];
+                     document.getElementById('prompt-editor').value = data.prompt || '';
+-                    document.getElementById('update-time').textContent = '?敺?唳???' + (data.updated_at || '撠?湔');
+ 
+-                    document.getElementById('ai-global-strategy').value = data.ai_global_strategy || 'hybrid_balanced';
+-                    document.getElementById('ai-default-provider').value = data.ai_default_provider || 'local';
+-                    document.getElementById('ai-rag-threshold').value = data.ai_rag_naive_threshold ?? 0.35;
+-                    document.getElementById('ai-enable-tutor').checked = !!data.ai_enable_tutor_response;
+-                    document.getElementById('ai-enable-vision').checked = !!data.ai_enable_high_precision_vision;
++                    currentMode = data.ai_mode || 'cloud';
++                    modelMappingCache[currentMode] = data.ai_model_roles || {};
+ 
+-                    renderRoleModels(data.ai_model_roles || {}, data.role_display_names || {});
+-                })
+-                .catch(err => showAlert('霈?身摰仃??' + err, 'error'));
+-        }
++                    ['cloud', 'edge', 'hybrid'].forEach(m => {
++                        if (!modelMappingCache[m]) modelMappingCache[m] = generateLocalPreview(m, window._availModels);
++                    });
+ 
+-        function collectRoleModels() {
+-            const mapping = {};
+-            ROLE_ORDER.forEach(roleKey => {
+-                const el = document.getElementById(`role-model-${roleKey}`);
+-                if (el && el.value) {
+-                    mapping[roleKey] = el.value;
+-                }
+-            });
+-            return mapping;
++                    selectMode(currentMode);
++                })
++                .catch(e => showAlert('霈?隤?, false));
+         }
+ 
+         function saveSettings() {
+-            const promptValue = document.getElementById('prompt-editor').value || '';
+-            if (!promptValue.includes('{context}') || !promptValue.includes('{prereq_text}')) {
+-                showAlert('Prompt 敹?? {context} ??{prereq_text}', 'error');
+-                return;
++            const prompt = document.getElementById('prompt-editor').value;
++            if (!prompt.includes('{context}') || !prompt.includes('{prereq_text}')) {
++                return showAlert('Prompt 敹?? {context} ??{prereq_text}', false);
+             }
+ 
+-            const payload = {
+-                prompt: promptValue,
+-                ai_global_strategy: document.getElementById('ai-global-strategy').value,
+-                ai_default_provider: document.getElementById('ai-default-provider').value,
+-                ai_model_roles: collectRoleModels(),
+-                ai_rag_naive_threshold: document.getElementById('ai-rag-threshold').value,
+-                ai_enable_tutor_response: document.getElementById('ai-enable-tutor').checked,
+-                ai_enable_high_precision_vision: document.getElementById('ai-enable-vision').checked
+-            };
+-
+             fetch('/admin/ai_prompt_settings/update', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify(payload)
++                body: JSON.stringify({ ai_mode: currentMode, prompt: prompt })
+             })
+-                .then(resp => resp.json())
++                .then(r => r.json())
+                 .then(data => {
+-                    if (data.success) {
+-                        showAlert(data.message || '閮剖?撌脣摮?, 'success');
+-                        loadSettings();
+-                        return;
+-                    }
+-                    showAlert('?脣?憭望?嚗? + (data.message || '?芰?航炊'), 'error');
+-                })
+-                .catch(err => showAlert('?脣?憭望?嚗? + err, 'error'));
++                    if (data.success) showAlert('閮剖?撌脣摮?', true);
++                    else showAlert(data.message || '?脣?憭望?', false);
++                    setTimeout(loadSettings, 500);
++                });
+         }
+ 
+-        function resetPromptOnly() {
+-            if (!confirm('蝣箏??芷?閮?Prompt 璅⊥嚗?)) {
+-                return;
+-            }
+-            fetch('/admin/ai_prompt_settings/reset', {
+-                method: 'POST',
+-                headers: { 'Content-Type': 'application/json' },
+-                body: JSON.stringify({ scope: 'prompt_only' })
+-            })
+-                .then(resp => resp.json())
+-                .then(data => {
+-                    if (data.success) {
+-                        showAlert(data.message || 'Prompt 撌脤?閮?, 'success');
+-                        loadSettings();
+-                        return;
+-                    }
+-                    showAlert('?身憭望?嚗? + (data.message || '?芰?航炊'), 'error');
+-                })
+-                .catch(err => showAlert('?身憭望?嚗? + err, 'error'));
+-        }
+-
+-        function resetAllSettings() {
+-            if (!confirm('蝣箏?閬?閮?Prompt ???AI 閮剖?嚗n甇斗?雿?皜征隞餃?璅∪?閬神閮剖???)) {
+-                return;
+-            }
++        function resetSettings() {
++            if (!confirm('蝣箏?閬儔?蝟餌絞?身?澆?嚗?)) return;
+             fetch('/admin/ai_prompt_settings/reset', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ scope: 'all' })
+-            })
+-                .then(resp => resp.json())
+-                .then(data => {
+-                    if (data.success) {
+-                        showAlert(data.message || '?券閮剖?撌脤?閮?, 'success');
+-                        loadSettings();
+-                        return;
+-                    }
+-                    showAlert('?身憭望?嚗? + (data.message || '?芰?航炊'), 'error');
+-                })
+-                .catch(err => showAlert('?身憭望?嚗? + err, 'error'));
++            }).then(r => r.json()).then(data => {
++                if (data.success) {
++                    showAlert('撌脤?閮?, true);
++                    loadSettings();
++                } else {
++                    showAlert('?身憭望?', false);
++                }
++            });
+         }
+     </script>
+ </body>
+-</html>
++
++</html>
+\ No newline at end of file

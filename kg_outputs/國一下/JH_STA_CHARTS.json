@@ -1,0 +1,594 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "統計與機率",
+    "l2_unit": "統計圖表與統計數據",
+    "l2_unit_id": "JH_STA_CHARTS"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_STA",
+      "level": "L1",
+      "name": "統計與機率",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_STA_CHARTS",
+      "level": "L2",
+      "name": "統計圖表與統計數據",
+      "parent_id": "L1_JH_STA"
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_01",
+      "level": "L3",
+      "name": "生活中的統計圖表",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習生活中常見的統計圖表，包括長條圖、折線圖、圓形圖和列聯表，並能報讀與繪製。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_01_a",
+      "level": "L4",
+      "name": "長條圖的認識與繪製",
+      "parent_id": "JH_STA_CHARTS_L3_01",
+      "description": "認識長條圖的時機與繪製方法，並能報讀長條圖，適用於資料呈現每個調查類別的次數時。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_01_b",
+      "level": "L4",
+      "name": "折線圖的認識與繪製",
+      "parent_id": "JH_STA_CHARTS_L3_01",
+      "description": "認識折線圖的時機與繪製方法，並能報讀折線圖，適用於想看出資料的變化趨勢或兩組數量的依賴關係時。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_01_c",
+      "level": "L4",
+      "name": "圓形圖的認識與繪製",
+      "parent_id": "JH_STA_CHARTS_L3_01",
+      "description": "認識圓形圖的時機與繪製方法，並能報讀圓形圖，適用於表達全體中每一部分所占的分量時。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_01_d",
+      "level": "L4",
+      "name": "列聯表的認識與繪製",
+      "parent_id": "JH_STA_CHARTS_L3_01",
+      "description": "認識列聯表的時機與繪製方法，並能報讀列聯表，適用於一群資料按兩種不同屬性分類時。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_02",
+      "level": "L3",
+      "name": "分組的次數分配表與繪圖",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習如何將資料分組並製作次數分配表，以及繪製直方圖和分組折線圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_02_a",
+      "level": "L4",
+      "name": "分組的次數分配表",
+      "parent_id": "JH_STA_CHARTS_L3_02",
+      "description": "了解分組資料的時機，認識組距、下限、上限等名詞，並能將原始資料整理成次數分配表。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_02_b",
+      "level": "L4",
+      "name": "分組資料的直方圖",
+      "parent_id": "JH_STA_CHARTS_L3_02",
+      "description": "學習如何根據次數分配表繪製直方圖，並能報讀直方圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_02_c",
+      "level": "L4",
+      "name": "分組資料的折線圖",
+      "parent_id": "JH_STA_CHARTS_L3_02",
+      "description": "學習如何根據次數分配表計算組中點並繪製分組折線圖，並能報讀分組折線圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_03",
+      "level": "L3",
+      "name": "計算機 M+ 的操作",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習使用計算機的 M+ 和 MR 功能鍵進行複雜的統計計算，特別是先乘除後加減的運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_03_a",
+      "level": "L4",
+      "name": "M+ 記憶加法",
+      "parent_id": "JH_STA_CHARTS_L3_03",
+      "description": "了解 M+ 鍵的功能，將目前螢幕顯示的數字加到記憶空間中。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_03_b",
+      "level": "L4",
+      "name": "MR 記憶喚起",
+      "parent_id": "JH_STA_CHARTS_L3_03",
+      "description": "了解 MR 鍵的功能，將記憶空間中保存的數字顯示在螢幕上。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_03_c",
+      "level": "L4",
+      "name": "應用 M+ 進行複合運算",
+      "parent_id": "JH_STA_CHARTS_L3_03",
+      "description": "運用 M+ 和 MR 鍵解決包含乘除和加減的複合計算問題。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_04",
+      "level": "L3",
+      "name": "平均數",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習平均數的意義、計算方法及其應用。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_04_a",
+      "level": "L4",
+      "name": "未分組資料的平均數",
+      "parent_id": "JH_STA_CHARTS_L3_04",
+      "description": "理解平均數的定義為「總和除以個數」，並能計算未分組資料的平均數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_04_b",
+      "level": "L4",
+      "name": "已分組資料的平均數",
+      "parent_id": "JH_STA_CHARTS_L3_04",
+      "description": "學習如何使用組中點計算已分組資料的平均數，理解其計算原理。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_04_c",
+      "level": "L4",
+      "name": "平均數的應用與限制",
+      "parent_id": "JH_STA_CHARTS_L3_04",
+      "description": "了解平均數在日常生活中的廣泛應用，並認識其易受極端值影響的限制。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_05",
+      "level": "L3",
+      "name": "中位數",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習中位數的意義、計算方法及其在不同資料類型中的應用。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_05_a",
+      "level": "L4",
+      "name": "中位數的意義與求法",
+      "parent_id": "JH_STA_CHARTS_L3_05",
+      "description": "理解中位數是將資料由小到大排列後最中間的數值，並認識其不受極端值影響的特性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_05_b",
+      "level": "L4",
+      "name": "奇數個資料的中位數",
+      "parent_id": "JH_STA_CHARTS_L3_05",
+      "description": "學習計算奇數個資料的中位數，即排序後第 (n+1)/2 個數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_05_c",
+      "level": "L4",
+      "name": "偶數個資料的中位數",
+      "parent_id": "JH_STA_CHARTS_L3_05",
+      "description": "學習計算偶數個資料的中位數，即排序後第 n/2 和 (n/2)+1 個數的平均數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_05_d",
+      "level": "L4",
+      "name": "已分組資料的中位數所在組別",
+      "parent_id": "JH_STA_CHARTS_L3_05",
+      "description": "學習如何判斷已分組資料的中位數落在哪個組別。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_06",
+      "level": "L3",
+      "name": "眾數",
+      "parent_id": "JH_STA_CHARTS",
+      "description": "學習眾數的意義與求法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_L3_06_a",
+      "level": "L4",
+      "name": "眾數的意義與求法",
+      "parent_id": "JH_STA_CHARTS_L3_06",
+      "description": "理解眾數是資料中出現次數最多的數值，並能找出資料的眾數，包括多個眾數的情況。",
+      "difficulty": 2
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_STA",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_STA",
+      "to_id": "JH_STA_CHARTS",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01",
+      "to_id": "JH_STA_CHARTS_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01",
+      "to_id": "JH_STA_CHARTS_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01",
+      "to_id": "JH_STA_CHARTS_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01",
+      "to_id": "JH_STA_CHARTS_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02",
+      "to_id": "JH_STA_CHARTS_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02",
+      "to_id": "JH_STA_CHARTS_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02",
+      "to_id": "JH_STA_CHARTS_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03",
+      "to_id": "JH_STA_CHARTS_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03",
+      "to_id": "JH_STA_CHARTS_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03",
+      "to_id": "JH_STA_CHARTS_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04",
+      "to_id": "JH_STA_CHARTS_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04",
+      "to_id": "JH_STA_CHARTS_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04",
+      "to_id": "JH_STA_CHARTS_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05",
+      "to_id": "JH_STA_CHARTS_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05",
+      "to_id": "JH_STA_CHARTS_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05",
+      "to_id": "JH_STA_CHARTS_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05",
+      "to_id": "JH_STA_CHARTS_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_06",
+      "to_id": "JH_STA_CHARTS_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01",
+      "to_id": "JH_STA_CHARTS_L3_01_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01_a",
+      "to_id": "JH_STA_CHARTS_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01_b",
+      "to_id": "JH_STA_CHARTS_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01_c",
+      "to_id": "JH_STA_CHARTS_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01_d",
+      "to_id": "JH_STA_CHARTS_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02",
+      "to_id": "JH_STA_CHARTS_L3_02_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_a",
+      "to_id": "JH_STA_CHARTS_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_b",
+      "to_id": "JH_STA_CHARTS_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_c",
+      "to_id": "JH_STA_CHARTS_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03",
+      "to_id": "JH_STA_CHARTS_L3_03_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03_a",
+      "to_id": "JH_STA_CHARTS_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03_b",
+      "to_id": "JH_STA_CHARTS_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_03_c",
+      "to_id": "JH_STA_CHARTS_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04",
+      "to_id": "JH_STA_CHARTS_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04_a",
+      "to_id": "JH_STA_CHARTS_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04_b",
+      "to_id": "JH_STA_CHARTS_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_04_c",
+      "to_id": "JH_STA_CHARTS_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05",
+      "to_id": "JH_STA_CHARTS_L3_05_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05_a",
+      "to_id": "JH_STA_CHARTS_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05_b",
+      "to_id": "JH_STA_CHARTS_L3_05_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05_c",
+      "to_id": "JH_STA_CHARTS_L3_05_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_05_d",
+      "to_id": "JH_STA_CHARTS_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_06",
+      "to_id": "JH_STA_CHARTS_L3_06_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_01_a",
+      "type": "prerequisite",
+      "reason": "理解統計圖表基本概念"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_01_b",
+      "type": "prerequisite",
+      "reason": "理解統計圖表基本概念"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_01_c",
+      "type": "prerequisite",
+      "reason": "理解統計圖表基本概念"
+    },
+    {
+      "from_id": "JH_STA_CHARTS",
+      "to_id": "JH_STA_CHARTS_L3_01_d",
+      "type": "prerequisite",
+      "reason": "理解統計圖表基本概念"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_01_a",
+      "to_id": "JH_STA_CHARTS_L3_02_a",
+      "type": "prerequisite",
+      "reason": "需要理解資料計數與分類"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_a",
+      "to_id": "JH_STA_CHARTS_L3_02_b",
+      "type": "prerequisite",
+      "reason": "繪製直方圖需先有分組資料"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_a",
+      "to_id": "JH_STA_CHARTS_L3_02_c",
+      "type": "prerequisite",
+      "reason": "繪製分組折線圖需先有分組資料"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_03_c",
+      "type": "prerequisite",
+      "reason": "進行數值計算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_STA_CHARTS_L3_03_c",
+      "type": "prerequisite",
+      "reason": "進行數值計算"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_04_a",
+      "type": "prerequisite",
+      "reason": "進行數值加總與除法運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_STA_CHARTS_L3_04_a",
+      "type": "prerequisite",
+      "reason": "進行數值加總與除法運算"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_a",
+      "to_id": "JH_STA_CHARTS_L3_04_b",
+      "type": "prerequisite",
+      "reason": "計算分組平均數需理解分組資料"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_04_b",
+      "type": "prerequisite",
+      "reason": "進行數值加總與除法運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_STA_CHARTS_L3_04_b",
+      "type": "prerequisite",
+      "reason": "進行數值加總與除法運算"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_05_a",
+      "type": "prerequisite",
+      "reason": "需要資料排序能力"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_05_b",
+      "type": "prerequisite",
+      "reason": "需要資料排序能力"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_05_c",
+      "type": "prerequisite",
+      "reason": "需要資料排序與平均計算能力"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_STA_CHARTS_L3_05_c",
+      "type": "prerequisite",
+      "reason": "需要資料排序與平均計算能力"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_L3_02_a",
+      "to_id": "JH_STA_CHARTS_L3_05_d",
+      "type": "prerequisite",
+      "reason": "判斷中位數組別需理解分組資料"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_STA_CHARTS_L3_06_a",
+      "type": "prerequisite",
+      "reason": "需要計算資料出現次數"
+    }
+  ],
+  "warnings": [
+    "⚠️ L3 sequence 不完整：預期 5 條，實際 0 條。"
+  ],
+  "stats": {
+    "total_nodes": 27,
+    "total_edges": 69
+  }
+}

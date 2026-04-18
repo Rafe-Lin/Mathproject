@@ -1,0 +1,260 @@
+{
+  "schema_version": "2.0",
+  "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+  "architecture": "edge_ai_orchestrator",
+  "description": "Family-based benchmark suite for junior-high polynomial four operations, reverse problems, and formula-based applications.",
+  "evals": [
+    {
+      "eval_id": "poly_add_sub_flat_l1_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Flat polynomial add/sub with like-term combination",
+      "family_id": "poly_add_sub_flat",
+      "difficulty": "easy",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 1,
+        "family_id": "poly_add_sub_flat",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "eval_id": "poly_add_sub_nested_l2_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Nested polynomial subtraction with bracket distribution",
+      "family_id": "poly_add_sub_nested",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_add_sub_nested",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_unknown_l3_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Unknown polynomial by add/sub equation",
+      "family_id": "poly_add_sub_unknown",
+      "difficulty": "hard",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_add_sub_unknown",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_mul_monomial_l1_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Monomial times polynomial",
+      "family_id": "poly_mul_monomial",
+      "difficulty": "easy",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 1,
+        "family_id": "poly_mul_monomial",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "eval_id": "poly_mul_poly_l2_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "General polynomial multiplication",
+      "family_id": "poly_mul_poly",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_mul_poly",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_identity_l2_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Special product identities",
+      "family_id": "poly_mul_special_identity",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_mul_special_identity",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_mixed_l2_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Mixed polynomial simplification with expansion and add/sub",
+      "family_id": "poly_mixed_simplify",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_mixed_simplify",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_div_monomial_eval_l2_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Polynomial divided by monomial with direct simplification",
+      "family_id": "poly_div_monomial_eval",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_div_monomial_eval",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_div_monomial_qr_l3_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Divide by monomial and report quotient/remainder",
+      "family_id": "poly_div_monomial_qr",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_div_monomial_qr",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_div_poly_qr_l3_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Polynomial long division with quotient/remainder",
+      "family_id": "poly_div_poly_qr",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_div_poly_qr",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_div_reverse_l3_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Reverse division reconstruction",
+      "family_id": "poly_div_reverse",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_div_reverse",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_geom_formula_l3_ab2",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab2",
+      "description": "Formula-based geometry application with polynomial expressions",
+      "family_id": "poly_geom_formula_direct",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_geom_formula_direct",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_add_sub_flat_l1_ab1",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab1",
+      "description": "Baseline flat polynomial add/sub",
+      "family_id": "poly_add_sub_flat",
+      "difficulty": "easy",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 1,
+        "family_id": "poly_add_sub_flat",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "eval_id": "poly_mul_poly_l2_ab1",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab1",
+      "description": "Baseline general polynomial multiplication",
+      "family_id": "poly_mul_poly",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_mul_poly",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_unknown_l3_ab1",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab1",
+      "description": "Baseline unknown polynomial equation",
+      "family_id": "poly_add_sub_unknown",
+      "difficulty": "hard",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_add_sub_unknown",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_mul_poly_l2_ab3",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab3",
+      "description": "AST-healed polynomial multiplication regression",
+      "family_id": "poly_mul_poly",
+      "difficulty": "mid",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "poly_mul_poly",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "poly_div_poly_qr_l3_ab3",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab3",
+      "description": "AST-healed polynomial long division regression",
+      "family_id": "poly_div_poly_qr",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_div_poly_qr",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "eval_id": "poly_geom_formula_l3_ab3",
+      "skill_name": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+      "ablation_target": "Ab3",
+      "description": "AST-healed formula geometry regression",
+      "family_id": "poly_geom_formula_direct",
+      "difficulty": "hard",
+      "timeout_seconds": 300,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "poly_geom_formula_direct",
+        "difficulty": "hard"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1150 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "幾何與測量",
+    "l2_unit": "第4章_平行與四邊形",
+    "l2_unit_id": "JH_GEO_PARA"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_GEO",
+      "level": "L1",
+      "name": "幾何與測量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_GEO_PARA",
+      "level": "L2",
+      "name": "第4章_平行與四邊形",
+      "parent_id": "L1_JH_GEO"
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01",
+      "level": "L3",
+      "name": "平行線的定義與基本性質",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習平行線的基礎概念，包括其定義、距離特性及遞移性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01_a",
+      "level": "L4",
+      "name": "平行線的定義",
+      "parent_id": "JH_GEO_PARA_L3_01",
+      "description": "理解在平面上兩直線若有共同垂直線則互相平行的定義。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01_b",
+      "level": "L4",
+      "name": "平行線間距離處處相等",
+      "parent_id": "JH_GEO_PARA_L3_01",
+      "description": "理解兩平行線間的垂直線段長度處處相等，即距離處處相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01_c",
+      "level": "L4",
+      "name": "平行線的遞移性",
+      "parent_id": "JH_GEO_PARA_L3_01",
+      "description": "理解若L1平行L2且L2平行L3，則L1平行L3的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01_d",
+      "level": "L4",
+      "name": "平行線性質總結",
+      "parent_id": "JH_GEO_PARA_L3_01",
+      "description": "歸納平行線的三項基本性質：定義、距離相等、遞移性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_01_e",
+      "level": "L4",
+      "name": "判斷兩直線是否平行",
+      "parent_id": "JH_GEO_PARA_L3_01",
+      "description": "根據圖形判斷兩條直線是否互相平行或垂直。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02",
+      "level": "L3",
+      "name": "截線與截角的關係",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習截線與截角的定義，並辨識同位角、內錯角、同側內角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02_a",
+      "level": "L4",
+      "name": "截線與截角的定義",
+      "parent_id": "JH_GEO_PARA_L3_02",
+      "description": "理解截線是交於兩條或多條直線的直線，以及截角是截線與被截直線形成的夾角。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02_b",
+      "level": "L4",
+      "name": "同位角",
+      "parent_id": "JH_GEO_PARA_L3_02",
+      "description": "辨識截線與兩直線形成的同位角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02_c",
+      "level": "L4",
+      "name": "內錯角",
+      "parent_id": "JH_GEO_PARA_L3_02",
+      "description": "辨識截線與兩直線形成的內錯角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02_d",
+      "level": "L4",
+      "name": "同側內角",
+      "parent_id": "JH_GEO_PARA_L3_02",
+      "description": "辨識截線與兩直線形成的同側內角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_02_e",
+      "level": "L4",
+      "name": "辨識不同截角",
+      "parent_id": "JH_GEO_PARA_L3_02",
+      "description": "在給定圖形中，正確辨識同位角、內錯角和同側內角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03",
+      "level": "L3",
+      "name": "平行線的截角性質與應用",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習平行線被截線所截時，同位角、內錯角、同側內角的性質，並應用於角度計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03_a",
+      "level": "L4",
+      "name": "平行線的同位角相等",
+      "parent_id": "JH_GEO_PARA_L3_03",
+      "description": "理解兩平行線被截線所截時，同位角相等的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03_b",
+      "level": "L4",
+      "name": "平行線的內錯角相等",
+      "parent_id": "JH_GEO_PARA_L3_03",
+      "description": "理解兩平行線被截線所截時，內錯角相等的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03_c",
+      "level": "L4",
+      "name": "平行線的同側內角互補",
+      "parent_id": "JH_GEO_PARA_L3_03",
+      "description": "理解兩平行線被截線所截時，同側內角互補的性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03_d",
+      "level": "L4",
+      "name": "綜合應用截角性質計算角度",
+      "parent_id": "JH_GEO_PARA_L3_03",
+      "description": "綜合運用同位角、內錯角、同側內角性質計算未知角度。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_03_e",
+      "level": "L4",
+      "name": "應用截角性質於複雜圖形",
+      "parent_id": "JH_GEO_PARA_L3_03",
+      "description": "在多條平行線或多條截線的複雜圖形中，應用截角性質計算角度。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04",
+      "level": "L3",
+      "name": "平行線的判別性質與應用",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習如何根據截角關係判斷兩直線是否平行，並應用於解題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04_a",
+      "level": "L4",
+      "name": "同位角相等判別平行",
+      "parent_id": "JH_GEO_PARA_L3_04",
+      "description": "理解若兩直線被截線所截，且同位角相等，則兩直線平行的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04_b",
+      "level": "L4",
+      "name": "內錯角相等判別平行",
+      "parent_id": "JH_GEO_PARA_L3_04",
+      "description": "理解若兩直線被截線所截，且內錯角相等，則兩直線平行的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04_c",
+      "level": "L4",
+      "name": "同側內角互補判別平行",
+      "parent_id": "JH_GEO_PARA_L3_04",
+      "description": "理解若兩直線被截線所截，且同側內角互補，則兩直線平行的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04_d",
+      "level": "L4",
+      "name": "平行線判別性質總結",
+      "parent_id": "JH_GEO_PARA_L3_04",
+      "description": "歸納平行線的三項判別性質：同位角相等、內錯角相等、同側內角互補。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_04_e",
+      "level": "L4",
+      "name": "應用判別性質於角平分線",
+      "parent_id": "JH_GEO_PARA_L3_04",
+      "description": "應用平行線判別性質，判斷由角平分線形成的直線是否平行。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05",
+      "level": "L3",
+      "name": "平行線的尺規作圖",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習利用尺規作圖繪製平行線的方法，並理解其原理。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05_a",
+      "level": "L4",
+      "name": "利用直尺和三角板作圖",
+      "parent_id": "JH_GEO_PARA_L3_05",
+      "description": "學習使用直尺和三角板，通過已知直線外一點作其平行線。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05_b",
+      "level": "L4",
+      "name": "利用尺規等角作圖",
+      "parent_id": "JH_GEO_PARA_L3_05",
+      "description": "學習使用尺規，通過已知直線外一點作其平行線（利用同位角或內錯角相等）。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05_c",
+      "level": "L4",
+      "name": "作圖原理理解",
+      "parent_id": "JH_GEO_PARA_L3_05",
+      "description": "理解平行線作圖方法背後的幾何原理（如兩直線同時垂直於另一直線則平行，或同位角相等判別平行）。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05_d",
+      "level": "L4",
+      "name": "尺規作圖應用於三角形",
+      "parent_id": "JH_GEO_PARA_L3_05",
+      "description": "將平行線的尺規作圖應用於三角形相關問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_05_e",
+      "level": "L4",
+      "name": "尺規作圖應用於四邊形",
+      "parent_id": "JH_GEO_PARA_L3_05",
+      "description": "將平行線的尺規作圖應用於四邊形相關問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06",
+      "level": "L3",
+      "name": "平行四邊形的定義與基本性質",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習平行四邊形的定義及其內角、邊長、對角線的基本性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_a",
+      "level": "L4",
+      "name": "平行四邊形的定義",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "理解兩雙對邊分別平行的四邊形稱為平行四邊形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_b",
+      "level": "L4",
+      "name": "對角相等與鄰角互補",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "理解平行四邊形的對角相等，鄰角互補的性質，並應用於角度計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_c",
+      "level": "L4",
+      "name": "對邊相等",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "理解平行四邊形的對邊相等性質，並應用於邊長計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_d",
+      "level": "L4",
+      "name": "對角線互相平分",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "理解平行四邊形的兩對角線互相平分的性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_e",
+      "level": "L4",
+      "name": "對角線將面積四等分",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "理解平行四邊形的兩對角線將其面積四等分的性質，並應用於面積計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_06_f",
+      "level": "L4",
+      "name": "平行四邊形性質總結",
+      "parent_id": "JH_GEO_PARA_L3_06",
+      "description": "歸納平行四邊形的所有基本性質：對角相等、鄰角互補、對邊相等、對角線互相平分、對角線將面積四等分。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07",
+      "level": "L3",
+      "name": "平行四邊形的判別性質與作圖",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習判斷一個四邊形是否為平行四邊形的條件，並利用尺規作圖繪製平行四邊形。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_a",
+      "level": "L4",
+      "name": "兩雙對角分別相等判別平行四邊形",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "理解若四邊形兩雙對角分別相等，則為平行四邊形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_b",
+      "level": "L4",
+      "name": "兩雙對邊分別相等判別平行四邊形",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "理解若四邊形兩雙對邊分別相等，則為平行四邊形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_c",
+      "level": "L4",
+      "name": "一雙對邊平行且相等判別平行四邊形",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "理解若四邊形一雙對邊平行且相等，則為平行四邊形的判別性質。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_d",
+      "level": "L4",
+      "name": "兩對角線互相平分判別平行四邊形",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "理解若四邊形兩對角線互相平分，則為平行四邊形的判別性質。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_e",
+      "level": "L4",
+      "name": "平行四邊形判別性質總結",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "歸納平行四邊形的所有判別性質。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_07_f",
+      "level": "L4",
+      "name": "利用判別性質作圖",
+      "parent_id": "JH_GEO_PARA_L3_07",
+      "description": "利用平行四邊形的判別性質，進行尺規作圖繪製平行四邊形。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08",
+      "level": "L3",
+      "name": "特殊四邊形 - 長方形",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習長方形的定義、對角線性質及其判別條件。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08_a",
+      "level": "L4",
+      "name": "長方形的定義",
+      "parent_id": "JH_GEO_PARA_L3_08",
+      "description": "理解四個角都是直角的四邊形稱為長方形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08_b",
+      "level": "L4",
+      "name": "長方形對角線相等且互相平分",
+      "parent_id": "JH_GEO_PARA_L3_08",
+      "description": "理解長方形的兩對角線相等且互相平分的性質，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08_c",
+      "level": "L4",
+      "name": "兩對角線相等且互相平分判別長方形",
+      "parent_id": "JH_GEO_PARA_L3_08",
+      "description": "理解若四邊形兩對角線相等且互相平分，則為長方形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08_d",
+      "level": "L4",
+      "name": "長方形與平行四邊形的關係",
+      "parent_id": "JH_GEO_PARA_L3_08",
+      "description": "理解長方形是特殊的平行四邊形，具有平行四邊形的所有性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_08_e",
+      "level": "L4",
+      "name": "長方形對角線計算應用",
+      "parent_id": "JH_GEO_PARA_L3_08",
+      "description": "應用長方形對角線性質，結合畢氏定理計算邊長或對角線長。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09",
+      "level": "L3",
+      "name": "特殊四邊形 - 菱形",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習菱形的定義、對角線性質、面積公式及其判別條件。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09_a",
+      "level": "L4",
+      "name": "菱形的定義",
+      "parent_id": "JH_GEO_PARA_L3_09",
+      "description": "理解四個邊都相等的四邊形稱為菱形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09_b",
+      "level": "L4",
+      "name": "菱形對角線互相垂直平分且平分內角",
+      "parent_id": "JH_GEO_PARA_L3_09",
+      "description": "理解菱形的兩對角線互相垂直平分且平分內角的性質，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09_c",
+      "level": "L4",
+      "name": "兩對角線互相垂直平分判別菱形",
+      "parent_id": "JH_GEO_PARA_L3_09",
+      "description": "理解若四邊形兩對角線互相垂直平分，則為菱形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09_d",
+      "level": "L4",
+      "name": "菱形面積公式",
+      "parent_id": "JH_GEO_PARA_L3_09",
+      "description": "學習菱形面積等於兩對角線長乘積的一半的公式，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_09_e",
+      "level": "L4",
+      "name": "菱形性質應用",
+      "parent_id": "JH_GEO_PARA_L3_09",
+      "description": "綜合應用菱形的對角線性質和畢氏定理，計算邊長、對角線長或角度。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10",
+      "level": "L3",
+      "name": "特殊四邊形 - 箏形與正方形",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習箏形和正方形的定義、對角線性質、面積公式及其判別條件。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_a",
+      "level": "L4",
+      "name": "箏形的定義",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "理解兩雙鄰邊分別等長的四邊形稱為箏形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_b",
+      "level": "L4",
+      "name": "箏形一條對角線垂直平分另一條對角線",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "理解箏形的一條對角線會垂直平分另一條對角線的性質，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_c",
+      "level": "L4",
+      "name": "一條對角線垂直平分另一條對角線判別箏形",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "理解若四邊形一條對角線垂直平分另一條對角線，則為箏形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_d",
+      "level": "L4",
+      "name": "正方形的定義與性質",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "理解正方形是四個角都是直角且四個邊都相等的四邊形，並歸納其所有性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_e",
+      "level": "L4",
+      "name": "正方形對角線相等且互相垂直平分",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "理解正方形的兩對角線相等且互相垂直平分的性質，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_10_f",
+      "level": "L4",
+      "name": "箏形與正方形面積計算",
+      "parent_id": "JH_GEO_PARA_L3_10",
+      "description": "應用箏形和正方形的面積公式進行計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11",
+      "level": "L3",
+      "name": "梯形的定義與中點連線段",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習梯形的定義、兩腰中點連線段的性質及其面積公式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11_a",
+      "level": "L4",
+      "name": "梯形的定義",
+      "parent_id": "JH_GEO_PARA_L3_11",
+      "description": "理解一組對邊平行，另一組對邊不平行的四邊形稱為梯形，並辨識上底、下底、腰和底角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11_b",
+      "level": "L4",
+      "name": "梯形兩腰中點連線段的性質",
+      "parent_id": "JH_GEO_PARA_L3_11",
+      "description": "理解梯形兩腰中點連線段平行於兩底，且長度等於兩底和的一半。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11_c",
+      "level": "L4",
+      "name": "梯形面積公式",
+      "parent_id": "JH_GEO_PARA_L3_11",
+      "description": "學習梯形面積公式：(上底+下底)×高÷2，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11_d",
+      "level": "L4",
+      "name": "中點連線段性質探索",
+      "parent_id": "JH_GEO_PARA_L3_11",
+      "description": "透過圖形拼湊與觀察，探索梯形兩腰中點連線段的性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_11_e",
+      "level": "L4",
+      "name": "中點連線段應用計算",
+      "parent_id": "JH_GEO_PARA_L3_11",
+      "description": "應用梯形兩腰中點連線段的性質，計算相關線段長度。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12",
+      "level": "L3",
+      "name": "等腰梯形的性質與判別",
+      "parent_id": "JH_GEO_PARA",
+      "description": "學習等腰梯形的定義、底角與對角線性質及其判別條件。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12_a",
+      "level": "L4",
+      "name": "等腰梯形的定義",
+      "parent_id": "JH_GEO_PARA_L3_12",
+      "description": "理解兩腰相等的梯形稱為等腰梯形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12_b",
+      "level": "L4",
+      "name": "等腰梯形兩底角相等",
+      "parent_id": "JH_GEO_PARA_L3_12",
+      "description": "理解等腰梯形的兩底角相等的性質，並應用於角度計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12_c",
+      "level": "L4",
+      "name": "等腰梯形兩對角線相等",
+      "parent_id": "JH_GEO_PARA_L3_12",
+      "description": "理解等腰梯形的兩對角線相等的性質，並應用於計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12_d",
+      "level": "L4",
+      "name": "兩底角相等判別等腰梯形",
+      "parent_id": "JH_GEO_PARA_L3_12",
+      "description": "理解若梯形兩底角相等，則為等腰梯形的判別性質。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PARA_L3_12_e",
+      "level": "L4",
+      "name": "等腰梯形性質應用計算",
+      "parent_id": "JH_GEO_PARA_L3_12",
+      "description": "綜合應用等腰梯形的性質，計算角度、邊長或對角線長。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_GEO",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_GEO",
+      "to_id": "JH_GEO_PARA",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_04_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_05_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_06_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_07_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_08_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_08_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_09_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_10_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_11_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_11_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_11_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA",
+      "to_id": "JH_GEO_PARA_L3_12",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_12",
+      "to_id": "JH_GEO_PARA_L3_12_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_12",
+      "to_id": "JH_GEO_PARA_L3_12_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_12",
+      "to_id": "JH_GEO_PARA_L3_12_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_12",
+      "to_id": "JH_GEO_PARA_L3_12_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_12",
+      "to_id": "JH_GEO_PARA_L3_12_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_01",
+      "to_id": "JH_GEO_PARA_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_05",
+      "to_id": "JH_GEO_PARA_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_07",
+      "to_id": "JH_GEO_PARA_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_10",
+      "to_id": "JH_GEO_PARA_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_12",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_02",
+      "to_id": "JH_GEO_PARA_L3_03",
+      "type": "prerequisite",
+      "reason": "需先理解截線與截角的定義及種類，才能學習其性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_04",
+      "type": "prerequisite",
+      "reason": "理解平行線的截角性質是判斷兩直線是否平行的基礎。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_04",
+      "to_id": "JH_GEO_PARA_L3_05",
+      "type": "prerequisite",
+      "reason": "理解平行線的判別性質是驗證尺規作圖正確性的基礎。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_03",
+      "to_id": "JH_GEO_PARA_L3_06",
+      "type": "prerequisite",
+      "reason": "平行線的截角性質是推導平行四邊形內角、邊長性質的基礎。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_07",
+      "type": "prerequisite",
+      "reason": "理解平行四邊形的性質是學習其判別條件的基礎。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_08",
+      "type": "prerequisite",
+      "reason": "長方形是特殊的平行四邊形，需先理解平行四邊形性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_09",
+      "type": "prerequisite",
+      "reason": "菱形是特殊的平行四邊形，需先理解平行四邊形性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_10",
+      "type": "prerequisite",
+      "reason": "正方形是特殊的平行四邊形，需先理解平行四邊形性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_08",
+      "to_id": "JH_GEO_PARA_L3_10",
+      "type": "prerequisite",
+      "reason": "正方形同時具有長方形的性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_09",
+      "to_id": "JH_GEO_PARA_L3_10",
+      "type": "prerequisite",
+      "reason": "正方形同時具有菱形的性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_06",
+      "to_id": "JH_GEO_PARA_L3_11",
+      "type": "prerequisite",
+      "reason": "平行四邊形性質的理解有助於推導梯形中點連線段的性質。"
+    },
+    {
+      "from_id": "JH_GEO_PARA_L3_11",
+      "to_id": "JH_GEO_PARA_L3_12",
+      "type": "prerequisite",
+      "reason": "理解梯形的定義是學習等腰梯形性質的基礎。"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 78,
+    "total_edges": 100,
+    "l3_count": 12,
+    "l4_count": 63,
+    "l4_avg_per_l3": 5.25
+  }
+}

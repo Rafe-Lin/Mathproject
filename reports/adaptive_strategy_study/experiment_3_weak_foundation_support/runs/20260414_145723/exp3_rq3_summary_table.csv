@@ -1,0 +1,25 @@
+﻿MAX_STEPS,Strategy,Escape-from-C Rate (%),Mean Final Mastery
+30,Baseline,1.8,0.404604
+30,Rule-Based,3.0,0.472495
+30,Adaptive (Ours),6.4,0.391537
+40,Baseline,6.9,0.44199
+40,Rule-Based,9.1,0.499711
+40,Adaptive (Ours),17.0,0.424231
+50,Baseline,16.8,0.473972
+50,Rule-Based,17.1,0.520686
+50,Adaptive (Ours),30.5,0.449903
+60,Baseline,27.1,0.496019
+60,Rule-Based,23.9,0.5316
+60,Adaptive (Ours),40.8,0.472181
+70,Baseline,39.2,0.517694
+70,Rule-Based,33.6,0.543226
+70,Adaptive (Ours),52.7,0.493089
+80,Baseline,45.7,0.529929
+80,Rule-Based,37.5,0.547646
+80,Adaptive (Ours),55.7,0.503743
+90,Baseline,49.4,0.536662
+90,Rule-Based,45.1,0.554367
+90,Adaptive (Ours),63.9,0.525163
+100,Baseline,59.8,0.551339
+100,Rule-Based,50.2,0.556856
+100,Adaptive (Ours),66.7,0.52755

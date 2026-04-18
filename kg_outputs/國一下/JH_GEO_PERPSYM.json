@@ -1,0 +1,706 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "",
+    "l2_unit": "垂直平分與線對稱",
+    "l2_unit_id": "JH_GEO_PERPSYM"
+  },
+  "nodes": [
+    {
+      "id": "L0_UNK",
+      "level": "L0",
+      "name": "JH",
+      "parent_id": null
+    },
+    {
+      "id": "L1_UNK_UNK",
+      "level": "L1",
+      "name": "GEO",
+      "parent_id": "L0_UNK"
+    },
+    {
+      "id": "JH_GEO_PERPSYM",
+      "level": "L2",
+      "name": "垂直平分與線對稱",
+      "parent_id": "L1_UNK_UNK"
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_01",
+      "level": "L3",
+      "name": "幾何圖形基礎概念",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習點、線、線段、射線的意義、標示方法，以及相異兩點決定一直線的幾何基礎。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_01_a",
+      "level": "L4",
+      "name": "點的意義與標示",
+      "parent_id": "JH_GEO_PERPSYM_L3_01",
+      "description": "理解點在幾何中的意義，並學習如何用大寫字母標示點。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_01_b",
+      "level": "L4",
+      "name": "直線、線段、射線的意義與標示",
+      "parent_id": "JH_GEO_PERPSYM_L3_01",
+      "description": "區分直線、線段、射線的定義，並學習其各自的符號標示方法。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_01_c",
+      "level": "L4",
+      "name": "相異兩點決定一直線",
+      "parent_id": "JH_GEO_PERPSYM_L3_01",
+      "description": "理解在平面上，任意兩個不同的點可以唯一確定一條直線。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_02",
+      "level": "L3",
+      "name": "角的認識與分類",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習角的意義、標示、度量方法，並能將角分類為銳角、直角、鈍角。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_02_a",
+      "level": "L4",
+      "name": "角的意義與標示",
+      "parent_id": "JH_GEO_PERPSYM_L3_02",
+      "description": "理解角是由兩條射線共用一個端點所形成的圖形，並學習用符號（如∠ABC、∠B、∠1）標示角。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_02_b",
+      "level": "L4",
+      "name": "角的度數與測量",
+      "parent_id": "JH_GEO_PERPSYM_L3_02",
+      "description": "理解角的度數與邊長無關，並學習使用量角器測量角的度數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_02_c",
+      "level": "L4",
+      "name": "銳角、直角、鈍角的分類",
+      "parent_id": "JH_GEO_PERPSYM_L3_02",
+      "description": "根據角的度數，將角分類為銳角（小於90°）、直角（等於90°）和鈍角（大於90°）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03",
+      "level": "L3",
+      "name": "多邊形的認識",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習平面幾何圖形、多邊形的定義、命名、標示，以及對角線和正多邊形的相關概念。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03_a",
+      "level": "L4",
+      "name": "平面幾何圖形的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_03",
+      "description": "理解在平面上由點和線構成的圖形。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03_b",
+      "level": "L4",
+      "name": "多邊形的定義 (頂點、邊、內角)",
+      "parent_id": "JH_GEO_PERPSYM_L3_03",
+      "description": "理解多邊形是由線段圍成的封閉平面圖形，並認識其頂點、邊和內角。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03_c",
+      "level": "L4",
+      "name": "多邊形的命名與標示",
+      "parent_id": "JH_GEO_PERPSYM_L3_03",
+      "description": "學習根據邊數命名多邊形（如三角形、四邊形），並依頂點順序標示多邊形（如四邊形ABCD）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03_d",
+      "level": "L4",
+      "name": "對角線的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_03",
+      "description": "理解多邊形中連接兩個不相鄰頂點的線段稱為對角線。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_03_e",
+      "level": "L4",
+      "name": "正多邊形的定義與性質",
+      "parent_id": "JH_GEO_PERPSYM_L3_03",
+      "description": "理解正多邊形是所有邊等長且所有內角相等的特殊多邊形。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_04",
+      "level": "L3",
+      "name": "垂直與點到直線的距離",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習垂直的意義、符號、垂足，以及點到直線距離的定義與最短性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_04_a",
+      "level": "L4",
+      "name": "垂直的意義與符號",
+      "parent_id": "JH_GEO_PERPSYM_L3_04",
+      "description": "理解兩條直線或線段相交成直角（90°）時，稱其互相垂直，並學習使用符號「⊥」表示。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_04_b",
+      "level": "L4",
+      "name": "垂足的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_04",
+      "description": "理解垂直線段與直線的交點稱為垂足。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_04_c",
+      "level": "L4",
+      "name": "點到直線距離的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_04",
+      "description": "理解點到直線的距離是指從該點到直線的垂直線段長度。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_04_d",
+      "level": "L4",
+      "name": "點到直線的距離最短性質",
+      "parent_id": "JH_GEO_PERPSYM_L3_04",
+      "description": "理解從直線外一點到直線上所有點的連線段中，垂直線段的長度最短。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_05",
+      "level": "L3",
+      "name": "中垂線的認識與性質",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習線段中點、中垂線的定義，並了解中垂線的作圖方法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_05_a",
+      "level": "L4",
+      "name": "線段中點的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_05",
+      "description": "理解線段中點是將線段分成兩等份的點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_05_b",
+      "level": "L4",
+      "name": "中垂線的定義",
+      "parent_id": "JH_GEO_PERPSYM_L3_05",
+      "description": "理解中垂線是通過線段中點且與該線段垂直的直線。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_05_c",
+      "level": "L4",
+      "name": "中垂線的作圖方法",
+      "parent_id": "JH_GEO_PERPSYM_L3_05",
+      "description": "學習利用摺紙等方式作圖中垂線。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_06",
+      "level": "L3",
+      "name": "線對稱圖形的認識",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習線對稱圖形與對稱軸的定義，以及對稱點、對稱角、對稱線段的意義，並能判斷圖形是否為線對稱。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_06_a",
+      "level": "L4",
+      "name": "線對稱圖形與對稱軸的定義",
+      "parent_id": "JH_GEO_PERPSYM_L3_06",
+      "description": "理解圖形沿一條直線對摺後，兩側部分能完全重疊，則該圖形為線對稱圖形，該直線為對稱軸。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_06_b",
+      "level": "L4",
+      "name": "對稱點、對稱角、對稱線段的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_06",
+      "description": "理解線對稱圖形中，對摺後能重疊的點、角、線段分別稱為對稱點、對稱角、對稱線段。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_06_c",
+      "level": "L4",
+      "name": "判斷圖形是否為線對稱圖形",
+      "parent_id": "JH_GEO_PERPSYM_L3_06",
+      "description": "透過觀察或想像對摺，判斷給定圖形是否具有線對稱性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07",
+      "level": "L3",
+      "name": "線對稱圖形的性質與應用",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習線對稱圖形的性質，包括對稱角、對稱線段的關係，以及對稱點連線與對稱軸的關係，並應用於繪製和剪紙活動。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07_a",
+      "level": "L4",
+      "name": "對稱角相等、對稱線段等長",
+      "parent_id": "JH_GEO_PERPSYM_L3_07",
+      "description": "理解線對稱圖形中，對稱的角大小相等，對稱的線段長度相等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07_b",
+      "level": "L4",
+      "name": "對稱點連線與對稱軸的關係",
+      "parent_id": "JH_GEO_PERPSYM_L3_07",
+      "description": "理解任意兩對稱點的連線段會被對稱軸垂直平分。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07_c",
+      "level": "L4",
+      "name": "繪製線對稱圖形的對稱軸",
+      "parent_id": "JH_GEO_PERPSYM_L3_07",
+      "description": "學習找出並畫出線對稱圖形的所有對稱軸。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07_d",
+      "level": "L4",
+      "name": "完成線對稱圖形",
+      "parent_id": "JH_GEO_PERPSYM_L3_07",
+      "description": "給定線對稱圖形的一半和對稱軸，能完成整個圖形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_07_e",
+      "level": "L4",
+      "name": "摺紙剪紙與線對稱圖形",
+      "parent_id": "JH_GEO_PERPSYM_L3_07",
+      "description": "透過摺紙和剪紙活動，理解線對稱圖形的生成原理。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_08",
+      "level": "L3",
+      "name": "特殊圖形的線對稱性",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "探討等腰三角形、正多邊形和圓形的線對稱性質及其對稱軸的特徵。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_08_a",
+      "level": "L4",
+      "name": "等腰三角形的線對稱性",
+      "parent_id": "JH_GEO_PERPSYM_L3_08",
+      "description": "理解等腰三角形是線對稱圖形，其底邊的中垂線是其對稱軸，且會通過頂點。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_08_b",
+      "level": "L4",
+      "name": "正多邊形的線對稱性",
+      "parent_id": "JH_GEO_PERPSYM_L3_08",
+      "description": "理解所有的正多邊形都是線對稱圖形，並能找出其對稱軸的數量與位置。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_08_c",
+      "level": "L4",
+      "name": "圓形的線對稱性",
+      "parent_id": "JH_GEO_PERPSYM_L3_08",
+      "description": "理解圓形是線對稱圖形，任何一條直徑都是其對稱軸，因此有無限多條對稱軸。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09",
+      "level": "L3",
+      "name": "三視圖的認識與繪製",
+      "parent_id": "JH_GEO_PERPSYM",
+      "description": "學習視圖的意義，認識前視圖、後視圖、左視圖、右視圖、上視圖，並能繪製立體圖形的三視圖及判斷觀察方向。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09_a",
+      "level": "L4",
+      "name": "視圖的意義",
+      "parent_id": "JH_GEO_PERPSYM_L3_09",
+      "description": "理解從某一方向觀察立體圖形時，所看到的平面圖形輪廓稱為該立體圖形的視圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09_b",
+      "level": "L4",
+      "name": "前視圖、後視圖、左視圖、右視圖、上視圖的定義",
+      "parent_id": "JH_GEO_PERPSYM_L3_09",
+      "description": "學習從不同方向（前、後、左、右、上）觀察立體圖形所得到的視圖名稱與定義。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09_c",
+      "level": "L4",
+      "name": "繪製立體圖形的三視圖",
+      "parent_id": "JH_GEO_PERPSYM_L3_09",
+      "description": "能根據給定的立體圖形，繪製其前視圖、右視圖和上視圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09_d",
+      "level": "L4",
+      "name": "根據三視圖判斷觀察方向",
+      "parent_id": "JH_GEO_PERPSYM_L3_09",
+      "description": "根據給定的視圖，判斷觀察者是從哪個方向觀察立體圖形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_GEO_PERPSYM_L3_09_e",
+      "level": "L4",
+      "name": "前後視圖與左右視圖的對稱關係",
+      "parent_id": "JH_GEO_PERPSYM_L3_09",
+      "description": "理解立體圖形的前視圖與後視圖、左視圖與右視圖之間存在線對稱關係。",
+      "difficulty": 3
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_UNK",
+      "to_id": "L1_UNK_UNK",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_UNK_UNK",
+      "to_id": "JH_GEO_PERPSYM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_02",
+      "to_id": "JH_GEO_PERPSYM_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_02",
+      "to_id": "JH_GEO_PERPSYM_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_02",
+      "to_id": "JH_GEO_PERPSYM_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_03_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_03_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_04_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_05",
+      "to_id": "JH_GEO_PERPSYM_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_05",
+      "to_id": "JH_GEO_PERPSYM_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_05",
+      "to_id": "JH_GEO_PERPSYM_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_06",
+      "to_id": "JH_GEO_PERPSYM_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_06",
+      "to_id": "JH_GEO_PERPSYM_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_06",
+      "to_id": "JH_GEO_PERPSYM_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_08",
+      "to_id": "JH_GEO_PERPSYM_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_08",
+      "to_id": "JH_GEO_PERPSYM_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_08",
+      "to_id": "JH_GEO_PERPSYM_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM",
+      "to_id": "JH_GEO_PERPSYM_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_09",
+      "to_id": "JH_GEO_PERPSYM_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_09",
+      "to_id": "JH_GEO_PERPSYM_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_09",
+      "to_id": "JH_GEO_PERPSYM_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_09",
+      "to_id": "JH_GEO_PERPSYM_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_09",
+      "to_id": "JH_GEO_PERPSYM_L3_09_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_02",
+      "to_id": "JH_GEO_PERPSYM_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_05",
+      "to_id": "JH_GEO_PERPSYM_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_06",
+      "to_id": "JH_GEO_PERPSYM_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_GEO_BASIC",
+      "to_id": "JH_GEO_PERPSYM_L3_01",
+      "type": "prerequisite",
+      "reason": "幾何圖形基礎概念建立在對基本幾何元素的認識上。"
+    },
+    {
+      "from_id": "JH_GEO_BASIC",
+      "to_id": "JH_GEO_PERPSYM_L3_02",
+      "type": "prerequisite",
+      "reason": "角的認識與分類是幾何圖形基礎的一部分。"
+    },
+    {
+      "from_id": "JH_GEO_BASIC",
+      "to_id": "JH_GEO_PERPSYM_L3_03",
+      "type": "prerequisite",
+      "reason": "多邊形的認識需要先理解點、線、角等基本幾何元素。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_01",
+      "to_id": "JH_GEO_PERPSYM_L3_04",
+      "type": "prerequisite",
+      "reason": "垂直概念涉及直線和點，需先理解幾何圖形基礎概念。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_04",
+      "to_id": "JH_GEO_PERPSYM_L3_05",
+      "type": "prerequisite",
+      "reason": "中垂線是垂直概念的延伸，並結合線段中點的知識。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_05",
+      "to_id": "JH_GEO_PERPSYM_L3_06",
+      "type": "prerequisite",
+      "reason": "線對稱圖形的理解常透過對摺，這與中垂線的概念有密切關聯。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_06",
+      "to_id": "JH_GEO_PERPSYM_L3_07",
+      "type": "prerequisite",
+      "reason": "線對稱圖形的性質與應用建立在對線對稱圖形的基本認識上。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_03",
+      "to_id": "JH_GEO_PERPSYM_L3_08",
+      "type": "prerequisite",
+      "reason": "特殊圖形的線對稱性需要先理解多邊形的基本知識。"
+    },
+    {
+      "from_id": "JH_GEO_PERPSYM_L3_07",
+      "to_id": "JH_GEO_PERPSYM_L3_08",
+      "type": "prerequisite",
+      "reason": "特殊圖形的線對稱性是線對稱圖形性質的具體應用。"
+    },
+    {
+      "from_id": "JH_GEO_BASIC",
+      "to_id": "JH_GEO_PERPSYM_L3_09",
+      "type": "prerequisite",
+      "reason": "三視圖是立體圖形的平面表示，需要基本的幾何圖形理解能力。"
+    }
+  ],
+  "warnings": [
+    "⚠️ L3 sequence 不完整：預期 8 條，實際 6 條。"
+  ],
+  "stats": {
+    "total_nodes": 46,
+    "total_edges": 63
+  }
+}

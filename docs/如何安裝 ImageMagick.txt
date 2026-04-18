@@ -1,0 +1,48 @@
+安裝 ImageMagick
+
+在 Windows 上，您需要安裝兩樣東西，才能讓程式碼 from wand.image import Image as WandImage 順利運作：
+
+ImageMagick：這是一個功能強大的圖片處理軟體，是 Wand 的基礎。
+Wand：這是一個 Python 函式庫，用來在 Python 程式中呼叫 ImageMagick 的功能。
+請務必先安裝 ImageMagick，再安裝 Wand。
+
+步驟一：安裝 ImageMagick
+這是最關鍵的一步，請仔細依照下面的說明操作。
+
+前往官方下載頁面 點擊此連結前往 ImageMagick 的 Windows 下載區： https://imagemagick.org/script/download.php#windows
+
+下載安裝程式 在頁面上找到最新的版本，通常您會需要下載檔名中包含 x64-dll.exe 的檔案。例如：ImageMagick-7.1.1-30-Q16-HDRI-x64-dll.exe。
+
+執行安裝程式並勾選重要選項 執行您剛剛下載的 .exe 檔案。在安裝過程中，您會看到一個「Select Additional Tasks」的畫面，請務必勾選以下兩個選項：
+
+Add application directory to your system path (PATH) (將 ImageMagick 加入系統環境變數)
+Install development headers and libraries for C and C++ (安裝 C/C++ 開發函式庫)
+這兩個選項是讓 Python 的 Wand 函式庫能夠找到並使用 ImageMagick 的關鍵。
+
+完成安裝 繼續點擊 "Next" 直到安裝完成。安裝結束後，建議重新啟動您的命令提示字元 (CMD)、PowerShell 或 VS Code 的終端機，這樣新的環境變數才會生效。
+
+步驟二：安裝 Wand 函式庫
+當 ImageMagick 安裝完成後，安裝 Wand 就很簡單了。
+
+打開終端機 打開您的命令提示字元 (CMD)、PowerShell 或 VS Code 內建的終端機。
+
+執行 pip 安裝指令 在終端機中輸入以下指令後按 Enter：
+
+bash
+pip install Wand
+這會自動從 Python 的套件庫下載並安裝 Wand。
+
+步驟三：驗證安裝是否成功
+驗證 ImageMagick 在一個新的終端機視窗中，輸入以下指令：
+
+bash
+magick -version
+如果畫面顯示出 ImageMagick 的版本資訊 (例如 Version: ImageMagick 7.1.1-30 ...)，就代表 ImageMagick 已經成功安裝並設定好路徑了。
+
+驗證 Wand 在同一個終端機中，輸入 python 進入 Python 互動模式，然後輸入：
+
+python
+from wand.image import Image
+如果輸入後，它跳到下一行而沒有顯示任何錯誤訊息，就代表 Wand 函式庫也安裝成功，並且能正確找到 ImageMagick。
+
+完成以上三個步驟後，您的程式就可以順利處理 .wmf 圖片了！

@@ -1,0 +1,103 @@
+subskills:
+  int.sign_handling:
+    domain: integer
+    display_name: Sign Handling
+
+  int.add_sub:
+    domain: integer
+    display_name: Integer Add and Subtract
+
+  int.mul_div:
+    domain: integer
+    display_name: Integer Multiplication and Division
+
+  int.order_of_operations:
+    domain: integer
+    display_name: Order of Operations
+
+  int.bracket_scope:
+    domain: integer
+    display_name: Bracket Scope
+
+  frac.add_sub:
+    domain: fraction
+    display_name: Fraction Addition and Subtraction
+
+  frac.divide:
+    domain: fraction
+    display_name: Fraction Division
+
+  poly.combine_like_terms:
+    domain: polynomial
+    display_name: Combine Like Terms
+    depends_on:
+      - int.sign_handling
+
+  poly.sign_distribution:
+    domain: polynomial
+    display_name: Sign Distribution
+    depends_on:
+      - int.sign_handling
+      - int.bracket_scope
+      - int.order_of_operations
+
+  poly.expand_binomial:
+    domain: polynomial
+    display_name: Expand Binomial
+    depends_on:
+      - int.mul_div
+      - int.order_of_operations
+
+  poly.outer_minus_scope:
+    domain: polynomial
+    display_name: Outer Minus Scope
+    depends_on:
+      - int.bracket_scope
+      - int.sign_handling
+
+  poly.combine_after_distribution:
+    domain: polynomial
+    display_name: Combine After Distribution
+    depends_on:
+      - int.add_sub
+      - int.order_of_operations
+
+  poly.mixed_simplify_transition:
+    domain: polynomial
+    display_name: Mixed Simplify Transition
+    depends_on:
+      - int.order_of_operations
+      - int.bracket_scope
+      - int.sign_handling
+
+diagnosis_map:
+  polynomial_sign_error: poly.sign_distribution
+  polynomial_outer_minus_scope_error: poly.outer_minus_scope
+  polynomial_bracket_scope_error: poly.outer_minus_scope
+  polynomial_sign_flip_after_distribution: poly.sign_distribution
+  polynomial_expand_error: poly.expand_binomial
+  polynomial_binomial_expansion_structure_error: poly.expand_binomial
+  polynomial_like_terms_error: poly.combine_like_terms
+  polynomial_combine_like_terms_after_distribution: poly.combine_after_distribution
+  polynomial_coefficient_arithmetic_error: poly.expand_binomial
+  polynomial_mixed_simplify_transition_error: poly.mixed_simplify_transition
+  polynomial_family_isomorphism_confusion: poly.mixed_simplify_transition
+
+remediation_map:
+  poly.combine_like_terms:
+    target: int.add_sub
+
+  poly.sign_distribution:
+    target: int.bracket_scope
+
+  poly.expand_binomial:
+    target: int.mul_div
+
+  poly.outer_minus_scope:
+    target: int.bracket_scope
+
+  poly.combine_after_distribution:
+    target: int.add_sub
+
+  poly.mixed_simplify_transition:
+    target: int.order_of_operations

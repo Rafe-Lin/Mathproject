@@ -1,0 +1,1491 @@
+{
+  "summary": {
+    "skills_scanned": 4,
+    "families_scanned": 54,
+    "samples_checked": 432,
+    "issues_found": 0,
+    "scan_version": "v2"
+  },
+  "skills": {
+    "jh_數學1上_FourArithmeticOperationsOfIntegers": {
+      "families": {
+        "I1": {
+          "family_name": "int_numberline_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I2": {
+          "family_name": "int_flat_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I3": {
+          "family_name": "int_flat_mul_div_exact",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I4": {
+          "family_name": "int_flat_mixed_four_ops",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I5": {
+          "family_name": "int_bracket_mixed",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I6": {
+          "family_name": "int_abs_value",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I7": {
+          "family_name": "int_division_exact_nested",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "I8": {
+          "family_name": "int_composite_structure",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 64
+    },
+    "jh_數學1上_FourArithmeticOperationsOfNumbers": {
+      "families": {
+        "F1": {
+          "family_name": "Fraction Simplification",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F2": {
+          "family_name": "Equivalent Fraction Fill-Blank",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F3": {
+          "family_name": "Preserve-Value Fraction Invariance",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F4": {
+          "family_name": "Fraction Comparison",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F5": {
+          "family_name": "Fraction Add/Subtract",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F6": {
+          "family_name": "Fraction Multiply",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F7": {
+          "family_name": "Fraction Divide",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F8": {
+          "family_name": "Reciprocal",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F9": {
+          "family_name": "Decimal-Fraction Mixed Evaluation",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F10": {
+          "family_name": "Fraction Word Problems",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 80
+    },
+    "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+      "families": {
+        "F1": {
+          "family_name": "poly_add_sub_flat",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F2": {
+          "family_name": "poly_add_sub_nested",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F3": {
+          "family_name": "poly_add_sub_unknown",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F4": {
+          "family_name": "poly_mul_monomial",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F5": {
+          "family_name": "poly_mul_poly",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F6": {
+          "family_name": "poly_mul_special_identity",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F7": {
+          "family_name": "poly_div_monomial_eval",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F8": {
+          "family_name": "poly_div_monomial_qr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F9": {
+          "family_name": "poly_div_poly_qr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F10": {
+          "family_name": "poly_div_reverse",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F11": {
+          "family_name": "poly_mixed_simplify",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F12": {
+          "family_name": "poly_geom_formula_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "F13": {
+          "family_name": "poly_geom_region_composite",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 104
+    },
+    "jh_數學2上_FourOperationsOfRadicals": {
+      "families": {
+        "p0": {
+          "family_name": "p0_simplify",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1": {
+          "family_name": "p1_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1b": {
+          "family_name": "p1b_add_sub_bracket",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p1c": {
+          "family_name": "p1c_mixed_frac_rad_add_sub",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2a": {
+          "family_name": "p2a_mult_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2b": {
+          "family_name": "p2b_mult_distrib",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2c": {
+          "family_name": "p2c_mult_binomial",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2d": {
+          "family_name": "p2d_perfect_square",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2e": {
+          "family_name": "p2e_diff_of_squares",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2f": {
+          "family_name": "p2f_int_mult_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2g": {
+          "family_name": "p2g_rad_mult_frac",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p2h": {
+          "family_name": "p2h_frac_mult_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3a": {
+          "family_name": "p3a_div_expr",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3b": {
+          "family_name": "p3b_div_simple",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p3c": {
+          "family_name": "p3c_div_direct",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4": {
+          "family_name": "p4_frac_mult",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4b": {
+          "family_name": "p4b_frac_rad_div",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4c": {
+          "family_name": "p4c_nested_frac_chain",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p4d": {
+          "family_name": "p4d_frac_rad_div_mixed",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p5a": {
+          "family_name": "p5a_conjugate_int",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p5b": {
+          "family_name": "p5b_conjugate_rad",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p6": {
+          "family_name": "p6_combo",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        },
+        "p7": {
+          "family_name": "p7_mixed_rad_add",
+          "samples_checked": 8,
+          "issues": [],
+          "examples": []
+        }
+      },
+      "issue_count": 0,
+      "sample_count": 184
+    }
+  },
+  "manual_review_samples": {
+    "jh_數學1上_FourArithmeticOperationsOfIntegers": [
+      {
+        "family_id": "I1",
+        "family_name": "int_numberline_add_sub",
+        "question_text": "請計算：$ 0 + (-2) $",
+        "answer": "-2",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub"
+        ]
+      },
+      {
+        "family_id": "I1",
+        "family_name": "int_numberline_add_sub",
+        "question_text": "請計算：$ 14 + 12 $",
+        "answer": "26",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub"
+        ]
+      },
+      {
+        "family_id": "I2",
+        "family_name": "int_flat_add_sub",
+        "question_text": "請計算下列各式的值：$ (-3) - 11 - 15 $",
+        "answer": "-29",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub"
+        ]
+      },
+      {
+        "family_id": "I2",
+        "family_name": "int_flat_add_sub",
+        "question_text": "請計算下列各式的值：$ (-8) + 10 - 2 $",
+        "answer": "0",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub"
+        ]
+      },
+      {
+        "family_id": "I3",
+        "family_name": "int_flat_mul_div_exact",
+        "question_text": "請計算：$ (-7) \\times 7 $",
+        "answer": "-49",
+        "subskill_nodes": [
+          "sign_handling",
+          "mul_div",
+          "exact_divisibility"
+        ]
+      },
+      {
+        "family_id": "I3",
+        "family_name": "int_flat_mul_div_exact",
+        "question_text": "請計算：$ 6 \\times (-1) $",
+        "answer": "-6",
+        "subskill_nodes": [
+          "sign_handling",
+          "mul_div",
+          "exact_divisibility"
+        ]
+      },
+      {
+        "family_id": "I4",
+        "family_name": "int_flat_mixed_four_ops",
+        "question_text": "請計算：$ (-8) + 12 \\times (-6) $",
+        "answer": "-80",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub",
+          "mul_div",
+          "order_of_operations"
+        ]
+      },
+      {
+        "family_id": "I4",
+        "family_name": "int_flat_mixed_four_ops",
+        "question_text": "請計算：$ 8 + 10 \\times (-1) $",
+        "answer": "-2",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub",
+          "mul_div",
+          "order_of_operations"
+        ]
+      },
+      {
+        "family_id": "I5",
+        "family_name": "int_bracket_mixed",
+        "question_text": "請計算：$ \\left(11 + (-7)\\right) \\times 8 $",
+        "answer": "32",
+        "subskill_nodes": [
+          "sign_handling",
+          "bracket_scope",
+          "order_of_operations"
+        ]
+      },
+      {
+        "family_id": "I5",
+        "family_name": "int_bracket_mixed",
+        "question_text": "請計算：$ \\left(0 + 1\\right) \\times (-1) $",
+        "answer": "-1",
+        "subskill_nodes": [
+          "sign_handling",
+          "bracket_scope",
+          "order_of_operations"
+        ]
+      },
+      {
+        "family_id": "I6",
+        "family_name": "int_abs_value",
+        "question_text": "請計算：$ |-5| + 9 $",
+        "answer": "14",
+        "subskill_nodes": [
+          "sign_handling",
+          "absolute_value"
+        ]
+      },
+      {
+        "family_id": "I6",
+        "family_name": "int_abs_value",
+        "question_text": "請計算：$ |-1| + 9 $",
+        "answer": "10",
+        "subskill_nodes": [
+          "sign_handling",
+          "absolute_value"
+        ]
+      },
+      {
+        "family_id": "I7",
+        "family_name": "int_division_exact_nested",
+        "question_text": "請計算：$ \\frac{12}{(-2)} + (-4) $",
+        "answer": "-10",
+        "subskill_nodes": [
+          "sign_handling",
+          "mul_div",
+          "bracket_scope",
+          "absolute_value",
+          "exact_divisibility"
+        ]
+      },
+      {
+        "family_id": "I7",
+        "family_name": "int_division_exact_nested",
+        "question_text": "請計算：$ \\frac{(-6)}{2} + 5 $",
+        "answer": "2",
+        "subskill_nodes": [
+          "sign_handling",
+          "mul_div",
+          "bracket_scope",
+          "absolute_value",
+          "exact_divisibility"
+        ]
+      },
+      {
+        "family_id": "I8",
+        "family_name": "int_composite_structure",
+        "question_text": "請計算：$ \\left(2 - 1\\right) \\times (-7) + |1| $",
+        "answer": "-6",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub",
+          "mul_div",
+          "order_of_operations",
+          "bracket_scope",
+          "absolute_value",
+          "exact_divisibility",
+          "isomorphic_structure"
+        ]
+      },
+      {
+        "family_id": "I8",
+        "family_name": "int_composite_structure",
+        "question_text": "請計算：$ \\left(7 - 3\\right) \\times (-2) + |3| $",
+        "answer": "-5",
+        "subskill_nodes": [
+          "sign_handling",
+          "add_sub",
+          "mul_div",
+          "order_of_operations",
+          "bracket_scope",
+          "absolute_value",
+          "exact_divisibility",
+          "isomorphic_structure"
+        ]
+      }
+    ],
+    "jh_數學1上_FourArithmeticOperationsOfNumbers": [
+      {
+        "family_id": "F1",
+        "family_name": "Fraction Simplification",
+        "question_text": "請化簡：$\\frac{36}{8}$",
+        "answer": "9/2",
+        "subskill_nodes": [
+          "proper_improper_fraction",
+          "mixed_numbers",
+          "sign_normalization",
+          "simplest_form_reduction"
+        ]
+      },
+      {
+        "family_id": "F1",
+        "family_name": "Fraction Simplification",
+        "question_text": "請化簡：$\\frac{6}{6}$",
+        "answer": "1",
+        "subskill_nodes": [
+          "proper_improper_fraction",
+          "mixed_numbers",
+          "sign_normalization",
+          "simplest_form_reduction"
+        ]
+      },
+      {
+        "family_id": "F2",
+        "family_name": "Equivalent Fraction Fill-Blank",
+        "question_text": "請在空格中填入等值分數：$\\square = \\frac{4}{5} \\div 2$",
+        "answer": "2/5",
+        "subskill_nodes": [
+          "equivalent_fraction_scaling",
+          "sign_normalization"
+        ]
+      },
+      {
+        "family_id": "F2",
+        "family_name": "Equivalent Fraction Fill-Blank",
+        "question_text": "請在空格中填入等值分數：$\\square = \\frac{12}{7} \\div 4$",
+        "answer": "3/7",
+        "subskill_nodes": [
+          "equivalent_fraction_scaling",
+          "sign_normalization"
+        ]
+      },
+      {
+        "family_id": "F3",
+        "family_name": "Preserve-Value Fraction Invariance",
+        "question_text": "請將下列分數擴大 3 倍：$\\frac{2}{5}$",
+        "answer": "6/5",
+        "subskill_nodes": [
+          "preserve_value_invariance",
+          "equivalent_fraction_scaling"
+        ]
+      },
+      {
+        "family_id": "F3",
+        "family_name": "Preserve-Value Fraction Invariance",
+        "question_text": "請將下列分數擴大 4 倍：$\\frac{2}{3}$",
+        "answer": "8/3",
+        "subskill_nodes": [
+          "preserve_value_invariance",
+          "equivalent_fraction_scaling"
+        ]
+      },
+      {
+        "family_id": "F4",
+        "family_name": "Fraction Comparison",
+        "question_text": "請比較大小：$\\frac{6}{7}$ > $\\frac{2}{7}$",
+        "answer": ">",
+        "subskill_nodes": [
+          "positive_fraction_comparison",
+          "negative_fraction_comparison",
+          "mixed_number_comparison"
+        ]
+      },
+      {
+        "family_id": "F4",
+        "family_name": "Fraction Comparison",
+        "question_text": "請比較大小：$4$ > $\\frac{1}{7}$",
+        "answer": ">",
+        "subskill_nodes": [
+          "positive_fraction_comparison",
+          "negative_fraction_comparison",
+          "mixed_number_comparison"
+        ]
+      },
+      {
+        "family_id": "F5",
+        "family_name": "Fraction Add/Subtract",
+        "question_text": "請計算下列分數的差：$\\frac{1}{3} - \\frac{1}{2}$",
+        "answer": "-1/6",
+        "subskill_nodes": [
+          "add_sub",
+          "nested_parentheses",
+          "mixed_numbers"
+        ]
+      },
+      {
+        "family_id": "F5",
+        "family_name": "Fraction Add/Subtract",
+        "question_text": "請計算下列分數的和：$\\frac{1}{2} + \\frac{1}{2}$",
+        "answer": "1",
+        "subskill_nodes": [
+          "add_sub",
+          "nested_parentheses",
+          "mixed_numbers"
+        ]
+      },
+      {
+        "family_id": "F6",
+        "family_name": "Fraction Multiply",
+        "question_text": "請計算下列分數的積：$2 \\times \\frac{6}{7}$",
+        "answer": "12/7",
+        "subskill_nodes": [
+          "multiply",
+          "mixed_numbers",
+          "telescoping_products"
+        ]
+      },
+      {
+        "family_id": "F6",
+        "family_name": "Fraction Multiply",
+        "question_text": "請計算下列分數的積：$\\frac{1}{3} \\times \\frac{1}{2}$",
+        "answer": "1/6",
+        "subskill_nodes": [
+          "multiply",
+          "mixed_numbers",
+          "telescoping_products"
+        ]
+      },
+      {
+        "family_id": "F7",
+        "family_name": "Fraction Divide",
+        "question_text": "請計算下列分數的商：$1 \\div \\frac{1}{2}$",
+        "answer": "2",
+        "subskill_nodes": [
+          "divide",
+          "mixed_numbers",
+          "decimal_fraction_mixed_arithmetic"
+        ]
+      },
+      {
+        "family_id": "F7",
+        "family_name": "Fraction Divide",
+        "question_text": "請計算下列分數的商：$\\frac{4}{7} \\div \\frac{3}{2}$",
+        "answer": "8/21",
+        "subskill_nodes": [
+          "divide",
+          "mixed_numbers",
+          "decimal_fraction_mixed_arithmetic"
+        ]
+      },
+      {
+        "family_id": "F8",
+        "family_name": "Reciprocal",
+        "question_text": "請寫出下列分數的倒數：$\\frac{3}{2}$",
+        "answer": "2/3",
+        "subskill_nodes": [
+          "reciprocal_transform"
+        ]
+      },
+      {
+        "family_id": "F8",
+        "family_name": "Reciprocal",
+        "question_text": "請寫出下列分數的倒數：$\\frac{3}{8}$",
+        "answer": "8/3",
+        "subskill_nodes": [
+          "reciprocal_transform"
+        ]
+      },
+      {
+        "family_id": "F9",
+        "family_name": "Decimal-Fraction Mixed Evaluation",
+        "question_text": "請計算下列小數與分數的和：$1.8 + \\frac{7}{2}$",
+        "answer": "53/10",
+        "subskill_nodes": [
+          "decimal_to_fraction_exact_conversion",
+          "add_sub",
+          "multiply",
+          "divide",
+          "nested_parentheses"
+        ]
+      },
+      {
+        "family_id": "F9",
+        "family_name": "Decimal-Fraction Mixed Evaluation",
+        "question_text": "請計算下列小數與分數的差：$1.3 - \\frac{4}{3}$",
+        "answer": "-1/30",
+        "subskill_nodes": [
+          "decimal_to_fraction_exact_conversion",
+          "add_sub",
+          "multiply",
+          "divide",
+          "nested_parentheses"
+        ]
+      },
+      {
+        "family_id": "F10",
+        "family_name": "Fraction Word Problems",
+        "question_text": "請計算：把一個整體平均分成 4 份，先拿走其中 2 份，剩下的部分再加上 \\frac{1}{2}。",
+        "answer": "1",
+        "subskill_nodes": [
+          "remaining_amount",
+          "container_weight",
+          "before_after_ratio",
+          "share_comparison"
+        ]
+      },
+      {
+        "family_id": "F10",
+        "family_name": "Fraction Word Problems",
+        "question_text": "請計算：把一個整體平均分成 8 份，先拿走其中 4 份，剩下的部分再加上 \\frac{2}{3}。",
+        "answer": "7/6",
+        "subskill_nodes": [
+          "remaining_amount",
+          "container_weight",
+          "before_after_ratio",
+          "share_comparison"
+        ]
+      }
+    ],
+    "jh_數學2上_FourArithmeticOperationsOfPolynomial": [
+      {
+        "family_id": "F1",
+        "family_name": "poly_add_sub_flat",
+        "question_text": "請化簡：$(-7x + 1) + (-8x - 8)$",
+        "answer": "-15*x-7",
+        "subskill_nodes": [
+          "normalize_terms",
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "F1",
+        "family_name": "poly_add_sub_flat",
+        "question_text": "請化簡：$(-3x + 1) + (5x - 6)$",
+        "answer": "2*x-5",
+        "subskill_nodes": [
+          "normalize_terms",
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "F2",
+        "family_name": "poly_add_sub_nested",
+        "question_text": "請化簡：$-( -3x + 0 ) + ( 5x - 3 )$",
+        "answer": "8*x+3",
+        "subskill_nodes": [
+          "sign_distribution",
+          "combine_like_terms",
+          "family_isomorphism"
+        ]
+      },
+      {
+        "family_id": "F2",
+        "family_name": "poly_add_sub_nested",
+        "question_text": "請化簡：$-( 2x - 5 ) + ( -4x - 5 )$",
+        "answer": "-6*x",
+        "subskill_nodes": [
+          "sign_distribution",
+          "combine_like_terms",
+          "family_isomorphism"
+        ]
+      },
+      {
+        "family_id": "F3",
+        "family_name": "poly_add_sub_unknown",
+        "question_text": "請化簡：$2(x + -3) - -4x$",
+        "answer": "6*x-6",
+        "subskill_nodes": [
+          "sign_distribution",
+          "unknown_target_preservation"
+        ]
+      },
+      {
+        "family_id": "F3",
+        "family_name": "poly_add_sub_unknown",
+        "question_text": "請化簡：$2(x + 2) - 6x$",
+        "answer": "4-4*x",
+        "subskill_nodes": [
+          "sign_distribution",
+          "unknown_target_preservation"
+        ]
+      },
+      {
+        "family_id": "F4",
+        "family_name": "poly_mul_monomial",
+        "question_text": "請計算：$1x^3 \\times 4x^2$",
+        "answer": "4*x^5",
+        "subskill_nodes": [
+          "expand_monomial"
+        ]
+      },
+      {
+        "family_id": "F4",
+        "family_name": "poly_mul_monomial",
+        "question_text": "請計算：$6x^2 \\times 3x^2$",
+        "answer": "18*x^4",
+        "subskill_nodes": [
+          "expand_monomial"
+        ]
+      },
+      {
+        "family_id": "F5",
+        "family_name": "poly_mul_poly",
+        "question_text": "請展開：$(x + -1)(x + -6)$",
+        "answer": "x^2-7*x+6",
+        "subskill_nodes": [
+          "expand_binomial",
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "F5",
+        "family_name": "poly_mul_poly",
+        "question_text": "請展開：$(x + -3)(x + -3)$",
+        "answer": "x^2-6*x+9",
+        "subskill_nodes": [
+          "expand_binomial",
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "F6",
+        "family_name": "poly_mul_special_identity",
+        "question_text": "請展開：$(x + 1)^2$",
+        "answer": "x^2+2*x+1",
+        "subskill_nodes": [
+          "special_identity"
+        ]
+      },
+      {
+        "family_id": "F6",
+        "family_name": "poly_mul_special_identity",
+        "question_text": "請展開：$(x + 1)^2$",
+        "answer": "x^2+2*x+1",
+        "subskill_nodes": [
+          "special_identity"
+        ]
+      },
+      {
+        "family_id": "F7",
+        "family_name": "poly_div_monomial_eval",
+        "question_text": "請化簡：$\\frac{3x^3}{2x}$",
+        "answer": "3*x^2/2",
+        "subskill_nodes": [
+          "normalize_terms"
+        ]
+      },
+      {
+        "family_id": "F7",
+        "family_name": "poly_div_monomial_eval",
+        "question_text": "請化簡：$\\frac{3x^3}{3x}$",
+        "answer": "x^2",
+        "subskill_nodes": [
+          "normalize_terms"
+        ]
+      },
+      {
+        "family_id": "F8",
+        "family_name": "poly_div_monomial_qr",
+        "question_text": "請展開：$(x + 5)(x + -5)$",
+        "answer": "x^2-25",
+        "subskill_nodes": [
+          "long_division",
+          "quotient_remainder_format"
+        ]
+      },
+      {
+        "family_id": "F8",
+        "family_name": "poly_div_monomial_qr",
+        "question_text": "請展開：$(x + 5)(x + 6)$",
+        "answer": "x^2+11*x+30",
+        "subskill_nodes": [
+          "long_division",
+          "quotient_remainder_format"
+        ]
+      },
+      {
+        "family_id": "F9",
+        "family_name": "poly_div_poly_qr",
+        "question_text": "請展開：$(x + 4)(x + -6)$",
+        "answer": "x^2-2*x-24",
+        "subskill_nodes": [
+          "long_division",
+          "quotient_remainder_format"
+        ]
+      },
+      {
+        "family_id": "F9",
+        "family_name": "poly_div_poly_qr",
+        "question_text": "請展開：$(x + 3)(x + -1)$",
+        "answer": "x^2+2*x-3",
+        "subskill_nodes": [
+          "long_division",
+          "quotient_remainder_format"
+        ]
+      },
+      {
+        "family_id": "F10",
+        "family_name": "poly_div_reverse",
+        "question_text": "請展開並化簡：$(x + 1)(x - 4)$",
+        "answer": "x^2-3*x-4",
+        "subskill_nodes": [
+          "reverse_division_reconstruction"
+        ]
+      },
+      {
+        "family_id": "F10",
+        "family_name": "poly_div_reverse",
+        "question_text": "請展開並化簡：$(x + 1)(x - 3)$",
+        "answer": "x^2-2*x-3",
+        "subskill_nodes": [
+          "reverse_division_reconstruction"
+        ]
+      },
+      {
+        "family_id": "F11",
+        "family_name": "poly_mixed_simplify",
+        "question_text": "請化簡：$(x + 4)^2 + (x + 3)(x - 3) + -4x$",
+        "answer": "2*x^2+4*x+7",
+        "subskill_nodes": [
+          "expand_binomial",
+          "special_identity",
+          "combine_like_terms",
+          "family_isomorphism"
+        ]
+      },
+      {
+        "family_id": "F11",
+        "family_name": "poly_mixed_simplify",
+        "question_text": "請化簡：$(x + 1)^2 + (x + 4)(x - 4) + -5x$",
+        "answer": "2*x^2-3*x-15",
+        "subskill_nodes": [
+          "expand_binomial",
+          "special_identity",
+          "combine_like_terms",
+          "family_isomorphism"
+        ]
+      },
+      {
+        "family_id": "F12",
+        "family_name": "poly_geom_formula_direct",
+        "question_text": "一個長方形的長是 x+4，寬是 x+7，面積是多少？",
+        "answer": "x^2+11*x+28",
+        "subskill_nodes": [
+          "geometry_formula"
+        ]
+      },
+      {
+        "family_id": "F12",
+        "family_name": "poly_geom_formula_direct",
+        "question_text": "一個長方形的長是 x+2，寬是 x+3，面積是多少？",
+        "answer": "x^2+5*x+6",
+        "subskill_nodes": [
+          "geometry_formula"
+        ]
+      },
+      {
+        "family_id": "F13",
+        "family_name": "poly_geom_region_composite",
+        "question_text": "請化簡：$(x + 2)(x + 3) + (x + 5)$",
+        "answer": "x^2+6*x+11",
+        "subskill_nodes": [
+          "geometry_formula",
+          "composite_region_modeling"
+        ]
+      },
+      {
+        "family_id": "F13",
+        "family_name": "poly_geom_region_composite",
+        "question_text": "請化簡：$(x + 1)(x + 3) + (x + 3)$",
+        "answer": "x^2+5*x+6",
+        "subskill_nodes": [
+          "geometry_formula",
+          "composite_region_modeling"
+        ]
+      }
+    ],
+    "jh_數學2上_FourOperationsOfRadicals": [
+      {
+        "family_id": "p0",
+        "family_name": "p0_simplify",
+        "question_text": "請化簡：$\\sqrt{24}$",
+        "answer": "2*sqrt(6)",
+        "subskill_nodes": [
+          "simplify"
+        ]
+      },
+      {
+        "family_id": "p0",
+        "family_name": "p0_simplify",
+        "question_text": "請化簡：$\\sqrt{4}$",
+        "answer": "2",
+        "subskill_nodes": [
+          "simplify"
+        ]
+      },
+      {
+        "family_id": "p1",
+        "family_name": "p1_add_sub",
+        "question_text": "請化簡：$2\\sqrt{2} + 3\\sqrt{2}$",
+        "answer": "5*sqrt(2)",
+        "subskill_nodes": [
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "p1",
+        "family_name": "p1_add_sub",
+        "question_text": "請化簡：$2\\sqrt{3} + 3\\sqrt{3}$",
+        "answer": "5*sqrt(3)",
+        "subskill_nodes": [
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "p1b",
+        "family_name": "p1b_add_sub_bracket",
+        "question_text": "請化簡：$4\\sqrt{12} - \\sqrt{12}$",
+        "answer": "6*sqrt(3)",
+        "subskill_nodes": [
+          "combine_like_terms",
+          "bracket_scope"
+        ]
+      },
+      {
+        "family_id": "p1b",
+        "family_name": "p1b_add_sub_bracket",
+        "question_text": "請化簡：$4\\sqrt{12} - \\sqrt{12}$",
+        "answer": "6*sqrt(3)",
+        "subskill_nodes": [
+          "combine_like_terms",
+          "bracket_scope"
+        ]
+      },
+      {
+        "family_id": "p1c",
+        "family_name": "p1c_mixed_frac_rad_add_sub",
+        "question_text": "請化簡：$\\frac{1}{2}\\sqrt{3} + \\frac{3}{2}\\sqrt{3}$",
+        "answer": "2*sqrt(3)",
+        "subskill_nodes": [
+          "combine_like_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p1c",
+        "family_name": "p1c_mixed_frac_rad_add_sub",
+        "question_text": "請化簡：$\\frac{1}{2}\\sqrt{18} + \\frac{3}{2}\\sqrt{18}$",
+        "answer": "6*sqrt(2)",
+        "subskill_nodes": [
+          "combine_like_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p2a",
+        "family_name": "p2a_mult_direct",
+        "question_text": "請計算：$\\sqrt{2} \\times \\sqrt{6}$",
+        "answer": "2*sqrt(3)",
+        "subskill_nodes": [
+          "multiply_terms"
+        ]
+      },
+      {
+        "family_id": "p2a",
+        "family_name": "p2a_mult_direct",
+        "question_text": "請計算：$\\sqrt{2} \\times \\sqrt{3}$",
+        "answer": "sqrt(6)",
+        "subskill_nodes": [
+          "multiply_terms"
+        ]
+      },
+      {
+        "family_id": "p2b",
+        "family_name": "p2b_mult_distrib",
+        "question_text": "請展開：$\\sqrt{18}(3 + \\sqrt{8})$",
+        "answer": "12+9*sqrt(2)",
+        "subskill_nodes": [
+          "multiply_terms",
+          "distribute"
+        ]
+      },
+      {
+        "family_id": "p2b",
+        "family_name": "p2b_mult_distrib",
+        "question_text": "請展開：$\\sqrt{5}(3 + \\sqrt{18})$",
+        "answer": "3*sqrt(5)+3*sqrt(10)",
+        "subskill_nodes": [
+          "multiply_terms",
+          "distribute"
+        ]
+      },
+      {
+        "family_id": "p2c",
+        "family_name": "p2c_mult_binomial",
+        "question_text": "請展開：$(\\sqrt{12} + \\sqrt{15})^2$",
+        "answer": "12*sqrt(5)+27",
+        "subskill_nodes": [
+          "multiply_terms",
+          "distribute",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2c",
+        "family_name": "p2c_mult_binomial",
+        "question_text": "請展開：$(\\sqrt{18} + \\sqrt{3})^2$",
+        "answer": "6*sqrt(6)+21",
+        "subskill_nodes": [
+          "multiply_terms",
+          "distribute",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2d",
+        "family_name": "p2d_perfect_square",
+        "question_text": "請展開：$(\\sqrt{10} + \\sqrt{18})(\\sqrt{10} - \\sqrt{18})$",
+        "answer": "-8",
+        "subskill_nodes": [
+          "multiply_terms",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2d",
+        "family_name": "p2d_perfect_square",
+        "question_text": "請展開：$(\\sqrt{10} + \\sqrt{2})(\\sqrt{10} - \\sqrt{2})$",
+        "answer": "8",
+        "subskill_nodes": [
+          "multiply_terms",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2e",
+        "family_name": "p2e_diff_of_squares",
+        "question_text": "請化簡：$(\\sqrt{6} + \\sqrt{10})(\\sqrt{6} - \\sqrt{10})$",
+        "answer": "-4",
+        "subskill_nodes": [
+          "multiply_terms",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2e",
+        "family_name": "p2e_diff_of_squares",
+        "question_text": "請化簡：$(\\sqrt{2} + \\sqrt{7})(\\sqrt{2} - \\sqrt{7})$",
+        "answer": "-5",
+        "subskill_nodes": [
+          "multiply_terms",
+          "binomial_expand"
+        ]
+      },
+      {
+        "family_id": "p2f",
+        "family_name": "p2f_int_mult_rad",
+        "question_text": "請計算：$3\\sqrt{6} \\times 2$",
+        "answer": "6*sqrt(6)",
+        "subskill_nodes": [
+          "multiply_terms"
+        ]
+      },
+      {
+        "family_id": "p2f",
+        "family_name": "p2f_int_mult_rad",
+        "question_text": "請計算：$5\\sqrt{5} \\times 2$",
+        "answer": "10*sqrt(5)",
+        "subskill_nodes": [
+          "multiply_terms"
+        ]
+      },
+      {
+        "family_id": "p2g",
+        "family_name": "p2g_rad_mult_frac",
+        "question_text": "請計算：$\\sqrt{12} \\times \\frac{2}{3}$",
+        "answer": "4*sqrt(3)/3",
+        "subskill_nodes": [
+          "multiply_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p2g",
+        "family_name": "p2g_rad_mult_frac",
+        "question_text": "請計算：$\\sqrt{8} \\times \\frac{2}{3}$",
+        "answer": "4*sqrt(2)/3",
+        "subskill_nodes": [
+          "multiply_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p2h",
+        "family_name": "p2h_frac_mult_rad",
+        "question_text": "請計算：$\\frac{2}{3} \\times \\sqrt{10}$",
+        "answer": "2*sqrt(10)/3",
+        "subskill_nodes": [
+          "multiply_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p2h",
+        "family_name": "p2h_frac_mult_rad",
+        "question_text": "請計算：$\\frac{2}{3} \\times \\sqrt{18}$",
+        "answer": "2*sqrt(2)",
+        "subskill_nodes": [
+          "multiply_terms",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p3a",
+        "family_name": "p3a_div_expr",
+        "question_text": "請化簡：$\\frac{\\sqrt{32}}{\\sqrt{4}}$",
+        "answer": "2*sqrt(2)",
+        "subskill_nodes": [
+          "divide_terms",
+          "bracket_scope"
+        ]
+      },
+      {
+        "family_id": "p3a",
+        "family_name": "p3a_div_expr",
+        "question_text": "請化簡：$\\frac{\\sqrt{48}}{\\sqrt{4}}$",
+        "answer": "2*sqrt(3)",
+        "subskill_nodes": [
+          "divide_terms",
+          "bracket_scope"
+        ]
+      },
+      {
+        "family_id": "p3b",
+        "family_name": "p3b_div_simple",
+        "question_text": "請化簡：$\\frac{\\sqrt{162}}{3}$",
+        "answer": "3*sqrt(2)",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p3b",
+        "family_name": "p3b_div_simple",
+        "question_text": "請化簡：$\\frac{\\sqrt{162}}{3}$",
+        "answer": "3*sqrt(2)",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p3c",
+        "family_name": "p3c_div_direct",
+        "question_text": "請化簡：$\\frac{3\\sqrt{6}}{\\sqrt{6}}$",
+        "answer": "3",
+        "subskill_nodes": [
+          "divide_terms"
+        ]
+      },
+      {
+        "family_id": "p3c",
+        "family_name": "p3c_div_direct",
+        "question_text": "請化簡：$\\frac{3\\sqrt{8}}{\\sqrt{8}}$",
+        "answer": "3",
+        "subskill_nodes": [
+          "divide_terms"
+        ]
+      },
+      {
+        "family_id": "p4",
+        "family_name": "p4_frac_mult",
+        "question_text": "請計算：$\\frac{\\sqrt{12}}{2} \\times 4$",
+        "answer": "4*sqrt(3)",
+        "subskill_nodes": [
+          "fractional_radical",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p4",
+        "family_name": "p4_frac_mult",
+        "question_text": "請計算：$\\frac{\\sqrt{6}}{2} \\times 4$",
+        "answer": "2*sqrt(6)",
+        "subskill_nodes": [
+          "fractional_radical",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p4b",
+        "family_name": "p4b_frac_rad_div",
+        "question_text": "請化簡：$\\frac{3\\sqrt{2}}{\\sqrt{8}}$",
+        "answer": "3/2",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p4b",
+        "family_name": "p4b_frac_rad_div",
+        "question_text": "請化簡：$\\frac{3\\sqrt{12}}{\\sqrt{48}}$",
+        "answer": "3/2",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p4c",
+        "family_name": "p4c_nested_frac_chain",
+        "question_text": "請化簡：$\\frac{1}{\\sqrt{7}} \\times \\sqrt{7}$",
+        "answer": "1",
+        "subskill_nodes": [
+          "fractional_radical",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p4c",
+        "family_name": "p4c_nested_frac_chain",
+        "question_text": "請化簡：$\\frac{1}{\\sqrt{18}} \\times \\sqrt{18}$",
+        "answer": "1",
+        "subskill_nodes": [
+          "fractional_radical",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p4d",
+        "family_name": "p4d_frac_rad_div_mixed",
+        "question_text": "請化簡：$\\frac{2}{\\sqrt{3}} \\div \\sqrt{12}$",
+        "answer": "1/3",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p4d",
+        "family_name": "p4d_frac_rad_div_mixed",
+        "question_text": "請化簡：$\\frac{2}{\\sqrt{3}} \\div \\sqrt{12}$",
+        "answer": "1/3",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize",
+          "fractional_radical"
+        ]
+      },
+      {
+        "family_id": "p5a",
+        "family_name": "p5a_conjugate_int",
+        "question_text": "請有理化：$\\frac{1}{2+\\sqrt{3}}$",
+        "answer": "2-sqrt(3)",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p5a",
+        "family_name": "p5a_conjugate_int",
+        "question_text": "請有理化：$\\frac{1}{2+\\sqrt{15}}$",
+        "answer": "(-2+sqrt(15))/11",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p5b",
+        "family_name": "p5b_conjugate_rad",
+        "question_text": "請有理化：$\\frac{1}{\\sqrt{10}+\\sqrt{6}}$",
+        "answer": "(-sqrt(6)+sqrt(10))/4",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p5b",
+        "family_name": "p5b_conjugate_rad",
+        "question_text": "請有理化：$\\frac{1}{\\sqrt{10}+\\sqrt{10}}$",
+        "answer": "sqrt(10)/20",
+        "subskill_nodes": [
+          "divide_terms",
+          "conjugate_rationalize"
+        ]
+      },
+      {
+        "family_id": "p6",
+        "family_name": "p6_combo",
+        "question_text": "請化簡：$2\\sqrt{6} + \\sqrt{24} + \\sqrt{12}$",
+        "answer": "2*sqrt(3)+4*sqrt(6)",
+        "subskill_nodes": [
+          "simplify",
+          "combine_like_terms",
+          "multiply_terms",
+          "divide_terms",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p6",
+        "family_name": "p6_combo",
+        "question_text": "請化簡：$2\\sqrt{15} + \\sqrt{60} + \\sqrt{3}$",
+        "answer": "sqrt(3)+4*sqrt(15)",
+        "subskill_nodes": [
+          "simplify",
+          "combine_like_terms",
+          "multiply_terms",
+          "divide_terms",
+          "structure_isomorphism"
+        ]
+      },
+      {
+        "family_id": "p7",
+        "family_name": "p7_mixed_rad_add",
+        "question_text": "請化簡：$\\sqrt{2} + \\sqrt{8} + \\sqrt{3}$",
+        "answer": "sqrt(3)+3*sqrt(2)",
+        "subskill_nodes": [
+          "mixed_number_radical",
+          "combine_like_terms"
+        ]
+      },
+      {
+        "family_id": "p7",
+        "family_name": "p7_mixed_rad_add",
+        "question_text": "請化簡：$\\sqrt{2} + \\sqrt{8} + \\sqrt{10}$",
+        "answer": "sqrt(10)+3*sqrt(2)",
+        "subskill_nodes": [
+          "mixed_number_radical",
+          "combine_like_terms"
+        ]
+      }
+    ]
+  }
+}

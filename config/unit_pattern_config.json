@@ -1,0 +1,9 @@
+{
+  "_comment": "單元 → 題型 pattern skills 對應與權重。格式：curriculum|volume|chapter -> [{skill_id, weight}]。instance/ 同名檔可覆蓋。",
+  "junior_high|數學2上|第二章 二次方根與畢氏定理": [
+    {"skill_id": "jh_數學2上_RadicalSimplify", "weight": 1},
+    {"skill_id": "jh_數學2上_RadicalAddSub", "weight": 1},
+    {"skill_id": "jh_數學2上_RadicalMultiply", "weight": 1}
+  ],
+  "_extend_note": "之後可加：權重、enabled、難度分配。無設定時 fallback 至 skill_curriculum 查詢。"
+}

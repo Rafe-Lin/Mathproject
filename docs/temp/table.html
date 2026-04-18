@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        /* 讓每一欄寬度平均 */
+        th,
+        td {
+            width: 25%;
+        }
+
+        /* 傳統題庫 */
+        .col-trad {
+            background-color: #f9f9f9;
+            color: #999;
+        }
+
+        /* 一般 AI */
+        .col-ai {
+            background-color: #fffbf0;
+        }
+
+        /* 本作品 - 強調 */
+        .col-us {
+            background-color: #e8f4fd;
+            border-left: 2px solid #3498db;
+            position: relative;
+        }
+
+        .col-us td,
+        .col-us th {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        /* 標題列特殊處理 */
+        th.col-us-header {
+            background: #3498db;
+            color: white;
+            font-size: 18px;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 25px;
+            text-align: center;
+            margin-right: 5px;
+        }
+
+        .title {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        .sub {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th>比較維度</th>
+                <th>傳統數位題庫<br><span class="sub">(翰林/康軒/題庫網)</span></th>
+                <th>一般生成式 AI<br><span class="sub">(ChatGPT/Claude)</span></th>
+                <th class="col-us-header">🏆 智學 AIGC 平台<br><span class="sub">(本作品)</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. 題目生成機制</strong></td>
+                <td class="col-trad"><span class="icon">❌</span>有限 (Finite)<br><span class="sub">人工輸入，題數固定</span></td>
+                <td class="col-ai"><span class="icon">⚠️</span>純文字生成<br><span class="sub">品質不穩，易有邏輯錯</span></td>
+                <td class="col-us"><span class="icon">✅</span>演算法生成 (Infinite)<br><span class="sub">Python
+                        運算，無限題庫</span></td>
+            </tr>
+            <tr>
+                <td><strong>2. 正確性與幻覺</strong></td>
+                <td class="col-trad"><span class="icon">⭕</span>高 (High)<br><span class="sub">人工校對，但成本高</span></td>
+                <td class="col-ai"><span class="icon">❌</span>低 (Hallucination)<br><span class="sub">數學運算常胡說八道</span>
+                </td>
+                <td class="col-us"><span class="icon">✅</span>100% 精確<br><span class="sub">AST 語法樹雙重驗證</span></td>
+            </tr>
+            <tr>
+                <td><strong>3. 教學互動模式</strong></td>
+                <td class="col-trad"><span class="icon">❌</span>無互動 (Static)<br><span class="sub">僅顯示靜態詳解</span></td>
+                <td class="col-ai"><span class="icon">⚠️</span>直接給答案<br><span class="sub">缺乏引導，學生易抄襲</span></td>
+                <td class="col-us"><span class="icon">✅</span>蘇格拉底式引導<br><span class="sub">三部曲：觀察/策略/檢查</span></td>
+            </tr>
+            <tr>
+                <td><strong>4. 視覺化呈現</strong></td>
+                <td class="col-trad"><span class="icon">⚠️</span>靜態圖片 (JPG)<br><span class="sub">圖形死板固定</span></td>
+                <td class="col-ai"><span class="icon">❌</span>無法繪圖<br><span class="sub">僅能產生文字</span></td>
+                <td class="col-us"><span class="icon">✅</span>動態參數繪圖<br><span class="sub">數形合一，隨數值連動</span></td>
+            </tr>
+            <tr>
+                <td><strong>5. 營運維護成本</strong></td>
+                <td class="col-trad"><span class="icon">❌</span>極高 (人力密集)<br><span class="sub">需大量老師維護題庫</span></td>
+                <td class="col-ai"><span class="icon">⭕</span>低<br><span class="sub">但缺乏客製化與課綱對應</span></td>
+                <td class="col-us"><span class="icon">✅</span>極低 (自動化)<br><span class="sub">符合綠色運算，節能減碳</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>

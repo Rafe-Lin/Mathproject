@@ -1,0 +1,62 @@
+{
+  "total": 5,
+  "success": 5,
+  "failed": 0,
+  "units": [
+    {
+      "name": "第1章_乘法公式與多項式",
+      "status": "success",
+      "stats": {
+        "total_nodes": 66,
+        "total_edges": 128,
+        "l3_count": 12,
+        "l4_count": 51,
+        "l4_avg_per_l3": 4.25
+      }
+    },
+    {
+      "name": "第2章_平方根與根式運算",
+      "status": "success",
+      "stats": {
+        "total_nodes": 75,
+        "total_edges": 97,
+        "l3_count": 11,
+        "l4_count": 61,
+        "l4_avg_per_l3": 5.545454545454546
+      }
+    },
+    {
+      "name": "第3章_因式分解",
+      "status": "success",
+      "stats": {
+        "total_nodes": 47,
+        "total_edges": 104,
+        "l3_count": 6,
+        "l4_count": 38,
+        "l4_avg_per_l3": 6.333333333333333
+      }
+    },
+    {
+      "name": "第4章_一元二次方程式",
+      "status": "success",
+      "stats": {
+        "total_nodes": 22,
+        "total_edges": 51,
+        "l3_count": 3,
+        "l4_count": 16,
+        "l4_avg_per_l3": 5.333333333333333
+      }
+    },
+    {
+      "name": "第5章_資料處理與統計圖表",
+      "status": "success",
+      "stats": {
+        "total_nodes": 15,
+        "total_edges": 33,
+        "l3_count": 2,
+        "l4_count": 10,
+        "l4_avg_per_l3": 5.0
+      }
+    }
+  ]
+}

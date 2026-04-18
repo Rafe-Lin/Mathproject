@@ -1,0 +1,17 @@
+{
+  "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+  "display_name": "分數四則運算",
+  "family": "fraction",
+  "level_range": [1, 3],
+  "injected_apis": ["IntegerOps", "FractionOps"],
+  "required_imports": ["random", "math", "fractions.Fraction"],
+  "modes": ["BENCHMARK", "LIVESHOW"],
+  "vision_input": false,
+  "aliases": [
+    "Fraction",
+    "Fractions",
+    "FourArithmeticOperationsOfNumbers",
+    "jh_數學1上_分數四則運算"
+  ],
+  "schema_version": "1.0"
+}

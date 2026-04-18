@@ -1,0 +1,3797 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/index.html
+功能說明 (Description): 學生練習主頁面
+後端呼叫 (Backend Call): core/routes/practice.py -> practice
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自適應性教學系統練習網站</title>
+    <!-- 新增：載入 MathJax 函式庫 -->
+    <script>
+        {% raw %}
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // 設定行內公式的標識符
+                macros: {
+                    // 定義一個 \frac 的替代指令，避免與原始 LaTeX 語法衝突
+                    dfrac: ['{\\displaystyle\\frac{#1}{#2}}', 2]
+                }
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+        {% endraw %}
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+        </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === 全局樣式 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* [Surface Pro 繪圖修正] */
+        canvas {
+            /* 關鍵：告訴瀏覽器在 Canvas 上禁止預設的捲動行為 */
+            touch-action: none !important;
+            /* 確保游標在畫布上是十字線，方便對準 */
+            cursor: crosshair;
+            /* 防止選取到畫布時出現藍色框框 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* === Navbar（樣式由 body 內 _student_navbar 提供，勿在此寫 .navbar a 以免覆寫膠囊）=== */
+
+        /* 新增：難度選擇按鈕樣式 */
+        .level-selector {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .level-button {
+            padding: 6px 12px;
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .level-button.active {
+            background: #1abc9c;
+            color: white;
+            border-color: #16a085;
+            font-weight: bold;
+        }
+
+        /* === 容器 === */
+        .container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* === 練習區 === */
+        .practice-area {
+            flex: 3;
+            /* 左邊佔 3/5 */
+            background: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .practice-top {
+            padding: 12px 20px;
+            /* 縮小內距 */
+            border-bottom: 1px solid #e9ecef;
+            position: relative;
+            flex: 2;
+            /* 題目和輸入框區域佔 2/5 */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* 隱藏溢出內容，不出現卷軸 */
+            min-height: 0;
+            /* 允許縮小 */
+        }
+
+        .practice-top h1 {
+            color: #2c3e50;
+            font-size: 1.1em;
+            /* 縮小字體 */
+            margin-bottom: 8px;
+            flex-shrink: 0;
+            /* 標題不縮小 */
+        }
+
+        #streak-counter {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+        }
+
+        #question-text {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            font-size: 1.25em;
+            /* 初始字體大小 (1.25rem ~ 1.25em) */
+            line-height: 1.6;
+            color: #2c3e50;
+            margin: 6px 0;
+            white-space: pre-wrap;
+
+            /* [V9.9 CSS Upgrade] Scroll & Height Control */
+            height: auto !important;
+            /* 取消固定高度 */
+            min-height: 150px;
+            /* 設定最小高度，確保版面穩定 */
+            max-height: 400px;
+            /* 設定最大高度 */
+            overflow-y: auto;
+            /* 題目太長時顯示垂直捲軸 */
+
+            flex: 1;
+            word-wrap: break-word;
+            /* 確保長單字會自動換行 */
+            word-break: break-word;
+            word-break: break-word;
+        }
+
+        /* [Feature] Instant Practice Image Display */
+        #instant-question-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto 15px auto;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        #answer-input {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 0.95em;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        #answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        #submit-button {
+            padding: 8px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #submit-button:hover:not(:disabled) {
+            background: #2980b9;
+        }
+
+        #submit-button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #result-display {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            min-height: 20px;
+            font-size: 0.9em;
+        }
+
+        #result-display.correct {
+            background: #d5efdb;
+            color: #27ae60;
+            border: 1px solid #a8e6c1;
+        }
+
+        #result-display.incorrect {
+            background: #fadbd8;
+            color: #c0392b;
+            border: 1px solid #f5b7b1;
+        }
+
+        .similar-toolbar,
+        .similar-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .similar-toolbar {
+            margin-bottom: 10px;
+        }
+
+        .similar-chip {
+            background: #eef6ff;
+            color: #2c5282;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        .similar-preview-box {
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #dbe4ee;
+            border-radius: 10px;
+            color: #2c3e50;
+            font-size: 0.92em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* === [Phase 6] Prerequisite Suggestion === */
+        #prerequisite-suggestion {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .prerequisite-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .prerequisite-card i {
+            font-size: 1.5em;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        #prerequisite-reason {
+            margin: 10px 0;
+            font-size: 1.05em;
+            line-height: 1.5;
+        }
+
+        .btn-prerequisite {
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-prerequisite:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === 畫布區 === */
+        .practice-bottom {
+            flex: 3;
+            /* 計算紙手寫區佔 3/5 */
+            padding: 15px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            /* 允許縮小 */
+        }
+
+        .canvas-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .canvas-toolbar strong {
+            margin-right: 10px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .tool-button {
+            padding: 6px 10px;
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* Clone style for tool-btn */
+        .tool-btn {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #555;
+            /* Default color */
+        }
+
+        .tool-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-1px);
+        }
+
+        .tool-btn.active {
+            background: #eef2f7;
+            border-color: #3498db;
+            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.2);
+        }
+
+        .tool-button.active {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .color-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: transform 0.2s;
+        }
+
+        .color-button.active {
+            transform: scale(1.2);
+            border-color: #3498db;
+        }
+
+        .color-button.black {
+            background: #2c3e50;
+        }
+
+        .color-button.red {
+            background: #e74c3c;
+        }
+
+        input[type="range"] {
+            width: 80px;
+            cursor: pointer;
+        }
+
+        #pen-width-label {
+            min-width: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .canvas-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+        }
+
+        .canvas-actions button {
+            padding: 6px 12px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .canvas-actions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #upload-image-button {
+            background: #f39c12;
+        }
+
+        #upload-image-button:hover {
+            background: #e67e22;
+        }
+
+        #analyze-handwriting-button {
+            background: #9b59b6 !important;
+        }
+
+        #analyze-handwriting-button:hover {
+            background: #8e44ad !important;
+        }
+
+        #clear-canvas-button {
+            background: #e74c3c;
+        }
+
+        #clear-canvas-button:hover {
+            background: #c0392b;
+        }
+
+        #handwriting-canvas {
+            flex: 1;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            cursor: crosshair;
+            touch-action: none;
+            /* 重要：防止觸控時滾動頁面 */
+        }
+
+        /* === 聊天區 === */
+        .chat-area {
+            flex: 2;
+            /* 右邊佔 2/5 */
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #dee2e6;
+        }
+
+        .chat-area h3 {
+            color: #9b59b6;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #chat-history {
+            flex: 1;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 100%;
+            /* 改成滿版 */
+            box-sizing: border-box;
+            /* 確保 padding 不會撐破版面 */
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .user-message {
+            background: #3498db;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+
+        /* === 聊天訊息美化 === */
+        .bot-message {
+            background-color: #ffffff;
+            /* 改成白色背景比較乾淨 */
+            border: 1px solid #e0e0e0;
+            /* 加個淡淡的邊框 */
+            color: #2c3e50;
+            /* 深灰藍色字體，比較有質感 */
+            padding: 15px 18px;
+            /* 增加內距，讓文字呼吸 */
+            border-radius: 18px;
+            /* 圓角大一點 */
+            border-top-left-radius: 4px;
+            /* 做出對話框的感覺 */
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            /* 微微的陰影 */
+
+            /* 排版優化 */
+            font-size: 16px;
+            /* 字體大一點 */
+            line-height: 1.8;
+            /* 行高加高，閱讀數學式才不會擠 */
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+        }
+
+        /* 針對 MathJax 公式的微調 */
+        mjx-container {
+            margin: 0 3px !important;
+            /* 公式左右留白 */
+        }
+
+        /* 萬一 AI 還是偷用了 code，我們強制把它變醜的樣式拿掉 */
+        .bot-message code {
+            background-color: transparent !important;
+            color: inherit !important;
+            padding: 0 !important;
+            font-family: inherit !important;
+            font-size: inherit !important;
+        }
+
+        .chat-input-area {
+            display: flex;
+            flex-direction: column;
+            /* 改為垂直排列 */
+            gap: 10px;
+        }
+
+        .symbol-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            /* Drawer styles */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+            padding: 0;
+            margin-top: 0;
+        }
+
+        .symbol-buttons.expanded {
+            max-height: 250px;
+            opacity: 1;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            overflow-y: auto;
+        }
+
+        #toggle-math-btn {
+            background: none;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+            color: #6c757d;
+            width: 42px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        #toggle-math-btn:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        #toggle-math-btn.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .symbol-button {
+            padding: 5px 10px;
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.2s;
+        }
+
+        .symbol-button:hover {
+            background: #dfe6e9;
+        }
+
+        /* 建議按鈕樣式 */
+        .suggestion-btn {
+            background-color: #ffffff;
+            border: 1px solid #3498db;
+            color: #3498db;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            /* 讓 MathJax 公式在按鈕裡垂直置中 */
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .suggestion-btn:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* 修正 MathJax 在按鈕內可能導致的跑版 */
+        .suggestion-btn mjx-container {
+            margin: 0 2px !important;
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        #chat-input:focus {
+            border-color: #9b59b6;
+            box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.2);
+            outline: none;
+        }
+
+        #chat-send-button {
+            padding: 12px 20px;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #chat-send-button:hover {
+            background: #8e44ad;
+        }
+
+        /* === Suggested Prompts === */
+        #suggested-prompts-container {
+            margin-bottom: 15px;
+        }
+
+        #suggested-prompts-container h4 {
+            color: #9b59b6;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* 統一氣泡樣式 CSS (確保橫向排列) */
+        .suggestions-container {
+            display: flex;
+            flex-wrap: nowrap;
+            /* 不換行 */
+            overflow-x: auto;
+            /* 橫向捲動 */
+            gap: 8px;
+            padding: 4px 0;
+            /* 加點 padding 避免陰影被切到 */
+            scrollbar-width: none;
+            /* Firefox 隱藏捲軸 */
+        }
+
+        .suggestions-container::-webkit-scrollbar {
+            display: none;
+            /* Chrome 隱藏捲軸 */
+        }
+
+        /* === 新增：動態建議專屬樣式 (淺紅色) === */
+        .dynamic-prompt-btn {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            /* 不換行 */
+            flex-shrink: 0;
+            /* 防止被壓縮 */
+            box-shadow: 0 2px 4px rgba(198, 40, 40, 0.1);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .dynamic-prompt-btn:hover {
+            background-color: #c62828;
+            /* 深紅背景 */
+            color: #ffffff;
+            /* 白字 */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(198, 40, 40, 0.2);
+            border-color: #c62828;
+        }
+
+        /* 統一的 Suggestion Button 樣式 (覆蓋舊的) */
+        .suggestion-btn,
+        .prompt-button {
+            white-space: nowrap !important;
+            /* 強制文字不換行 */
+            background-color: #e8f4ff !important;
+            /* 水藍色背景 */
+            color: #1890ff !important;
+            /* 深藍色文字 */
+            border: 1px solid #91d5ff !important;
+            /* 淡藍邊框 */
+            border-radius: 20px !important;
+            /* 圓角氣泡感 */
+            padding: 6px 16px !important;
+            font-size: 0.9em;
+            cursor: pointer;
+            flex-shrink: 0;
+            /* 防止被壓縮 */
+            transition: all 0.3s;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            /* 自動寬度 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* === 新增：用來修復佈局的 CSS === */
+        #main-chat-container {
+            max-width: 1200px;
+            /* 增加寬度限制 */
+            margin: 0 auto;
+            /* 水平置中 */
+        }
+
+        .card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 1.5rem !important;
+        }
+
+        #static-prompts,
+        #dynamic-prompts {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            /* 允許換行 */
+            gap: 8px;
+            /* 讓泡泡整齊排列 */
+        }
+
+        .suggestion-btn:hover,
+        .prompt-button:hover {
+            background-color: #1890ff !important;
+            color: white !important;
+            border-color: #1890ff !important;
+        }
+
+        .prompt-button:hover {
+            background: #ecf0f1;
+            border-color: #9b59b6;
+        }
+
+        /* === 新增：問題與示意圖排版 === */
+        .question-content {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            flex: 1;
+            /* 讓此容器填滿剩餘空間 */
+            min-height: 0;
+            /* 確保在 flex 容器中可以正確縮放 */
+            overflow: hidden;
+            /* 隱藏內部溢出 */
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-basis: 220px;
+            /* 給示意圖一個固定的基礎寬度 */
+            flex-shrink: 0;
+            /* 防止示意圖容器被壓縮 */
+        }
+
+        #diagram-image {
+            max-width: 200px;
+            max-height: 200px;
+            /* 增加最大高度以獲得更好的可視性 */
+            margin-top: 0 !important;
+            /* 覆蓋內聯樣式 */
+        }
+
+        /* 防止內容撐破版面 */
+        #question-text img,
+        pre {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* =========================================
+           捲軸與高度限制優化 (Scrollbar & Height)
+           ========================================= */
+
+        /* 1. 題目顯示框框：限制高度 + 捲軸 */
+        /* 1. 題目顯示框框：限制高度 + 捲軸 */
+        #question-container {
+            width: 100%;
+            max-width: 100% !important;
+            /* 確保滿版 */
+
+            /* [Layout] Flexbox for row layout */
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+
+            /* [新增] 高度限制與捲軸 */
+            max-height: 35vh;
+            overflow-y: auto;
+
+            /* [Card Style] 灰色背景卡片樣式 */
+            background-color: #f8f9fa;
+            /* 淡灰背景 */
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #edf2f7;
+
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #2d3748;
+        }
+
+        /* [新增] 題目文字區塊樣式 */
+        #question-text {
+            flex: 1;
+            /* 佔據剩餘空間 */
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        /* 2. 計算紙區域容器：限制高度 + 捲軸 */
+        #scratchpad-container {
+            width: 100%;
+            max-width: 68vw;
+
+            /* [新增] 高度限制與捲軸 */
+            height: 55vh;
+            /* 固定高度，讓它夠大 */
+            max-height: 600px;
+            /* 但也不要超過 600px */
+            overflow-y: auto;
+            /* 畫布太大時可捲動 */
+
+            display: flex;
+            flex-direction: column;
+
+            /* 讓容器本身也有卡片感，包住工具列與畫布 */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* 3. 工具列：凍結在頂部 (Sticky) */
+        #scratchpad-controls {
+            /* [新增] 凍結效果 */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            /* 確保浮在畫布上面 */
+
+            background: #f8fafc;
+            /* 給個背景色，不然捲動時會透過去 */
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            /* 分隔線移到這裡 */
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* 4. 畫布本體：確保夠高 */
+        canvas {
+            background-color: #ffffff;
+            cursor: crosshair;
+            touch-action: none;
+            width: 100%;
+            /* 移除原本的 border 與 shadow，因為現在由 container 包辦了 */
+            border: none;
+            border-radius: 0 0 12px 12px;
+
+            /* [重要] 設定一個最小高度，確保就算沒寫字也能捲動一點點，或者填滿容器 */
+            min-height: 100%;
+            display: block;
+        }
+
+        /* 5. [加分項] 美化捲軸樣式 (Chrome/Safari/Edge) */
+        #question-container::-webkit-scrollbar,
+        #scratchpad-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #question-container::-webkit-scrollbar-track,
+        #scratchpad-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #question-container::-webkit-scrollbar-thumb,
+        #scratchpad-container::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        #question-container::-webkit-scrollbar-thumb:hover,
+        #scratchpad-container::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* === 橡皮擦專屬樣式 === */
+        .tool-btn.eraser-btn:hover,
+        .tool-btn.eraser-btn.active {
+            background-color: #ffeef0;
+            /* 淡粉色背景 */
+            border-color: #ffcdd2;
+            /* 淺紅邊框 */
+            color: #e74c3c !important;
+            /* 紅色圖示強制 */
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+            /* 柔和光暈 */
+        }
+
+        /* 橡皮擦游標樣式 - 使用 inline SVG */
+        .eraser-cursor {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="%232c3e50" stroke-width="2"><path d="M20 6L9 17l-5-5 11-11a2.828 2.828 0 1 1 4 4L19 6z" /><path d="M12 13l5 5" /></svg>') 0 20, auto !important;
+        }
+
+        /* === [自動套用] 樣式升級補丁 === */
+        /* 1. 容器滿版 */
+        #question-container,
+        #scratchpad-container {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* 2. 對話氣泡滿版 */
+        .chat-message,
+        .chat-ai,
+        .chat-user {
+            max-width: 100% !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* === AI 聊天室排版強制修正 === */
+        .chat-area h3 {
+            margin-bottom: 0 !important;
+            padding-bottom: 5px !important;
+            margin-top: 0 !important;
+        }
+
+        #chat-history {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .bot-message {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        /* 針對頑固的 pre 標籤進行降伏 */
+        .bot-message pre {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: inherit !important;
+            /* 消除醜醜的程式碼字體 */
+            font-weight: bold !important;
+            /* 強制粗體 */
+            white-space: pre-wrap !important;
+            /* 保留換行但允許自動折行 */
+            background-color: transparent !important;
+            border: none !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    {% set is_similar_practice = practice_mode == 'similar_practice' %}
+    {% include '_student_navbar.html' %}
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 練習區 -->
+        <div class="practice-area">
+            <div class="practice-top">
+                <h1 id="skill-title"> {{
+                    skill_ch_name
+                    }}
+                    {% if not is_similar_practice %}
+                    ({{
+                    skill_id|replace('_', ' ')|title
+                    }})
+                    {% endif %}
+                    <span id="level-indicator"
+                        style="background: #1abc9c; color: white; padding: 4px 10px; font-size: 0.7em; border-radius: 12px; vertical-align: middle;">等級：1</span><span
+                        id="streak-counter"{% if is_similar_practice %} style="display:none;"{% endif %}>連續答對：0</span></h1>
+                <!-- 新增：難度選擇器 -->
+                <!-- 新增：難度選擇器 -->
+                <div class="level-selector">
+                    <button id="next-question-btn" class="level-button"
+                        style="background-color: #3498db; color: white;">下一題</button>
+
+
+                    {% if prereq_skills %}
+                    <div class="input-group" style="margin-left: 20px; display:flex; gap:5px;">
+                        <select id="prereq-skill-select" class="form-select"
+                            style="padding: 5px; border-radius: 6px; border: 1px solid #bdc3c7;">
+                            <option value="" selected disabled>練習基礎技能...</option>
+
+                            {% for prereq in prereq_skills %}
+                            <option value="{{ prereq.skill_id }}">{{ prereq.skill_ch_name }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <button class="level-button" type="button" id="practice-prereq-btn"
+                            style="background-color: #f39c12; color: white;">練習</button>
+                    </div>
+                    {% endif %}
+
+                    <!-- NEW: Upload Question Button -->
+                    <button id="upload-question-btn" class="level-button"
+                        style="background-color: #9b59b6; color: white; margin-left: 10px;{% if is_similar_practice %} display: none;{% endif %}">
+                        <i class="fas fa-camera"></i> 上傳題目
+                    </button>
+                    <input type="file" id="question-image-uploader" accept="image/*" style="display: none;">
+
+                    {% if is_similar_practice %}
+                    <button id="similar-upload-btn" class="level-button"
+                        style="background-color: #8e44ad; color: white; margin-left: 10px;">
+                        <i class="fas fa-image"></i> 上傳題目照片
+                    </button>
+                    <button id="similar-show-answer-btn" class="level-button"
+                        style="background-color: #16a085; color: white; display: none;">顯示答案</button>
+                    <button id="similar-reset-btn" class="level-button"
+                        style="background-color: #7f8c8d; color: white;">重新上傳</button>
+                    <input type="file" id="similar-image-uploader" accept="image/*" style="display: none;">
+                    {% endif %}
+
+                </div>
+                <!-- 修改後的版面：問題和示意圖並排 -->
+                <!-- 修改後的版面：問題和示意圖並排 -->
+                <div class="question-content" id="question-container">
+                    <div id="question-text"></div>
+                </div>
+                {% if is_similar_practice %}
+                <div class="similar-toolbar">
+                    <div id="similar-status-chip" class="similar-chip">請先上傳題目照片</div>
+                    <div id="similar-skill-chip" class="similar-chip" style="display:none;"></div>
+                    <div id="similar-fixes-chip" class="similar-chip" style="display:none;"></div>
+                </div>
+                <div class="similar-meta">
+                    <div id="similar-ocr-preview" class="similar-preview-box" style="display:none;"></div>
+                </div>
+                {% endif %}
+                <div class="input-group"><input type="text" id="answer-input" placeholder="輸入答案..."><button
+                        id="submit-button">{{ '檢查答案' if is_similar_practice else '提交' }}</button></div>
+                <div id="result-display"></div>
+
+                <!-- [Phase 6] Prerequisite Suggestion Card -->
+                <div id="prerequisite-suggestion" style="display: none;">
+                    <div class="prerequisite-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>建議複習</strong>
+                        <p id="prerequisite-reason"></p>
+                        <button id="go-prerequisite-btn" class="btn-prerequisite">
+                            前往 <span id="prerequisite-name"></span> 複習
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-bottom" id="scratchpad-container">
+                <div id="scratchpad-controls">
+                    <button class="tool-btn active" onclick="setTool('pen', 'black')" title="黑筆" style="color: black;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.5 7.5"></path>
+                        </svg>
+                    </button>
+
+                    <button class="tool-btn" onclick="setTool('pen', '#e74c3c')" title="紅筆" style="color: #e74c3c;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.5 7.5"></path>
+                        </svg>
+                    </button>
+
+                    <button class="tool-btn" onclick="setTool('pen', '#0066cc')" title="藍筆" style="color: #0066cc;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.5 7.5"></path>
+                        </svg>
+                    </button>
+
+                    <button class="tool-btn" onclick="setTool('pen', '#009933')" title="綠筆" style="color: #009933;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.5 7.5"></path>
+                        </svg>
+                    </button>
+
+                    <div style="width: 1px; height: 20px; background: #ddd; margin: 0 5px;"></div>
+
+                    <button class="tool-btn eraser-btn" onclick="setTool('eraser')" title="橡皮擦" style="color: #666;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M15.14,3c-0.51,0-1.02,0.2-1.41,0.59L2.59,14.73C1.8,15.51,1.8,16.77,2.59,17.56l5.85,5.85c0.39,0.39,0.9,0.59,1.41,0.59 s1.02-0.2,1.41-0.59l11.14-11.14c0.78-0.78,0.78-2.05,0-2.83l-5.85-5.85C16.17,3.2,15.65,3,15.14,3z M14.44,5.11l4.45,4.45 l-2.13,2.13l-4.45-4.45L14.44,5.11z" />
+                        </svg>
+                    </button>
+
+                    <button class="tool-btn" onclick="clearCanvas()" title="清除全部" style="color: #666;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- 筆畫粗細滑桿 -->
+                    <div style="margin-left: 10px; display: flex; align-items: center; gap: 5px;">
+                        <span style="font-size: 0.8em; color: #666;">粗細</span>
+                        <input type="range" id="pen-width" min="1" max="10" value="2" style="width: 60px;">
+                        <span id="pen-width-label" style="font-size: 0.8em; min-width: 15px;">2</span>
+                    </div>
+
+                    <div class="canvas-actions">
+                        <button id="draw-diagram-button" class="tool-button"
+                            style="background-color: #27ae60; color: white;">繪製示意圖</button>
+                        <button id="undo-button">上一步</button>
+                        <button id="redo-button">下一步</button>
+                        <button id="upload-image-button">上傳圖片</button>
+
+                        <button id="analyze-handwriting-button">AI檢查</button>
+                    </div>
+                </div><canvas id="handwriting-canvas"></canvas>
+            </div>
+        </div>
+        <!-- 聊天區 -->
+        <div class="chat-area">
+            <h3 id="tutor-model-label" style="margin-bottom: 0; padding-bottom: 2px;">AI 助教（載入中...）</h3>
+            <div id="chat-history" style="padding-top: 5px;">
+                <div class="bot-message">
+                    <div style="margin: 0; padding: 0; font-weight: bold; line-height: 1.2;">你好！有問題問我～</div>
+                </div>
+            </div>
+            <!-- 1. 固定建議提示區 (來自資料庫) -->
+            <div id="static-prompts" class="suggestions-container"></div>
+
+            <!-- 2. AI 動態建議提示區 (隨著對話生成) -->
+            <div id="dynamic-prompts" class="suggestions-container" style="display: none;"></div>
+            <div class="chat-input-area">
+                <div class="chat-input-group">
+                    <button id="toggle-math-btn" type="button" title="開啟數學鍵盤"><i class="fas fa-calculator"></i></button>
+                    <input type="text" id="chat-input" placeholder="問我觀念...">
+                    <button id="chat-send-button">送出</button>
+                </div>
+                <div class="symbol-buttons" id="math-toolbar"><button class="symbol-button"
+                        data-symbol="π">π</button><button class="symbol-button" data-symbol="√">√</button><button
+                        class="symbol-button" data-symbol="²">²</button><button class="symbol-button"
+                        data-symbol="³">³</button><button class="symbol-button" data-symbol="°">°</button><button
+                        class="symbol-button" data-symbol="θ">θ</button><button class="symbol-button"
+                        data-symbol="∞">∞</button><button class="symbol-button" data-symbol="±">±</button><button
+                        class="symbol-button" data-symbol="≠">≠</button><button class="symbol-button"
+                        data-symbol="≤">≤</button><button class="symbol-button" data-symbol="≥">≥</button><button
+                        class="symbol-button" data-symbol="≈">≈</button><button class="symbol-button"
+                        data-symbol="∑">∑</button><button class="symbol-button" data-symbol="∫">∫</button></div>
+                <!-- 新增：隱藏的圖片上傳 input --><input type="file" id="image-uploader" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- ========== RAG 模式 ========== -->
+            <button id="rag-mode-btn" onclick="toggleRagMode()" style="
+                width: 100%;
+                padding: 10px 16px;
+                margin-top: 8px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 0.95em;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            ">
+                <span style="font-size: 1.1em;">📚</span> RAG 模式
+            </button>
+
+            <!-- RAG 面板 (預設隱藏) -->
+            <div id="rag-panel"
+                style="display: none; margin-top: 8px; padding: 12px; background: #f8f5ff; border: 1px solid #d4c5f9; border-radius: 12px;">
+                <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                    <input type="text" id="rag-query-input" placeholder="輸入你的問題…" style="
+                        flex: 1;
+                        padding: 10px 14px;
+                        border: 1px solid #d4c5f9;
+                        border-radius: 8px;
+                        font-size: 1.1em;
+                        outline: none;
+                    ">
+                    <button id="rag-search-btn" onclick="performRagSearch()" style="
+                        padding: 8px 16px;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 0.9em;
+                        font-weight: 600;
+                        cursor: pointer;
+                        white-space: nowrap;
+                    ">🔍 檢索</button>
+                </div>
+
+                <!-- RAG 檢索中 Loading -->
+                <div id="rag-loading" style="display: none; text-align: center; padding: 10px; color: #764ba2;">
+                    <i class="fas fa-spinner fa-spin"></i> 正在檢索相關單元...
+                </div>
+
+                <!-- Top-5 結果按鈕區 -->
+                <div id="rag-results" style="display: none; margin-bottom: 10px;">
+                    <div style="font-size: 0.8em; color: #764ba2; font-weight: 600; margin-bottom: 6px;">📌 Top-5 相關單元：
+                    </div>
+                    <div id="rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                </div>
+
+                <!-- AI 回答區 -->
+                <div id="rag-ai-answer"
+                    style="display: none; padding: 10px; background: white; border-radius: 8px; border: 1px solid #e8e0f5; font-size: 0.9em; line-height: 1.6; color: #333;">
+                    <div style="font-size: 0.8em; color: #764ba2; font-weight: 600; margin-bottom: 6px;">🤖 AI 回答 (基於
+                        RAG 檢索結果)：</div>
+                    <div id="rag-ai-answer-text"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- The Image Modal -->
+    <div id="imageModal" class="image-modal"><span class="close">&times;
+        </span><img class="image-modal-content" id="modalImg">
+        <div id="caption"></div>
+    </div>
+    <!-- Custom Alert Modal (Moved inside body) -->
+    <div id="customAlertModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="customAlertMessage"></p><button id="customAlertOkButton" class="modal-button">確定</button>
+        </div>
+    </div>
+    <!-- Custom Confirm Modal -->
+    <div id="customConfirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="customConfirmMessage"></p>
+            <div class="modal-button-group"><button id="customConfirmCancelButton"
+                    class="modal-button cancel">取消</button><button id="customConfirmOkButton"
+                    class="modal-button">確定</button></div>
+        </div>
+    </div>
+    <!-- 新增：基礎技能建議 Modal -->
+    <div id="prereqSuggestionModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="color: #e67e22; margin-top: 0; margin-bottom: 15px;">遇到困難了嗎？</h3>
+            <p id="prereqSuggestionMessage" style="margin-bottom: 20px;">
+                看起來這個單元有點挑戰性，要不要先回去練習一下相關的基礎技能呢？</p>
+            <!-- 基礎技能按鈕將會被動態插入到這裡 -->
+            <div id="prereqSuggestionList"
+                style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px;">
+            </div>
+            <div class="modal-button-group" style="justify-content: center;"><button id="prereqSuggestionCancelButton"
+                    class="modal-button cancel">繼續練習</button></div>
+        </div>
+    </div>
+    <style>
+        /* Custom Alert Modal Styles */
+        .modal-overlay {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 10000;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+            /* Use flexbox for centering when displayed */
+            align-items: flex-start;
+            /* 改為從頂部對齊 */
+            justify-content: center;
+            /* Center horizontally */
+            padding-top: 25vh;
+            /* 從視窗頂部向下推 25% 的高度 */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+            position: relative;
+            /* Needed for animation */
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+        }
+
+        /* Add Animation */
+        @keyframes animatetop {
+            from {
+                transform: translateY(-50px);
+                opacity: 0
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        .modal-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+
+        .modal-button:hover {
+            background-color: #2980b9;
+        }
+
+        .modal-button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-button.cancel {
+            background-color: #95a5a6;
+        }
+
+        .modal-button.cancel:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* --- Styles for Image Modal --- */
+        #diagram-image {
+            max-width: 200px;
+            max-height: 120px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        #diagram-image:hover {
+            opacity: 0.7;
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 10001;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .image-modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+
+        .image-modal-content,
+        #caption {
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(0)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        .image-modal .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .image-modal .close:hover,
+        .image-modal .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* === [自動套用] 樣式升級補丁 === */
+        /* 1. 容器滿版 */
+        #question-container,
+        #scratchpad-container {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* 2. 對話氣泡滿版 */
+        .chat-message,
+        .chat-ai,
+        .chat-user {
+            max-width: 100% !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* === AI 聊天室排版強制修正 === */
+        .chat-area h3 {
+            margin-bottom: 0 !important;
+            padding-bottom: 5px !important;
+            margin-top: 0 !important;
+        }
+
+        #chat-history {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .bot-message {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        /* 針對頑固的 pre 標籤進行降伏 */
+        .bot-message pre {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: inherit !important;
+            /* 消除醜醜的程式碼字體 */
+            font-weight: bold !important;
+            /* 強制粗體 */
+            white-space: pre-wrap !important;
+            /* 保留換行但允許自動折行 */
+            background-color: transparent !important;
+            border: none !important;
+        }
+    </style>
+
+    <script>
+        // === 全域變數 ===
+        let isProcessing = false;
+        let currentStreak = 0;
+        let currentColor = '#2c3e50';
+        let currentWidth = 2;
+        let isErasing = false;
+        let isDrawing = false;
+        let undoStack = [];
+        let selectedLevel = 1; // 新增：用於儲存當前選擇的難度
+
+        function getSafeSelectedLevel() {
+            const parsed = Number.parseInt(selectedLevel, 10);
+            if (Number.isNaN(parsed) || parsed < 1) {
+                selectedLevel = 1;
+                return 1;
+            }
+            return parsed;
+        }
+        let consecutiveWrongs = 0; // 新增：追蹤連續答錯次數
+        let redoStack = [];
+        let blankCanvas = null;
+        let currentContext = "";  // 儲存題目 context，用於 AI 助教
+
+        // [V9.6 新增] 用來儲存當前題目的圖片物件
+        let currentQuestionImage = null;
+
+        // [V9.7 新增] 紀錄題目圖片在畫布上的確切位置與大小，給橡皮擦用
+        let imgDestX = 0, imgDestY = 0, imgDestW = 0, imgDestH = 0;
+
+        // === 通用函式：呼叫 MathJax 渲染指定元素 ===
+        function renderMathContent(element) {
+            if (!element) return;
+            // 檢查 MathJax 是否已載入並準備好
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([element])
+                    .catch((err) => console.error('MathJax typeset failed:', err));
+            } else if (window.MathJax && window.MathJax.startup) {
+                window.MathJax.startup.promise.then(() => {
+                    window.MathJax.typesetPromise([element])
+                        .catch((err) => console.error('MathJax typeset failed:', err));
+                });
+            }
+        }
+
+        // DOM 元素
+        let canvas, ctx, analyzeBtn, submitBtn, answerInput, resultDisplay;
+        let questionText, chatHistory, streakCounter;
+
+        // 新增：一個旗標，表示初始題目是否已載入
+        let isInitialQuestionLoaded = false;
+
+        // 將後端資料傳給 JS
+        const PRACTICE_MODE = {{ (practice_mode or 'standard') | tojson | safe }};
+        const PREREQ_SKILLS = {{ prereq_skills | tojson | safe }};
+        const SIMILAR_DEFAULT_MODEL = 'qwen3-vl-8b';
+        const similarPracticeState = {
+            imageData: '',
+            ocrText: '',
+            jsonSpec: null,
+            skillId: '',
+            answer: '',
+            filePath: '',
+            answerVisible: false,
+            hasQuestion: false,
+            fixes: 0,
+        };
+
+        // === DOM 載入完成 ===
+        window.addEventListener('DOMContentLoaded', () => {
+            // 取得元素
+            submitBtn = document.getElementById('submit-button');
+            answerInput = document.getElementById('answer-input');
+            resultDisplay = document.getElementById('result-display');
+            questionText = document.getElementById('question-text');
+            chatHistory = document.getElementById('chat-history');
+            streakCounter = document.getElementById('streak-counter');
+            levelIndicator = document.getElementById('level-indicator');
+            canvas = document.getElementById('handwriting-canvas');
+            ctx = canvas.getContext('2d');
+            analyzeBtn = document.getElementById('analyze-handwriting-button');
+
+            // 檢查必要元素
+            if (!canvas || !ctx || !submitBtn || !answerInput || !resultDisplay || !questionText) {
+                console.error('缺少必要 DOM 元素');
+                return;
+            }
+
+            // 初始化順序
+            initCanvas();
+            setupTools();
+            setupAIButton();
+            setupImageUpload(); // 新增：初始化圖片上傳功能
+            setupLevelSelector(); // 新增：初始化難度選擇器
+            setupChat();
+            setupSubmit();
+            setupDiagramButton(); // 新增：初始化繪圖按鈕
+            setupImageModal(); // 新增：初始化圖片放大功能
+            if (PRACTICE_MODE === 'similar_practice') {
+                initializeSimilarPractice();
+            } else {
+                // 修正：不再直接呼叫 loadQuestion()。
+                // MathJax 準備好後會自動呼叫它。
+                // 如果 MathJax 因故未執行，提供一個備用方案。
+                setTimeout(ensureInitialLoad, 1000); // 1秒後檢查
+            }
+
+            // 視窗大小改變時重新調整字體
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    autoResizeQuestionFont();
+                }, 150);
+            });
+        });
+
+        // 新增：確保初始題目有被載入的備用函式
+        function ensureInitialLoad() {
+            if (!isInitialQuestionLoaded) {
+                loadQuestion();
+            }
+        }
+
+        function updateSimilarStatus(message, tone = 'info') {
+            const chip = document.getElementById('similar-status-chip');
+            if (!chip) return;
+            chip.textContent = message;
+            const styles = {
+                info: { bg: '#eef6ff', color: '#2c5282', border: '#bfdbfe' },
+                success: { bg: '#ecfdf3', color: '#166534', border: '#bbf7d0' },
+                warn: { bg: '#fff7ed', color: '#9a3412', border: '#fed7aa' },
+                error: { bg: '#fef2f2', color: '#991b1b', border: '#fecaca' },
+            };
+            const style = styles[tone] || styles.info;
+            chip.style.background = style.bg;
+            chip.style.color = style.color;
+            chip.style.borderColor = style.border;
+        }
+
+        function getCurrentQuestionPlainText() {
+            const questionDiv = document.getElementById('question-text');
+            return questionDiv ? (questionDiv.innerText || questionDiv.textContent || '').trim() : '';
+        }
+
+        function resetSimilarAnswerState() {
+            similarPracticeState.answerVisible = false;
+            const answerInputEl = document.getElementById('answer-input');
+            const showAnswerBtn = document.getElementById('similar-show-answer-btn');
+            if (answerInputEl) answerInputEl.value = '';
+            if (showAnswerBtn) showAnswerBtn.style.display = similarPracticeState.hasQuestion ? 'inline-block' : 'none';
+        }
+
+        function renderSimilarQuestion(problem, answer) {
+            if (!questionText) return;
+            questionText.innerHTML = problem || '<span style="color:#7f8c8d;">尚未生成類題</span>';
+            similarPracticeState.answer = String(answer || '').trim();
+            similarPracticeState.hasQuestion = Boolean(problem);
+            resetSimilarAnswerState();
+            renderMathContent(questionText);
+            autoResizeQuestionFont();
+        }
+
+        function initializeSimilarPractice() {
+            const levelIndicatorEl = document.getElementById('level-indicator');
+            const nextBtn = document.getElementById('next-question-btn');
+            const resultBox = document.getElementById('result-display');
+            const answerInputEl = document.getElementById('answer-input');
+            const ocrPreview = document.getElementById('similar-ocr-preview');
+
+            if (levelIndicatorEl) levelIndicatorEl.textContent = '模式：類題練習';
+            if (nextBtn) nextBtn.disabled = true;
+            if (answerInputEl) answerInputEl.placeholder = '先作答，再按「檢查答案」';
+            if (resultBox) {
+                resultBox.textContent = '上傳題目照片後，系統會先辨識原題，再生成類似題。';
+                resultBox.className = '';
+            }
+            if (ocrPreview) {
+                ocrPreview.style.display = 'block';
+                ocrPreview.textContent = '尚未辨識原題';
+            }
+            renderSimilarQuestion(
+                '<div style="color:#64748b;">請從上方點選「上傳題目照片」，系統會先辨識原題，再生成類似題。</div>',
+                ''
+            );
+            setupSimilarPracticeControls();
+        }
+
+        function setupSimilarPracticeControls() {
+            const uploadBtn = document.getElementById('similar-upload-btn');
+            const uploader = document.getElementById('similar-image-uploader');
+            const showAnswerBtn = document.getElementById('similar-show-answer-btn');
+            const resetBtn = document.getElementById('similar-reset-btn');
+
+            if (uploadBtn && uploader) {
+                uploadBtn.addEventListener('click', () => uploader.click());
+                uploader.addEventListener('change', async (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    try {
+                        updateSimilarStatus('正在辨識原題並生成類題...', 'warn');
+                        await startSimilarPracticeFromFile(file);
+                    } catch (err) {
+                        console.error('Similar practice upload failed:', err);
+                        updateSimilarStatus('類題生成失敗', 'error');
+                        if (resultDisplay) {
+                            resultDisplay.textContent = `生成失敗：${err.message}`;
+                            resultDisplay.className = 'incorrect';
+                        }
+                    } finally {
+                        uploader.value = '';
+                    }
+                });
+            }
+
+            if (showAnswerBtn) {
+                showAnswerBtn.addEventListener('click', () => {
+                    if (!similarPracticeState.answer) {
+                        showCustomAlert('目前沒有可顯示的答案。');
+                        return;
+                    }
+                    similarPracticeState.answerVisible = true;
+                    if (resultDisplay) {
+                        resultDisplay.textContent = `答案：${similarPracticeState.answer}`;
+                        resultDisplay.className = 'correct';
+                    }
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    similarPracticeState.imageData = '';
+                    similarPracticeState.ocrText = '';
+                    similarPracticeState.jsonSpec = null;
+                    similarPracticeState.skillId = '';
+                    similarPracticeState.answer = '';
+                    similarPracticeState.filePath = '';
+                    similarPracticeState.answerVisible = false;
+                    similarPracticeState.hasQuestion = false;
+                    similarPracticeState.fixes = 0;
+                    const skillChip = document.getElementById('similar-skill-chip');
+                    const fixesChip = document.getElementById('similar-fixes-chip');
+                    const ocrPreview = document.getElementById('similar-ocr-preview');
+                    const nextBtn = document.getElementById('next-question-btn');
+                    if (skillChip) skillChip.style.display = 'none';
+                    if (fixesChip) fixesChip.style.display = 'none';
+                    if (ocrPreview) ocrPreview.textContent = '尚未辨識原題';
+                    if (nextBtn) nextBtn.disabled = true;
+                    if (resultDisplay) {
+                        resultDisplay.textContent = '已重置，請重新上傳題目照片。';
+                        resultDisplay.className = '';
+                    }
+                    updateSimilarStatus('請先上傳題目照片', 'info');
+                    renderSimilarQuestion(
+                        '<div style="color:#64748b;">請重新上傳題目照片，系統會產生新的類似題流程。</div>',
+                        ''
+                    );
+                });
+            }
+        }
+
+        function readFileAsDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('圖片讀取失敗'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function startSimilarPracticeFromFile(file) {
+            const imageDataUrl = await readFileAsDataUrl(file);
+            similarPracticeState.imageData = imageDataUrl;
+
+            const classifyRes = await fetch('/api/classify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image_data: imageDataUrl })
+            });
+            const classifyData = await classifyRes.json();
+            if (!classifyRes.ok || classifyData.success === false) {
+                throw new Error(classifyData.error || 'OCR 辨識失敗');
+            }
+
+            const ocrText = (classifyData.ocr_text || '').trim();
+            const skillId = (classifyData.skill_id || '').trim();
+            if (!ocrText) {
+                throw new Error('未能從圖片辨識出題目內容');
+            }
+
+            similarPracticeState.ocrText = ocrText;
+            similarPracticeState.skillId = skillId;
+            similarPracticeState.jsonSpec = classifyData.json_spec || {};
+
+            const ocrPreview = document.getElementById('similar-ocr-preview');
+            const skillChip = document.getElementById('similar-skill-chip');
+            if (ocrPreview) {
+                ocrPreview.style.display = 'block';
+                ocrPreview.textContent = `原題辨識結果：\n${ocrText}`;
+                renderMathContent(ocrPreview);
+            }
+            if (skillChip && skillId) {
+                skillChip.style.display = 'inline-flex';
+                skillChip.textContent = `技能：${skillId}`;
+            }
+
+            const generateRes = await fetch('/api/generate_live', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: ocrText,
+                    ablation_mode: false,
+                    model_id: SIMILAR_DEFAULT_MODEL,
+                    skill_id: skillId,
+                    json_spec: similarPracticeState.jsonSpec
+                })
+            });
+            const generateData = await generateRes.json();
+            if (!generateRes.ok || generateData.error) {
+                throw new Error(generateData.error || '類題生成失敗');
+            }
+
+            similarPracticeState.filePath = generateData.file_path || '';
+            similarPracticeState.fixes = generateData.fixes || 0;
+            renderSimilarQuestion(generateData.problem || '', generateData.answer || '');
+
+            const fixesChip = document.getElementById('similar-fixes-chip');
+            if (fixesChip) {
+                fixesChip.style.display = 'inline-flex';
+                fixesChip.textContent = `修正次數：${similarPracticeState.fixes}`;
+            }
+
+            const nextBtn = document.getElementById('next-question-btn');
+            if (nextBtn) nextBtn.disabled = !similarPracticeState.filePath;
+
+            if (resultDisplay) {
+                resultDisplay.textContent = '類似題已生成，請先作答，再按「檢查答案」或「顯示答案」。';
+                resultDisplay.className = '';
+            }
+            updateSimilarStatus('類題已生成，可以開始練習', 'success');
+        }
+
+        async function loadNextSimilarQuestion() {
+            if (!similarPracticeState.filePath) {
+                showCustomAlert('請先上傳題目照片並完成第一次類題生成。');
+                return;
+            }
+
+            updateSimilarStatus('正在生成下一題類似題...', 'warn');
+            const nextRes = await fetch('/api/run_generated_code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file_path: similarPracticeState.filePath,
+                    next_question: true,
+                    skill_id: similarPracticeState.skillId,
+                    ocr_text: similarPracticeState.ocrText,
+                    json_spec: similarPracticeState.jsonSpec,
+                    healer_trace: {
+                        regex_fixes: similarPracticeState.fixes || 0,
+                        ast_fixes: 0
+                    }
+                })
+            });
+            const nextData = await nextRes.json();
+            if (!nextRes.ok || nextData.error) {
+                throw new Error(nextData.error || '下一題生成失敗');
+            }
+
+            if (nextData.file_path) {
+                similarPracticeState.filePath = nextData.file_path;
+            }
+            renderSimilarQuestion(nextData.problem || '', nextData.answer || '');
+            if (resultDisplay) {
+                resultDisplay.textContent = '已生成下一題，請繼續作答。';
+                resultDisplay.className = '';
+            }
+            updateSimilarStatus('下一題已生成', 'success');
+        }
+
+        // === 新增：渲染 Follow-up Prompts (動態建議 - 蘇格拉底式) ===
+        function showDynamicSuggestions(prompts) {
+            console.log("showDynamicSuggestions called with:", prompts);
+            const container = document.getElementById('dynamic-prompts'); // RENAMED
+
+            // 如果沒有動態建議容器，嘗試建立一個(容錯)
+            if (!container) {
+                console.error("Dynamic suggestions container not found!");
+                return;
+            }
+
+            // 清空目前的動態提示
+            container.innerHTML = '';
+
+            // 如果沒有提示詞，隱藏容器
+            if (!prompts || prompts.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex'; // 顯示容器
+
+            // 生成新按鈕 (使用圓潤泡泡樣式)
+            prompts.forEach(promptText => {
+                const btn = document.createElement('button');
+                // 使用 Bootstrap-like 樣式 + 自定義樣式
+                btn.className = 'dynamic-prompt-btn';
+                btn.style.borderRadius = '50rem'; // Pill shape
+                btn.style.color = '#c62828'; // Deep red text
+                btn.style.backgroundColor = '#ffebee'; // Light red background
+                btn.style.border = '1px solid #ffcdd2'; // Light red border
+                btn.style.padding = '0.375rem 1rem';
+                btn.style.boxShadow = '0 .125rem .25rem rgba(0,0,0,.075)';
+                btn.style.fontSize = '0.875rem';
+
+                // 蘇格拉底式圖示
+                btn.innerHTML = `<i class="far fa-comment-dots" style="color: #e67e22; margin-right: 5px;"></i> ${promptText}`;
+
+                btn.onclick = () => {
+                    // 點擊後自動填入並送出
+                    const chatInput = document.getElementById('chat-input');
+                    const chatSendBtn = document.getElementById('chat-send-button');
+                    chatInput.value = promptText;
+
+                    // 點擊後隱藏動態建議
+                    container.style.display = 'none';
+
+                    chatSendBtn.click();
+                };
+                container.appendChild(btn);
+            });
+
+            // 渲染數學公式
+            renderMathContent(container);
+
+            // 確保聊天區域捲動到底部
+            const chatHistory = document.getElementById('chat-history');
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // === 新增：圖片放大 Modal ===
+        function setupImageModal() {
+            var modal = document.getElementById("imageModal");
+            var img = document.getElementById("diagram-image");
+            var modalImg = document.getElementById("modalImg");
+            var captionText = document.getElementById("caption");
+
+            if (img) {
+                img.onclick = function () {
+                    if (this.src && this.style.display !== 'none') {
+                        modal.style.display = "block";
+                        modalImg.src = this.src;
+                        captionText.innerHTML = this.alt;
+                    }
+                }
+            }
+
+            var span = document.querySelector(".image-modal .close");
+
+            if (span) {
+                span.onclick = function () {
+                    modal.style.display = "none";
+                }
+            }
+
+            if (modal) {
+                modal.onclick = function (e) {
+                    if (e.target === modal || e.target === modalImg) {
+                        modal.style.display = "none";
+                    }
+                }
+            }
+        }
+
+        // [1:1 精準座標]
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+
+            let clientX, clientY;
+            if (evt.touches && evt.touches.length > 0) {
+                clientX = evt.touches[0].clientX;
+                clientY = evt.touches[0].clientY;
+            } else if (evt.changedTouches && evt.changedTouches.length > 0) {
+                clientX = evt.changedTouches[0].clientX;
+                clientY = evt.changedTouches[0].clientY;
+            } else {
+                clientX = evt.clientX;
+                clientY = evt.clientY;
+            }
+
+            // 直接減去 Canvas 的左上角座標
+            // 因為我們已經確保了 width == rect.width，所以 scale 是 1
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        // [V9.6 新增] 將題目圖片繪製到畫布上 (佔據約 1/2)
+        function drawQuestionImage() {
+            if (!currentQuestionImage || !ctx || !canvas) return;
+
+            // 1. 計算縮放比例：目標是讓圖片寬度佔畫布的 40%~50%，且高度不超過畫布
+            const targetWidth = canvas.width * 0.45;
+            const maxHeight = canvas.height * 0.9;
+
+            let scale = targetWidth / currentQuestionImage.width;
+
+            // 如果高度會爆掉，就改用高度當基準
+            if (currentQuestionImage.height * scale > maxHeight) {
+                scale = maxHeight / currentQuestionImage.height;
+            }
+
+            const drawWidth = currentQuestionImage.width * scale;
+            const drawHeight = currentQuestionImage.height * scale;
+
+            // 2. 決定位置：放在畫布左側，垂直置中 (留一點邊距)
+            const padding = 20;
+            const x = padding;
+            const y = (canvas.height - drawHeight) / 2;
+
+            // === [V9.7 新增] 儲存座標資訊給橡皮擦使用 ===
+            imgDestX = x;
+            imgDestY = y;
+            imgDestW = drawWidth;
+            imgDestH = drawHeight;
+
+            // 3. 繪製圖片
+            // 注意：我們畫在最底層，不會蓋掉學生的筆跡，除非這是剛載入時
+            ctx.drawImage(currentQuestionImage, x, y, drawWidth, drawHeight);
+        }
+
+        // === 初始化畫布 ===
+        function initCanvas() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            canvas.addEventListener('pointerdown', startDraw);
+            canvas.addEventListener('pointermove', draw);
+            canvas.addEventListener('pointerup', stopDraw);
+            canvas.addEventListener('pointerout', stopDraw);
+
+            // [Surface Pro] 防止畫圖時捲動頁面
+            canvas.addEventListener('touchstart', function (e) {
+                if (e.target === canvas) e.preventDefault();
+            }, { passive: false });
+            canvas.addEventListener('touchmove', function (e) {
+                if (e.target === canvas) e.preventDefault();
+            }, { passive: false });
+
+            // 強制設定 CSS 屬性以鎖定觸控行為
+            canvas.style.touchAction = 'none';
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            blankCanvas = canvas.toDataURL();
+            saveState();
+            updateUndoRedoButtons();
+
+            if (analyzeBtn) {
+                analyzeBtn.style.display = 'inline-block';
+            }
+        }
+
+        function resizeCanvas() {
+            // [Surface Pro 筆觸終極修正] 強制 1:1 解析度
+            // 1. 取得實際顯示的寬高 (包含 padding 但不含 border)
+            const rect = canvas.getBoundingClientRect();
+
+            // 2. 設定真實像素解析度 = 顯示解析度
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            // 3. 強制設定 CSS 屬性以鎖定觸控行為
+            canvas.style.touchAction = 'none';
+
+            // 重置畫筆樣式 (resize 會清除 context)
+            setPenStyle();
+
+            // [V9.6 修改] 重繪邏輯：先畫背景圖，再畫筆跡
+
+            // 1. 如果有題目圖，先畫題目圖
+            if (currentQuestionImage) {
+                drawQuestionImage();
+            }
+
+            // 2. 如果有筆跡歷史，疊加上去 (注意：UndoStack 通常存的是整張圖的快照)
+            // 如果我們想保留"圖片在底層"的特性，理想上 UndoStack 應該只存筆跡層，
+            // 但為了簡單相容現有架構，直接重繪 UndoStack 裡的最後一張快照通常最穩。
+            // 不過，因為 resize 會清空畫布，我們這裡選擇：
+            // 如果有 UndoStack，直接畫 UndoStack (因為那裡面已經包含當時的圖片了)
+            // 如果沒有 UndoStack (剛載入)，才畫 currentQuestionImage
+
+            if (undoStack.length > 0) {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.src = undoStack[undoStack.length - 1];
+            } else if (currentQuestionImage) {
+                // 如果沒有筆跡歷史，至少把題目圖畫回去
+                drawQuestionImage();
+            }
+        }
+
+        // === 繪圖核心 ===
+        function saveState() {
+            const current = canvas.toDataURL();
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === current) return;
+            redoStack = [];
+            undoStack.push(current);
+            if (undoStack.length > 50) undoStack.shift();
+            updateUndoRedoButtons();
+        }
+
+        function startDraw(e) {
+            if (isProcessing) return;
+            isDrawing = true;
+            const pos = getMousePos(canvas, e);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            setPenStyle();
+            saveState();
+        }
+
+        function draw(e) {
+            if (!isDrawing || isProcessing) return;
+            const pos = getMousePos(canvas, e);
+
+            if (isErasing) {
+                // === [V9.7 智慧橡皮擦邏輯] ===
+                // 使用圓形蓋章的方式進行擦除，並還原背景圖
+                const eraserRadius = 15; // 橡皮擦半徑 (對應 lineWidth 30)
+
+                ctx.save(); // 儲存畫布狀態
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, eraserRadius, 0, Math.PI * 2);
+                ctx.clip(); // 【關鍵】限制接下來的繪圖只發生在這個圓圈內
+
+                // 1. 先塗白 (清除筆跡)
+                ctx.fillStyle = 'white';
+                ctx.fill();
+
+                // 2. 如果這裡原本有圖片，把圖片的這一塊「補」回去
+                if (currentQuestionImage) {
+                    // 只會畫出圓圈範圍內的圖片，產生「穿透」效果
+                    ctx.drawImage(currentQuestionImage, imgDestX, imgDestY, imgDestW, imgDestH);
+                }
+
+                ctx.restore(); // 還原畫布狀態 (取消 clip)
+
+            } else {
+                // === 普通畫筆邏輯 (維持不變) ===
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+        }
+
+        function stopDraw() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveState();
+            }
+        }
+
+        function setPenStyle() {
+            // 設定線條寬度 (橡皮擦固定較粗)
+            ctx.lineWidth = isErasing ? 30 : currentWidth; // Adjust lineWidth to match eraser radius * 2
+            ctx.strokeStyle = isErasing ? 'white' : currentColor;
+            ctx.lineCap = 'round';
+
+            // [V9.7 修改] 強制不透明，確保擦除乾淨且圖片還原清晰
+            ctx.globalAlpha = 1.0;
+        }
+
+        // === 工具 ===
+        // === 工具 ===
+        function setTool(toolName, color) {
+            // [Auto-Fix] 強制切換游標樣式
+            const canvas = document.getElementById('handwriting-canvas') || document.querySelector('canvas');
+            if (canvas) {
+                if (toolName === 'eraser') {
+                    canvas.style.cursor = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iJTIzNDQ0NDQ0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xNS4xNCwzYy0wLjUxLDAtMS4wMiwwLjItMS40MSwwLjU5TDIuNTksMTQuNzNDMS44LDE1LjUxLDEuOCwxNi43NywyLjU5LDE3LjU2bDUuODUsNS44NWMwLjM5LDAuMzksMC45LDAuNTksMS40MSwwLjU5IHMxLjAyLTAuMiwxLjQxLTAuNTlsMTEuMTQtMTEuMTRjMC43OC0wLjc4LDAuNzgtMi4wNSwwLTIuODNsLTUuODUtNS44NUMxNi4xNywzLjIsMTUuNjUsMywxNS4xNCwzeiBNMTQuNDQsNS4xMWw0LjQ1LDQuNDUgbC0yLjEzLDIuMTNsLTQuNDUtNC40NUwxNC40NCw1LjExeiIvPjwvc3ZnPg==') 2 22, auto";
+                } else {
+                    canvas.style.cursor = "crosshair"; // 畫筆模式維持十字或預設
+                }
+            }
+
+            // 重置所有工具按鈕狀態
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+
+            // 標記 active 狀態 (支援 inline onclick)
+            const btns = document.querySelectorAll('.tool-btn');
+            for (let btn of btns) {
+                const clickAttr = btn.getAttribute('onclick');
+                if (toolName === 'eraser') {
+                    if (clickAttr && clickAttr.includes("'eraser'")) {
+                        btn.classList.add('active');
+                    }
+                } else {
+                    if (clickAttr && clickAttr.includes(`'${color}'`)) {
+                        btn.classList.add('active');
+                    }
+                }
+            }
+
+            // [新增] 游標切換邏輯
+            const eraserCursor = "url('data:image/svg+xml;utf8,<svg width='24' height='24' viewBox='0 0 24 24' fill='%23444444' xmlns='http://www.w3.org/2000/svg'><path d='M15.14,3c-0.51,0-1.02,0.2-1.41,0.59L2.59,14.73C1.8,15.51,1.8,16.77,2.59,17.56l5.85,5.85c0.39,0.39,0.9,0.59,1.41,0.59 s1.02-0.2,1.41-0.59l11.14-11.14c0.78-0.78,0.78-2.05,0-2.83l-5.85-5.85C16.17,3.2,15.65,3,15.14,3z M14.44,5.11l4.45,4.45 l-2.13,2.13l-4.45-4.45L14.44,5.11z'/></svg>') 2 22, auto";
+
+            if (toolName === 'eraser') {
+                isErasing = true;
+                // canvas.classList.add('eraser-cursor'); // (已棄用 class 方式)
+                canvas.style.cursor = eraserCursor; // 直接設定 style
+                setPenStyle();
+            } else {
+                isErasing = false;
+                // canvas.classList.remove('eraser-cursor'); // (已棄用)
+                canvas.style.cursor = 'crosshair'; // 恢復預設
+                if (color) {
+                    if (color === 'black') currentColor = '#2c3e50';
+                    else currentColor = color;
+
+                }
+                setPenStyle();
+            }
+        }
+
+        function setupTools() {
+            // 舊的按鈕監聽器已移除，因為 HTML 已更換
+            // 只保留其他工具
+
+            const penWidthInput = document.getElementById('pen-width');
+            if (penWidthInput) {
+                penWidthInput.oninput = (e) => {
+                    currentWidth = e.target.value;
+                    document.getElementById('pen-width-label').textContent = currentWidth;
+                    setPenStyle();
+                };
+            }
+
+            const undoBtn = document.getElementById('undo-button');
+            if (undoBtn) undoBtn.onclick = undo;
+
+            const redoBtn = document.getElementById('redo-button');
+            if (redoBtn) redoBtn.onclick = redo;
+
+            // clear-canvas-button ID 已經不存在於新的 HTML 中 (改用 onclick=clearCanvas)
+            // 但如果還有其他地方引用，保留無妨
+        }
+
+        function undo() {
+            if (undoStack.length <= 1) return;
+            redoStack.push(undoStack.pop());
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                updateUndoRedoButtons();
+            };
+            img.src = undoStack[undoStack.length - 1];
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                undoStack.push(canvas.toDataURL());
+                redoStack.pop();
+                updateUndoRedoButtons();
+            };
+            img.src = redoStack[redoStack.length - 1];
+        }
+
+        function clearCanvas() {
+            showCustomConfirm('確定要清除所有計算步驟？', () => {
+                // 1. 清空畫布
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 2. [V9.6 新增] 如果這題有圖片，把圖片畫回去
+                if (currentQuestionImage) {
+                    drawQuestionImage();
+                }
+
+                // 3. 重置歷史紀錄
+                undoStack = [];
+                redoStack = [];
+                saveState();
+            });
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undo-button');
+            const redoBtn = document.getElementById('redo-button');
+            undoBtn.disabled = undoStack.length <= 1;
+            redoBtn.disabled = redoStack.length === 0;
+        }
+
+        function updateTools() {
+            document.querySelectorAll('.tool-button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`#${isErasing ? 'eraser' : 'pen'}-button`).classList.add('active');
+            document.querySelectorAll('.color-button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.color-button[data-color="${currentColor}"]`).classList.add('active');
+        }
+
+        // === 新增：圖片上傳功能 ===
+        function setupImageUpload() {
+            const uploadButton = document.getElementById('upload-image-button');
+            const imageUploader = document.getElementById('image-uploader');
+
+            uploadButton.addEventListener('click', () => {
+                imageUploader.click();
+            });
+
+            imageUploader.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // 計算圖片縮放比例以適應畫布
+                        const scaleX = canvas.width / img.width;
+                        const scaleY = canvas.height / img.height;
+                        const scale = Math.min(scaleX, scaleY);
+
+                        const newWidth = img.width * scale;
+                        const newHeight = img.height * scale;
+
+                        // 計算置中繪製的座標
+                        const x = (canvas.width - newWidth) / 2;
+                        const y = (canvas.height - newHeight) / 2;
+
+                        ctx.drawImage(img, x, y, newWidth, newHeight);
+                        saveState(); // 將上傳的圖片存入歷史紀錄
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // === 新增：難度選擇器 ===
+        function setupLevelSelector() {
+            const nextQuestionBtn = document.getElementById('next-question-btn');
+            if (nextQuestionBtn) {
+                nextQuestionBtn.addEventListener('click', async () => {
+                    if (PRACTICE_MODE === 'similar_practice') {
+                        try {
+                            await loadNextSimilarQuestion();
+                        } catch (err) {
+                            console.error('載入類題下一題失敗:', err);
+                            updateSimilarStatus('下一題生成失敗', 'error');
+                            if (resultDisplay) {
+                                resultDisplay.textContent = `下一題生成失敗：${err.message}`;
+                                resultDisplay.className = 'incorrect';
+                            }
+                        }
+                        return;
+                    }
+                    loadQuestion();
+                });
+            }
+
+            document.querySelectorAll('.level-button[data-level]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const level = parseInt(button.dataset.level, 10);
+                    if (Number.isNaN(level) || level < 1) {
+                        console.warn('Ignore invalid level button dataset.level:', button.dataset.level);
+                        return;
+                    }
+                    if (level !== selectedLevel) {
+                        selectedLevel = level;
+                        document.querySelectorAll('.level-button').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        loadQuestion(); // 切換難度後立即重新出題
+                    }
+                });
+            });
+
+            // === 新增：基礎技能跳轉功能 ===
+            const practicePrereqBtn = document.getElementById('practice-prereq-btn');
+            if (practicePrereqBtn) {
+                practicePrereqBtn.addEventListener('click', function () {
+                    const select = document.getElementById('prereq-skill-select');
+                    const selectedSkillId = select.value;
+                    if (selectedSkillId) {
+                        // 跳轉到所選基礎技能的練習頁面
+                        window.location.href = `/practice/${selectedSkillId}`;
+                    } else {
+                        // 使用自定義提示框
+                        showCustomAlert('請先選擇一個基礎技能！');
+                    }
+                });
+            }
+        }
+
+        // === 連續答對 ===
+        function updateStreak(correct) {
+            currentStreak = correct ? currentStreak + 1 : 0;
+            streakCounter.textContent = `連續答對：${currentStreak}`;
+        }
+
+        // === 出題 ===
+        function getSkillId() {
+            if (PRACTICE_MODE === 'similar_practice' && similarPracticeState.skillId) {
+                return similarPracticeState.skillId;
+            }
+            // 從 URL 路徑 /practice/skill_id 中提取 skill_id
+            const pathParts = window.location.pathname.split('/');
+            const skillIdFromPath = pathParts[pathParts.length - 1];
+            return skillIdFromPath || '{{ skill_id }}' || 'remainder'; // 優先從路徑獲取
+        }
+
+        // === 動態調整題目字型大小 ===
+        function autoResizeQuestionFont() {
+            if (!questionText) return;
+
+            const container = questionText;
+            const maxFontSize = 1.5; // em, 增加最大字體以提高可讀性
+            const minFontSize = 0.7; // em
+            let fontSize = maxFontSize;
+
+            // 重置為最大字體
+            container.style.fontSize = fontSize + 'em';
+
+            // 檢查是否溢出 (垂直或水平)
+            const isOverflowing = (el) => {
+                return el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth;
+            };
+
+            // 如果溢出，則逐步減小字體直到適合為止
+            while (isOverflowing(container) && fontSize > minFontSize) {
+                fontSize -= 0.05;
+                container.style.fontSize = fontSize + 'em';
+            }
+        }
+
+        // === 自定義提示框 ===
+        function showCustomAlert(message, callback) {
+            const modal = document.getElementById('customAlertModal');
+            const msgElement = document.getElementById('customAlertMessage');
+            const okButton = document.getElementById('customAlertOkButton');
+
+            msgElement.textContent = message;
+            modal.style.display = 'flex'; // Show the modal using flex to center
+
+            // Remove previous event listener to prevent multiple calls
+            okButton.onclick = null;
+            okButton.onclick = () => {
+                modal.style.display = 'none'; // Hide the modal
+                if (callback && typeof callback === 'function') {
+                    callback(); // Execute the callback function
+                }
+            };
+        }
+
+        // === 自定義確認框 ===
+        function showCustomConfirm(message, onConfirm, onCancel) {
+            const modal = document.getElementById('customConfirmModal');
+            const msgElement = document.getElementById('customConfirmMessage');
+            const okButton = document.getElementById('customConfirmOkButton');
+            const cancelButton = document.getElementById('customConfirmCancelButton');
+
+            msgElement.textContent = message;
+            modal.style.display = 'flex';
+
+            okButton.onclick = () => {
+                modal.style.display = 'none';
+                if (onConfirm && typeof onConfirm === 'function') onConfirm();
+            };
+
+            cancelButton.onclick = () => {
+                modal.style.display = 'none';
+                if (onCancel && typeof onCancel === 'function') onCancel();
+            };
+        }
+
+        // === 載入固定建議 (Initial Suggestions) ===
+        function updateSuggestedPrompts(skillId) {
+            const container = document.getElementById('static-prompts'); // RENAMED
+            if (!container) return;
+
+            fetch(`/get_suggested_prompts/${skillId}`)
+                .then(response => response.json())
+                .then(prompts => {
+                    container.innerHTML = ''; // Clear old prompts
+                    if (prompts && prompts.length > 0) {
+                        prompts.forEach(promptText => {
+                            const button = document.createElement('button');
+                            button.className = 'prompt-button';
+                            button.textContent = promptText;
+                            button.onclick = () => {
+                                const chatInput = document.getElementById('chat-input');
+                                const chatSendBtn = document.getElementById('chat-send-button');
+                                chatInput.value = promptText;
+                                chatSendBtn.click();
+                            };
+                            container.appendChild(button);
+                        });
+                        container.style.display = 'flex'; // Show the container
+
+                        // 渲染提示詞按鈕中的數學公式
+                        renderMathContent(container);
+                    } else {
+                        container.style.display = 'none'; // Hide if no prompts
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching suggested prompts:', error);
+                    container.style.display = 'none'; // Hide on error
+                });
+        }
+
+        function loadQuestion() {
+            const skill = getSkillId();
+            updateSuggestedPrompts(skill);
+
+            // 顯示載入中...
+            if (questionText) questionText.style.opacity = '0.5';
+
+            const safeLevel = getSafeSelectedLevel();
+            fetch(`/get_next_question?skill=${skill}&level=${safeLevel}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (questionText) questionText.style.opacity = '1';
+
+                    if (data.error) {
+                        questionText.textContent = `錯誤：${data.error}`;
+                        return;
+                    }
+
+                    // 1. 顯示題目文字
+                    questionText.innerHTML = data.new_question_text;
+                    isInitialQuestionLoaded = true;
+
+                    // [V9.5 Debug] 印出後端回傳的所有資料，讓我們看看有沒有圖片
+                    console.log("🔍 Backend Data Received:", data);
+
+                    // === [V9.6 修改] 圖片處理邏輯：畫到 Canvas 上 ===
+
+                    // 1. 先重置畫布與圖片變數
+                    currentQuestionImage = null;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    undoStack = [];
+                    redoStack = [];
+
+                    // 2. 抓取圖片資料
+                    let rawImage = data.image_base64;
+                    if (!rawImage && data.visual_aids) {
+                        if (typeof data.visual_aids === 'string') rawImage = data.visual_aids;
+                        else if (data.visual_aids.plot_base64) rawImage = data.visual_aids.plot_base64;
+                        else if (Array.isArray(data.visual_aids)) {
+                            const imgObj = data.visual_aids.find(x => x.type === 'image/png');
+                            if (imgObj) rawImage = imgObj.value;
+                        }
+                    }
+
+                    // 3. 如果有圖片，載入並繪製
+                    if (rawImage && rawImage.trim() !== "") {
+                        let imgSource = rawImage;
+                        if (!imgSource.startsWith('data:image')) {
+                            imgSource = "data:image/png;base64," + imgSource;
+                        }
+
+                        // 建立新的 Image 物件
+                        const img = new Image();
+                        img.onload = function () {
+                            currentQuestionImage = img; // 存起來，方便 resize 或 clear 時重畫
+                            drawQuestionImage(); // 畫上去
+                            saveState(); // 存入 Undo 歷史紀錄
+                        };
+                        img.src = imgSource;
+                    } else {
+                        saveState(); // 沒圖片也要存初始狀態
+                    }
+
+                    // 3. MathJax 排版
+                    const typesetPromise = () => {
+                        return new Promise((resolve) => {
+                            if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                                window.MathJax.typesetPromise([questionText])
+                                    .then(() => resolve())
+                                    .catch((err) => resolve());
+                            } else {
+                                resolve();
+                            }
+                        });
+                    };
+
+                    typesetPromise().then(() => {
+                        // [V9.9 Font Upgrade] 根據題目長度自動調整字體級距
+                        const qLen = data.new_question_text.length;
+                        if (qLen > 200) {
+                            questionText.style.fontSize = "1.05rem"; // 題目太長，字體縮小一點
+                        } else if (qLen > 100) {
+                            questionText.style.fontSize = "1.15rem";
+                        } else {
+                            questionText.style.fontSize = "1.25rem"; // 預設字體
+                        }
+                    });
+
+                    // 4. 更新連續答對數
+                    if (data.consecutive_correct !== undefined && getSafeSelectedLevel() === 1) {
+                        currentStreak = data.consecutive_correct;
+                        streakCounter.textContent = `連續答對：${currentStreak}`;
+                        streakCounter.style.display = 'inline-block';
+                    } else {
+                        streakCounter.style.display = 'none';
+                    }
+
+                    levelIndicator.textContent = `等級：${data.current_level}`;
+                    currentContext = data.context_string || data.inequality_string || "";
+
+                    // 5. 調整輸入框狀態
+                    if (data.answer_type === 'handwriting') {
+                        answerInput.disabled = true;
+                        answerInput.placeholder = '請在計算紙區域作答';
+                        submitBtn.disabled = true;
+                    } else {
+                        answerInput.disabled = false;
+                        answerInput.placeholder = '請在此輸入答案';
+                        submitBtn.disabled = false;
+                    }
+
+                    // 6. 重置介面
+                    answerInput.value = '';
+                    resultDisplay.textContent = '';
+                    resultDisplay.className = '';
+                    ctx.fillStyle = 'white';
+                    /* 移除重複的清空與重置邏輯，避免蓋掉剛畫好的圖 */
+                    /*
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    undoStack = [];
+                    redoStack = [];
+                    saveState(); 
+                    */
+                })
+                .catch(err => {
+                    console.error('出題失敗:', err);
+                    questionText.textContent = '出題失敗，請重新整理';
+                    if (questionText) questionText.style.opacity = '1';
+                });
+        }
+
+        // === 提交答案 ===
+        function setupSubmit() {
+            if (!submitBtn) {
+                console.error('submitBtn 未定義');
+                return;
+            }
+
+            // 動態載入訊息效果（三個點動畫）
+            let loadingInterval = null;
+            function showLoadingMessage() {
+                let dots = 0;
+                resultDisplay.className = '';
+                resultDisplay.style.background = '#fff3cd';
+                resultDisplay.style.color = '#856404';
+                resultDisplay.style.border = '1px solid #ffeaa7';
+
+                loadingInterval = setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    const dotString = '.'.repeat(dots);
+                    resultDisplay.textContent = `正在檢查答案${dotString}`;
+                }, 300);
+            }
+
+            function stopLoadingMessage() {
+                if (loadingInterval) {
+                    clearInterval(loadingInterval);
+                    loadingInterval = null;
+                }
+            }
+
+            submitBtn.onclick = () => {
+                if (PRACTICE_MODE === 'similar_practice') {
+                    const userAnswer = (answerInput.value || '').trim();
+                    const expectedAnswer = (similarPracticeState.answer || '').trim();
+                    if (!similarPracticeState.hasQuestion) {
+                        resultDisplay.textContent = '請先上傳題目照片並生成類題。';
+                        resultDisplay.className = 'incorrect';
+                        return;
+                    }
+                    if (!userAnswer) {
+                        resultDisplay.textContent = '請先輸入答案。';
+                        resultDisplay.className = 'incorrect';
+                        return;
+                    }
+                    const normalizedUser = userAnswer.replace(/\s+/g, '');
+                    const normalizedExpected = expectedAnswer.replace(/\s+/g, '');
+                    const isCorrect = normalizedExpected && normalizedUser === normalizedExpected;
+                    resultDisplay.textContent = isCorrect
+                        ? '答對了！可以按「下一題」繼續練習。'
+                        : '目前答案不正確，可以再試一次或按「顯示答案」。';
+                    resultDisplay.className = isCorrect ? 'correct' : 'incorrect';
+                    return;
+                }
+
+                if (isProcessing) return;
+                isProcessing = true;
+                submitBtn.disabled = true;
+
+                // 顯示動態載入訊息
+                showLoadingMessage();
+
+                fetch('/check_answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ answer: answerInput.value })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        // 停止載入訊息
+                        stopLoadingMessage();
+
+                        resultDisplay.textContent = data.result || (data.correct ? '正確！' : '錯誤');
+                        resultDisplay.className = data.correct ? 'correct' : 'incorrect';
+                        updateStreak(data.correct);
+
+                        // [Phase 6] 處理前置單元推薦
+                        console.log('[前置單元推薦] API 回應:', data);
+                        const prereqSuggestion = document.getElementById('prerequisite-suggestion');
+                        if (data.suggested_prerequisite) {
+                            console.log('[前置單元推薦] 找到推薦:', data.suggested_prerequisite);
+                            // 顯示前置單元推薦卡片
+                            showPrerequisiteSuggestion(data.suggested_prerequisite);
+                        } else {
+                            console.log('[前置單元推薦] 無推薦資料');
+                            // 隱藏推薦卡片
+                            if (prereqSuggestion) {
+                                prereqSuggestion.style.display = 'none';
+                            }
+                        }
+
+                        if (data.correct) {
+                            // 功文式鼓勵：強調持續練習，而非單次答對
+                            const messages = [
+                                '🎉 答對了！很棒！讓我們繼續下一題吧！',
+                                '正確！保持這客節奏！',
+                                '做得好！你離目標又近了一步！'
+                            ];
+                            showCustomAlert(messages[Math.floor(Math.random() * messages.length)], () => {
+                                setTimeout(loadQuestion, 500);
+                            });
+                        } else {
+                            // 如果答錯
+                            consecutiveWrongs++;
+                            // 檢查是否觸發建議
+                            if (consecutiveWrongs >= 3 && PREREQ_SKILLS && PREREQ_SKILLS.length > 0) {
+                                showPrereqSuggestionModal();
+                                consecutiveWrongs = 0; // 重置計數器
+                            }
+                        }
+
+                        // 如果答對，重置連續答錯計數器
+                        if (data.correct) {
+                            consecutiveWrongs = 0;
+                        }
+                    })
+                    .catch(err => {
+                        // 停止載入訊息
+                        stopLoadingMessage();
+
+                        console.error('提交失敗:', err);
+                        resultDisplay.textContent = '提交失敗';
+                        resultDisplay.className = 'incorrect';
+                    })
+                    .finally(() => {
+                        isProcessing = false;
+                        submitBtn.disabled = false;
+                    });
+            };
+        }
+
+        // === 新增：繪製示意圖 ===
+        function setupDiagramButton() {
+            const drawBtn = document.getElementById('draw-diagram-button');
+            const diagramImg = document.getElementById('diagram-image');
+            const loadingIndicator = document.getElementById('diagram-loading');
+            // 渲染追問按鈕的函式 (已修復 LaTeX 亂碼問題)
+            const renderFollowUpPrompts = (prompts) => {
+                // 1. 找到存放按鈕的容器
+                let suggestionsContainer = document.getElementById('suggestions');
+
+                // 如果找不到容器，動態建立一個放在對話紀錄下方 (防呆機制)
+                if (!suggestionsContainer) {
+                    suggestionsContainer = document.createElement('div');
+                    suggestionsContainer.id = 'suggestions';
+                    suggestionsContainer.style.padding = '10px';
+                    suggestionsContainer.style.display = 'flex';
+                    suggestionsContainer.style.gap = '10px';
+                    suggestionsContainer.style.flexWrap = 'wrap';
+                    const chatHistory = document.getElementById('chat-history');
+                    chatHistory.parentNode.insertBefore(suggestionsContainer, chatHistory.nextSibling);
+                }
+
+                suggestionsContainer.innerHTML = ''; // 清空舊的建議
+
+                prompts.forEach(promptText => {
+                    const btn = document.createElement('button');
+                    btn.className = 'suggestion-btn'; // 請確保 CSS 有設定這個 class 的樣式
+
+                    // --- 關鍵步驟 1: 使用剛剛寫好的 formatMathText 清洗文字 ---
+                    // 這會把 "如何計算 \sqrt{2}" 變成 "如何計算 $\sqrt{2}$"
+                    const safeText = formatMathText(promptText);
+
+                    btn.innerHTML = safeText;
+
+                    // 點擊按鈕後的動作 (自動發送訊息)
+                    btn.onclick = () => {
+                        const chatInput = document.getElementById('chat-input'); // 假設輸入框 ID
+                        chatInput.value = promptText; // 這裡可以用原始文字，因為傳給 AI 不需要 $
+                        // 觸發發送 (假設您的發送按鈕 ID 是 chat-send-btn)
+                        document.getElementById('chat-send-btn').click();
+                        suggestionsContainer.innerHTML = ''; // 點擊後清空建議
+                    };
+
+                    suggestionsContainer.appendChild(btn);
+                });
+
+                // --- 關鍵步驟 2: 告訴 MathJax 這裡有新東西要渲染 ---
+                if (window.MathJax) {
+                    window.MathJax.typesetPromise([suggestionsContainer]).then(() => {
+                        console.log('追問按鈕渲染完成');
+                    }).catch(err => console.error('按鈕渲染失敗:', err));
+                }
+            };
+
+            drawBtn.addEventListener('click', () => {
+                const question = questionText.innerText;
+                if (!question) {
+                    showCustomAlert('請先載入題目！');
+                    return;
+                }
+
+                loadingIndicator.style.display = 'block';
+                diagramImg.style.display = 'none';
+
+                fetch('/draw_diagram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question_text: question })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('繪圖失敗，請查看伺服器日誌。');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // 使用時間戳記來避免圖片快取問題
+                            diagramImg.src = data.image_path + '?t=' + new Date().getTime();
+                            diagramImg.style.display = 'block';
+                        } else {
+                            showCustomAlert(data.message || '繪圖時發生未知錯誤。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('繪圖請求失敗:', error);
+                        showCustomAlert(error.message);
+                    })
+                    .finally(() => {
+                        loadingIndicator.style.display = 'none';
+                    });
+            });
+        }
+
+        // === 新增：顯示基礎技能建議 Modal ===
+        function showPrereqSuggestionModal() {
+            const modal = document.getElementById('prereqSuggestionModal');
+            const listContainer = document.getElementById('prereqSuggestionList');
+            const cancelButton = document.getElementById('prereqSuggestionCancelButton');
+
+            // 清空舊的按鈕
+            listContainer.innerHTML = '';
+
+            // 動態生成技能按鈕
+            PREREQ_SKILLS.forEach(skill => {
+                const button = document.createElement('button');
+                button.textContent = `前往練習：${skill.skill_ch_name}`;
+                button.className = 'modal-button'; // 借用現有的按鈕樣式
+                button.style.width = '100%';
+                button.style.marginTop = '0';
+                button.onclick = () => {
+                    window.location.href = `/practice/${skill.skill_id}`;
+                };
+                listContainer.appendChild(button);
+            });
+
+            // 顯示 modal
+            modal.style.display = 'flex';
+
+            // 綁定取消按鈕事件
+            cancelButton.onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
+
+        // === AI 分析 ===
+        function setupAIButton() {
+            if (!analyzeBtn) return;
+
+            // 動態載入訊息效果（三個點動畫）
+            let loadingInterval = null;
+            function showLoadingMessage() {
+                let dots = 0;
+                resultDisplay.className = '';
+                resultDisplay.style.background = '#fff3cd';
+                resultDisplay.style.color = '#856404';
+                resultDisplay.style.border = '1px solid #ffeaa7';
+
+                loadingInterval = setInterval(() => {
+                    dots = (dots + 1) % 4;
+                    const dotString = '.'.repeat(dots);
+                    resultDisplay.textContent = `AI 正在分析中${dotString}`;
+                }, 300);
+            }
+
+            function stopLoadingMessage() {
+                if (loadingInterval) {
+                    clearInterval(loadingInterval);
+                    loadingInterval = null;
+                }
+            }
+
+            analyzeBtn.onclick = () => {
+                if (isProcessing) return;
+                isProcessing = true;
+                analyzeBtn.textContent = '分析中...';
+                analyzeBtn.disabled = true;
+
+                // 顯示動態載入訊息
+                showLoadingMessage();
+
+                const img = canvas.toDataURL('image/png');
+                fetch('/analyze_handwriting', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_data_url: img })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        // 停止載入訊息
+                        stopLoadingMessage();
+
+                        // 移除所有舊的高亮
+                        document.querySelectorAll('.bot-message.latest').forEach(msg => {
+                            msg.classList.remove('latest');
+                        });
+
+                        if (data && data.success === false) {
+                            const failMsg = document.createElement('div');
+                            failMsg.className = 'bot-message latest';
+                            failMsg.textContent = '目前無法辨識你的手寫內容，請確認筆跡清楚或再試一次';
+                            failMsg.style.whiteSpace = 'pre-wrap';
+                            failMsg.style.wordBreak = 'break-word';
+                            chatHistory.appendChild(failMsg);
+                            chatHistory.scrollTop = chatHistory.scrollHeight;
+                            resultDisplay.textContent = '';
+                            resultDisplay.className = '';
+                            const suggestionDivEarly = document.getElementById('prerequisite-suggestion');
+                            if (suggestionDivEarly) suggestionDivEarly.style.display = 'none';
+                            return;
+                        }
+
+                        const msg = document.createElement('div');
+                        msg.className = 'bot-message latest';  // 標記為最新
+                        msg.innerHTML = data.reply || '無回應';
+                        // 保持格式
+                        msg.style.whiteSpace = 'pre-wrap';
+                        msg.style.wordBreak = 'break-word';
+                        chatHistory.appendChild(msg);
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                        // [關鍵修復] 讓 MathJax 渲染剛加入的 LaTeX
+                        if (window.MathJax) {
+                            try {
+                                window.MathJax.typesetPromise([msg]);
+                            } catch (err) { }
+                        }
+
+                        if (data.follow_up_prompts && data.follow_up_prompts.length > 0) {
+                            showDynamicSuggestions(data.follow_up_prompts);
+                        }
+
+                        if (data.correct && data.next_question) {
+                            // 在題目下方顯示"正確"
+                            resultDisplay.textContent = '正確';
+                            resultDisplay.className = 'correct';
+
+                            updateStreak(true);
+
+                            // 顯示答對訊息框，然後載入下一題
+                            showCustomAlert('🎉 答對了！圖形畫得很正確！繼續加油！', () => {
+                                setTimeout(loadQuestion, 500);
+                            });
+                        } else if (data.correct === false) {
+                            // 如果錯誤，清空 resultDisplay（AI 的建議會在聊天區顯示）
+                            resultDisplay.textContent = '';
+                            resultDisplay.className = '';
+                            updateStreak(false);
+                        }
+
+                        // [Phase 6] 處理前置單元推薦 (AI Handwriting Check)
+                        if (data.suggested_prerequisite) {
+                            showPrerequisiteSuggestion(data.suggested_prerequisite);
+                        } else {
+                            // Hide suggestion if not present (optional, but good for cleanup)
+                            const suggestionDiv = document.getElementById('prerequisite-suggestion');
+                            if (suggestionDiv) suggestionDiv.style.display = 'none';
+                        }
+                    })
+                    .catch(err => {
+                        // 停止載入訊息
+                        stopLoadingMessage();
+
+                        console.error('AI 分析失敗:', err);
+
+                        // 移除所有舊的高亮
+                        document.querySelectorAll('.bot-message.latest').forEach(msg => {
+                            msg.classList.remove('latest');
+                        });
+
+                        const msg = document.createElement('div');
+                        msg.className = 'bot-message latest';
+                        msg.innerHTML = `AI 連線失敗，請稍後再試`;
+                        chatHistory.appendChild(msg);
+                        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                        // 顯示錯誤訊息
+                        resultDisplay.textContent = 'AI 分析失敗，請稍後再試';
+                        resultDisplay.className = 'incorrect';
+                    })
+                    .finally(() => {
+                        isProcessing = false;
+                        analyzeBtn.textContent = 'AI檢查';
+                        analyzeBtn.disabled = false;
+                    });
+            };
+        }
+
+        // === 聊天 ===
+        function setupChat() {
+            const chatSendBtn = document.getElementById('chat-send-button');
+            const chatInput = document.getElementById('chat-input');
+            const chatHistory = document.getElementById('chat-history');
+
+            // 防呆：如果找不到聊天元件就不執行
+            if (!chatSendBtn || !chatInput) return;
+
+            // 0. 數學鍵盤切換邏輯
+            const toggleBtn = document.getElementById('toggle-math-btn');
+            const mathToolbar = document.getElementById('math-toolbar');
+            if (toggleBtn && mathToolbar) {
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    mathToolbar.classList.toggle('expanded');
+                    toggleBtn.classList.toggle('active');
+                    if (mathToolbar.classList.contains('expanded')) {
+                        toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    } else {
+                        toggleBtn.innerHTML = '<i class="fas fa-calculator"></i>';
+                    }
+                });
+            }
+
+            // 1. 符號按鈕事件
+            document.querySelectorAll('.symbol-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const symbol = button.dataset.symbol;
+                    const start = chatInput.selectionStart;
+                    const end = chatInput.selectionEnd;
+                    const text = chatInput.value;
+                    chatInput.value = text.substring(0, start) + symbol + text.substring(end);
+                    chatInput.focus();
+                    chatInput.selectionStart = chatInput.selectionEnd = start + symbol.length;
+                });
+            });
+
+            function addUserMessage(text) {
+                const msg = document.createElement('div');
+                msg.className = 'user-message';
+
+                // 1. 設定文字 (使用 textContent 防止 XSS 攻擊，同時保留 $ 符號供渲染)
+                msg.textContent = text;
+
+                if (chatHistory) {
+                    chatHistory.appendChild(msg);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }
+
+                // 2. [新增] 關鍵：告訴 MathJax 這裡有新訊息，請它幫忙畫出數學公式
+                if (window.MathJax) {
+                    try {
+                        window.MathJax.typesetPromise([msg]);
+                    } catch (err) {
+                        console.warn('User MathJax Render Error:', err);
+                    }
+                }
+            }
+
+            // 2. 發送訊息邏輯
+            chatSendBtn.addEventListener('click', async () => {
+                const question = chatInput.value.trim();
+                if (!question) return;
+
+                addUserMessage(question);
+                chatInput.value = '';
+
+                // 顯示思考中
+                const thinkingDiv = addBotMessage('AI 助教正在思考...');
+
+                try {
+                    // 嘗試獲取上下文，避免變數未定義錯誤
+                    const contextPayload = (typeof currentContext !== 'undefined') ? currentContext : "";
+
+                    // 獲取當前畫布內容 (如果存在)
+                    let imgData = null;
+                    const canvas = document.getElementById('handwriting-canvas');
+                    if (canvas) {
+                        imgData = canvas.toDataURL('image/png');
+                    }
+
+                    // 獲取當前題目文字
+                    const questionDiv = document.getElementById('question-text');
+                    const questionText = questionDiv ? questionDiv.innerText : "";
+
+                    const response = await fetch('/chat_ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            question: question,
+                            context: contextPayload,
+                            question_text: questionText,
+                            image_data: imgData
+                        })
+                    });
+
+                    // [Modified] Robust Error Handling Logic
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                    let finalData = await response.json();
+                    if (!finalData || typeof finalData !== 'object') {
+                        finalData = { reply: "老師正在思考中，請再問一次看看！", follow_up_prompts: [] };
+                    }
+
+                    // 防呆：若 reply 被模型包成 JSON 字串，這裡拆出真正的 reply / prompts
+                    if (typeof finalData.reply === 'string') {
+                        const replyStr = finalData.reply.trim();
+                        if (replyStr.startsWith('{') && replyStr.includes('"reply"')) {
+                            try {
+                                const nested = JSON.parse(replyStr);
+                                if (nested && typeof nested.reply === 'string') {
+                                    finalData.reply = nested.reply;
+                                    if (Array.isArray(nested.follow_up_prompts) && (!Array.isArray(finalData.follow_up_prompts) || finalData.follow_up_prompts.length === 0)) {
+                                        finalData.follow_up_prompts = nested.follow_up_prompts;
+                                    }
+                                }
+                            } catch (e) {
+                                console.warn('Nested reply JSON parse failed:', e);
+                            }
+                        }
+                    }
+
+                    // 1. 顯示老師的對話 (移除制式標題)
+                    // [修復] 將後端過度轉義的 \\ 轉回 \ 以讓 MathJax 識別
+                    let rawReply = finalData.reply || "";
+                    rawReply = rawReply.replace(/\\\\/g, '\\');
+
+                    let cleanedReply = rawReply.replace(/(思考|選項|建議|回覆|解析|步驟|回答)[：:\d\s]*/g, "");
+
+                    // 顯示保險：若 reply 仍是 JSON-ish 字串，提取內層 reply 再顯示
+                    if (typeof cleanedReply === 'string') {
+                        const maybeJson = cleanedReply.trim();
+                        if (maybeJson.startsWith('{') && maybeJson.includes('"reply"')) {
+                            const m = maybeJson.match(/"reply"\s*:\s*"([\s\S]*?)"\s*(,|\})/);
+                            if (m && m[1]) {
+                                cleanedReply = m[1]
+                                    .replace(/\\n/g, '\n')
+                                    .replace(/\\"/g, '"')
+                                    .replace(/\\\\/g, '\\');
+                            }
+                        }
+                    }
+
+                    // 移除思考中訊息
+                    if (thinkingDiv && thinkingDiv.parentNode) {
+                        thinkingDiv.parentNode.removeChild(thinkingDiv);
+                    }
+
+                    // 顯示 AI 回覆
+                    addBotMessage(cleanedReply);
+
+                    // 2. 更新動態思考泡泡 (若 JSON 斷了就隱藏，不報錯)
+                    console.log("Updating dynamic prompts with:", finalData.follow_up_prompts);
+
+                    // [修復] 提示詞也需要清洗反斜線
+                    let safePrompts = finalData.follow_up_prompts || [];
+                    if (Array.isArray(safePrompts)) {
+                        safePrompts = safePrompts.map(p => p.replace(/\\\\/g, '\\'));
+                    }
+
+                    showDynamicSuggestions(safePrompts);
+
+                    // 如果有需要處理 correct/incorrect 邏輯，這裡可以繼續 (但目前 finalData 可能缺這些欄位)
+                    // 若需要維持原有邏輯，需確保 backend 回傳正確結構或在此補上預設值
+
+                } catch (err) {
+                    console.error('Chat Error:', err);
+                    if (thinkingDiv && thinkingDiv.parentNode) {
+                        thinkingDiv.parentNode.removeChild(thinkingDiv);
+                    }
+                    addBotMessage("連線發生錯誤，請檢查網路。");
+                }
+            });
+
+            // 3. Enter 鍵送出
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    chatSendBtn.click();
+                }
+            });
+        }
+
+        // 初始化聊天功能 (確保在 DOM 載入後執行)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupChat);
+        } else {
+            setupChat();
+        }
+
+        // ============================================================
+        // 全域函式 (Global Functions) - 放在最外層確保括號平衡
+        // ============================================================
+
+        // [New] 格式化數學文字：修復反斜線問題
+        function formatMathText(text) {
+            if (!text) return "";
+            // 將過度轉義的 \\ 轉回 \
+            return text.replace(/\\\\/g, '\\');
+        }
+
+        function addBotMessage(text) {
+            const chatHistory = document.getElementById('chat-history');
+            if (!chatHistory) return;
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'bot-message';
+            // 安全模式：直接使用 innerHTML
+            messageDiv.innerHTML = text;
+
+            // CSS 防護
+            messageDiv.style.whiteSpace = 'pre-wrap';
+            messageDiv.style.wordBreak = 'break-word';
+
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // [關鍵修復] 通知 MathJax 渲染新加入的數學公式
+            if (window.MathJax) {
+                // 使用 Promise 避免阻塞，針對整個 chat-box 或最新訊息渲染
+                window.MathJax.typesetPromise([messageDiv]).catch((err) => console.log('MathJax error:', err));
+            }
+            return messageDiv;
+        }
+
+
+        function showSuggestions(prompts) {
+            const suggestionsContainer = document.getElementById('suggestions');
+            if (!suggestionsContainer) return;
+
+            // 1. Clear content and hide
+            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
+
+            if (Array.isArray(prompts) && prompts.length > 0) {
+                prompts.forEach(function (promptText) {
+                    if (!promptText || promptText === 'None' || promptText.trim() === '') return;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'suggestion-btn';
+                    btn.innerHTML = promptText;
+
+                    btn.onclick = function () {
+                        const chatInput = document.getElementById('chat-input');
+                        const sendBtn = document.getElementById('chat-send-button');
+                        if (chatInput) {
+                            chatInput.value = promptText;
+                            // 2. Clear content and hide immediately on click
+                            suggestionsContainer.innerHTML = '';
+                            suggestionsContainer.style.display = 'none';
+                            if (sendBtn) sendBtn.click();
+                        }
+                    };
+                    suggestionsContainer.appendChild(btn);
+                });
+
+                // 3. Show if content exists
+                if (suggestionsContainer.childElementCount > 0) {
+                    suggestionsContainer.style.display = 'flex';
+                }
+
+                if (window.MathJax) {
+                    try { window.MathJax.typesetPromise([suggestionsContainer]); } catch (e) { }
+                }
+            }
+        }
+
+        // 初始載入時顯示氣泡
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialPrompts = [];
+            {% if skill %}
+            const p1 = "{{ skill.suggested_prompt_1 if skill.suggested_prompt_1 else '' }}";
+            const p2 = "{{ skill.suggested_prompt_2 if skill.suggested_prompt_2 else '' }}";
+            const p3 = "{{ skill.suggested_prompt_3 if skill.suggested_prompt_3 else '' }}";
+
+            // 簡單過濾無效值
+            if (p1 && p1 !== 'None' && p1.trim() !== '') initialPrompts.push(p1);
+            if (p2 && p2 !== 'None' && p2.trim() !== '') initialPrompts.push(p2);
+            if (p3 && p3 !== 'None' && p3.trim() !== '') initialPrompts.push(p3);
+            {% endif %}
+
+            if (initialPrompts.length > 0) {
+                // 延遲一點點確保容器已就緒
+                setTimeout(() => {
+                    if (typeof showSuggestions === 'function') {
+                        showSuggestions(initialPrompts);
+                    }
+                }, 100);
+            }
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9afcd8958a218457',t:'MTc2NjA0MTg4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+    <script>
+        // [MathJax 強制渲染補丁]
+        document.addEventListener('DOMContentLoaded', function () {
+            // 注意：這裡使用 ID 'chat-history' 因為這是頁面實際的聊天容器 ID
+            const chatBox = document.getElementById('chat-history');
+
+            // 定義渲染函數
+            const forceRender = () => {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    // 針對整個 chatBox 進行重新排版
+                    // 使用 catch 避免報錯干擾
+                    try {
+                        window.MathJax.typesetPromise([chatBox]).catch((err) => { });
+                    } catch (e) { }
+                }
+            };
+
+            // 1. 建立觀察者：只要對話框有變動，就觸發渲染
+            if (chatBox) {
+                const observer = new MutationObserver((mutations) => {
+                    forceRender();
+                });
+                observer.observe(chatBox, { childList: true, subtree: true });
+            }
+
+            // 2. 為了保險，每隔 1000ms 檢查一次是否有未渲染的 $ 符號
+            setInterval(() => {
+                // 如果 MathJax 存在且頁面內容包含 "$" (可能是未渲染的公式)
+                if (window.MathJax && document.body.innerText.includes('$')) {
+                    forceRender();
+                }
+            }, 1000);
+        });
+    </script>
+    </script>
+    <script>
+        /* [Feature] Instant Upload Handler */
+        function handleInstantUpload() {
+            const fileInput = document.getElementById('question-image-uploader');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Show loading state?
+            // Maybe change button text
+            const btn = document.getElementById('upload-question-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 分析中...';
+            btn.disabled = true;
+
+            fetch('/practice/upload_instant', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert('上傳失敗: ' + data.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('上傳發生錯誤');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+        }
+
+        // Bind to the file input change event
+        document.getElementById('question-image-uploader').addEventListener('change', handleInstantUpload);
+        // === 新增：題目上傳功能 ===
+        function setupQuestionUpload() {
+            const uploadBtn = document.getElementById('upload-question-btn');
+            const fileInput = document.getElementById('question-image-uploader');
+            const questionTextDiv = document.getElementById('question-text');
+            const resultDisplay = document.getElementById('result-display');
+            const canvas = document.getElementById('handwriting-canvas'); // 確保 canvas 變數存在
+
+            if (!uploadBtn || !fileInput) return;
+
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // 顯示載入中
+                questionTextDiv.innerHTML = '<div style="text-align:center; padding: 20px;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>正在分析題目圖片...</div>';
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/upload_question_image', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('上傳失敗: ' + data.error);
+                            questionTextDiv.textContent = '題目分析失敗，請重試。';
+                            return;
+                        }
+
+                        if (data.success && data.question_text) {
+                            // 更新題目
+                            // [Feature] Instant Practice Display Logic
+                            if (data.is_instant_upload) {
+                                let htmlContent = '';
+                                // Prefer image_path if available for caching/display, or base64
+                                // The backend next_question returns image_base64 but we stored image_path in session...
+                                // Let's rely on what next_question returns. We might need to adjust next_question to return image_path too.
+                                // For now, assume image_base64 is populated or we modify next_question to return url.
+
+                                // Check if data.image_base64 starts with 'http' or '/' (it's a URL) or actual base64
+                                if (data.image_base64 && (data.image_base64.startsWith('/') || data.image_base64.startsWith('http'))) {
+                                    htmlContent += `<img id="instant-question-image" src="${data.image_base64}" alt="Uploaded Question">`;
+                                } else if (data.image_base64) {
+                                    htmlContent += `<img id="instant-question-image" src="data:image/png;base64,${data.image_base64}" alt="Uploaded Question">`;
+                                }
+
+                                if (data.question_text) { // Changed from data.new_question_text to data.question_text to match existing data structure
+                                    htmlContent += `<div class="latex-content">${data.question_text}</div>`;
+                                }
+
+                                questionTextDiv.innerHTML = htmlContent;
+                            } else {
+                                // Normal behavior
+                                questionTextDiv.innerHTML = data.question_text; // Changed from data.new_question_text to data.question_text
+                            }
+
+                            // Render MathJax
+                            if (window.MathJax) {
+                                MathJax.typesetPromise([questionTextDiv]).catch((err) => console.log(err));
+                            }
+                            if (answerInput) answerInput.value = '';
+
+                            if (resultDisplay) {
+                                resultDisplay.textContent = '';
+                                resultDisplay.className = '';
+                            }
+
+                            if (canvas) {
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = 'white';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height); // 清空畫布
+                                // 重置 undo/redo
+                                if (typeof undoStack !== 'undefined') undoStack = [];
+                                if (typeof redoStack !== 'undefined') redoStack = [];
+                                if (typeof saveState === 'function') saveState();
+                            }
+
+                            // 更新等級顯示為 "自訂"
+                            const levelIndicator = document.getElementById('level-indicator');
+                            if (levelIndicator) levelIndicator.textContent = '等級：自訂';
+
+                            // 觸發 MathJax 渲染
+                            if (window.MathJax && window.MathJax.typesetPromise) {
+                                window.MathJax.typesetPromise([questionTextDiv]);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        questionTextDiv.textContent = '發生錯誤，請稍後再試。';
+                        alert('發生錯誤: ' + err);
+                    });
+            });
+        }
+
+        // [Phase 6] 顯示前置單元推薦
+        function showPrerequisiteSuggestion(prerequisite) {
+            console.log('[前置單元推薦] 呼叫 showPrerequisiteSuggestion，參數:', prerequisite);
+
+            const suggestionDiv = document.getElementById('prerequisite-suggestion');
+            const reasonText = document.getElementById('prerequisite-reason');
+            const nameSpan = document.getElementById('prerequisite-name');
+            const goBtn = document.getElementById('go-prerequisite-btn');
+
+            console.log('[前置單元推薦] DOM 元素:', {
+                suggestionDiv: !!suggestionDiv,
+                reasonText: !!reasonText,
+                nameSpan: !!nameSpan,
+                goBtn: !!goBtn
+            });
+
+            if (!suggestionDiv || !reasonText || !nameSpan || !goBtn) {
+                console.error('前置單元推薦元素未找到');
+                console.error('缺少元素:', {
+                    suggestionDiv: !suggestionDiv,
+                    reasonText: !reasonText,
+                    nameSpan: !nameSpan,
+                    goBtn: !goBtn
+                });
+                return;
+            }
+
+            // 設定內容
+            reasonText.textContent = prerequisite.reason || '建議複習此單元以加強基礎';
+            nameSpan.textContent = prerequisite.name;
+
+            // 設定跳轉按鈕
+            goBtn.onclick = () => {
+                // 跳轉到該前置單元的練習頁面
+                window.location.href = `/practice/${prerequisite.id}`;
+            };
+
+            // 顯示推薦卡片
+            suggestionDiv.style.display = 'block';
+            console.log('[前置單元推薦] 卡片已顯示');
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            setupQuestionUpload();
+            
+            // 載入實際 Runtime Tutor Model 狀態
+            async function loadRuntimeAIStatus() {
+                try {
+                    const res = await fetch('/api/runtime_ai_status');
+                    const data = await res.json();
+
+                    const el = document.getElementById('tutor-model-label');
+                    if (!el) return;
+
+                    if (data.success && data.tutor_display_name) {
+                        // 可以加上 Cloud/Edge 提供更詳細狀態
+                        let modeDisplay = "";
+                        if (data.ai_mode === 'cloud') modeDisplay = '｜Cloud';
+                        else if (data.ai_mode === 'edge') modeDisplay = '｜Edge';
+                        else if (data.ai_mode === 'hybrid') modeDisplay = '｜Hybrid';
+                        
+                        el.textContent = `AI 助教（${data.tutor_display_name}${modeDisplay}）`;
+                    } else {
+                        el.textContent = 'AI 助教（unknown）';
+                    }
+                } catch (e) {
+                    const el = document.getElementById('tutor-model-label');
+                    if (el) el.textContent = 'AI 助教（unknown）';
+                }
+            }
+            loadRuntimeAIStatus();
+
+            // RAG 模式：Enter 鍵觸發檢索
+            const ragInput = document.getElementById('rag-query-input');
+            if (ragInput) {
+                ragInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') performRagSearch();
+                });
+            }
+        });
+
+        // ========== RAG 模式 ==========
+
+        function toggleRagMode() {
+            const panel = document.getElementById('rag-panel');
+            const btn = document.getElementById('rag-mode-btn');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                btn.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                btn.innerHTML = '<span style="font-size: 1.1em;">✖</span> 關閉 RAG 模式';
+            } else {
+                panel.style.display = 'none';
+                btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                btn.innerHTML = '<span style="font-size: 1.1em;">📚</span> RAG 模式';
+            }
+        }
+
+        async function performRagSearch() {
+            const query = document.getElementById('rag-query-input').value.trim();
+            if (!query) return;
+
+            const loading = document.getElementById('rag-loading');
+            const resultsDiv = document.getElementById('rag-results');
+            const buttonsDiv = document.getElementById('rag-results-buttons');
+            const answerDiv = document.getElementById('rag-ai-answer');
+            const answerText = document.getElementById('rag-ai-answer-text');
+
+            // 顯示載入中
+            loading.style.display = 'block';
+            resultsDiv.style.display = 'none';
+            answerDiv.style.display = 'none';
+            buttonsDiv.innerHTML = '';
+
+            try {
+                // 1. 呼叫 RAG 檢索 API
+                const searchResp = await fetch('/api/rag_search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                const searchData = await searchResp.json();
+
+                if (!searchData.results || searchData.results.length === 0) {
+                    loading.style.display = 'none';
+                    answerDiv.style.display = 'block';
+                    answerText.textContent = '未找到相關單元，請嘗試其他關鍵字。';
+                    return;
+                }
+
+                // 2. 渲染 Top-5 按鈕 (全部都是可練習的國中技能)
+                searchData.results.forEach((item, index) => {
+                    const btn = document.createElement('button');
+                    btn.style.cssText = `
+                        padding: 6px 14px;
+                        border-radius: 20px;
+                        border: 1px solid ${index === 0 ? '#667eea' : '#d4c5f9'};
+                        background: ${index === 0 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'white'};
+                        color: ${index === 0 ? 'white' : '#764ba2'};
+                        font-size: 0.85em;
+                        font-weight: ${index === 0 ? '700' : '500'};
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                    `;
+                    const distStr = item.distance !== undefined ? ` (${(1 - item.distance).toFixed(2)})` : '';
+                    btn.textContent = `${item.chinese_name}${distStr}`;
+                    btn.title = `點擊前往練習：${item.skill_id}`;
+                    btn.onmouseover = () => { if (index !== 0) btn.style.background = '#f0ebff'; };
+                    btn.onmouseout = () => { if (index !== 0) btn.style.background = 'white'; };
+                    btn.onclick = () => {
+                        window.location.href = `/practice/${item.skill_id}`;
+                    };
+                    buttonsDiv.appendChild(btn);
+                });
+
+                resultsDiv.style.display = 'block';
+
+                // 3. 同時呼叫 RAG Chat API (用 Top-1 結果)
+                const topSkill = searchData.results[0].skill_id;
+                answerDiv.style.display = 'block';
+                answerText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI 正在根據檢索結果生成回答...';
+
+                const chatResp = await fetch('/api/rag_chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query, top_skill_id: topSkill })
+                });
+                const chatData = await chatResp.json();
+
+                // 顯示 AI 回答 (支援換行與 LaTeX)
+                let replyHtml = (chatData.reply || '無法生成回答')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // 粗體
+                    .replace(/\n/g, '<br>');  // 換行
+                answerText.innerHTML = replyHtml;
+
+                // 嘗試渲染 MathJax
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise([answerText]);
+                }
+
+            } catch (err) {
+                console.error('RAG Error:', err);
+                answerDiv.style.display = 'block';
+                answerText.textContent = '檢索發生錯誤：' + err.message;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,220 @@
+{
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I1": [
+    "sign_handling",
+    "add_sub"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I2": [
+    "sign_handling",
+    "add_sub"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I3": [
+    "mul_div"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I4": [
+    "mixed_ops",
+    "mul_div"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I5": [
+    "parentheses",
+    "mixed_ops"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I6": [
+    "absolute_value",
+    "add_sub"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I7": [
+    "mul_div",
+    "mixed_ops"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I8": [
+    "parentheses",
+    "mixed_ops"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F1": [
+    "simplest_form_reduction"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F2": [
+    "equivalent_fraction_scaling"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F3": [
+    "equivalent_fraction_scaling"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F4": [
+    "sign_normalization",
+    "proper_improper_fraction"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F5": [
+    "fraction_add_sub"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F6": [
+    "fraction_mul_div"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F7": [
+    "fraction_mul_div"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F8": [
+    "reciprocal"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F9": [
+    "fraction_add_sub"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F10": [
+    "mixed_numbers",
+    "fraction_add_sub"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p0": [
+    "radical_simplify"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p1": [
+    "radical_add_sub"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p1b": [
+    "radical_add_sub"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p1c": [
+    "radical_add_sub"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2a": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2b": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2c": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2d": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2e": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2f": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2g": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p2h": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p3a": [
+    "radical_simplify"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p3b": [
+    "radical_simplify"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p3c": [
+    "radical_simplify"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p4": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p4b": [
+    "radical_simplify"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p4c": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p4d": [
+    "radical_mul_div"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p5a": [
+    "conjugate_rationalize"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p5b": [
+    "conjugate_rationalize"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p6": [
+    "radical_add_sub"
+  ],
+  "jh_數學2上_FourOperationsOfRadicals:p7": [
+    "radical_add_sub"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F1": [
+    "poly_add_sub"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F2": [
+    "poly_add_sub"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F3": [
+    "poly_add_sub"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F4": [
+    "poly_mul_monomial"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F5": [
+    "poly_mul_monomial"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F6": [
+    "poly_mul_poly"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F7": [
+    "poly_mul_poly"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F8": [
+    "poly_expand"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F9": [
+    "poly_expand"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F10": [
+    "poly_expand"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F11": [
+    "poly_add_sub",
+    "poly_expand"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F12": [
+    "poly_formula"
+  ],
+  "jh_數學2上_FourArithmeticOperationsOfPolynomial:F13": [
+    "poly_expand"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L1": [
+    "coefficient_sign_handling"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L2": [
+    "like_term_combination"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L3": [
+    "term_collection_with_constants",
+    "like_term_combination"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L4": [
+    "outer_minus_scope"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L5": [
+    "monomial_distribution",
+    "coefficient_sign_handling"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L6": [
+    "nested_bracket_scope",
+    "structure_isomorphism"
+  ],
+  "jh_數學1上_OperationsOnLinearExpressions:L7": [
+    "fractional_expression_simplification"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I9": [
+    "power_notation_basics",
+    "signed_power_interpretation",
+    "parenthesized_negative_base",
+    "minus_outside_power"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfIntegers:I10": [
+    "power_precedence_in_mixed_ops",
+    "signed_power_evaluation",
+    "mixed_power_arithmetic"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F11": [
+    "same_base_multiplication_rule",
+    "power_building_from_repetition"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F12": [
+    "power_of_power_rule"
+  ],
+  "jh_數學1上_FourArithmeticOperationsOfNumbers:F13": [
+    "product_power_distribution",
+    "fraction_power_distribution"
+  ]
+}

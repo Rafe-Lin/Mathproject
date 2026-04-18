@@ -1,0 +1,213 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/teacher_analysis.html
+功能說明 (Description): 教師分析儀表板
+後端呼叫 (Backend Call): app.py -> teacher_analysis
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>學生學習分析報告 - 自適應性教學系統</title>
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar 樣式改由 _admin_navbar.html 提供，避免頁面覆寫 */
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table, th, td {
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+        }
+
+        td {
+            padding: 12px;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        tr:hover {
+            background-color: #f1f2f6;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+    </style>
+</head>
+<body>
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <!-- 錯題分析圖表 -->
+        <div class="card">
+            <h3>📉 學生常錯題目分析 (Top 10)</h3>
+            <p style="color: #666; font-size: 0.9em;">統計所有學生在練習過程中錯誤次數最多的題目。</p>
+            <div class="chart-container">
+                <canvas id="mistakeChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 學習診斷列表 -->
+        <div class="card">
+            <h3>📋 學生個別學習診斷報告</h3>
+            <p style="color: #666; font-size: 0.9em;">條列所有學生的 AI 學習診斷紀錄。</p>
+            
+            {% if diagnoses|length == 0 %}
+                <p style="text-align: center; color: #999; padding: 20px;">目前尚無診斷資料。</p>
+            {% else %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">日期</th>
+                            <th style="width: 15%;">學生姓名</th>
+                            <th style="width: 25%;">系統推薦單元</th>
+                            <th style="width: 45%;">AI 診斷評語</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for diag, student_name in diagnoses %}
+                        <tr>
+                            <td>{{ diag.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td><strong>{{ student_name }}</strong></td>
+                            <td>
+                                {% if diag.recommended_unit %}
+                                    <span class="tag">{{ diag.recommended_unit }}</span>
+                                {% else %}
+                                    <span style="color: #999;">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="max-height: 80px; overflow-y: auto; font-size: 0.95em; line-height: 1.5;">
+                                    {{ diag.ai_comment }}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // 準備從後端傳來的資料
+        const labels = {{ mistake_labels | tojson }};
+        const dataValues = {{ mistake_data | tojson }};
+
+        const ctx = document.getElementById('mistakeChart').getContext('2d');
+        const mistakeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '錯誤人次/次數',
+                    data: dataValues,
+                    backgroundColor: 'rgba(231, 76, 60, 0.6)',
+                    borderColor: 'rgba(231, 76, 60, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '錯誤次數'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: '題目 (簡略)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                // 顯示完整題目 (如果有的話，這裡目前只拿到截斷的，但可以優化)
+                                return tooltipItems[0].label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

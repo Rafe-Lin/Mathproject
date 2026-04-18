@@ -1,0 +1,125 @@
+{
+  "episodes_per_prototype": 100,
+  "max_steps_per_episode": 30,
+  "success_polynomial_threshold": 0.8,
+  "success_consecutive_polynomial_correct": 2,
+  "perturbation": 0.03,
+  "random_seed": 42,
+  "output_dir": "outputs_ab3_v4\\tmp_m3_s3_d0.00",
+  "subskill_config_path": "configs\\subskill_remediation.yaml",
+  "difficulty_by_skill": {
+    "integer": 0.55,
+    "fraction": 0.6,
+    "radical": 0.65,
+    "polynomial": 0.68
+  },
+  "difficulty_jitter": 0.05,
+  "update_scale": 0.08,
+  "correct_reward": 1.0,
+  "incorrect_reward": 0.3,
+  "primary_weight": 1.0,
+  "transfer_weight_integer_to_polynomial": 0.2,
+  "ab3_min_remediation_steps": 3,
+  "ab3_recent_correct_streak_threshold": 3,
+  "ab3_mastery_growth_delta_threshold": 0.0,
+  "prototypes": [
+    {
+      "name": "A",
+      "base_abilities": {
+        "int_sign_handling": 0.7,
+        "int_mul_div": 0.7,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial_core": 0.5,
+        "poly_sign_distribution_mastery": 0.5,
+        "poly_expand_binomial_mastery": 0.5
+      }
+    },
+    {
+      "name": "B",
+      "base_abilities": {
+        "int_sign_handling": 0.25,
+        "int_mul_div": 0.35,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial_core": 0.5,
+        "poly_sign_distribution_mastery": 0.5,
+        "poly_expand_binomial_mastery": 0.5
+      }
+    },
+    {
+      "name": "C",
+      "base_abilities": {
+        "int_sign_handling": 0.5,
+        "int_mul_div": 0.55,
+        "fraction": 0.3,
+        "radical": 0.1,
+        "polynomial_core": 0.5,
+        "poly_sign_distribution_mastery": 0.5,
+        "poly_expand_binomial_mastery": 0.5
+      }
+    }
+  ],
+  "subskill_knowledge": {
+    "config_path": "configs\\subskill_remediation.yaml",
+    "subskills": {
+      "int.sign_handling": {
+        "domain": "integer",
+        "display_name": "Sign Handling"
+      },
+      "int.mul_div": {
+        "domain": "integer",
+        "display_name": "Integer Multiplication and Division"
+      },
+      "int.order_of_operations": {
+        "domain": "integer",
+        "display_name": "Order of Operations"
+      },
+      "frac.add_sub": {
+        "domain": "fraction",
+        "display_name": "Fraction Addition and Subtraction"
+      },
+      "frac.divide": {
+        "domain": "fraction",
+        "display_name": "Fraction Division"
+      },
+      "poly.combine_like_terms": {
+        "domain": "polynomial",
+        "display_name": "Combine Like Terms",
+        "depends_on": [
+          "int.sign_handling"
+        ]
+      },
+      "poly.sign_distribution": {
+        "domain": "polynomial",
+        "display_name": "Sign Distribution",
+        "depends_on": [
+          "int.sign_handling"
+        ]
+      },
+      "poly.expand_binomial": {
+        "domain": "polynomial",
+        "display_name": "Expand Binomial",
+        "depends_on": [
+          "int.mul_div"
+        ]
+      }
+    },
+    "diagnosis_map": {
+      "polynomial_sign_error": "poly.sign_distribution",
+      "polynomial_expand_error": "poly.expand_binomial",
+      "polynomial_like_terms_error": "poly.combine_like_terms"
+    },
+    "remediation_map": {
+      "poly.combine_like_terms": {
+        "target": "int.sign_handling"
+      },
+      "poly.sign_distribution": {
+        "target": "int.sign_handling"
+      },
+      "poly.expand_binomial": {
+        "target": "int.mul_div"
+      }
+    }
+  }
+}

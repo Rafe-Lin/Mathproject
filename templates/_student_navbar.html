@@ -1,0 +1,250 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/_student_navbar.html
+功能說明 (Description): 學生端共用導覽列（student-facing 頁面 include）
+後端呼叫 (Backend Call): Include File
+版本資訊 (Version): V3.1 — 文案／無障礙／登出間距
+更新日期 (Date): 2026-04-16
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+{# —— Active 判斷：endpoint 優先，path 保守 fallback —— #}
+{% set _ep = request.endpoint %}
+{% set _path = request.path or '' %}
+{% set _va = request.view_args or {} %}
+{% set _skill = _va.get('skill_id') %}
+
+{% set nav_active_home = (_ep == 'dashboard') %}
+{% set nav_active_exam = (_ep == 'core.exam_upload_page') or ('/exam_upload_page' in _path) %}
+{% set nav_active_mistake = (_ep in ('core.mistake_notebook', 'core.add_mistake_page')) or ('/mistake-notebook' in _path) or ('/add_mistake_page' in _path) %}
+{% set nav_active_learn = (_ep == 'core.student_diagnosis') or ('/student/diagnosis' in _path) %}
+{% set nav_active_kg = (_ep == 'core.knowledge_graph') or ('/knowledge-graph' in _path) %}
+{% set nav_active_sim = (_ep in ('practice.similar_questions', 'practice.similar_questions_page')) or ('/practice/similar_questions' in _path) or ('/similar-questions-page' in _path) %}
+{% set nav_active_upload = (_ep == 'practice.practice' and _skill == 'custom_upload') or ('/practice/custom_upload' in _path) %}
+
+<style>
+/* 學生端 navbar：核心樣式只綁定 student-navbar，避免被頁面 .navbar 覆寫 */
+
+.student-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    min-height: 56px;
+    margin: 0 !important;
+    box-sizing: border-box;
+    background: #2c3e50;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+.student-navbar__inner {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px 20px;
+}
+.student-navbar__brand {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    max-width: min(420px, 38vw);
+    line-height: 1.35;
+}
+.student-navbar__brand:hover { color: #fff; }
+.student-navbar__menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    row-gap: 10px;
+}
+/* 主功能與「登出」分組：拉開距離，窄螢幕仍可換行 */
+.student-navbar__primary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    row-gap: 10px;
+    min-width: 0;
+}
+.student-navbar__account {
+    display: inline-flex;
+    align-items: center;
+    margin-left: clamp(10px, 2vw, 28px);
+    padding-left: clamp(12px, 2.2vw, 30px);
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
+}
+/* 膠囊按鈕：inline-flex 對齊 emoji + 文字 */
+.student-navbar__pill {
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+    will-change: transform;
+}
+.student-navbar__pill-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.student-navbar__pill-icon {
+    font-size: 1.05em;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.student-navbar__pill-text { line-height: 1.2; }
+
+/* 語意色（底色） */
+.student-navbar a.student-navbar__pill { text-decoration: none; }
+.student-navbar a.student-navbar__pill--home    { background-color: #3498db; color: #fff !important; }
+.student-navbar a.student-navbar__pill--exam    { background-color: #e74c3c; color: #fff !important; }
+.student-navbar a.student-navbar__pill--mistake { background-color: #f1c40f; color: #2c3e50 !important; }
+.student-navbar a.student-navbar__pill--learn   { background-color: #8e44ad; color: #fff !important; }
+.student-navbar a.student-navbar__pill--kg      { background-color: #16a085; color: #fff !important; }
+.student-navbar a.student-navbar__pill--sim     { background-color: #27ae60; color: #fff !important; }
+.student-navbar a.student-navbar__pill--upload  { background-color: #6c5ce7; color: #fff !important; }
+.student-navbar a.student-navbar__pill--teacher { background-color: #f39c12; color: #fff !important; }
+.student-navbar a.student-navbar__pill--teacher {
+    padding: 0 15px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.28);
+}
+
+/* Hover：略加深 + 上浮 + 陰影 */
+.student-navbar a.student-navbar__pill--home:hover    { background-color: #2980b9 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(52, 152, 219, 0.45); }
+.student-navbar a.student-navbar__pill--exam:hover    { background-color: #c0392b !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(231, 76, 60, 0.45); }
+.student-navbar a.student-navbar__pill--mistake:hover { background-color: #d4ac0d !important; color: #1a1a1a !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(241, 196, 15, 0.5); }
+.student-navbar a.student-navbar__pill--learn:hover   { background-color: #6c3483 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(142, 68, 173, 0.45); }
+.student-navbar a.student-navbar__pill--kg:hover      { background-color: #117a65 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(22, 160, 133, 0.45); }
+.student-navbar a.student-navbar__pill--sim:hover     { background-color: #1e8449 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(39, 174, 96, 0.45); }
+.student-navbar a.student-navbar__pill--upload:hover  { background-color: #5548c4 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(108, 92, 231, 0.45); }
+.student-navbar a.student-navbar__pill--teacher:hover { background-color: #d68910 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(243, 156, 18, 0.45); }
+.student-navbar a.student-navbar__pill--teacher:hover {
+    background-color: #e29b11 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(243, 156, 18, 0.5);
+}
+
+/* Active：高對比、明顯立體 */
+.student-navbar a.student-navbar__pill.student-navbar__pill--active {
+    outline: 3px solid #ffffff;
+    outline-offset: 1px;
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.62),
+        0 7px 16px rgba(0, 0, 0, 0.30);
+    filter: brightness(1.32);
+    transform: translateY(-1px);
+}
+.student-navbar a.student-navbar__pill.student-navbar__pill--active span {
+    font-weight: 600;
+}
+.student-navbar a.student-navbar__pill.student-navbar__pill--active:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.32);
+}
+/* 首頁 active 再稍微提高辨識度 */
+.student-navbar a.student-navbar__pill--home.student-navbar__pill--active {
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.72),
+        0 8px 18px rgba(41, 128, 185, 0.42);
+}
+
+/* 登出：次要文字連結 */
+.student-navbar a.student-navbar__pill--logout {
+    background: transparent !important;
+    color: #aaa !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 500;
+    padding: 0 12px;
+    height: 36px;
+}
+.student-navbar a.student-navbar__pill--logout:hover {
+    color: #ecf0f1 !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<div class="student-navbar" role="navigation" aria-label="學生端主選單">
+    <div class="student-navbar__inner">
+    <a href="{{ url_for('dashboard') }}" class="logo student-navbar__brand">
+        自適應性教學系統 ( <strong>{{ username or current_user.username }}</strong>！ )
+    </a>
+    <div class="student-navbar__menu">
+        <div class="student-navbar__primary">
+        <a href="{{ url_for('dashboard') }}"
+           class="student-navbar__pill student-navbar__pill--home{% if nav_active_home %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_home %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">🏠</span><span class="student-navbar__pill-text">學生主頁</span></span>
+        </a>
+        <a href="{{ url_for('core.exam_upload_page') }}"
+           class="student-navbar__pill student-navbar__pill--exam{% if nav_active_exam %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_exam %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">📝</span><span class="student-navbar__pill-text">考卷診斷</span></span>
+        </a>
+        <a href="{{ url_for('core.mistake_notebook') }}"
+           class="student-navbar__pill student-navbar__pill--mistake{% if nav_active_mistake %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_mistake %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">📘</span><span class="student-navbar__pill-text">錯題本</span></span>
+        </a>
+        <a href="{{ url_for('core.student_diagnosis') }}"
+           class="student-navbar__pill student-navbar__pill--learn{% if nav_active_learn %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_learn %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">📊</span><span class="student-navbar__pill-text">學習診斷</span></span>
+        </a>
+        <a href="{{ url_for('core.knowledge_graph') }}"
+           class="student-navbar__pill student-navbar__pill--kg{% if nav_active_kg %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_kg %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">🌳</span><span class="student-navbar__pill-text">知識圖譜</span></span>
+        </a>
+        <a href="{{ url_for('practice.similar_questions') }}"
+           class="student-navbar__pill student-navbar__pill--sim{% if nav_active_sim %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_sim %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">🧩</span><span class="student-navbar__pill-text">類題練習</span></span>
+        </a>
+        <a href="{{ url_for('practice.practice', skill_id='custom_upload') }}"
+           class="student-navbar__pill student-navbar__pill--upload{% if nav_active_upload %} student-navbar__pill--active{% endif %}"
+           {% if nav_active_upload %}aria-current="page"{% endif %}>
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">📷</span><span class="student-navbar__pill-text">上傳題目</span></span>
+        </a>
+        {% if current_user.role == 'teacher' or current_user.is_admin %}
+        <a href="{{ url_for('teacher_dashboard') }}"
+           class="student-navbar__pill student-navbar__pill--teacher">
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-icon">👨‍🏫</span><span class="student-navbar__pill-text">教師模式</span></span>
+        </a>
+        {% endif %}
+        </div>
+        <div class="student-navbar__account">
+        <a href="{{ url_for('logout') }}" class="student-navbar__pill student-navbar__pill--logout">
+            <span class="student-navbar__pill-inner"><span class="student-navbar__pill-text">登出</span></span>
+        </a>
+        </div>
+    </div>
+    </div>
+</div>

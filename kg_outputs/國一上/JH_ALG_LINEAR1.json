@@ -1,0 +1,1108 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "一元一次方程式",
+    "l2_unit_id": "JH_ALG_LINEAR1"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_LINEAR1",
+      "level": "L2",
+      "name": "一元一次方程式",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_01",
+      "level": "L3",
+      "name": "以文字符號列式",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "理解文字符號代表數的意義，並能將文字敘述轉換為代數式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_01_a",
+      "level": "L4",
+      "name": "文字符號的意義",
+      "parent_id": "JH_ALG_LINEAR1_L3_01",
+      "description": "了解英文字母x、y、z等符號可以用來代表一個數，以及數和符號構成算式的意義。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_01_b",
+      "level": "L4",
+      "name": "將文字敘述列成代數式",
+      "parent_id": "JH_ALG_LINEAR1_L3_01",
+      "description": "根據文字敘述，將數量關係轉換為包含文字符號的代數式，例如「比x大5的數」為x+5。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_02",
+      "level": "L3",
+      "name": "代數式的簡記",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習乘法和除法的簡記規則，將代數式寫成更簡潔的形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_02_a",
+      "level": "L4",
+      "name": "乘法的簡記",
+      "parent_id": "JH_ALG_LINEAR1_L3_02",
+      "description": "將數字與文字符號間的乘號「×」改寫成「・」或省略不寫，並將數字寫在文字符號前面，例如3×x簡記為3x。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_02_b",
+      "level": "L4",
+      "name": "除法的簡記",
+      "parent_id": "JH_ALG_LINEAR1_L3_02",
+      "description": "將除法運算改寫為乘以倒數的形式，並簡記為分數形式，例如x÷5簡記為x/5。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_02_c",
+      "level": "L4",
+      "name": "含有加減運算的代數式簡記",
+      "parent_id": "JH_ALG_LINEAR1_L3_02",
+      "description": "了解當算式中含有加減運算時，加號「+」及減號「-」是不可省略的。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_03",
+      "level": "L3",
+      "name": "求代數式的值",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "將文字符號所代表的數代入代數式中進行計算，求出代數式的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_03_a",
+      "level": "L4",
+      "name": "代入數值計算代數式的值",
+      "parent_id": "JH_ALG_LINEAR1_L3_03",
+      "description": "將給定的數值代入代數式中的文字符號，並依照運算順序計算出結果。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_03_b",
+      "level": "L4",
+      "name": "應用問題中求代數式的值",
+      "parent_id": "JH_ALG_LINEAR1_L3_03",
+      "description": "根據應用問題的情境，將特定數值代入所列出的代數式中，以解決問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_04",
+      "level": "L3",
+      "name": "一元一次式",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "認識一元一次式的定義、項、係數和常數項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_04_a",
+      "level": "L4",
+      "name": "一元一次式的定義",
+      "parent_id": "JH_ALG_LINEAR1_L3_04",
+      "description": "了解只含有一種文字符號（一元），且文字符號的次數是1（一次）的代數式稱為一元一次式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_04_b",
+      "level": "L4",
+      "name": "項與係數",
+      "parent_id": "JH_ALG_LINEAR1_L3_04",
+      "description": "識別一元一次式中的項、x項的係數和常數項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_04_c",
+      "level": "L4",
+      "name": "同類項",
+      "parent_id": "JH_ALG_LINEAR1_L3_04",
+      "description": "認識文字符號與次數均相同的項稱為同類項。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_05",
+      "level": "L3",
+      "name": "一元一次式與數的乘除",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習利用乘法交換律、結合律和分配律化簡一元一次式與數的乘除運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_05_a",
+      "level": "L4",
+      "name": "一元一次式與數的乘法",
+      "parent_id": "JH_ALG_LINEAR1_L3_05",
+      "description": "運用乘法交換律和結合律，將數與一元一次式相乘，例如2・(6x) = 12x。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_05_b",
+      "level": "L4",
+      "name": "一元一次式與數的除法",
+      "parent_id": "JH_ALG_LINEAR1_L3_05",
+      "description": "將除法運算轉換為乘以倒數，並進行化簡。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_06",
+      "level": "L3",
+      "name": "一元一次式的加減",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習利用分配律合併同類項，化簡一元一次式的加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_06_a",
+      "level": "L4",
+      "name": "同類項的加減",
+      "parent_id": "JH_ALG_LINEAR1_L3_06",
+      "description": "運用分配律將同類項的係數相加減，例如-2x+3x = (-2+3)x = x。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_06_b",
+      "level": "L4",
+      "name": "一元一次式的加減運算",
+      "parent_id": "JH_ALG_LINEAR1_L3_06",
+      "description": "合併一元一次式中的同類項，不同類項則不能合併。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07",
+      "level": "L3",
+      "name": "一元一次式的四則運算",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習去括號規則、分配律以及混合運算，化簡複雜的一元一次式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07_a",
+      "level": "L4",
+      "name": "去括號規則",
+      "parent_id": "JH_ALG_LINEAR1_L3_07",
+      "description": "應用-(a+b)=-a-b和-(a-b)=-a+b等規則，化簡含有括號的代數式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07_b",
+      "level": "L4",
+      "name": "利用分配律化簡一元一次式",
+      "parent_id": "JH_ALG_LINEAR1_L3_07",
+      "description": "運用分配律將數乘入括號內，例如-3(-12x-5) = 36x+15。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07_c",
+      "level": "L4",
+      "name": "一元一次式的四則混合運算",
+      "parent_id": "JH_ALG_LINEAR1_L3_07",
+      "description": "綜合運用去括號、分配律和合併同類項，化簡含有多種運算的代數式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07_d",
+      "level": "L4",
+      "name": "含有分數的一元一次式化簡",
+      "parent_id": "JH_ALG_LINEAR1_L3_07",
+      "description": "處理含有分數形式的一元一次式，進行通分和化簡。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_07_e",
+      "level": "L4",
+      "name": "文字符號列式並化簡",
+      "parent_id": "JH_ALG_LINEAR1_L3_07",
+      "description": "根據應用問題情境，列出含有文字符號的代數式並進行化簡。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_08",
+      "level": "L3",
+      "name": "一元一次方程式的列式",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "認識一元一次方程式的意義，並能將文字敘述轉換為一元一次方程式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_08_a",
+      "level": "L4",
+      "name": "一元一次方程式的意義",
+      "parent_id": "JH_ALG_LINEAR1_L3_08",
+      "description": "了解只含一種未知數（一元），且未知數的次數是1（一次）的等式稱為一元一次方程式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_08_b",
+      "level": "L4",
+      "name": "用文字符號列一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1_L3_08",
+      "description": "根據文字敘述，將數量關係轉換為一元一次方程式，例如「比x大5的數是-9」為x+5=-9。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_09",
+      "level": "L3",
+      "name": "方程式的解",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "認識方程式的解的意義，並能檢驗一個數是否為方程式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_09_a",
+      "level": "L4",
+      "name": "方程式解的意義",
+      "parent_id": "JH_ALG_LINEAR1_L3_09",
+      "description": "了解使等號兩邊的值相等的未知數所代表的數稱為方程式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_09_b",
+      "level": "L4",
+      "name": "檢驗一個數是否為方程式的解",
+      "parent_id": "JH_ALG_LINEAR1_L3_09",
+      "description": "將一個數代入方程式，檢查等號兩邊是否相等，以判斷該數是否為方程式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10",
+      "level": "L3",
+      "name": "等量公理與移項法則",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習等量加法、減法、乘法、除法公理，並理解移項法則，以解一元一次方程式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_a",
+      "level": "L4",
+      "name": "等量加法公理",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "了解在等號兩邊同時加上一個數，等式仍然維持相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_b",
+      "level": "L4",
+      "name": "等量減法公理",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "了解在等號兩邊同時減去一個數，等式仍然維持相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_c",
+      "level": "L4",
+      "name": "等量乘法公理",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "了解在等號兩邊同時乘以一個數，等式仍然維持相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_d",
+      "level": "L4",
+      "name": "等量除法公理",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "了解在等號兩邊同時除以一個不為0的數，等式仍然維持相等。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_e",
+      "level": "L4",
+      "name": "運用等量公理解一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "綜合運用等量公理，逐步化簡方程式，求出未知數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_10_f",
+      "level": "L4",
+      "name": "移項法則",
+      "parent_id": "JH_ALG_LINEAR1_L3_10",
+      "description": "理解將某項移到等號另一邊時，加變減、減變加、乘變除、除變乘的規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_11",
+      "level": "L3",
+      "name": "解一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "綜合運用移項法則、去括號規則和分配律，解各種形式的一元一次方程式。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_11_a",
+      "level": "L4",
+      "name": "運用移項法則解一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1_L3_11",
+      "description": "熟練運用移項法則，將含有未知數的項移到一邊，常數項移到另一邊，以解方程式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_11_b",
+      "level": "L4",
+      "name": "含有括號的一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1_L3_11",
+      "description": "運用去括號規則和分配律，化簡含有括號的方程式，再進行求解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_11_c",
+      "level": "L4",
+      "name": "含有分數的一元一次方程式",
+      "parent_id": "JH_ALG_LINEAR1_L3_11",
+      "description": "透過等量乘法公理將方程式兩邊同乘以公倍數，以消除分數，再進行求解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_11_d",
+      "level": "L4",
+      "name": "解一元一次方程式並驗算",
+      "parent_id": "JH_ALG_LINEAR1_L3_11",
+      "description": "解出方程式的解後，將其代回原方程式進行驗算，確認解的正確性。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12",
+      "level": "L3",
+      "name": "一元一次方程式應用問題",
+      "parent_id": "JH_ALG_LINEAR1",
+      "description": "學習解決各種一元一次方程式的應用問題，包括數字、費用、分配、折扣、圖形、年齡和速率問題，並判斷解的合理性。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_a",
+      "level": "L4",
+      "name": "應用問題解題步驟",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "掌握應用問題的解題步驟：設未知數、列方程式、解方程式、寫答案。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_b",
+      "level": "L4",
+      "name": "數字問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及數字關係的一元一次方程式應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_c",
+      "level": "L4",
+      "name": "費用問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及商品價格、總費用等的一元一次方程式應用問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_d",
+      "level": "L4",
+      "name": "分配問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及物品分配、人數分組等的一元一次方程式應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_e",
+      "level": "L4",
+      "name": "折扣問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及商品折扣、原價與售價關係等的一元一次方程式應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_f",
+      "level": "L4",
+      "name": "圖形問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及幾何圖形周長、面積等的一元一次方程式應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_g",
+      "level": "L4",
+      "name": "年齡問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及人物年齡關係的一元一次方程式應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_h",
+      "level": "L4",
+      "name": "速率問題",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "解決涉及距離、時間、速率關係的一元一次方程式應用問題。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_LINEAR1_L3_12_i",
+      "level": "L4",
+      "name": "解與情境的合理性",
+      "parent_id": "JH_ALG_LINEAR1_L3_12",
+      "description": "判斷所求出的方程式的解是否符合應用問題的實際情境。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_LINEAR1",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02",
+      "to_id": "JH_ALG_LINEAR1_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02",
+      "to_id": "JH_ALG_LINEAR1_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02",
+      "to_id": "JH_ALG_LINEAR1_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_03",
+      "to_id": "JH_ALG_LINEAR1_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_03",
+      "to_id": "JH_ALG_LINEAR1_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_05",
+      "to_id": "JH_ALG_LINEAR1_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_05",
+      "to_id": "JH_ALG_LINEAR1_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_06",
+      "to_id": "JH_ALG_LINEAR1_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_06",
+      "to_id": "JH_ALG_LINEAR1_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08",
+      "to_id": "JH_ALG_LINEAR1_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08",
+      "to_id": "JH_ALG_LINEAR1_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_09",
+      "to_id": "JH_ALG_LINEAR1_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_09",
+      "to_id": "JH_ALG_LINEAR1_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_10_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_11_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_11_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_LINEAR1_L3_12",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_h",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12",
+      "to_id": "JH_ALG_LINEAR1_L3_12_i",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01_a",
+      "to_id": "JH_ALG_LINEAR1_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02_a",
+      "to_id": "JH_ALG_LINEAR1_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02_b",
+      "to_id": "JH_ALG_LINEAR1_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02",
+      "to_id": "JH_ALG_LINEAR1_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_03_a",
+      "to_id": "JH_ALG_LINEAR1_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_03",
+      "to_id": "JH_ALG_LINEAR1_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04_a",
+      "to_id": "JH_ALG_LINEAR1_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04_b",
+      "to_id": "JH_ALG_LINEAR1_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_05_a",
+      "to_id": "JH_ALG_LINEAR1_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_05",
+      "to_id": "JH_ALG_LINEAR1_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_06_a",
+      "to_id": "JH_ALG_LINEAR1_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_06",
+      "to_id": "JH_ALG_LINEAR1_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07_a",
+      "to_id": "JH_ALG_LINEAR1_L3_07_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07_b",
+      "to_id": "JH_ALG_LINEAR1_L3_07_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07_c",
+      "to_id": "JH_ALG_LINEAR1_L3_07_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07_d",
+      "to_id": "JH_ALG_LINEAR1_L3_07_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08_a",
+      "to_id": "JH_ALG_LINEAR1_L3_08_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08",
+      "to_id": "JH_ALG_LINEAR1_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_09_a",
+      "to_id": "JH_ALG_LINEAR1_L3_09_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_09",
+      "to_id": "JH_ALG_LINEAR1_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10_a",
+      "to_id": "JH_ALG_LINEAR1_L3_10_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10_b",
+      "to_id": "JH_ALG_LINEAR1_L3_10_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10_c",
+      "to_id": "JH_ALG_LINEAR1_L3_10_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10_d",
+      "to_id": "JH_ALG_LINEAR1_L3_10_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10_e",
+      "to_id": "JH_ALG_LINEAR1_L3_10_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11_a",
+      "to_id": "JH_ALG_LINEAR1_L3_11_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11_b",
+      "to_id": "JH_ALG_LINEAR1_L3_11_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11_c",
+      "to_id": "JH_ALG_LINEAR1_L3_11_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_12",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_a",
+      "to_id": "JH_ALG_LINEAR1_L3_12_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_b",
+      "to_id": "JH_ALG_LINEAR1_L3_12_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_c",
+      "to_id": "JH_ALG_LINEAR1_L3_12_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_d",
+      "to_id": "JH_ALG_LINEAR1_L3_12_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_e",
+      "to_id": "JH_ALG_LINEAR1_L3_12_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_f",
+      "to_id": "JH_ALG_LINEAR1_L3_12_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_g",
+      "to_id": "JH_ALG_LINEAR1_L3_12_h",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_12_h",
+      "to_id": "JH_ALG_LINEAR1_L3_12_i",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_01",
+      "type": "prerequisite",
+      "reason": "學習代數符號的基礎需整數四則運算概念"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_02",
+      "type": "prerequisite",
+      "reason": "簡記代數式需分數四則運算概念"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_03",
+      "type": "prerequisite",
+      "reason": "求代數式的值需先理解代數式"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_03",
+      "type": "prerequisite",
+      "reason": "求代數式的值需整數四則運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_03",
+      "type": "prerequisite",
+      "reason": "求代數式的值需分數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_04",
+      "type": "prerequisite",
+      "reason": "認識一元一次式需先理解代數符號"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_02",
+      "to_id": "JH_ALG_LINEAR1_L3_05",
+      "type": "prerequisite",
+      "reason": "一元一次式與數的乘除需簡記規則"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_05",
+      "type": "prerequisite",
+      "reason": "一元一次式與數的乘除需整數四則運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_05",
+      "type": "prerequisite",
+      "reason": "一元一次式與數的乘除需分數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_06",
+      "type": "prerequisite",
+      "reason": "一元一次式的加減需認識同類項"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_05",
+      "to_id": "JH_ALG_LINEAR1_L3_06",
+      "type": "prerequisite",
+      "reason": "一元一次式的加減需乘除運算概念"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_06",
+      "type": "prerequisite",
+      "reason": "一元一次式的加減需整數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_06",
+      "to_id": "JH_ALG_LINEAR1_L3_07",
+      "type": "prerequisite",
+      "reason": "一元一次式的四則運算需加減運算"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_07",
+      "type": "prerequisite",
+      "reason": "一元一次式的四則運算需整數四則運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_07",
+      "type": "prerequisite",
+      "reason": "一元一次式的四則運算需分數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_01",
+      "to_id": "JH_ALG_LINEAR1_L3_08",
+      "type": "prerequisite",
+      "reason": "列方程式需理解代數符號"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_04",
+      "to_id": "JH_ALG_LINEAR1_L3_08",
+      "type": "prerequisite",
+      "reason": "列方程式需理解一元一次式概念"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_03",
+      "to_id": "JH_ALG_LINEAR1_L3_09",
+      "type": "prerequisite",
+      "reason": "理解方程式的解需能求代數式的值"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08",
+      "to_id": "JH_ALG_LINEAR1_L3_09",
+      "type": "prerequisite",
+      "reason": "理解方程式的解需能列式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_09",
+      "to_id": "JH_ALG_LINEAR1_L3_10",
+      "type": "prerequisite",
+      "reason": "等量公理與移項法則為解方程式的基礎，需理解解的意義"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_10",
+      "type": "prerequisite",
+      "reason": "等量公理與移項法則需整數四則運算"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_LINEAR1_L3_10",
+      "type": "prerequisite",
+      "reason": "等量公理與移項法則需分數四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_07",
+      "to_id": "JH_ALG_LINEAR1_L3_11",
+      "type": "prerequisite",
+      "reason": "解一元一次方程式需綜合運用四則運算"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_10",
+      "to_id": "JH_ALG_LINEAR1_L3_11",
+      "type": "prerequisite",
+      "reason": "解一元一次方程式需等量公理/移項法則"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_08",
+      "to_id": "JH_ALG_LINEAR1_L3_12",
+      "type": "prerequisite",
+      "reason": "應用問題需能列方程式"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1_L3_11",
+      "to_id": "JH_ALG_LINEAR1_L3_12",
+      "type": "prerequisite",
+      "reason": "應用問題需能解方程式"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 57,
+    "total_edges": 123
+  }
+}

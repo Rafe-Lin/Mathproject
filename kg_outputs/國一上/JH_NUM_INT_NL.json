@@ -1,0 +1,2118 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "數與量",
+    "l2_unit": "整數與數線",
+    "l2_unit_id": "JH_NUM_INT_NL"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_INT_NL",
+      "level": "L2",
+      "name": "整數與數線",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01",
+      "level": "L3",
+      "name": "正負數的引入與意義",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解正負數在日常生活中表示相反意義的量的應用，並學習使用「+」和「-」符號來表示這些量。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_a",
+      "level": "L4",
+      "name": "以正負符號表示相反的量",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "學習如何使用「+」表示正向或增加，以及「-」表示負向或減少的量，例如東邊與西邊、進步與退步、賺與賠等。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_b",
+      "level": "L4",
+      "name": "正數、負數與0的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "理解正數是比0大的數，負數是比0小的數，並認識到0既不是正數也不是負數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_c",
+      "level": "L4",
+      "name": "性質符號與運算符號的區別",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "區分表示數的正負的「性質符號」（如+5、-2）和表示加減運算的「運算符號」（如2+3=5、8-1=7）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_d",
+      "level": "L4",
+      "name": "同號數與異號數的定義",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "理解性質符號相同的數稱為同號數（如6和1.8），性質符號相異的數稱為異號數（如3和-6）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_01_e",
+      "level": "L4",
+      "name": "整數的分類",
+      "parent_id": "JH_NUM_INT_NL_L3_01",
+      "description": "認識正整數（自然數）、負整數和0，並理解它們共同構成整數集合。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02",
+      "level": "L3",
+      "name": "數線的概念與構成要素",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解數線是將正負數標記在一條直線上的工具，並認識其構成要素：原點、正向與單位長。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_a",
+      "level": "L4",
+      "name": "數線的三要素：原點、正向、單位長",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "學習數線必須包含原點（代表0）、正向（通常向右）和單位長（長度要相同）這三個要素。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_02_b",
+      "level": "L4",
+      "name": "在數線上標記整數",
+      "parent_id": "JH_NUM_INT_NL_L3_02",
+      "description": "學習以原點為起點，向右標記正整數，向左標記負整數，並確保單位長度一致。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03",
+      "level": "L3",
+      "name": "數線上的點與坐標",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習如何在數線上表示任意數，並理解點與坐標之間的一一對應關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_a",
+      "level": "L4",
+      "name": "由數線上的點找出坐標",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "根據數線上點的位置，判斷並寫出該點所代表的數（坐標），例如A(2)表示A點在原點右邊2個單位長處。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_b",
+      "level": "L4",
+      "name": "由整數坐標在數線上標記點",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "根據給定的整數坐標，在數線上正確標記出對應的點。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_03_c",
+      "level": "L4",
+      "name": "由分數或小數坐標在數線上標記點",
+      "parent_id": "JH_NUM_INT_NL_L3_03",
+      "description": "學習將單位長等分成更小的長度，以在數線上標記分數或小數點，例如將1單位長分成4等分來標記1/4。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04",
+      "level": "L3",
+      "name": "數的大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用數線上的位置關係來比較數的大小，並理解正數、負數和0之間的相對大小關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_a",
+      "level": "L4",
+      "name": "數線上的大小比較原則",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "理解數線上愈右邊的點所表示的數愈大，愈左邊的點所表示的數愈小。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_04_b",
+      "level": "L4",
+      "name": "正數、負數與0的大小關係",
+      "parent_id": "JH_NUM_INT_NL_L3_04",
+      "description": "認識到0大於所有負數，所有正數大於0，因此「負數 < 0 < 正數」。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05",
+      "level": "L3",
+      "name": "兩數在數線上的位置關係",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習根據數線上兩點A(a)和B(b)的位置關係，判斷a與b的大小關係（a>b, a<b, a=b）。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_05_a",
+      "level": "L4",
+      "name": "兩數大小關係的三一律",
+      "parent_id": "JH_NUM_INT_NL_L3_05",
+      "description": "理解對於任意兩數a、b，其大小關係只有三種情況之一成立：a>b、a<b或a=b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06",
+      "level": "L3",
+      "name": "數的大小關係的遞移律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用遞移律來比較三個或更多數的大小關係，例如若a>b且b>c，則a>c。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_a",
+      "level": "L4",
+      "name": "遞移律：若a>b且b>c，則a>c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點在B點右邊且B點在C點右邊，則A點一定在C點右邊的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_b",
+      "level": "L4",
+      "name": "遞移律：若a<b且b<c，則a<c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點在B點左邊且B點在C點左邊，則A點一定在C點左邊的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_06_c",
+      "level": "L4",
+      "name": "遞移律：若a=b且b=c，則a=c",
+      "parent_id": "JH_NUM_INT_NL_L3_06",
+      "description": "理解並應用若A點與B點重合且B點與C點重合，則A點一定與C點重合的遞移關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07",
+      "level": "L3",
+      "name": "相反數的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解相反數的定義為數線上位於原點左右兩側且與原點距離相等的兩個數，並學習其性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_a",
+      "level": "L4",
+      "name": "相反數的數線定義",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "認識相反數是數線上與原點距離相等且位於原點左右兩側的兩個數，例如4和-4互為相反數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_b",
+      "level": "L4",
+      "name": "相反數的性質：數字部分相同，性質符號不同",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "理解除了0以外，相反數的數字部分相同，但性質符號不同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_c",
+      "level": "L4",
+      "name": "相反數的代數表示法",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "若a是不為0的任意數，則-a是a的相反數，且-(-a)=a。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_07_d",
+      "level": "L4",
+      "name": "0的相反數是0",
+      "parent_id": "JH_NUM_INT_NL_L3_07",
+      "description": "認識到0的相反數是0。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08",
+      "level": "L3",
+      "name": "絕對值的定義與性質",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解絕對值的定義為數線上點與原點的距離，並學習其性質。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_a",
+      "level": "L4",
+      "name": "絕對值的定義：點與原點的距離",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "認識在數線上，點A(a)與原點的距離稱為a的絕對值，以|a|表示，例如|4|=4，|-5|=5，|0|=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_b",
+      "level": "L4",
+      "name": "絕對值恆為非負數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解一個數的絕對值一定是0或正數，不可能為負數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_c",
+      "level": "L4",
+      "name": "相反數的絕對值相等",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解互為相反數的兩數，其絕對值相等，即|a|=|-a|。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_d",
+      "level": "L4",
+      "name": "負數大小與絕對值的關係",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "理解負數的絕對值愈大，其值愈小，例如|-9| > |-3| 但 -9 < -3。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_e",
+      "level": "L4",
+      "name": "由絕對值求原數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "根據|a|=k（k>0），判斷a可能為k或-k；若|a|=0，則a=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_08_f",
+      "level": "L4",
+      "name": "找出絕對值小於某數的所有整數",
+      "parent_id": "JH_NUM_INT_NL_L3_08",
+      "description": "利用數線概念，找出絕對值小於某正數的所有整數，例如絕對值小於4的整數為-3, -2, -1, 0, 1, 2, 3。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09",
+      "level": "L3",
+      "name": "整數加法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相加與異號數相加的運算規則，並能應用數線進行加法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_a",
+      "level": "L4",
+      "name": "同號數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個同號數相加時，其結果等於兩數的絕對值相加，性質符號與原來的兩數相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_b",
+      "level": "L4",
+      "name": "異號數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個異號數相加時，其結果等於兩數的絕對值相減（大減小），性質符號與絕對值較大的數相同。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_c",
+      "level": "L4",
+      "name": "整數與0相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解任何整數a與0相加，其值不變，即a+0=a；0+a=a。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_09_d",
+      "level": "L4",
+      "name": "相反數相加",
+      "parent_id": "JH_NUM_INT_NL_L3_09",
+      "description": "理解兩個互為相反數的整數相加時，它們的和為0，即a+(-a)=0；(-a)+a=0。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10",
+      "level": "L3",
+      "name": "整數加法的交換律與結合律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數加法的交換律和結合律，並應用這些性質簡化計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_a",
+      "level": "L4",
+      "name": "加法交換律：a+b=b+a",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解計算兩個整數相加時，調換兩數的順序，相加的結果不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_10_b",
+      "level": "L4",
+      "name": "加法結合律：(a+b)+c=a+(b+c)",
+      "parent_id": "JH_NUM_INT_NL_L3_10",
+      "description": "理解三個整數相加時，先算前面兩個數或先算後面兩個數，結果都相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11",
+      "level": "L3",
+      "name": "整數減法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習將整數減法轉換為加法運算，即減去一個數等於加上這個數的相反數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_a",
+      "level": "L4",
+      "name": "減去一個數等於加上這個數的相反數",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "理解對於任意兩個整數a、b而言，a-b=a+(-b)，並應用此規則進行減法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_11_b",
+      "level": "L4",
+      "name": "溫度變化在整數減法中的應用",
+      "parent_id": "JH_NUM_INT_NL_L3_11",
+      "description": "利用「最後溫度 - 原來溫度 = 溫度變化」的概念，應用整數減法計算溫度變化，包括正數減負數、負數減正數和負數減負數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12",
+      "level": "L3",
+      "name": "整數加減混合運算",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習處理整數加減混合運算時，將減法轉換為加法，並利用加法的交換律和結合律簡化計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_a",
+      "level": "L4",
+      "name": "加減混合運算的簡化技巧",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "將減法轉換為加法後，重新排列算式，利用加法交換律和結合律，使計算更方便。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_12_b",
+      "level": "L4",
+      "name": "含絕對值的加減混合運算",
+      "parent_id": "JH_NUM_INT_NL_L3_12",
+      "description": "學習在含有絕對值的算式中，優先處理絕對值內的運算，再進行其他加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13",
+      "level": "L3",
+      "name": "去括號規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習在整數加減運算中，如何正確地去掉括號，特別是括號前有「+」或「-」號時的規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_a",
+      "level": "L4",
+      "name": "括號前為「-」號的去括號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解若括號前面是「-」號，去括號後，原來括號內的「+」變「-」，「-」變「+」，例如-(a+b)=-a-b，-(a-b)=-a+b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_13_b",
+      "level": "L4",
+      "name": "括號前為「+」號的去括號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_13",
+      "description": "理解若括號前面是「+」號，去括號後，原來括號內的「+」、「-」不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14",
+      "level": "L3",
+      "name": "數線上兩點的距離",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習利用絕對值計算數線上兩點之間的距離，並理解其與兩數之差的絕對值的關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_a",
+      "level": "L4",
+      "name": "數線上兩點距離公式：|a-b|",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "理解數線上A(a)、B(b)兩點的距離AB可記作|a-b|或|b-a|，即大數減小數的值。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_14_b",
+      "level": "L4",
+      "name": "已知距離求未知坐標",
+      "parent_id": "JH_NUM_INT_NL_L3_14",
+      "description": "根據數線上兩點的距離和其中一點的坐標，找出另一點的可能坐標（通常有兩個解，分別在已知點的左右兩側）。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15",
+      "level": "L3",
+      "name": "數線上線段的中點",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習計算數線上兩點之間的中點坐標，並理解中點到兩端點的距離相等。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_15_a",
+      "level": "L4",
+      "name": "中點坐標的計算",
+      "parent_id": "JH_NUM_INT_NL_L3_15",
+      "description": "理解若C(c)是A(a)和B(b)的中點，則c=(a+b)/2，並能應用此公式計算中點坐標。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16",
+      "level": "L3",
+      "name": "整數乘法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相乘與異號數相乘的運算規則，並理解其積的性質符號與數字部分的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_a",
+      "level": "L4",
+      "name": "正數乘以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解正數乘以正數，其積為正數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_b",
+      "level": "L4",
+      "name": "正數乘以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解正數乘以負數，其積為負數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_c",
+      "level": "L4",
+      "name": "負數乘以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解負數乘以正數，其積為負數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_d",
+      "level": "L4",
+      "name": "負數乘以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解負數乘以負數，其積為正數，數字部分是原來兩數的數字部分相乘。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_e",
+      "level": "L4",
+      "name": "整數與0相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與0的乘積都是0，即a×0=0×a=0。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_f",
+      "level": "L4",
+      "name": "整數與1相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與1的乘積，等於自己本身，即a×1=1×a=a。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_16_g",
+      "level": "L4",
+      "name": "整數與-1相乘",
+      "parent_id": "JH_NUM_INT_NL_L3_16",
+      "description": "理解任意整數與-1的乘積，等於這個數的相反數，即a×(-1)=(-1)×a=-a。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17",
+      "level": "L3",
+      "name": "整數乘法的交換律與結合律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數乘法的交換律和結合律，並應用這些性質調整相乘順序以簡化計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_a",
+      "level": "L4",
+      "name": "乘法交換律：a×b=b×a",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解計算兩個整數相乘時，調換兩數的順序，乘積不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_b",
+      "level": "L4",
+      "name": "乘法結合律：(a×b)×c=a×(b×c)",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解三個整數相乘時，先算前面兩個數或先算後面兩個數，結果都相同。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_17_c",
+      "level": "L4",
+      "name": "多個負數連乘積的符號判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_17",
+      "description": "理解在計算多個不為0的整數相乘時，若有偶數個負數相乘，則其乘積為正數；若有奇數個負數相乘，則其乘積為負數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18",
+      "level": "L3",
+      "name": "整數除法運算規則",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習同號數相除與異號數相除的運算規則，並理解其商的性質符號與數字部分的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_a",
+      "level": "L4",
+      "name": "負數除以正數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解負數除以正數，其商數為負數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_b",
+      "level": "L4",
+      "name": "正數除以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解正數除以負數，其商數為負數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_c",
+      "level": "L4",
+      "name": "負數除以負數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解負數除以負數，其商數為正數，數字部分是原來兩數的數字部分相除。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_18_d",
+      "level": "L4",
+      "name": "0除以不為0的整數",
+      "parent_id": "JH_NUM_INT_NL_L3_18",
+      "description": "理解0除以任何一個不為0的整數，其結果都是0，即0÷a=0（a≠0）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19",
+      "level": "L3",
+      "name": "整數四則運算順序",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習整數四則運算的優先順序，包括括號、絕對值、乘除、加減，並能應用這些規則進行混合運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_a",
+      "level": "L4",
+      "name": "基本四則運算順序",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "理解若只有加減或只有乘除運算時，由左而右計算；若同時有加、減、乘、除運算時，先算乘除再算加減。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_b",
+      "level": "L4",
+      "name": "含括號的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習若有括號時，括號內的運算先算，或利用去括號規則去括號後再算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_c",
+      "level": "L4",
+      "name": "含絕對值的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習若算式中有絕對值，應先處理絕對值，再做其他的運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_d",
+      "level": "L4",
+      "name": "應用問題的整數四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "將實際情境問題轉換為整數四則運算算式，並正確計算結果。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_19_e",
+      "level": "L4",
+      "name": "含乘方的四則運算",
+      "parent_id": "JH_NUM_INT_NL_L3_19",
+      "description": "學習在含有乘方的四則運算中，優先計算乘方，再依序進行乘除、加減運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20",
+      "level": "L3",
+      "name": "乘法對加減法的分配律",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習乘法對加法和減法的分配律，並應用這些性質簡化計算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_a",
+      "level": "L4",
+      "name": "乘法對加法的分配律：a×(b+c)=a×b+a×c",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解並應用乘法對加法的分配律，即a×(b+c)=a×b+a×c，以及c×(a+b)=c×a+c×b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_b",
+      "level": "L4",
+      "name": "乘法對減法的分配律：a×(b-c)=a×b-a×c",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解並應用乘法對減法的分配律，即a×(b-c)=a×b-a×c，以及c×(a-b)=c×a-c×b。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_20_c",
+      "level": "L4",
+      "name": "除法不具分配律",
+      "parent_id": "JH_NUM_INT_NL_L3_20",
+      "description": "理解除法不滿足分配律，即a÷(b+c)≠a÷b+a÷c。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21",
+      "level": "L3",
+      "name": "乘方的意義與表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解乘方是相同數連乘的簡記方式，並認識底數、指數的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_a",
+      "level": "L4",
+      "name": "乘方的定義：底數與指數",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解a^n表示n個a相乘，其中a為底數，n為指數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_b",
+      "level": "L4",
+      "name": "指數為1的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當指數為1時，指數1通常省略不寫，例如3^1習慣上寫成3。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_c",
+      "level": "L4",
+      "name": "底數為0的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當底數為0時，不管幾個0相乘，其值都是0，即0^n=0（n為正整數）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_d",
+      "level": "L4",
+      "name": "底數為1的乘方",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解當底數為1時，不管幾個1相乘，其值都是1，即1^n=1（n為正整數）。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_e",
+      "level": "L4",
+      "name": "整數的偶數次方計算",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "學習計算整數的偶數次方，特別是負數的偶數次方為正數，並區分(-a)^n與-a^n的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_f",
+      "level": "L4",
+      "name": "整數的奇數次方計算",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "學習計算整數的奇數次方，特別是負數的奇數次方為負數，並區分(-a)^n與-a^n的意義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_21_g",
+      "level": "L4",
+      "name": "負數乘方的符號規則",
+      "parent_id": "JH_NUM_INT_NL_L3_21",
+      "description": "理解負數的偶數次方是正數，負數的奇數次方是負數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22",
+      "level": "L3",
+      "name": "10的次方與其表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習10的正整數、負整數和0次方表示法，並理解其與數值大小的關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_a",
+      "level": "L4",
+      "name": "10的正整數次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10^n（n為正整數）表示1後面有n個0的數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_b",
+      "level": "L4",
+      "name": "10的0次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10的0次方等於1，即10^0=1。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_22_c",
+      "level": "L4",
+      "name": "10的負整數次方",
+      "parent_id": "JH_NUM_INT_NL_L3_22",
+      "description": "理解10^-n（n為正整數）表示1/10^n，即小數點後第n位為1的數，例如10^-1=0.1，10^-2=0.01。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23",
+      "level": "L3",
+      "name": "科學記號的意義與表示法",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "理解科學記號是表示很大或很小正數的簡潔方式，並學習其標準表示形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_a",
+      "level": "L4",
+      "name": "科學記號的標準形式：a×10^n",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解將一個正數表示成a×10^n的形式，其中1≤a<10，且n為整數，這種表示法稱為科學記號。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_b",
+      "level": "L4",
+      "name": "大數的科學記號表示",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "學習將很大的正數轉換為科學記號a×10^n的形式，其中n為正整數，例如930,000,000 = 9.3×10^8。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_c",
+      "level": "L4",
+      "name": "小數的科學記號表示",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "學習將很小的正數轉換為科學記號a×10^n的形式，其中n為負整數，例如0.00000431 = 4.31×10^-6。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_d",
+      "level": "L4",
+      "name": "科學記號表示大數的位數判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解科學記號a×10^n（n為正整數）乘開後，整數部分是(n+1)位數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_23_e",
+      "level": "L4",
+      "name": "科學記號表示小數的小數點後第n位判斷",
+      "parent_id": "JH_NUM_INT_NL_L3_23",
+      "description": "理解科學記號a×10^-n（n為正整數）乘開後，小數點後第n位開始出現不為0的數字。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24",
+      "level": "L3",
+      "name": "科學記號的大小比較",
+      "parent_id": "JH_NUM_INT_NL",
+      "description": "學習比較以科學記號表示的數的大小，包括指數相同和指數不同兩種情況。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24_a",
+      "level": "L4",
+      "name": "指數不同時的科學記號大小比較",
+      "parent_id": "JH_NUM_INT_NL_L3_24",
+      "description": "理解當兩個數以科學記號表示時，指數愈大者，其數值愈大。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_INT_NL_L3_24_b",
+      "level": "L4",
+      "name": "指數相同時的科學記號大小比較",
+      "parent_id": "JH_NUM_INT_NL_L3_24",
+      "description": "理解當兩個數以科學記號表示且指數相同時，比較其a值，a值愈大者，其數值愈大。",
+      "difficulty": 3
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_NUM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_NUM",
+      "to_id": "JH_NUM_INT_NL",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02",
+      "to_id": "JH_NUM_INT_NL_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02",
+      "to_id": "JH_NUM_INT_NL_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03",
+      "to_id": "JH_NUM_INT_NL_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03",
+      "to_id": "JH_NUM_INT_NL_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03",
+      "to_id": "JH_NUM_INT_NL_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04",
+      "to_id": "JH_NUM_INT_NL_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04",
+      "to_id": "JH_NUM_INT_NL_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_05",
+      "to_id": "JH_NUM_INT_NL_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06",
+      "to_id": "JH_NUM_INT_NL_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06",
+      "to_id": "JH_NUM_INT_NL_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06",
+      "to_id": "JH_NUM_INT_NL_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10",
+      "to_id": "JH_NUM_INT_NL_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10",
+      "to_id": "JH_NUM_INT_NL_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_12",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12",
+      "to_id": "JH_NUM_INT_NL_L3_12_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12",
+      "to_id": "JH_NUM_INT_NL_L3_12_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_13",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13",
+      "to_id": "JH_NUM_INT_NL_L3_13_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13",
+      "to_id": "JH_NUM_INT_NL_L3_13_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_14",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14",
+      "to_id": "JH_NUM_INT_NL_L3_14_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14",
+      "to_id": "JH_NUM_INT_NL_L3_14_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_15",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_15",
+      "to_id": "JH_NUM_INT_NL_L3_15_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_16",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_17",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17",
+      "to_id": "JH_NUM_INT_NL_L3_17_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17",
+      "to_id": "JH_NUM_INT_NL_L3_17_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17",
+      "to_id": "JH_NUM_INT_NL_L3_17_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_18",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_18_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_18_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_18_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_18_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_20",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20",
+      "to_id": "JH_NUM_INT_NL_L3_20_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20",
+      "to_id": "JH_NUM_INT_NL_L3_20_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20",
+      "to_id": "JH_NUM_INT_NL_L3_20_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_21",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_22",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22",
+      "to_id": "JH_NUM_INT_NL_L3_22_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22",
+      "to_id": "JH_NUM_INT_NL_L3_22_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22",
+      "to_id": "JH_NUM_INT_NL_L3_22_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_23",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL",
+      "to_id": "JH_NUM_INT_NL_L3_24",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_24",
+      "to_id": "JH_NUM_INT_NL_L3_24_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_24",
+      "to_id": "JH_NUM_INT_NL_L3_24_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_01_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01_a",
+      "to_id": "JH_NUM_INT_NL_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01_b",
+      "to_id": "JH_NUM_INT_NL_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01_c",
+      "to_id": "JH_NUM_INT_NL_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01_d",
+      "to_id": "JH_NUM_INT_NL_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01_e",
+      "to_id": "JH_NUM_INT_NL_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02",
+      "to_id": "JH_NUM_INT_NL_L3_02_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02_a",
+      "to_id": "JH_NUM_INT_NL_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02_b",
+      "to_id": "JH_NUM_INT_NL_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03",
+      "to_id": "JH_NUM_INT_NL_L3_03_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03_a",
+      "to_id": "JH_NUM_INT_NL_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03_b",
+      "to_id": "JH_NUM_INT_NL_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_03_c",
+      "to_id": "JH_NUM_INT_NL_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04",
+      "to_id": "JH_NUM_INT_NL_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04_a",
+      "to_id": "JH_NUM_INT_NL_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04_b",
+      "to_id": "JH_NUM_INT_NL_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_05",
+      "to_id": "JH_NUM_INT_NL_L3_05_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_05_a",
+      "to_id": "JH_NUM_INT_NL_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06",
+      "to_id": "JH_NUM_INT_NL_L3_06_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06_a",
+      "to_id": "JH_NUM_INT_NL_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06_b",
+      "to_id": "JH_NUM_INT_NL_L3_06_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_06_c",
+      "to_id": "JH_NUM_INT_NL_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_07_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07_a",
+      "to_id": "JH_NUM_INT_NL_L3_07_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07_b",
+      "to_id": "JH_NUM_INT_NL_L3_07_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07_c",
+      "to_id": "JH_NUM_INT_NL_L3_07_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07_d",
+      "to_id": "JH_NUM_INT_NL_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_08_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_a",
+      "to_id": "JH_NUM_INT_NL_L3_08_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_b",
+      "to_id": "JH_NUM_INT_NL_L3_08_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_c",
+      "to_id": "JH_NUM_INT_NL_L3_08_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_d",
+      "to_id": "JH_NUM_INT_NL_L3_08_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_e",
+      "to_id": "JH_NUM_INT_NL_L3_08_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08_f",
+      "to_id": "JH_NUM_INT_NL_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_09_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09_a",
+      "to_id": "JH_NUM_INT_NL_L3_09_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09_b",
+      "to_id": "JH_NUM_INT_NL_L3_09_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09_c",
+      "to_id": "JH_NUM_INT_NL_L3_09_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09_d",
+      "to_id": "JH_NUM_INT_NL_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10",
+      "to_id": "JH_NUM_INT_NL_L3_10_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10_a",
+      "to_id": "JH_NUM_INT_NL_L3_10_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10_b",
+      "to_id": "JH_NUM_INT_NL_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_11_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11_a",
+      "to_id": "JH_NUM_INT_NL_L3_11_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11_b",
+      "to_id": "JH_NUM_INT_NL_L3_12",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12",
+      "to_id": "JH_NUM_INT_NL_L3_12_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12_a",
+      "to_id": "JH_NUM_INT_NL_L3_12_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12_b",
+      "to_id": "JH_NUM_INT_NL_L3_13",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13",
+      "to_id": "JH_NUM_INT_NL_L3_13_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13_a",
+      "to_id": "JH_NUM_INT_NL_L3_13_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13_b",
+      "to_id": "JH_NUM_INT_NL_L3_14",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14",
+      "to_id": "JH_NUM_INT_NL_L3_14_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14_a",
+      "to_id": "JH_NUM_INT_NL_L3_14_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14_b",
+      "to_id": "JH_NUM_INT_NL_L3_15",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_15",
+      "to_id": "JH_NUM_INT_NL_L3_15_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_15_a",
+      "to_id": "JH_NUM_INT_NL_L3_16",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_16_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_a",
+      "to_id": "JH_NUM_INT_NL_L3_16_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_b",
+      "to_id": "JH_NUM_INT_NL_L3_16_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_c",
+      "to_id": "JH_NUM_INT_NL_L3_16_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_d",
+      "to_id": "JH_NUM_INT_NL_L3_16_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_e",
+      "to_id": "JH_NUM_INT_NL_L3_16_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_f",
+      "to_id": "JH_NUM_INT_NL_L3_16_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16_g",
+      "to_id": "JH_NUM_INT_NL_L3_17",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17",
+      "to_id": "JH_NUM_INT_NL_L3_17_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17_a",
+      "to_id": "JH_NUM_INT_NL_L3_17_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17_b",
+      "to_id": "JH_NUM_INT_NL_L3_17_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_17_c",
+      "to_id": "JH_NUM_INT_NL_L3_18",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_18_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18_a",
+      "to_id": "JH_NUM_INT_NL_L3_18_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18_b",
+      "to_id": "JH_NUM_INT_NL_L3_18_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18_c",
+      "to_id": "JH_NUM_INT_NL_L3_18_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18_d",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19",
+      "to_id": "JH_NUM_INT_NL_L3_19_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19_a",
+      "to_id": "JH_NUM_INT_NL_L3_19_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19_b",
+      "to_id": "JH_NUM_INT_NL_L3_19_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19_c",
+      "to_id": "JH_NUM_INT_NL_L3_19_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19_d",
+      "to_id": "JH_NUM_INT_NL_L3_19_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_19_e",
+      "to_id": "JH_NUM_INT_NL_L3_20",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20",
+      "to_id": "JH_NUM_INT_NL_L3_20_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20_a",
+      "to_id": "JH_NUM_INT_NL_L3_20_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20_b",
+      "to_id": "JH_NUM_INT_NL_L3_20_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_20_c",
+      "to_id": "JH_NUM_INT_NL_L3_21",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_21_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_a",
+      "to_id": "JH_NUM_INT_NL_L3_21_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_b",
+      "to_id": "JH_NUM_INT_NL_L3_21_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_c",
+      "to_id": "JH_NUM_INT_NL_L3_21_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_d",
+      "to_id": "JH_NUM_INT_NL_L3_21_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_e",
+      "to_id": "JH_NUM_INT_NL_L3_21_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_f",
+      "to_id": "JH_NUM_INT_NL_L3_21_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21_g",
+      "to_id": "JH_NUM_INT_NL_L3_22",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22",
+      "to_id": "JH_NUM_INT_NL_L3_22_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22_a",
+      "to_id": "JH_NUM_INT_NL_L3_22_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22_b",
+      "to_id": "JH_NUM_INT_NL_L3_22_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22_c",
+      "to_id": "JH_NUM_INT_NL_L3_23",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_23_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23_a",
+      "to_id": "JH_NUM_INT_NL_L3_23_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23_b",
+      "to_id": "JH_NUM_INT_NL_L3_23_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23_c",
+      "to_id": "JH_NUM_INT_NL_L3_23_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23_d",
+      "to_id": "JH_NUM_INT_NL_L3_23_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23_e",
+      "to_id": "JH_NUM_INT_NL_L3_24",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_24",
+      "to_id": "JH_NUM_INT_NL_L3_24_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_24_a",
+      "to_id": "JH_NUM_INT_NL_L3_24_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_09",
+      "type": "prerequisite",
+      "reason": "理解正負數是整數加法運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_02",
+      "to_id": "JH_NUM_INT_NL_L3_09",
+      "type": "prerequisite",
+      "reason": "數線概念是理解整數加法運算在數線上的表示方式的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_09_d",
+      "type": "prerequisite",
+      "reason": "相反數的概念是理解相反數相加為0的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_INT_NL_L3_10",
+      "type": "prerequisite",
+      "reason": "整數四則運算（加法）是理解加法交換律與結合律的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_11",
+      "type": "prerequisite",
+      "reason": "整數加法運算規則是理解整數減法轉換為加法的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_11",
+      "type": "prerequisite",
+      "reason": "相反數的概念是理解減去一個數等於加上其相反數的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_12",
+      "type": "prerequisite",
+      "reason": "整數加法運算規則是整數加減混合運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_12",
+      "type": "prerequisite",
+      "reason": "整數減法運算規則是整數加減混合運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_10",
+      "to_id": "JH_NUM_INT_NL_L3_12",
+      "type": "prerequisite",
+      "reason": "加法交換律與結合律是簡化整數加減混合運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_12_b",
+      "type": "prerequisite",
+      "reason": "絕對值的概念是處理含絕對值的加減混合運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_12",
+      "to_id": "JH_NUM_INT_NL_L3_13",
+      "type": "prerequisite",
+      "reason": "整數加減混合運算是學習去括號規則的背景知識。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_14",
+      "type": "prerequisite",
+      "reason": "絕對值的概念是定義數線上兩點距離的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_14",
+      "type": "prerequisite",
+      "reason": "整數減法是計算數線上兩點距離的基礎運算。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_14",
+      "to_id": "JH_NUM_INT_NL_L3_15",
+      "type": "prerequisite",
+      "reason": "數線上兩點的距離是理解線段中點概念的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_01",
+      "to_id": "JH_NUM_INT_NL_L3_16",
+      "type": "prerequisite",
+      "reason": "正負數的意義是理解整數乘法運算符號規則的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_16",
+      "type": "prerequisite",
+      "reason": "絕對值的概念是理解整數乘法運算數字部分規則的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_07",
+      "to_id": "JH_NUM_INT_NL_L3_16_g",
+      "type": "prerequisite",
+      "reason": "相反數的概念是理解整數與-1相乘結果為相反數的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_INT_NL_L3_17",
+      "type": "prerequisite",
+      "reason": "整數四則運算（乘法）是理解乘法交換律與結合律的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_18",
+      "type": "prerequisite",
+      "reason": "整數乘法運算規則是理解整數除法運算規則的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "整數加法運算是整數四則運算的組成部分。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "整數減法運算是整數四則運算的組成部分。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "整數乘法運算是整數四則運算的組成部分。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_18",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "整數除法運算是整數四則運算的組成部分。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_08",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "絕對值的概念是處理含絕對值的四則運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_13",
+      "to_id": "JH_NUM_INT_NL_L3_19",
+      "type": "prerequisite",
+      "reason": "去括號規則是處理含括號的四則運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_19_e",
+      "type": "prerequisite",
+      "reason": "乘方的概念是處理含乘方的四則運算的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_20",
+      "type": "prerequisite",
+      "reason": "整數乘法是乘法分配律的基礎運算。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_09",
+      "to_id": "JH_NUM_INT_NL_L3_20",
+      "type": "prerequisite",
+      "reason": "整數加法是乘法對加法分配律的基礎運算。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_11",
+      "to_id": "JH_NUM_INT_NL_L3_20",
+      "type": "prerequisite",
+      "reason": "整數減法是乘法對減法分配律的基礎運算。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_16",
+      "to_id": "JH_NUM_INT_NL_L3_21",
+      "type": "prerequisite",
+      "reason": "整數乘法是理解乘方意義的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_21",
+      "to_id": "JH_NUM_INT_NL_L3_22",
+      "type": "prerequisite",
+      "reason": "乘方的概念是理解10的次方的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_22",
+      "to_id": "JH_NUM_INT_NL_L3_23",
+      "type": "prerequisite",
+      "reason": "10的次方是科學記號表示法的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_23",
+      "to_id": "JH_NUM_INT_NL_L3_24",
+      "type": "prerequisite",
+      "reason": "科學記號的概念是比較科學記號大小的基礎。"
+    },
+    {
+      "from_id": "JH_NUM_INT_NL_L3_04",
+      "to_id": "JH_NUM_INT_NL_L3_24",
+      "type": "prerequisite",
+      "reason": "數的大小比較原則是比較科學記號大小的基礎。"
+    }
+  ],
+  "warnings": [
+    "⚠️ L3 sequence 不完整：預期 23 條，實際 0 條。"
+  ],
+  "stats": {
+    "total_nodes": 107,
+    "total_edges": 243
+  }
+}

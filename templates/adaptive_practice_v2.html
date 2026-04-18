@@ -1,0 +1,2654 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ unit_name }}</title>
+  <style>
+    :root {
+      --bg: #eef4fb;
+      --panel: #ffffff;
+      --line: #d8e1ef;
+      --ink: #1f2a44;
+      --muted: #64748b;
+      --accent: #1565c0;
+      --accent-soft: #edf5ff;
+      --ok: #1f9d55;
+      --warn: #d97706;
+      --hint-bg: #fff7e8;
+      --hint-line: #f1cc84;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, rgba(21, 101, 192, 0.08), transparent 28%), linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    }
+    .shell { max-width: 1400px; margin: 0 auto; padding: 22px 18px 36px; }
+    .hero { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:14px; }
+    .hero h1 { margin:0 0 4px; font-size:28px; }
+    .hero p { margin:0; line-height:1.65; color:var(--muted); max-width:900px; font-size:14px; }
+    .badge { display:inline-flex; align-items:center; justify-content:center; min-width:260px; text-align:center; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 14px 44px rgba(18,44,99,.06); padding:14px; }
+    .panel h2 { margin:0 0 12px; font-size:17px; }
+    .top-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; margin-bottom:14px; align-items:stretch; }
+    .top-grid .panel { min-width:0; }
+    .top-grid .panel h2 { font-size:18px; }
+    .page-layout {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .main-columns {
+      display:grid;
+      grid-template-columns:2fr 1fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .main-left-column {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      min-width:0;
+    }
+    .main-right-column {
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      min-width:0;
+    }
+    .main-right-column .ai-assistant-panel { height:100%; }
+    .meta { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; margin-bottom:10px; }
+    .chip { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#fafcff; }
+    .chip strong { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .value { font-size:18px; font-weight:700; }
+    .status { min-height:18px; font-size:13px; color:var(--muted); }
+    .trajectory-board { height:188px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(180deg,#fbfdff 0%,#f5f8fc 100%); padding:12px 10px 12px 12px; display:flex; flex-direction:column; gap:8px; justify-content:flex-start; overflow-y:auto; overflow-x:hidden; scrollbar-gutter:stable; }
+    .trajectory-board::-webkit-scrollbar { width:10px; }
+    .trajectory-board::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
+    .trajectory-board::-webkit-scrollbar-track { background:transparent; }
+    .trajectory-empty { padding:6px 4px; font-size:13px; color:var(--muted); }
+    .track-row { display:grid; grid-template-columns:58px 1fr 176px; gap:8px; align-items:center; font-size:13px; }
+    .bar { position:relative; height:12px; overflow:hidden; border-radius:999px; background:#e7eef8; }
+    .threshold { position:absolute; inset:0 auto 0 65%; width:2px; background:rgba(220,38,38,.45); }
+    .fill { height:100%; background:linear-gradient(90deg,#1565c0 0%,#31a2ac 100%); }
+    .strategy-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; background:var(--accent-soft); color:#1e5faa; }
+    .review-active { background:#fff2dd; color:#a75e00; }
+    .mode-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid transparent; }
+    .mode-main { background:#e9f3ff; color:#1e5faa; border-color:#c9ddf7; }
+    .mode-remediation { background:#fff4de; color:#9a5800; border-color:#f0d39a; }
+    .mode-returned { background:#e9f8ee; color:#1d7a42; border-color:#b9e5c7; }
+    .apr-ring { width:78px; height:78px; border-radius:50%; background:conic-gradient(var(--accent) 0deg, var(--accent) 162deg, #e6eef8 162deg); display:grid; place-items:center; position:relative; }
+    .apr-ring::before { content:""; width:58px; height:58px; border-radius:50%; background:#fff; position:absolute; }
+    .apr-core { position:relative; z-index:1; text-align:center; line-height:1.1; }
+    .apr-core strong { display:block; font-size:20px; }
+    .apr-core span { font-size:11px; color:var(--muted); }
+    .overview-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .overview-left { display:flex; align-items:center; gap:14px; }
+    .overview-copy h2 { margin:0 0 4px; font-size:18px; }
+    .overview-copy p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
+    .soft-badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#f7fbff; color:#31557d; font-size:12px; font-weight:700; }
+    .top-kpi-row { display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap; }
+    .kpi-mini {
+      flex:0 0 auto;
+      padding:6px 10px;
+      border-radius:10px;
+      background:#f5f7fb;
+      border:1px solid var(--line);
+      font-size:14px;
+      color:#2f4566;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .kpi-mini span { font-weight:700; }
+    .kpi-strategy {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid #bfe4cc;
+      background:#e8f6ee;
+      color:#1f7a4d;
+      font-size:14px;
+      font-weight:700;
+      white-space:nowrap;
+      line-height:1.35;
+    }
+    .kpi-strategy.review { background:#fff7e8; color:#9a5800; border-color:#f0d39a; }
+    .demo-route-msg { margin-top:10px; padding:10px 12px; border:1px solid #f3c8a8; border-radius:12px; background:#fff7ef; color:#7a3e1f; font-size:13px; line-height:1.6; }
+    @keyframes warmFlash {
+      0% { background:#fff1f0; border-color:#f5b7b1; box-shadow:0 0 0 rgba(245, 183, 177, 0); }
+      40% { background:#fff4e8; border-color:#f2b880; box-shadow:0 0 0 3px rgba(245, 183, 177, 0.25); }
+      100% { background:transparent; border-color:inherit; box-shadow:0 0 0 rgba(245, 183, 177, 0); }
+    }
+    .value-flash { animation:warmFlash 1.4s ease-out; }
+    .card-flash { animation:warmFlash 1.6s ease-out; }
+    .question-box { min-height:128px; border:1px dashed #bdd1ec; border-radius:14px; background:#fbfdff; padding:14px; margin-bottom:10px; }
+    .question-family { margin-bottom:10px; font-size:14px; color:var(--muted); }
+    .question-text { white-space:pre-wrap; line-height:1.65; font-size:21px; font-weight:700; }
+    .question-text .mjx-container { font-size: 1.02em !important; }
+    .question-context { margin-top:10px; font-size:14px; color:#60708c; }
+    .subskills { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 0; }
+    .subskills span { padding:6px 10px; border-radius:999px; font-size:13px; background:#edf5ff; color:#245ea5; }
+    .answer-box { display:grid; grid-template-columns:1fr 150px; gap:10px; margin-bottom:10px; }
+    .answer-box input, .assistant-input input { width:100%; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:16px; background:#fff; font-family:inherit; }
+    .answer-format-box { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:4px 0 12px; padding:10px 12px; border:1px solid #dce8f7; border-radius:12px; background:#f8fbff; color:#355072; font-size:13px; line-height:1.5; }
+    .answer-format-badge { display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; border:1px solid #c6dcfb; background:#eef5ff; color:#1f5da6; font-weight:700; font-size:12px; }
+    .answer-format-example { color:#4f6685; }
+    .answer-format-hint { margin-top:8px; padding:10px; background:#fff7e6; border-left:4px solid #faad14; font-size:13px; border-radius:8px; }
+    .controls, .guide-buttons { display:flex; flex-wrap:wrap; gap:8px; }
+    .canvas-tools { display:flex; flex-wrap:nowrap; align-items:center; gap:6px; overflow-x:auto; overflow-y:hidden; padding-bottom:2px; }
+    button { border:0; border-radius:12px; padding:10px 16px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    .primary { background:var(--accent); color:#fff; }
+    .secondary { background:#eaf1fa; color:var(--ink); }
+    .success { background:var(--ok); color:#fff; }
+    .warning { background:var(--warn); color:#fff; }
+    .workspace-header { display:flex; justify-content:space-between; align-items:end; gap:12px; margin-bottom:10px; }
+    .workspace-header p { margin:0; font-size:13px; line-height:1.55; color:var(--muted); }
+    .canvas-tools { margin-bottom:10px; }
+    .tool-btn { border:1px solid transparent; background:#eff4fb; color:var(--ink); padding:7px 9px; border-radius:10px; min-width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; }
+    .tool-btn.active { background:#d9ebff; border-color:#7ab4f0; color:#0f5aa8; }
+    .tool-btn svg { width:18px; height:18px; stroke:currentColor; stroke-width:1.9; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+    .tool-sep { width:1px; height:22px; background:#d6deeb; margin:0 4px; }
+    .pen-width-wrap { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:10px; background:#eff4fb; font-size:12px; color:var(--muted); height:36px; }
+    .pen-width-wrap input[type="range"] { width:84px; }
+    .color-dot { display:inline-block; width:16px; height:16px; vertical-align:middle; border-radius:999px; border:2px solid rgba(255,255,255,.92); box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+    .canvas-tools .warning { white-space:nowrap; height:36px; border-radius:10px; padding:7px 12px; }
+    .canvas-wrap { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:linear-gradient(90deg, rgba(21,101,192,.06) 1px, transparent 1px), linear-gradient(rgba(21,101,192,.06) 1px, transparent 1px), #ffffff; background-size:22px 22px; }
+    #handwriting-canvas { display:block; width:100%; height:300px; background:transparent; cursor:crosshair; touch-action:none; user-select:none; }
+    .assistant-title { color:#9b59b6; text-align:center; margin:0 0 12px; font-size:20px; font-weight:700; }
+    .assistant-rag-scope { margin:-2px 0 10px; text-align:center; font-size:12px; color:#8f5e18; background:#fff5da; border:1px solid #f1cf7e; border-radius:999px; padding:6px 10px; }
+    .assistant-summary-card {
+      --card-bg:#f4f8ff;
+      --card-border:#cad8ee;
+      --card-text:#334155;
+      --card-shadow:0 0 0 2px rgba(104, 132, 170, 0.08), 0 6px 14px rgba(36, 78, 126, 0.12);
+      --flash-bg:#eaf2ff;
+      --flash-border:#9cb4d8;
+      --flash-glow:rgba(107, 140, 187, 0.20);
+      position:relative;
+      overflow:hidden;
+      margin:0 0 16px;
+      padding:16px 18px 16px 20px;
+      border:1px solid var(--card-border);
+      border-radius:14px;
+      background:var(--card-bg);
+      color:var(--card-text);
+      line-height:1.72;
+      box-shadow:var(--card-shadow);
+      transition:background-color .3s ease, border-color .3s ease, color .3s ease, box-shadow .3s ease;
+    }
+    .assistant-summary-card::before {
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:4px;
+      background:#91a4c2;
+      transition:background-color .28s ease;
+    }
+    .assistant-summary-title { margin:0 0 8px; font-size:12.5px; font-weight:800; letter-spacing:.24px; color:#455f7d; }
+    .assistant-summary-text { font-size:14.5px; font-weight:600; }
+    .assistant-summary-card.neutral {
+      --card-bg:#f4f8ff;
+      --card-border:#cad8ee;
+      --card-text:#334155;
+      --card-shadow:0 0 0 2px rgba(104, 132, 170, 0.08), 0 6px 14px rgba(58, 95, 142, 0.10);
+      --flash-bg:#eaf2ff;
+      --flash-border:#9cb4d8;
+      --flash-glow:rgba(107, 140, 187, 0.20);
+      color:var(--card-text);
+    }
+    .assistant-summary-card.neutral::before { background:#90a7cb; }
+    .assistant-summary-card.remediation {
+      --card-bg:#fff1f2;
+      --card-border:#f3a6ad;
+      --card-text:#7a1f24;
+      --card-shadow:0 0 0 3px rgba(224, 87, 95, 0.10), 0 6px 14px rgba(186, 72, 80, 0.13);
+      --flash-bg:#fff1f2;
+      --flash-border:#f3a6ad;
+      --flash-glow:rgba(224, 87, 95, 0.12);
+      color:var(--card-text);
+    }
+    .assistant-summary-card.remediation::before { background:#e0575f; }
+    .assistant-summary-card.bridge {
+      --card-bg:#f2f4ff;
+      --card-border:#b8c3f1;
+      --card-text:#2f3f7f;
+      --card-shadow:0 0 0 3px rgba(108, 124, 216, 0.10), 0 6px 14px rgba(71, 92, 189, 0.12);
+      --flash-bg:#eef2ff;
+      --flash-border:#8fa1ea;
+      --flash-glow:rgba(108, 124, 216, 0.18);
+      color:var(--card-text);
+    }
+    .assistant-summary-card.bridge::before { background:#6c7cd8; }
+    .assistant-summary-card.returned {
+      --card-bg:#edf9f6;
+      --card-border:#86d1bd;
+      --card-text:#1f6c52;
+      --card-shadow:0 0 0 3px rgba(47, 168, 138, 0.10), 0 6px 14px rgba(47, 140, 116, 0.12);
+      --flash-bg:#def4ef;
+      --flash-border:#2fa88a;
+      --flash-glow:rgba(47, 168, 138, 0.24);
+      color:var(--card-text);
+    }
+    .assistant-summary-card.returned::before { background:#2fa88a; }
+    .assistant-summary-card.completed {
+      --card-bg:#eefaf0;
+      --card-border:#9ad3a3;
+      --card-text:#1f6a3d;
+      --card-shadow:0 0 0 3px rgba(67, 160, 71, 0.10), 0 6px 14px rgba(66, 136, 70, 0.12);
+      --flash-bg:#e1f6e4;
+      --flash-border:#43a047;
+      --flash-glow:rgba(67, 160, 71, 0.24);
+      color:var(--card-text);
+    }
+    .assistant-summary-card.completed::before { background:#43a047; }
+    @keyframes assistantSummaryFlash {
+      0% {
+        background-color:var(--flash-bg);
+        border-color:var(--flash-border);
+        box-shadow:0 0 0 0 rgba(224, 87, 95, 0.18), var(--card-shadow);
+        filter:saturate(1.01);
+      }
+      70% {
+        background-color:var(--flash-bg);
+        border-color:var(--flash-border);
+        box-shadow:0 0 0 6px rgba(224, 87, 95, 0), var(--card-shadow);
+        filter:saturate(1.02);
+      }
+      100% {
+        background-color:var(--card-bg);
+        border-color:var(--card-border);
+        box-shadow:var(--card-shadow);
+        filter:saturate(1);
+      }
+    }
+    .assistant-summary-card.assistant-summary-flash { animation:assistantSummaryFlash 2.4s ease-out; }
+    .hint-box { min-height:160px; padding:14px; border:1px solid var(--hint-line); border-radius:14px; background:var(--hint-bg); line-height:1.75; color:#5b4516; }
+    .ai-assistant-panel .hint-box { margin-top: 12px; }
+    .adaptive-hint { display:flex; flex-direction:column; gap:10px; }
+    .adaptive-hint .hint-title { font-size:18px; font-weight:700; color:#7a4c00; }
+    .adaptive-hint .hint-chip { display:inline-block; margin:4px 6px 0 0; padding:6px 10px; border-radius:999px; background:#fff5d9; border:1px solid #f0cf7a; color:#8a5b00; font-size:12px; line-height:1.4; }
+    .adaptive-hint .hint-section { background:#fffaf0; border:1px solid #efcf91; border-radius:12px; padding:10px 12px; }
+    .adaptive-hint .hint-section-title { font-size:13px; font-weight:700; margin-bottom:6px; color:#8a5b00; }
+    .adaptive-hint .hint-section ul { margin:0; padding-left:18px; }
+    .adaptive-hint .hint-section li { margin:4px 0; line-height:1.6; }
+    .adaptive-hint .hint-source { font-size:12px; color:#8d6a2b; opacity:.88; }
+    .hint-focus { margin-bottom:10px; padding:8px 10px; border:1px solid #efcf91; border-radius:10px; background:#fffaf0; color:#7d4f00; font-size:13px; font-weight:700; }
+    .chat-history { height:clamp(280px, 36vh, 420px); overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:12px 10px 12px 12px; border:1px solid #dee2e6; border-radius:10px; background:#ffffff; scroll-behavior:smooth; overscroll-behavior:contain; scrollbar-gutter:stable; }
+    .chat-history::-webkit-scrollbar { width:10px; }
+    .chat-history::-webkit-scrollbar-thumb { background:#c7d5e8; border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
+    .chat-history::-webkit-scrollbar-track { background:transparent; }
+    .msg { max-width:94%; padding:10px 12px; border-radius:12px; line-height:1.65; font-size:14px; white-space:pre-wrap; }
+    .msg.user { align-self:flex-end; background:#e7f2ff; color:#17447a; }
+    .msg.bot { align-self:flex-start; background:#ffffff; color:#2c3e50; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .guide-buttons { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
+    .guide-buttons::-webkit-scrollbar { display:none; }
+    .guide-buttons button { background:#eef4fb; color:#274472; padding:8px 12px; font-size:13px; font-weight:600; white-space:nowrap; border-radius:999px; }
+    .assistant-input { display:grid; grid-template-columns:1fr 110px; gap:8px; }
+    .assistant-input input { min-height:44px; }
+    #assistantSendBtn { background:#16a34a; }
+
+    .nav-panel { display:flex; flex-direction:column; justify-content:flex-start; }
+    .nav-status-row { display:flex; gap:10px; margin-top:8px; }
+    .nav-mini-box {
+      flex:1;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px 10px;
+      background:#f5f7fb;
+      font-size:14px;
+      color:#2f4566;
+      line-height:1.4;
+      white-space:nowrap;
+    }
+    .nav-mini-box span { font-weight:700; }
+    .nav-progress-box {
+      margin:0 0 10px;
+      padding:10px 12px;
+      border:1px solid #cfe0f5;
+      border-radius:12px;
+      background:#f4f9ff;
+      color:#2d4668;
+      font-size:12.5px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
+    .nav-progress-box strong { font-size:13px; color:#1f3f63; }
+    .nav-progress-bar {
+      height:6px;
+      background:#e5eaf3;
+      border-radius:6px;
+      overflow:hidden;
+      margin-top:6px;
+    }
+    #navProgressFill {
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg, #4facfe, #00c6ff);
+      transition:width 0.3s ease;
+    }
+    .panel-note { margin:0 0 10px; font-size:13px; color:var(--muted); line-height:1.6; }
+    .assistant-card.idle { opacity:.92; }
+    .assistant-card.review { border-color:#f0d39a; box-shadow:0 0 0 4px rgba(245, 158, 11, 0.18), 0 18px 44px rgba(18,44,99,.08); }
+    .question-section,
+    .ai-assistant-panel,
+    .scratchpad-section,
+    .adaptive-state-panel,
+    .question-json-panel { width:100%; }
+    .ai-assistant-panel {
+      border-color:var(--hint-line);
+      background:linear-gradient(180deg, #fffdf6 0%, #fff7e8 100%);
+      flex:1;
+      height:100%;
+    }
+    .adaptive-state-panel { border-color:#cfe0f5; background:linear-gradient(180deg, #fbfdff 0%, #f4f9ff 100%); }
+    .adaptive-state-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
+    .adaptive-state-item { border:1px solid var(--line); border-radius:14px; padding:10px 12px; background:#ffffff; }
+    .adaptive-state-item strong { display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    .adaptive-state-item div { font-size:14px; font-weight:700; line-height:1.5; color:#26415f; }
+    .milestone-chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; border:1px solid transparent; }
+    .milestone-remediation { background:#fff5e8; color:#a85f00; border-color:#efcf95; }
+    .milestone-returned { background:#ecf8ff; color:#005d9a; border-color:#b9dff4; }
+    .milestone-completed { background:#eaf8ef; color:#1a7a3f; border-color:#bde3ca; }
+    .milestone-mainline { background:#eef3ff; color:#3559a6; border-color:#c8d6fb; }
+    .return-celebration { margin:10px 0 0; padding:10px 12px; border:1px solid #b8e2c8; border-radius:12px; background:#f3fff8; color:#1d6a3f; font-size:13px; line-height:1.6; display:none; }
+    .return-celebration.show { display:block; }
+    .json-box { margin:0; max-height:240px; overflow-y:auto; color:#384965; white-space:pre-wrap; }
+    .summary-card { display:none; border:1px solid var(--line); border-radius:14px; padding:14px; background:#f8fbff; }
+    .summary-card.show { display:block; }
+    .summary-card.pass { border-color:#b9e5c7; background:#f3fbf6; }
+    .summary-card.review { border-color:#f1cc84; background:#fff8ec; }
+    .summary-card h3 { margin:0 0 8px; font-size:18px; }
+    .summary-card p { margin:6px 0; line-height:1.7; }
+    .summary-badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .summary-badges span { padding:6px 10px; border-radius:999px; background:#eef4fb; color:#31557d; font-size:13px; }
+    .diagnostic-report { display:none; margin-top:12px; }
+    .diagnostic-report.show { display:block; }
+    .diagnostic-dashboard { display:grid; gap:12px; }
+    .diag-card { background:#f8fafc; border-radius:16px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid #e2e8f0; }
+    .diag-summary { text-align:center; background:linear-gradient(135deg, #2f80ed, #27c3f3); color:#fff; border:0; }
+    .diag-summary h3 { margin:0 0 10px; font-size:20px; }
+    .diag-score { font-size:30px; font-weight:800; line-height:1.2; }
+    .diag-meta { margin-top:6px; font-size:14px; opacity:.95; }
+    .diag-card h4 { margin:0 0 10px; font-size:16px; color:#1e3a5f; }
+    .diag-bar-row { display:flex; align-items:flex-start; gap:10px; margin:10px 0; }
+    .diag-bar-row .label { width:210px; font-weight:700; color:#243b56; font-size:13px; line-height:1.4; }
+    .diag-bar-row .label small { display:block; font-weight:500; color:#5a6f88; font-size:11px; margin-top:2px; }
+    .diag-bar-row .pct { width:48px; text-align:right; color:#445a74; font-size:13px; }
+    .diag-bar { flex:1; height:10px; background:#d6dde6; border-radius:6px; overflow:hidden; }
+    .diag-fill { height:10px; border-radius:6px; }
+    .diag-breakpoint { background:#ffe9ea; border-left:6px solid #e11d48; }
+    .diag-breakpoint .big { font-size:28px; font-weight:800; color:#b91c1c; margin:6px 0 2px; }
+    .diag-flex { display:flex; gap:16px; }
+    .diag-col { flex:1; }
+    .diag-col p { margin:6px 0; color:#294460; font-size:14px; }
+    .diag-recommend { background:#e6f7ff; }
+    .diag-recommend p { margin:8px 0; color:#0f4c75; font-size:14px; }
+    .diag-trajectory { background:#f0f5ff; }
+    .diag-trajectory-line { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+    .traj-step { margin:0 2px; font-weight:700; color:#1f3f63; background:#fff; border:1px solid #d6e3f8; border-radius:10px; padding:6px 8px; min-width:72px; text-align:center; }
+    .traj-step small { display:block; margin-top:2px; font-size:10px; color:#666; font-weight:600; }
+    .arrow { color:#98a6ba; font-weight:700; }
+    @media (max-width:760px) { .diag-flex { flex-direction:column; } .diag-bar-row .label { width:140px; } }
+    @media (max-width:1080px) {
+      .top-grid { grid-template-columns:1fr; }
+      .main-columns { grid-template-columns:1fr; }
+      .ai-assistant-panel { height:auto; }
+    }
+    @media (max-width:760px) { .meta { grid-template-columns:repeat(2, minmax(0,1fr)); } .answer-box, .assistant-input { grid-template-columns:1fr; } #handwriting-canvas { height:280px; } }
+    /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  {% include '_student_navbar.html' %}
+  <div class="shell">
+    <div class="hero">
+      <div>
+        <h1>
+          {{ unit_name }}｜
+          {% if mode == 'assessment' %}評量模式{% else %}學習模式{% endif %}
+        </h1>
+        <p>上方顯示 Local APR 與策略軌跡；下方左側保留題目、作答與手寫計算紙，右側則由 PPO 的 Review 補救策略控制 RAG 助教介入時機。</p>
+      </div>
+      <div class="badge" id="entryModeBadgeContainer" style="display:flex; flex-direction:column; gap:8px; background:none; border:none; box-shadow:none; padding:0;">
+        <span id="entryModeText" style="display:inline-flex; align-items:center; justify-content:center; min-width:260px; font-size:13px; color:#274472; background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:999px; padding:10px 14px;">
+          {% if mode == 'assessment' %}
+            評量模式｜{{ unit_name }}
+          {% else %}
+            學習模式｜{{ unit_name }}
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="top-grid">
+      <section class="panel">
+        <div class="overview-head">
+          <div class="overview-left">
+            <div class="apr-ring" id="aprRing">
+              <div class="apr-core">
+                <strong id="aprPercent">45%</strong>
+                <span>能力掌握度</span>
+              </div>
+            </div>
+            <div class="overview-copy">
+              <h2>本單元學習導航</h2>
+              <p>系統會依你的作答表現調整題型。能力掌握度越高，代表你對目前微技能越穩定。</p>
+            </div>
+          </div>
+          <div class="soft-badge" id="familyBadge">微技能：待診斷</div>
+        </div>
+        <div class="top-kpi-row">
+          <div class="kpi-mini">題號：<span id="stepValue">0</span></div>
+          <div class="kpi-mini">挫折：<span id="frustrationValue">0</span></div>
+          <div class="kpi-strategy" id="strategyBadge">🟢 探索新知</div>
+        </div>
+        <div class="status" id="statusText">尚未啟動。</div>
+        <div class="demo-route-msg" id="demoRouteMsgBox">系統尚未開始診斷。</div>
+      </section>
+
+      <section class="panel nav-panel">
+        <div>
+          <h2>系統導航狀態</h2>
+          <div class="nav-progress-box" id="navProgressBox">📍 學習進度：尚未開始
+
+目前位置：待啟動
+下一站：待啟動</div>
+          <div class="nav-progress-bar"><div id="navProgressFill"></div></div>
+        </div>
+        <div class="nav-status-row">
+          <div class="nav-mini-box">目前策略：<span id="strategyMini">探索</span></div>
+          <div class="nav-mini-box">連錯次數：<span id="frustrationMini">0</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>動態精熟軌跡圖</h2>
+        <div class="trajectory-board" id="trajectoryBox">
+          <div class="trajectory-empty">尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>
+        </div>
+      </section>
+    </div>
+
+    <div class="page-layout">
+      <div class="main-columns">
+        <div class="main-left-column">
+          <section class="panel question-section">
+            <h2>題目與作答</h2>
+            <div class="summary-card" id="summaryCard">
+              <h3 id="summaryTitle">本次診斷完成</h3>
+              <p id="summaryMessage"></p>
+              <p id="summaryAction"></p>
+              <div class="summary-badges" id="summaryBadges"></div>
+              <div class="diagnostic-report" id="diagnosticReportBox"></div>
+            </div>
+            <div class="question-box">
+              <div class="question-family" id="questionFamily">Family: -</div>
+              <div class="question-text" id="questionText">按下「開始診斷」後載入第一題。</div>
+              <div class="question-context" id="questionContext"></div>
+              <div class="subskills" id="subskillsBox"></div>
+            </div>
+            <div class="answer-box">
+              <input id="answerInput" type="text" placeholder="請輸入你的答案" disabled>
+              <button class="primary" id="submitBtn" disabled>送出答案</button>
+            </div>
+            <div class="answer-format-box" id="answerFormatBox">
+              <span class="answer-format-badge">答案格式提示</span>
+              <span class="answer-format-hint" id="answerFormatHintText">請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。</span>
+              <span class="answer-format-example" id="answerFormatExampleText">範例：-9 或 3x+1+5/(3x)</span>
+            </div>
+            <div class="controls">
+              <button class="primary" id="bootstrapBtn">開始診斷</button>
+              <button class="secondary" id="hintBtn" disabled>查看補救提示</button>
+            </div>
+          </section>
+
+          <section class="panel scratchpad-section">
+            <div class="workspace-header">
+              <div>
+                <h2 style="margin:0 0 6px;">手寫計算紙</h2>
+                <p>把中間步驟寫出來，比較不會把所有運算都塞在腦中。你也可以把白板送給 AI 幫你檢查。</p>
+              </div>
+            </div>
+            <div class="canvas-tools">
+              <button class="tool-btn active" id="penToolBtn" type="button" title="畫筆" aria-label="畫筆">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              <button class="tool-btn" id="eraserToolBtn" type="button" title="橡皮擦" aria-label="橡皮擦">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 21 10.6-10.6a2 2 0 0 0 0-2.8l-2.6-2.6a2 2 0 0 0-2.8 0L1.6 15.6a2 2 0 0 0 0 2.8L4.2 21"/><path d="M22 21H7"/></svg>
+              </button>
+              <button class="tool-btn active" id="blackInkBtn" type="button" title="黑筆"><span class="color-dot" style="background:#1f2937;"></span></button>
+              <button class="tool-btn" id="blueInkBtn" type="button" title="藍筆"><span class="color-dot" style="background:#1565c0;"></span></button>
+              <button class="tool-btn" id="redInkBtn" type="button" title="紅筆"><span class="color-dot" style="background:#dc2626;"></span></button>
+              <button class="tool-btn" id="greenInkBtn" type="button" title="綠筆"><span class="color-dot" style="background:#16a34a;"></span></button>
+              <div class="tool-sep"></div>
+              <div class="pen-width-wrap"><span>筆寬</span><input id="penWidthRange" type="range" min="1" max="8" value="2"><span id="penWidthLabel">2</span></div>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" id="undoBtn" type="button" title="上一步" aria-label="上一步">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M20 20a8 8 0 0 0-8-8H4"/></svg>
+              </button>
+              <button class="tool-btn" id="redoBtn" type="button" title="下一步" aria-label="下一步">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
+              </button>
+              <button class="tool-btn" id="clearCanvasBtn" type="button" title="清空白板" aria-label="清空白板">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
+              </button>
+              <button class="warning" id="analyzeCanvasBtn" type="button">AI 檢查手寫</button>
+            </div>
+            <div class="canvas-wrap"><canvas id="handwriting-canvas"></canvas></div>
+          </section>
+
+          <section class="panel adaptive-state-panel" id="adaptiveStatePanel">
+            <h2>自適應決策狀態</h2>
+            <p class="panel-note">這裡會整理系統目前的主線技能、補救狀態與子技能斷點，方便展示自適應決策流程（系統內部狀態，供教師參考）。</p>
+            <div class="adaptive-state-grid">
+              <div class="adaptive-state-item">
+                <strong>目前模式（主線 / 補救 / 返回）</strong>
+                <div id="adaptiveModeValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>主技能（Main Skill）</strong>
+                <div id="mainSkillValue">待載入</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>PPO 路由動作</strong>
+                <div id="ppoActionValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>目前題型 family</strong>
+                <div id="familyValue">待載入</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>偵測斷點子技能</strong>
+                <div id="detectedSubskillValue">尚未偵測</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>補救技能（Skill）</strong>
+                <div id="remediationSkillValue">尚未進入補救</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>補救子技能（Subskill）</strong>
+                <div id="remediationSubskillValue">尚未進入補救</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>切換原因（為何切換）</strong>
+                <div id="switchReasonValue">無</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>返回主線狀態</strong>
+                <div id="returnStateValue">尚未判定</div>
+              </div>
+              <div class="adaptive-state-item">
+                <strong>學習進度里程碑</strong>
+                <div id="milestoneValue">尚未開始</div>
+              </div>
+              <div class="adaptive-state-item" style="grid-column:1 / -1;">
+                <strong>決策說明（Explanation）</strong>
+                <div id="adaptiveRationaleValue">尚未開始診斷，系統尚未做路由決策。</div>
+              </div>
+            </div>
+            <div class="return-celebration" id="returnCelebration">
+              <div>✨ 已完成本輪補救，成功返回主線</div>
+              <div>你已補回這個知識斷點，接下來系統會繼續檢核本單元其他核心題型。</div>
+            </div>
+          </section>
+        </div>
+
+        <div class="main-right-column">
+          <section class="panel assistant-card idle ai-assistant-panel" id="assistantCard">
+            <div>
+              <div class="assistant-title"><span id="tutor-ai-status">AI 助教（載入中...）</span></div>
+              <div class="assistant-rag-scope" id="ragScopeBadge">問問題會使用 RAG；AI 檢查手寫只讀取白板過程。</div>
+              <div class="assistant-summary-card neutral" id="assistantSummaryCard" data-state="neutral">
+                <div class="assistant-summary-title">系統診斷說明</div>
+                <div class="assistant-summary-text" id="assistantSummaryText">目前先練這一題，助教會在你卡住時提供提示。</div>
+              </div>
+              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+              <div style="height:10px;"></div>
+              <div class="guide-buttons">
+                <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
+                <button type="button" data-guide="不要直接給答案，只提示我下一步該做什麼。">提示下一步</button>
+                <button type="button" data-guide="提醒我這類題最容易犯的錯誤。">提醒易錯點</button>
+              </div>
+              <div style="height:10px;"></div>
+
+              <div class="assistant-input">
+                <input id="assistantInput" type="text" placeholder="只問本題相關問題，例如：我第一步該先做什麼？">
+                <button class="success" id="assistantSendBtn" type="button">詢問助教</button>
+              </div>
+              <div id="adv-rag-loading" style="display: none; text-align: center; padding: 8px; color: #1565c0; font-size: 13px;">
+                正在檢索相關單元...
+              </div>
+              <div id="adv-rag-results" style="display: none; margin-top: 10px; margin-bottom: 10px; padding: 10px; background: #f0f7ff; border: 1px solid #cce1ff; border-radius: 8px;">
+                <div id="adv-rag-routing-badge" style="font-size: 0.75em; padding: 3px 6px; border-radius: 6px; background:#e6f4ff; color:#0958d9; margin-bottom: 8px; display:none; font-weight:bold;"></div>
+                <div style="font-size: 0.8em; color: #1565c0; font-weight: 700; margin-bottom: 6px;">最相關 5 個知識點：</div>
+                <div id="adv-rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+              </div>
+              <div class="hint-box" id="hintBox">這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。</div>
+            </div>
+          </section>
+
+          <section class="panel question-json-panel">
+            <h2>目前題目 JSON 摘要</h2>
+            <pre class="json-box" id="jsonBox"></pre>
+          </section>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+  <script>
+    const state = {
+      sessionId: "",
+      stepNumber: 0,
+      currentApr: 0.45,
+      ppoStrategy: 1,
+      frustrationIndex: 0,
+      currentFamilyId: "",
+      currentQuestionText: "",
+      currentContext: "",
+      currentSubskills: [],
+      history: [],
+      learningMode: "main",
+      mainSkill: "",
+      mainSkillLabel: "",
+      currentFamilyLabel: "",
+      detectedSubskill: "",
+      detectedSubskillLabel: "",
+      remediationSkill: "",
+      remediationSkillLabel: "",
+      inRemediation: false,
+      bridgeActive: false,
+      errorConcept: "none",
+      rescueRecommended: 0,
+      switchReason: "",
+      returnReady: false,
+      hasReturnedToMain: false,
+      ppoRouteAction: "",
+      ppoRouteActionIdx: null,
+      familyNameEn: "",
+      currentMode: "",
+      postMode: "",
+      remediationTriggeredFinal: false,
+      remediationReviewReady: false,
+      actionMaskHasRemediate: false,
+      crossSkillTrigger: false,
+      selectedFamilyForRender: "",
+      originFamily: "",
+      remediationFamily: "",
+      isRemediationActive: false,
+      isRemediationCandidate: false,
+      isCompleted: false,
+      displayMode: "",
+      displayFamily: "",
+      displaySubskill: "",
+      displaySkill: "",
+      mode: "teaching",
+      milestoneState: "",
+      localRemediationCompleted: false,
+      unitCompleted: false,
+      assessmentCompleted: false,
+      assessmentStopReason: "",
+      demoRouteMsg: "系統尚未開始診斷。",
+    };
+    const skillId = {{ (skill_id or '')|tojson }};
+    const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
+    const basePayload = {};
+    if (skillId) basePayload.skill_id = skillId;
+    if (adaptiveEntryMode) basePayload.mode = adaptiveEntryMode;
+    state.mode = String(adaptiveEntryMode || "teaching").toLowerCase();
+
+    const canvas = document.getElementById("handwriting-canvas");
+    const ctx = canvas.getContext("2d");
+    const answerInput = document.getElementById("answerInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const bootstrapBtn = document.getElementById("bootstrapBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const analyzeCanvasBtn = document.getElementById("analyzeCanvasBtn");
+    const assistantInput = document.getElementById("assistantInput");
+    const assistantSendBtn = document.getElementById("assistantSendBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const clearCanvasBtn = document.getElementById("clearCanvasBtn");
+    const penWidthRange = document.getElementById("penWidthRange");
+    const penWidthLabel = document.getElementById("penWidthLabel");
+
+    let isDrawing = false;
+    let isErasing = false;
+    let currentColor = "#1f2937";
+    let currentWidth = 2;
+    let undoStack = [];
+    let redoStack = [];
+
+    function strategyName(code) { const map = {0:"0 Max-Fisher",1:"1 ZPD",2:"2 Diversity",3:"3 Review"}; return map[code] || String(code); }
+    function strategyLabel(code) { const map = {0:"最大資訊探索",1:"近側發展區",2:"多樣化抽樣",3:"觀念補救"}; return map[code] || String(code); }
+    function strategyBadgeText(code) {
+      const map = {
+        0: "🟢 探索新知",
+        1: "🔵 近側發展",
+        2: "🟣 多樣抽樣",
+        3: "🛡️ 觀念補救",
+      };
+      return map[code] || `策略：${code}`;
+    }
+    const POLY_MAINLINE_SEQUENCE = ["F1", "F2", "F5", "F11", "F9", "F10"];
+    const FLASH_TEXT_IDS = new Set([
+      "adaptiveModeValue",
+      "ppoActionValue",
+      "familyValue",
+      "detectedSubskillValue",
+      "remediationSkillValue",
+      "remediationSubskillValue",
+      "switchReasonValue",
+      "returnStateValue",
+      "milestoneValue",
+      "adaptiveRationaleValue",
+      "strategyBadge",
+      "strategyMini",
+      "statusText",
+      "demoRouteMsgBox",
+      "navProgressBox",
+    ]);
+    const FLASH_CARD_IDS = new Set(["strategyBadge", "demoRouteMsgBox"]);
+    function flashNode(node, asCard = false) {
+      if (!node) return;
+      const cls = asCard ? "card-flash" : "value-flash";
+      node.classList.remove(cls);
+      void node.offsetWidth;
+      node.classList.add(cls);
+      setTimeout(() => node.classList.remove(cls), asCard ? 1700 : 1400);
+    }
+    function setText(id, text) {
+      const node = document.getElementById(id);
+      if (node) node.textContent = text;
+    }
+    function setTextWithFlash(id, text) {
+      const node = document.getElementById(id);
+      if (!node) return;
+      const next = String(text ?? "");
+      const prev = String(node.textContent ?? "");
+      node.textContent = next;
+      if (prev !== next && FLASH_TEXT_IDS.has(id)) {
+        flashNode(node, FLASH_CARD_IDS.has(id));
+      }
+    }
+    function applyDemoRouteMsg(msg) {
+      const text = String(msg || "").trim() || "系統已更新目前學習狀態。";
+      state.demoRouteMsg = text;
+      setTextWithFlash("demoRouteMsgBox", text);
+      setTextWithFlash("statusText", text);
+      setAssistantSummaryMessage(summarizeDemoRouteMsg(text), "neutral");
+    }
+    function summarizeDemoRouteMsg(text) {
+      const raw = String(text || "").trim();
+      if (!raw) return "📍 系統判斷：已更新目前學習狀態。";
+      const firstSentence = raw.split(/[。！？]/).find(Boolean) || raw;
+      return `📍 系統判斷：${firstSentence}。`;
+    }
+    function updateNavProgressBarFromText(text) {
+      const fill = document.getElementById("navProgressFill");
+      if (!fill) return;
+      const matched = String(text || "").match(/(\d+(?:\.\d+)?)\s*%/);
+      const value = matched ? Number(matched[1]) : 0;
+      const pct = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+      fill.style.width = `${pct}%`;
+    }
+    function setStatus(text) { setTextWithFlash("statusText", text); }
+    function setAssistantSummaryMessage(text, stateType = "neutral") {
+      const card = document.getElementById("assistantSummaryCard");
+      const body = document.getElementById("assistantSummaryText");
+      if (!card || !body) return;
+      const nextText = String(text || "").trim() || "目前先練這一題，助教會在你卡住時提供提示。";
+      const allowed = new Set(["neutral", "remediation", "bridge", "returned", "completed"]);
+      const nextState = allowed.has(stateType) ? stateType : "neutral";
+      const prevText = String(body.textContent || "");
+      const prevState = String(card.dataset.state || "neutral");
+      body.textContent = nextText;
+      card.dataset.state = nextState;
+      card.classList.remove("neutral", "remediation", "bridge", "returned", "completed");
+      card.classList.add(nextState);
+      if (prevText !== nextText || prevState !== nextState) {
+        card.classList.remove("assistant-summary-flash");
+        void card.offsetWidth;
+        card.classList.add("assistant-summary-flash");
+        setTimeout(() => card.classList.remove("assistant-summary-flash"), 2400);
+      }
+    }
+    function setAssistantBanner(text, isReview = false, stateType = "") {
+      const resolvedType = stateType || (isReview ? "remediation" : "neutral");
+      setAssistantSummaryMessage(text, resolvedType);
+      const card = document.getElementById("assistantCard");
+      if (!card) return;
+      card.classList.toggle("review", resolvedType === "remediation");
+      card.classList.toggle("idle", resolvedType !== "remediation");
+    }
+    function updateRagScopeBadge(mode = "idle") {
+      const badge = document.getElementById("ragScopeBadge");
+      if (!badge) return;
+      const map = {
+        idle: "問問題會使用 RAG；AI 檢查手寫只讀取白板過程。",
+        review: "補救提示會參考 RAG；手寫檢查仍只看你的白板步驟。",
+        active: "問問題會使用 RAG；AI 檢查手寫只讀取白板過程。",
+        done: "本次診斷已結束；你仍可回頭複習相同微技能。",
+      };
+      badge.textContent = map[mode] || map.idle;
+    }
+    const SUBSKILL_UI_MAP = {
+      sign_handling: { label: "正負號規則（先分清正負）", hint: "負號先看清，再決定往哪邊算" },
+      add_sub: { label: "加減運算（先整理再算）", hint: "先把式子整理好，再做加減" },
+      mul_div: { label: "整數乘除（正負號規則）", hint: "先判斷正負，再算乘除大小" },
+      order_of_operations: { label: "運算順序（先乘除後加減）", hint: "先做乘除，再回來算加減" },
+      bracket_scope: { label: "括號範圍（整組一起看）", hint: "去括號前先看整組受誰影響" },
+      absolute_value: { label: "絕對值概念（看離 0 多遠）", hint: "絕對值只看大小，不看正負號" },
+      exact_divisibility: { label: "整除判斷（要除得盡）", hint: "除之前先看能不能整除" },
+      isomorphic_structure: { label: "結構辨識（換個樣子也一樣）", hint: "先看題型骨架，再套用同樣做法" },
+      proper_improper_fraction: { label: "真分數與假分數（先看分子分母）", hint: "分子和分母誰大，先分清楚" },
+      mixed_numbers: { label: "帶分數換算（整數和分數分開看）", hint: "帶分數先換好，再做後面運算" },
+      sign_normalization: { label: "分數正負號整理（符號放前面）", hint: "正負號先統一位置，比較不會亂" },
+      decimal_to_fraction_exact_conversion: { label: "小數換分數（先寫成幾分之幾）", hint: "先看小數位數，再改寫成分數" },
+      simplest_form_reduction: { label: "約成最簡（分子分母一起約）", hint: "最後再檢查一次，能不能再約分" },
+      equivalent_fraction_scaling: { label: "等值分數（分子分母同乘除）", hint: "分子分母要一起變，值才不變" },
+      reciprocal_transform: { label: "倒數概念（上下對調）", hint: "除以分數時，先想到倒數" },
+      preserve_value_invariance: { label: "分數值不變（一起放大縮小）", hint: "只要同乘同除，分數值不會變" },
+      positive_fraction_comparison: { label: "正分數比較（先通分再比）", hint: "分母不同時，先通分再比較" },
+      negative_fraction_comparison: { label: "負分數比較（越負越小）", hint: "負分數比較時，要注意方向相反" },
+      mixed_number_comparison: { label: "帶分數比較（先比整數部分）", hint: "先比整數部分，再比分數部分" },
+      multiply: { label: "分數乘法（先約分再乘）", hint: "能先約分就先約，再相乘" },
+      divide: { label: "分數除法（改乘倒數）", hint: "除法先改成乘倒數，再計算" },
+      nested_parentheses: { label: "括號分數運算（先算括號內）", hint: "先算括號裡，再處理外面" },
+      decimal_fraction_mixed_arithmetic: { label: "小數分數混合算（先統一形式）", hint: "小數和分數先統一，再運算" },
+      telescoping_products: { label: "連鎖約分（前後交叉看）", hint: "前後能約的先找出來" },
+      remaining_amount: { label: "剩餘量理解（先看用了多少）", hint: "先分清楚剩下和用掉的是哪一部分" },
+      container_weight: { label: "容器重量差（總量和空瓶分開）", hint: "先分出內容物和容器，再比較" },
+      before_after_ratio: { label: "前後變化比較（先釐清基準）", hint: "先看前後各是幾分之幾" },
+      share_comparison: { label: "分配比較（同一份量再比較）", hint: "先確認比較的是不是同一份量" },
+      normalize_terms: { label: "項的整理（先排整齊）", hint: "先把同類項排好，計算比較穩" },
+      combine_like_terms: { label: "同類項合併（長得一樣才能加減）", hint: "只有同類的項，才能直接合併" },
+      sign_distribution: { label: "符號分配（每一項都要顧到）", hint: "負號乘進去，每一項都要變號" },
+      expand_monomial: { label: "單項式乘法（係數字母都要乘）", hint: "每一項都要乘到，次方也要顧" },
+      expand_binomial: { label: "多項式展開（每項都要乘到）", hint: "展開時不要漏乘任何一項" },
+      special_identity: { label: "乘法公式（套公式也要看符號）", hint: "套公式前，先看是不是標準型" },
+      long_division: { label: "長除法步驟（對齊次方）", hint: "每一步都要對齊最高次項" },
+      quotient_remainder_format: { label: "商與餘式表示（寫完整）", hint: "有餘數時，商和餘式都要寫清楚" },
+      reverse_division_reconstruction: { label: "反推除法（用商和餘式還原）", hint: "先用除式乘商，再把餘式加回來" },
+      geometry_formula: { label: "幾何公式應用（看清長寬關係）", hint: "先找出公式裡每一段代表什麼" },
+      composite_region_modeling: { label: "複合圖形拆解（分塊再合併）", hint: "先拆成簡單圖形，再組回答案" },
+      family_isomorphism: { label: "題型結構辨識（換題皮不換做法）", hint: "題目變樣子，做法骨架可能一樣" },
+      unknown_target_preservation: { label: "未知式保留（先把未知量留乾淨）", hint: "移項整理時，先把未知多項式留完整" },
+      simplify: { label: "根式化簡（先找完全平方）", hint: "根號內先找能開出來的因數" },
+      multiply_terms: { label: "根式乘法（根號內外分清楚）", hint: "先分清楚根號外和根號內再相乘" },
+      divide_terms: { label: "根式除法（先約再除）", hint: "能先約的先約，再看要不要有理化" },
+      distribute: { label: "分配律（每一項都要乘）", hint: "乘進括號時，每一項都不能漏" },
+      binomial_expand: { label: "雙括號展開（內外都要算）", hint: "展開雙括號時，四個乘積都要顧到" },
+      conjugate_rationalize: { label: "共軛有理化（配對消根號）", hint: "看清共軛式，分母才能順利有理化" },
+      fractional_radical: { label: "分式根式（分子分母分開看）", hint: "分式和根號一起出現時，先分層看" },
+      mixed_number_radical: { label: "帶分數根式（整數部分別漏掉）", hint: "帶分數根式要把整數部分一起算" },      structure_isomorphism: { label: "\u7d50\u69cb\u8fa8\u8b58\uff08\u5148\u770b\u9577\u76f8\u518d\u4e0b\u624b\uff09", hint: "\u984c\u76ee\u8b8a\u5f62\u4e86\uff0c\u898f\u5247\u901a\u5e38\u6c92\u8b8a" },
+      coefficient_sign_handling: { label: "\u4fc2\u6578\u8207\u7b26\u865f\u8655\u7406\uff08\u5148\u5224\u65b7\u6b63\u8ca0\uff09", hint: "\u5148\u5224\u65b7\u4fc2\u6578\u6b63\u8ca0\uff0c\u518d\u505a\u4e58\u9664\u6216\u5408\u4f75" },
+      like_term_combination: { label: "\u540c\u985e\u9805\u5408\u4f75\uff08\u8b8a\u6578\u76f8\u540c\u624d\u80fd\u4f75\uff09", hint: "\u78ba\u8a8d\u8b8a\u6578\u8207\u6b21\u65b9\u76f8\u540c\u518d\u5408\u4f75" },
+      term_collection_with_constants: { label: "\u4ee3\u6578\u9805\u8207\u5e38\u6578\u5206\u7d44\uff08\u5206\u958b\u6574\u7406\uff09", hint: "\u5148\u5206\u4ee3\u6578\u9805\u8207\u5e38\u6578\u9805\uff0c\u518d\u5404\u81ea\u5408\u4f75" },
+      outer_minus_scope: { label: "\u5916\u5c64\u8ca0\u865f\u4f5c\u7528\u7bc4\u570d\uff08\u6574\u5305\u8b8a\u865f\uff09", hint: "\u8ca0\u865f\u5728\u62ec\u865f\u524d\uff0c\u62ec\u865f\u5167\u6bcf\u4e00\u9805\u90fd\u8981\u8b8a\u865f" },
+      monomial_distribution: { label: "\u55ae\u9805\u5206\u914d\u5230\u62ec\u865f\uff08\u6bcf\u9805\u90fd\u4e58\u5230\uff09", hint: "\u5206\u914d\u6642\u6bcf\u4e00\u9805\u90fd\u8981\u4e58\u4e0a\u4fc2\u6578" },
+      nested_bracket_scope: { label: "\u5de2\u72c0\u62ec\u865f\u7bc4\u570d\uff08\u7531\u5167\u5f80\u5916\uff09", hint: "\u5148\u7b97\u6700\u5167\u5c64\u62ec\u865f\uff0c\u518d\u9010\u5c64\u5c55\u958b" },
+      fractional_expression_simplification: { label: "\u5206\u5f0f\u4ee3\u6578\u5f0f\u5316\u7c21\uff08\u5148\u7d71\u4e00\u5206\u6bcd\uff09", hint: "\u5148\u8655\u7406\u5206\u6bcd\uff0c\u518d\u5408\u4f75\u540c\u985e\u9805" },      mixed_ops: { label: "\u56db\u5247\u6df7\u5408\u904b\u7b97\uff08\u5148\u770b\u9806\u5e8f\uff09", hint: "\u5148\u4e58\u9664\u5f8c\u52a0\u6e1b\uff0c\u9806\u5e8f\u4e0d\u8981\u4e82" },
+      parentheses: { label: "括號運算（先算裡面）", hint: "先處理括號內，再往外算" },
+    };
+    const SKILL_UI_MAP = {
+      "jh_數學1上_FourArithmeticOperationsOfIntegers": "整數四則運算",
+      "jh_數學1上_FourArithmeticOperationsOfNumbers": "分數四則運算",
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": "多項式四則運算",
+      "jh_數學2上_FourOperationsOfRadicals": "根式四則運算",
+      "\u006a\u0068_\u6578\u5b781\u4e0a_OperationsOnLinearExpressions": "\u4e00\u5143\u4e00\u6b21\u5f0f\u5316\u7c21",
+    };
+    function updateEntryModeBadge() {
+      const node = document.getElementById("entryModeText");
+      if (!node) return;
+      const mode = String(state.mode || "teaching").toLowerCase();
+      const skillLabel = SKILL_UI_MAP[skillId] || skillId || "未指定單元";
+      node.textContent = mode === "assessment"
+        ? `自適應評量模式｜${skillLabel}`
+        : `自適應學習模式｜${skillLabel}`;
+    }
+    const FAMILY_NAME_UI_MAP = {
+      int_numberline_add_sub: "數線整數加減",
+      int_flat_add_sub: "整數平面加減",
+      int_flat_mul_div_exact: "整數乘除（整除）",
+      int_flat_mixed_four_ops: "整數四則混合",
+      int_bracket_mixed: "整數括號混合",
+      int_abs_value: "整數絕對值",
+      int_division_exact_nested: "整數巢狀除法",
+      int_composite_structure: "整數綜合結構題",
+      "Fraction Simplification": "分數化簡",
+      "Equivalent Fraction Fill-Blank": "等值分數填空",
+      "Preserve-Value Fraction Invariance": "值不變分數轉換",
+      "Fraction Comparison": "分數大小比較",
+      "Fraction Add/Subtract": "分數加減",
+      "Fraction Multiply": "分數乘法",
+      "Fraction Divide": "分數除法",
+      "Fraction Mixed Four Operations": "分數四則混合",
+      "Decimal-Fraction Mixed Evaluation": "小數分數混合計算",
+      "Fraction Word Problems": "分數應用題",
+      poly_add_sub_flat: "平面多項式加減",
+      poly_add_sub_nested: "巢狀多項式加減",
+      poly_add_sub_unknown: "含未知式多項式加減",
+      poly_mul_monomial: "單項式乘多項式",
+      poly_mul_poly: "多項式乘法展開",
+      poly_mul_special_identity: "乘法公式",
+      poly_div_monomial_eval: "單項式除法直接化簡",
+      poly_div_monomial_qr: "單項式除法（商與餘式）",
+      poly_div_poly_qr: "多項式長除法（商與餘式）",
+      poly_div_reverse: "反推除法",
+      poly_mixed_simplify: "綜合化簡",
+      poly_geom_formula_direct: "幾何公式應用",
+      poly_geom_region_composite: "複合圖形應用",
+      p0_simplify: "根式化簡",
+      p1_add_sub: "純根式加減",
+      p1b_add_sub_bracket: "括號根式加減",
+      p1c_mixed_frac_rad_add_sub: "分數根式加減",
+      p2a_mult_direct: "根式直接乘法",
+      p2b_mult_distrib: "根式分配乘法",
+      p2c_mult_binomial: "根式雙括號乘法",
+      p2d_perfect_square: "完全平方公式",
+      p2e_diff_of_squares: "平方差公式",
+      p2f_int_mult_rad: "整數乘根式",
+      p2g_rad_mult_frac: "根式乘分式",
+      p2h_frac_mult_rad: "分式乘根式",
+      p3a_div_expr: "根式除法（整式）",
+      p3b_div_simple: "根式除法（有理化）",
+      p3c_div_direct: "根式直接除法",
+      p4_frac_mult: "分式根式乘法",
+      p4b_frac_rad_div: "分式根式除法",
+      p4c_nested_frac_chain: "巢狀分式連鎖",
+      p4d_frac_rad_div_mixed: "分式根式混合除法",
+      p5a_conjugate_int: "共軛有理化（整數）",
+      p5b_conjugate_rad: "共軛有理化（根式）",
+      p6_combo: "根式綜合題",
+      p7_mixed_rad_add: "帶分數根式加減",
+    };
+    const SKILL_FAMILY_ID_UI_MAP = {
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+        F1: "平面多項式加減",
+        F2: "巢狀多項式加減",
+        F3: "含未知式多項式加減",
+        F4: "單項式乘多項式",
+        F5: "多項式乘法展開",
+        F6: "乘法公式",
+        F7: "單項式除法直接化簡",
+        F8: "單項式除法（商與餘式）",
+        F9: "多項式長除法（商與餘式）",
+        F10: "反推除法",
+        F11: "綜合化簡",
+        F12: "幾何公式應用",
+        F13: "複合圖形應用",
+      },
+    };
+    const ANSWER_FORMAT_HINT_BY_FAMILY_NAME = {
+      poly_div_monomial_qr: {
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
+        example: "",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
+      },
+      poly_div_poly_qr: {
+        hint: "請以「商與餘數」表示，例如：3x+2 ... -3",
+        example: "",
+        placeholder: "請以「商與餘數」表示，例如：3x+2 ... -3",
+      },
+      poly_div_reverse: {
+        hint: "請直接輸入被除式",
+        example: "4x^2-8x-6",
+        placeholder: "例如：4x^2-8x-6",
+      },
+      int_power_sign_parentheses: {
+        hint: "請直接輸入數值答案",
+        example: "-9",
+        placeholder: "例如：-9",
+      },
+      int_power_mixed_evaluation: {
+        hint: "請直接輸入數值答案",
+        example: "-9",
+        placeholder: "例如：-9",
+      },
+      power_same_base_multiply: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+      power_of_power: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+      product_power_distribution: {
+        hint: "請只填入指數",
+        example: "7",
+        placeholder: "例如：7",
+      },
+    };
+    const ANSWER_FORMAT_HINT_BY_SKILL_FAMILY_ID = {
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F8": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_monomial_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_poly_qr,
+      "jh_數學2上_FourArithmeticOperationsOfPolynomial:F10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.poly_div_reverse,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I9": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_sign_parentheses,
+      "jh_數學1上_FourArithmeticOperationsOfIntegers:I10": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.int_power_mixed_evaluation,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F11": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_same_base_multiply,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F12": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.power_of_power,
+      "jh_數學1上_FourArithmeticOperationsOfNumbers:F13": ANSWER_FORMAT_HINT_BY_FAMILY_NAME.product_power_distribution,
+    };
+    const DEFAULT_ANSWER_FORMAT_HINT = {
+      hint: "請輸入數學答案，分數請用 /，代數式建議用括號避免歧義。",
+      example: "-9 或 3x+1+5/(3x)",
+      placeholder: "請輸入你的答案，例如：-5/3 或 12",
+    };
+    const DEFAULT_HINT_BY_SKILL_TYPE = {
+      polynomial: {
+        hint: "請用多項式作答，注意同類項整理與正負號。",
+        example: "2x^2 + 3x + 5",
+        placeholder: "請輸入你的答案，例如: 2x^2 + 3x + 5",
+      },
+      fraction: {
+        hint: "請用分數格式作答，可用 / 表示分數。",
+        example: "3/4 或 -5/2",
+        placeholder: "例如: 3/4 或 -5/2",
+      },
+      integer: {
+        hint: "請直接輸入整數答案。",
+        example: "-12 或 25",
+        placeholder: "例如: -12 或 25",
+      },
+    };
+    function getAnswerFormatHint(family) {
+      const fid = String(family || "").trim();
+      if (fid === "F8" || fid === "F9") {
+        return "請以「商與餘數」表示，例如：3x+2 ... -3";
+      }
+      if (fid.startsWith("F")) {
+        return "請輸入多項式，例如：2x^2 + 3x + 5";
+      }
+      if (fid.startsWith("I")) {
+        return "請輸入整數，例如：-5 或 12";
+      }
+      return "";
+    }
+    function inferSkillTypeForHint(skillKey, familyId) {
+      const rawSkill = String(skillKey || "");
+      const rawFamily = String(familyId || "").trim();
+      if (rawSkill.includes("FourArithmeticOperationsOfPolynomial")) return "polynomial";
+      if (rawSkill.includes("FourArithmeticOperationsOfNumbers")) return "fraction";
+      if (rawSkill.includes("FourArithmeticOperationsOfIntegers")) return "integer";
+      if (rawSkill.includes("Radical")) return "radical";
+      if (rawFamily.startsWith("I")) return "integer";
+      if (rawFamily.startsWith("F")) return "polynomial";
+      return "generic";
+    }
+    function getAnswerPlaceholder(currentFamily, skillType, report) {
+      const family = String(currentFamily || "").trim();
+      const normalizedSkillType = String(
+        skillType
+        || report?.skill_type
+        || ""
+      ).trim().toLowerCase();
+
+      if (family === "F8" || family === "F9") {
+        return "請以『商與餘數』表示，例如：3x+2 ... -3";
+      }
+      if (normalizedSkillType === "polynomial") {
+        return "請輸入你的答案，例如：2x^2 + 3x + 5";
+      }
+      if (normalizedSkillType === "fraction") {
+        return "請輸入你的答案，例如：3/4 或 -5/2";
+      }
+      if (normalizedSkillType === "integer") {
+        return "請輸入你的答案，例如：-12 或 25";
+      }
+      if (normalizedSkillType === "radical") {
+        return "請輸入你的答案，例如：2√3 + √5";
+      }
+      return "請輸入你的答案";
+    }
+    function resolveAnswerFormatHint(skillKey, familyId, familyNameEn) {
+      const byName = ANSWER_FORMAT_HINT_BY_FAMILY_NAME[String(familyNameEn || "").trim()];
+      if (byName) return byName;
+      const composite = `${String(skillKey || "").trim()}:${String(familyId || "").trim()}`;
+      const exact = ANSWER_FORMAT_HINT_BY_SKILL_FAMILY_ID[composite];
+      if (exact) return exact;
+      const skillType = inferSkillTypeForHint(skillKey, familyId);
+      return DEFAULT_HINT_BY_SKILL_TYPE[skillType] || DEFAULT_ANSWER_FORMAT_HINT;
+    }
+    function updateAnswerFormatHint(skillKey, familyId, familyNameEn) {
+      const cfg = resolveAnswerFormatHint(skillKey, familyId, familyNameEn);
+      const familyHint = getAnswerFormatHint(familyId);
+      const skillType = inferSkillTypeForHint(skillKey, familyId);
+      const fid = String(familyId || "").trim();
+      if (fid === "F8" || fid === "F9") {
+        setText("answerFormatHintText", "請以「商與餘數」表示，例如：3x+2 ... -3");
+        setText("answerFormatExampleText", "");
+      } else {
+        setText("answerFormatHintText", familyHint || cfg.hint || DEFAULT_ANSWER_FORMAT_HINT.hint);
+        setText("answerFormatExampleText", `範例：${cfg.example || DEFAULT_ANSWER_FORMAT_HINT.example}`);
+      }
+      if (answerInput) {
+        answerInput.placeholder = getAnswerPlaceholder(familyId, skillType, null);
+      }
+    }
+    function getSubskillLabel(subskillKey) {
+      if (!subskillKey) return "";
+      const raw = String(subskillKey).trim();
+      if (SUBSKILL_UI_MAP[raw]?.label) return SUBSKILL_UI_MAP[raw].label;
+      const shortKey = raw.includes(".") ? raw.split(".").pop() : raw;
+      return SUBSKILL_UI_MAP[shortKey]?.label || String(shortKey).replaceAll("_", " ");
+    }
+    function isBrokenSubskillText(value) {
+      const text = String(value || "").trim();
+      if (!text) return true;
+      if (/�/.test(text)) return true;
+      if (/^[\?？\s]+$/.test(text)) return true;
+      return false;
+    }
+    function safeSubskillLabel(rawValue) {
+      const raw = String(rawValue || "").trim();
+      if (!raw) return "";
+      const mapped = getSubskillLabel(raw);
+      if (!isBrokenSubskillText(mapped)) return mapped;
+      const fallbackKey = raw.includes(".") ? raw.split(".").pop() : raw;
+      if (!isBrokenSubskillText(fallbackKey)) {
+        return String(fallbackKey).replaceAll("_", " ");
+      }
+      return "";
+    }
+    function normalizeSubskillLabels(values) {
+      if (!Array.isArray(values)) return [];
+      const out = [];
+      const seen = new Set();
+      values.forEach((item) => {
+        const label = safeSubskillLabel(item);
+        if (!label) return;
+        if (seen.has(label)) return;
+        seen.add(label);
+        out.push(label);
+      });
+      return out;
+    }
+    function getSubskillHint(subskillKey) {
+      if (!subskillKey) return "";
+      const raw = String(subskillKey).trim();
+      if (SUBSKILL_UI_MAP[raw]?.hint) return SUBSKILL_UI_MAP[raw].hint;
+      const shortKey = raw.includes(".") ? raw.split(".").pop() : raw;
+      return SUBSKILL_UI_MAP[shortKey]?.hint || "先把這個子技能的規則看清楚。";
+    }
+    function toFriendlySubskillLabel(code) {
+      if (!code) return "";
+      return safeSubskillLabel(code);
+    }
+    function normalizeLearningMode(mode) {
+      const value = String(mode || "").trim().toLowerCase();
+      if (value === "main" || value === "remediation" || value === "returned") return value;
+      return "";
+    }
+    function toLearningModeLabel(mode) {
+      const map = {
+        main: "主技能學習中",
+        remediation: "前置子技能補救中",
+        returned: "已返回主技能",
+        "": "尚未開始",
+      };
+      return map[normalizeLearningMode(mode)] || map[""];
+    }
+    function toLearningModeBadgeLabel(mode) {
+      const map = {
+        main: "主線",
+        remediation: "補救",
+        returned: "返回",
+      };
+      return map[normalizeLearningMode(mode)] || map.main;
+    }
+    function toLearningModeBadgeClass(mode) {
+      const map = {
+        main: "mode-tag mode-main",
+        remediation: "mode-tag mode-remediation",
+        returned: "mode-tag mode-returned",
+      };
+      return map[normalizeLearningMode(mode)] || map.main;
+    }
+    function normalizeBoolean(value, fallback = false) {
+      if (typeof value === "boolean") return value;
+      if (typeof value === "string") {
+        const raw = value.trim().toLowerCase();
+        if (raw === "true" || raw === "1" || raw === "yes") return true;
+        if (raw === "false" || raw === "0" || raw === "no") return false;
+      }
+      if (typeof value === "number") return value !== 0;
+      return fallback;
+    }
+    function inferLearningModeFromResponse(response, previousMode) {
+      const postMode = normalizeLearningMode(response?.post_mode);
+      if (postMode) return postMode;
+      const currentMode = normalizeLearningMode(response?.current_mode);
+      if (currentMode) return currentMode;
+      if (normalizeBoolean(response?.remediation_triggered_final, false)) return "remediation";
+      const explicit = String(response?.learning_mode || "").trim().toLowerCase();
+      if (explicit === "main" || explicit === "remediation" || explicit === "returned") return explicit;
+      if (normalizeBoolean(response?.has_returned_to_main, false)) return "returned";
+      const prev = normalizeLearningMode(previousMode);
+      return prev || "";
+    }
+    function parseAllowedActions(rawAllowedActions) {
+      if (Array.isArray(rawAllowedActions)) {
+        return rawAllowedActions.map((item) => String(item || "").trim().toLowerCase()).filter(Boolean);
+      }
+      if (rawAllowedActions && typeof rawAllowedActions === "object") {
+        return Object.keys(rawAllowedActions).filter((key) => normalizeBoolean(rawAllowedActions[key], false)).map((key) => String(key).trim().toLowerCase());
+      }
+      if (typeof rawAllowedActions === "string") {
+        return rawAllowedActions.split(/[,\s]+/).map((part) => part.trim().toLowerCase()).filter(Boolean);
+      }
+      return [];
+    }
+    function isRemediationActiveFromState() {
+      return Boolean(
+        normalizeLearningMode(state.currentMode) === "remediation"
+        || normalizeLearningMode(state.postMode) === "remediation"
+        || normalizeLearningMode(state.learningMode) === "remediation"
+        || state.remediationTriggeredFinal
+      );
+    }
+    function isRemediationCandidateOnlyFromState() {
+      const route = normalizeRouteAction(state.ppoRouteAction);
+      const inMainline = normalizeLearningMode(state.currentMode || state.learningMode) !== "remediation";
+      const staysMainlineFamily = Boolean(state.selectedFamilyForRender) && state.selectedFamilyForRender === state.originFamily;
+      return Boolean(
+        !state.isRemediationActive
+        && inMainline
+        && route === "stay"
+        && (state.remediationReviewReady || state.actionMaskHasRemediate || state.crossSkillTrigger)
+        && staysMainlineFamily
+      );
+    }
+    function toSkillLabel(skillKey) {
+      if (!skillKey) return "";
+      return SKILL_UI_MAP[skillKey] || String(skillKey);
+    }
+    function normalizeRouteAction(action) {
+      const raw = String(action || "").trim().toLowerCase();
+      if (raw === "stay" || raw === "remediate" || raw === "return") return raw;
+      return "";
+    }
+    function toRouteActionLabel(action) {
+      const map = {
+        stay: "stay（維持目前主線）",
+        remediate: "remediate（切入補救路線）",
+        return: "return（返回主線）",
+        "": "尚未開始",
+      };
+      return map[normalizeRouteAction(action)] || map[""];
+    }
+    function normalizeDisplayMode(mode) {
+      const value = String(mode || "").trim().toLowerCase();
+      if (value === "completed" || value === "mainline" || value === "remediation") return value;
+      return "";
+    }
+    function normalizeMilestoneState(value) {
+      const raw = String(value || "").trim().toLowerCase();
+      if (
+        raw === "remediation_in_progress"
+        || raw === "remediation_returned_success"
+        || raw === "unit_completed"
+        || raw === "mainline_progress"
+        || raw === "assessment_in_progress"
+        || raw === "assessment_breakpoint_detected"
+        || raw === "assessment_completed"
+      ) return raw;
+      return "";
+    }
+    function deriveMilestoneStateFromState() {
+      const explicit = normalizeMilestoneState(state.milestoneState);
+      if (explicit) return explicit;
+      if (String(state.mode || "").toLowerCase() === "assessment") {
+        if (state.assessmentCompleted) {
+          return state.assessmentStopReason === "stable_breakpoint_detected"
+            ? "assessment_breakpoint_detected"
+            : "assessment_completed";
+        }
+        return "assessment_in_progress";
+      }
+      if (state.unitCompleted || state.isCompleted) return "unit_completed";
+      if (state.localRemediationCompleted || state.hasReturnedToMain) return "remediation_returned_success";
+      if (state.isRemediationActive || normalizeLearningMode(state.postMode) === "remediation") return "remediation_in_progress";
+      return "mainline_progress";
+    }
+    function milestoneLabel(value) {
+      const map = {
+        remediation_in_progress: "補救中",
+        remediation_returned_success: "已補回主線",
+        unit_completed: "本單元完成",
+        mainline_progress: "主線學習中",
+        assessment_in_progress: "評量中",
+        assessment_breakpoint_detected: "已偵測學習斷點",
+        assessment_completed: "評量完成",
+      };
+      return map[deriveMilestoneStateFromState()] || map.mainline_progress;
+    }
+    function milestoneClass(value) {
+      const map = {
+        remediation_in_progress: "milestone-chip milestone-remediation",
+        remediation_returned_success: "milestone-chip milestone-returned",
+        unit_completed: "milestone-chip milestone-completed",
+        mainline_progress: "milestone-chip milestone-mainline",
+        assessment_in_progress: "milestone-chip milestone-mainline",
+        assessment_breakpoint_detected: "milestone-chip milestone-remediation",
+        assessment_completed: "milestone-chip milestone-completed",
+      };
+      return map[deriveMilestoneStateFromState()] || map.mainline_progress;
+    }
+    function updateReturnCelebration() {
+      const box = document.getElementById("returnCelebration");
+      if (!box) return;
+      const milestone = deriveMilestoneStateFromState();
+      const show = milestone === "remediation_returned_success" && !state.unitCompleted && !state.isCompleted && state.mode !== "assessment";
+      box.classList.toggle("show", show);
+    }
+    function resolveFamilyLabel({ skillKey, familyId, familyNameEn, backendFamilyLabel }) {
+      if (backendFamilyLabel) return String(backendFamilyLabel);
+      const id = String(familyId || "").trim();
+      const nameEn = String(familyNameEn || "").trim();
+      const skill = String(skillKey || "").trim();
+      const byName = FAMILY_NAME_UI_MAP[nameEn];
+      const bySkillId = SKILL_FAMILY_ID_UI_MAP[skill]?.[id];
+      if (byName && id) return `${id}｜${byName}`;
+      if (bySkillId && id) return `${id}｜${bySkillId}`;
+      if (byName) return byName;
+      return id || nameEn || "待載入";
+    }
+    function extractMainlineFamilyCode(value) {
+      const text = String(value || "").toUpperCase();
+      const matched = text.match(/\bF\d+\b/);
+      return matched ? matched[0] : "";
+    }
+    function getMainlineAnchorFamilyCode() {
+      const fallbackChain = [
+        state.currentFamilyId,
+        state.selectedFamilyForRender,
+        state.displayFamily,
+        state.currentFamilyLabel,
+        state.originFamily,
+      ];
+      if (state.isRemediationActive || normalizeDisplayMode(state.displayMode) === "remediation") {
+        fallbackChain.unshift(state.originFamily);
+      }
+      for (const item of fallbackChain) {
+        const code = extractMainlineFamilyCode(item);
+        if (code && POLY_MAINLINE_SEQUENCE.includes(code)) return code;
+      }
+      return "";
+    }
+    function familyCodeToLabel(code) {
+      if (!code) return "待判定";
+      const skill = state.mainSkill || skillId;
+      const viaResolver = resolveFamilyLabel({ skillKey: skill, familyId: code });
+      return viaResolver || code;
+    }
+    function updateMainlineProgressBox() {
+      const boxId = "navProgressBox";
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      if (!hasStarted) {
+        setTextWithFlash(boxId, "📍 學習進度：尚未開始\n\n目前位置：待啟動\n下一站：待啟動");
+        updateNavProgressBarFromText("0%");
+        return;
+      }
+
+      const total = POLY_MAINLINE_SEQUENCE.length;
+      const currentCode = getMainlineAnchorFamilyCode();
+      const currentIndexRaw = POLY_MAINLINE_SEQUENCE.indexOf(currentCode);
+      const completedLike = Boolean(state.unitCompleted || state.isCompleted || state.assessmentCompleted);
+      const effectiveIndex = completedLike ? total - 1 : (currentIndexRaw >= 0 ? currentIndexRaw : 0);
+      const progressPct = ((effectiveIndex + 1) / total) * 100;
+      const currentLabel = (currentIndexRaw >= 0 || completedLike)
+        ? familyCodeToLabel(POLY_MAINLINE_SEQUENCE[effectiveIndex] || currentCode)
+        : "待判定（主線初始化中）";
+      const nextCode = effectiveIndex < total - 1 ? POLY_MAINLINE_SEQUENCE[effectiveIndex + 1] : "";
+      const nextLabel = nextCode ? familyCodeToLabel(nextCode) : "";
+      const remaining = Math.max(0, (total - 1) - effectiveIndex);
+      const detected = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "前置子技能";
+
+      let message = currentIndexRaw >= 0 || completedLike
+        ? `📍 學習進度：${progressPct.toFixed(1)}%（${effectiveIndex + 1} / ${total}）`
+        : `📍 學習進度：推估中（0 / ${total}）`;
+      message += `\n\n目前位置：${currentLabel}`;
+      if (completedLike && effectiveIndex >= total - 1) {
+        message += `\n本單元主線已完成`;
+      } else if (state.isRemediationActive || normalizeDisplayMode(state.displayMode) === "remediation") {
+        message += `\n目前狀態：補強「${detected}」`;
+        message += nextLabel ? `\n完成後：返回主線，前往 ${nextLabel}` : `\n完成後：返回主線，持續檢核目前題型`;
+      } else {
+        message += `\n下一站：${nextLabel || "即將完成主線"}`;
+        message += `\n距離完成：還剩 ${remaining} 個主線 family`;
+      }
+      setTextWithFlash(boxId, message);
+      updateNavProgressBarFromText(message);
+    }
+    function buildAdaptiveRationale() {
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      if (!hasStarted) return "尚未開始診斷，系統尚未做路由決策。";
+      if (state.mode === "assessment") {
+        const milestone = deriveMilestoneStateFromState();
+        if (milestone === "assessment_breakpoint_detected") {
+          return "評量模式已偵測到穩定學習斷點，建議切換 teaching 模式補強後再回來評量。";
+        }
+        if (milestone === "assessment_completed") {
+          return "評量模式已完成核心題型檢核，已產生本單元精熟度與學習建議。";
+        }
+        return "目前為評量模式，系統只檢核主線核心題型，不會切入補救支線。";
+      }
+      if (state.isCompleted || normalizeDisplayMode(state.displayMode) === "completed") {
+        const mainSkillDone = state.mainSkillLabel || toSkillLabel(state.displaySkill || state.mainSkill) || "本單元";
+        const familyDone = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "主線 family";
+        return `本次診斷已完成。最終停留於主線「${mainSkillDone} / ${familyDone}」，不再顯示補救中狀態。`;
+      }
+      if (deriveMilestoneStateFromState() === "remediation_returned_success") {
+        return "已完成本輪補救並成功返回主線；接下來系統會繼續檢核本單元其他核心題型。";
+      }
+      const mode = normalizeLearningMode(state.learningMode);
+      const route = normalizeRouteAction(state.ppoRouteAction);
+      const mainSkill = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "主技能";
+      const family = state.currentFamilyLabel || state.currentFamilyId || "目前 family";
+      const breakpoint = state.detectedSubskillLabel || getSubskillLabel(state.detectedSubskill) || "待判定子技能";
+      const remSkill = state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "補救技能";
+      const remSub = getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "補救子技能";
+      if (state.isRemediationCandidate) {
+        return `系統偵測到你可能卡在「${breakpoint}」，且補救候選已就緒；但本輪 PPO 動作為 ${toRouteActionLabel(route)}，目前仍維持主線「${family}」。`;
+      }
+      if (mode === "returned" || state.hasReturnedToMain) {
+        return `PPO 動作為 ${toRouteActionLabel(route)}，已完成補救並返回「${mainSkill}」，目前題型為「${family}」。`;
+      }
+      if (state.isRemediationActive || mode === "remediation") {
+        return `PPO 動作為 ${toRouteActionLabel(route)}，系統判定斷點在「${breakpoint}」，目前進入「${remSkill}」補救（子技能：${remSub}）。`;
+      }
+      if (state.returnReady) {
+        return `目前仍在主線「${mainSkill}」，題型為「${family}」。系統已判定達返回條件，可視下一步切回主線穩定練習。`;
+      }
+      return `目前維持主線「${mainSkill}」，題型為「${family}」。PPO 動作為 ${toRouteActionLabel(route)}，暫未切入補救。`;
+    }
+    function updateAdaptiveStatePanel() {
+      const hasStarted = Boolean(state.sessionId) || Number(state.stepNumber || 0) > 0;
+      const displayMode = normalizeDisplayMode(state.displayMode);
+      const showCompleted = state.isCompleted || displayMode === "completed";
+      const showMainlineByDisplay = !showCompleted && displayMode === "mainline";
+      const showRemediationByDisplay = !showCompleted && displayMode === "remediation";
+      const milestoneState = deriveMilestoneStateFromState();
+      const modeLabel = showCompleted
+        ? "本次診斷完成"
+        : (milestoneState === "remediation_returned_success"
+          ? "已補回主線"
+        : (showMainlineByDisplay
+          ? "主技能學習中"
+          : (showRemediationByDisplay ? "前置子技能補救中" : (hasStarted ? toLearningModeLabel(state.learningMode) : "尚未開始"))));
+      const mainSkillText = state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入";
+      const familyText = state.currentFamilyLabel || state.displayFamily || state.currentFamilyId || "待載入";
+      const detectedText = showCompleted
+        ? (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "已完成")
+        : (state.detectedSubskillLabel || getSubskillLabel(state.displaySubskill || state.detectedSubskill) || "尚未偵測");
+      const assessmentMode = state.mode === "assessment";
+      const remediationText = assessmentMode
+        ? "評量模式不進補救支線"
+        : ((showCompleted || showMainlineByDisplay)
+        ? "目前為主線狀態"
+        : (state.isRemediationActive
+        ? (state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待載入")
+        : (state.isRemediationCandidate
+          ? `建議補救候選：${state.remediationSkillLabel || toSkillLabel(state.remediationSkill) || "待判定"}`
+          : "尚未進入補救")));
+      const remediationSubskillText = assessmentMode
+        ? "請先完成主線診斷，再依建議切換教學模式"
+        : ((showCompleted || showMainlineByDisplay)
+        ? "目前無補救進行中"
+        : (state.isRemediationActive
+        ? (getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待載入")
+        : (state.isRemediationCandidate
+          ? `偵測斷點：${getSubskillLabel(state.detectedSubskill) || state.detectedSubskillLabel || "待判定"}`
+          : "尚未進入補救")));
+      const switchReasonText = state.switchReason || "無";
+      const returnText = showCompleted
+        ? (state.hasReturnedToMain ? "已回主線後完成" : "已完成")
+        : (state.hasReturnedToMain ? "已返回主技能" : (state.returnReady ? "已達返回條件" : "尚未達返回條件"));
+      const ppoActionText = hasStarted ? toRouteActionLabel(state.ppoRouteAction) : "尚未開始";
+      setTextWithFlash("adaptiveModeValue", modeLabel || "尚未開始");
+      setText("mainSkillValue", mainSkillText);
+      setTextWithFlash("ppoActionValue", ppoActionText);
+      setTextWithFlash("familyValue", familyText);
+      setTextWithFlash("detectedSubskillValue", detectedText);
+      setTextWithFlash("remediationSkillValue", remediationText);
+      setTextWithFlash("remediationSubskillValue", remediationSubskillText);
+      setTextWithFlash("switchReasonValue", switchReasonText);
+      setTextWithFlash("returnStateValue", state.stepNumber > 0 ? returnText : "尚未判定");
+      const milestoneEl = document.getElementById("milestoneValue");
+      if (milestoneEl) {
+        const prevText = String(milestoneEl.textContent || "");
+        const nextText = milestoneLabel(milestoneState);
+        milestoneEl.className = milestoneClass(milestoneState);
+        milestoneEl.textContent = nextText;
+        if (prevText !== nextText) {
+          flashNode(milestoneEl, false);
+        }
+      }
+      setTextWithFlash("adaptiveRationaleValue", buildAdaptiveRationale());
+      updateReturnCelebration();
+      updateMainlineProgressBox();
+    }
+    function scrollChatToBottom() {
+      const box = document.getElementById("chatHistory");
+      if (!box) return;
+      box.scrollTop = box.scrollHeight;
+    }
+    function resetChatHistory() {
+      const box = document.getElementById("chatHistory");
+      if (!box) return;
+      box.innerHTML = '<div class="msg bot">你好，我是這一題的 AI 助教。你先自己做題，我會在旁邊提醒你重點，但不會直接把答案講出來。</div>';
+      scrollChatToBottom();
+    }
+    function resetHintBox() {
+      const box = document.getElementById("hintBox");
+      if (!box) return;
+      box.innerHTML = "這裡會顯示這一題的補救提示。若系統切到 Review，我會用簡單中文提醒你先看哪個觀念。";
+    }
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+    function setMessageContent(element, text) {
+      if (!element) return;
+      element.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+    }
+    async function addMessage(role, text) {
+      const box = document.getElementById("chatHistory");
+      const div = document.createElement("div");
+      div.className = `msg ${role}`;
+      setMessageContent(div, text);
+      box.appendChild(div);
+      scrollChatToBottom();
+      await typesetMath(div);
+      return div;
+    }
+    function summarizeHandwritingResult(data) {
+      const messages = [];
+      if (data && data.correct === true) {
+        messages.push("我看過你的手寫內容了，這一題的計算方向大致正確。");
+      } else if (data && data.is_process_correct === true) {
+        messages.push("你的步驟方向大致正確，再檢查最後一個計算有沒有算準。");
+      } else {
+        messages.push("我看過你的手寫內容了，這一題先不要急著往下算。");
+      }
+
+      if (Array.isArray(data?.focus_points) && data.focus_points.length) {
+        messages.push(`先特別檢查：${data.focus_points.join("、")}。`);
+      } else if (Array.isArray(data?.subskill_labels) && data.subskill_labels.length) {
+        const cleanLabels = normalizeSubskillLabels(data.subskill_labels);
+        if (cleanLabels.length) {
+          messages.push(`先特別檢查：${cleanLabels.join("、")}。`);
+        }
+      } else {
+        messages.push("先檢查你有沒有看清楚數字、符號和運算順序。");
+      }
+
+      if (typeof data?.reply === "string" && data.reply.trim()) {
+        const cleaned = data.reply
+          .replace(/[{}[\]"]/g, " ")
+          .replace(/error_type|is_process_correct|next_question|correct|reply|description|improvement_suggestion/gi, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (cleaned) messages.push(cleaned);
+      }
+      return messages.join(" ");
+    }
+    function updateOverview(response, q) {
+      const apr = Number(response.current_apr || 0);
+      const percent = Math.round(apr * 100);
+      setText("aprPercent", `${percent}%`);
+      const aprRing = document.getElementById("aprRing");
+      if (aprRing) aprRing.style.background = `conic-gradient(var(--accent) 0deg, var(--accent) ${Math.max(4, percent) * 3.6}deg, #e6eef8 ${Math.max(4, percent) * 3.6}deg)`;
+      setText("stepValue", String(response.step_number));
+      setText("frustrationValue", String(response.frustration_index));
+      setText("frustrationMini", String(response.frustration_index));
+      setText("familyBadge", `微技能：${response.target_family_id || "待診斷"}`);
+      setTextWithFlash("strategyMini", strategyLabel(response.ppo_strategy));
+      const strategyBadge = document.getElementById("strategyBadge");
+      if (strategyBadge) {
+        const prevBadge = String(strategyBadge.textContent || "");
+        const nextBadge = strategyBadgeText(response.ppo_strategy);
+        strategyBadge.textContent = nextBadge;
+        strategyBadge.classList.toggle("review", response.ppo_strategy === 3);
+        if (prevBadge !== nextBadge) {
+          flashNode(strategyBadge, true);
+        }
+      }
+      if (q && q.family_name) {
+        setText("questionFamily", `Family: ${response.target_family_id} · ${q.family_name}`);
+      } else {
+        setText("questionFamily", `Family: ${response.target_family_id || "-"}`);
+      }
+      state.currentApr = apr;
+    }
+    function setFinishedState(disabled) {
+      answerInput.disabled = disabled;
+      submitBtn.disabled = disabled;
+      hintBtn.disabled = disabled;
+      assistantSendBtn.disabled = disabled;
+      assistantInput.disabled = disabled;
+      analyzeCanvasBtn.disabled = disabled;
+    }
+    async function typesetMath(element) {
+      if (!element || !window.MathJax || !window.MathJax.typesetPromise) return;
+      try {
+        await window.MathJax.typesetPromise([element]);
+      } catch (err) {
+        console.warn("MathJax typeset failed", err);
+      }
+    }
+
+    function renderTrajectory() {
+      const box = document.getElementById("trajectoryBox");
+      if (!state.history.length) {
+        box.innerHTML = "<div class='trajectory-empty'>尚無診斷軌跡。開始診斷後，這裡會逐題顯示 Local APR 變化，並標記 PPO 是否切到 Review。</div>";
+        return;
+      }
+      box.innerHTML = state.history.map((item) => {
+        const width = Math.max(4, Math.min(100, Math.round(item.current_apr * 100)));
+        const reviewClass = item.ppo_strategy === 3 ? "strategy-tag review-active" : "strategy-tag";
+        const reviewText = item.completed ? "完成" : (item.ppo_strategy === 3 ? "🛡 Review" : strategyName(item.ppo_strategy));
+        const modeClass = toLearningModeBadgeClass(item.learning_mode);
+        const modeText = toLearningModeBadgeLabel(item.learning_mode);
+        const stepLabel = item.completed ? `Step ${item.step_number}（結束）` : `Step ${item.step_number}`;
+        return `<div class="track-row"><div>${stepLabel}</div><div class="bar"><div class="threshold"></div><div class="fill" style="width:${width}%"></div></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span>${Math.round(item.current_apr * 100)}%</span><span class="${reviewClass}">${reviewText}</span><span class="${modeClass}">${modeText}</span></div></div>`;
+      }).join("");
+      requestAnimationFrame(() => {
+        box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    function updateUndoRedoButtons() { undoBtn.disabled = undoStack.length <= 1; redoBtn.disabled = redoStack.length === 0; }
+    function saveState() { const current = canvas.toDataURL(); if (undoStack.length > 0 && undoStack[undoStack.length - 1] === current) return; redoStack = []; undoStack.push(current); if (undoStack.length > 50) undoStack.shift(); updateUndoRedoButtons(); }
+    function restoreFromDataUrl(dataUrl) { const img = new Image(); img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.clientWidth, canvas.clientHeight); }; img.src = dataUrl; }
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.floor(rect.width));
+      const height = Math.max(1, Math.floor(rect.height));
+      const snapshot = undoStack.length ? undoStack[undoStack.length - 1] : null;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      if (snapshot) restoreFromDataUrl(snapshot); else clearCanvas(false);
+    }
+    function clearCanvas(resetHistory = true) { ctx.clearRect(0, 0, canvas.width, canvas.height); if (resetHistory) { undoStack = []; redoStack = []; saveState(); } }
+    function isCanvasBlank() {
+      try {
+        const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = image.data;
+        for (let i = 3; i < pixels.length; i += 4) {
+          if (pixels[i] !== 0) return false;
+        }
+        return true;
+      } catch (err) {
+        console.error("isCanvasBlank failed:", err);
+        return false;
+      }
+    }
+    function getPointerPos(event) { const rect = canvas.getBoundingClientRect(); const point = event.touches && event.touches[0] ? event.touches[0] : event; return { x: point.clientX - rect.left, y: point.clientY - rect.top }; }
+    function setPenStyle() { ctx.lineWidth = isErasing ? 24 : currentWidth; ctx.strokeStyle = isErasing ? "#ffffff" : currentColor; ctx.lineCap = "round"; ctx.lineJoin = "round"; }
+    function startDraw(event) { event.preventDefault(); isDrawing = true; const pos = getPointerPos(event); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); setPenStyle(); saveState(); }
+    function draw(event) { if (!isDrawing) return; event.preventDefault(); const pos = getPointerPos(event); setPenStyle(); ctx.lineTo(pos.x, pos.y); ctx.stroke(); }
+    function stopDraw() { if (!isDrawing) return; isDrawing = false; ctx.closePath(); saveState(); }
+    function setActiveToolButton(buttonId) { ["penToolBtn", "eraserToolBtn"].forEach((id) => document.getElementById(id).classList.toggle("active", id === buttonId)); }
+    function setActiveColorButton(buttonId) { ["blackInkBtn", "blueInkBtn", "redInkBtn", "greenInkBtn"].forEach((id) => document.getElementById(id).classList.toggle("active", id === buttonId)); }
+    function activatePen(color, buttonId) { isErasing = false; currentColor = color; canvas.style.cursor = "crosshair"; setActiveToolButton("penToolBtn"); setActiveColorButton(buttonId); }
+    function activateEraser() { isErasing = true; canvas.style.cursor = "cell"; setActiveToolButton("eraserToolBtn"); }
+    function undo() { if (undoStack.length <= 1) return; redoStack.push(undoStack.pop()); restoreFromDataUrl(undoStack[undoStack.length - 1]); updateUndoRedoButtons(); }
+    function redo() { if (redoStack.length === 0) return; const next = redoStack.pop(); undoStack.push(next); restoreFromDataUrl(next); updateUndoRedoButtons(); }
+
+    async function postAdaptive(payload) {
+      const response = await fetch("/api/adaptive/submit_and_get_next", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "adaptive request failed");
+      return data;
+    }
+
+      async function fetchHint() {
+        const query = new URLSearchParams();
+        state.currentSubskills.forEach((item) => query.append("subskill_nodes", item));
+        if (skillId) query.set("skill_id", skillId);
+        if (state.currentFamilyId) query.set("family_id", state.currentFamilyId);
+        if (state.currentQuestionText) query.set("question_text", state.currentQuestionText);
+        if (state.currentContext) query.set("question_context", state.currentContext);
+        const response = await fetch(`/api/adaptive/rag_hint?${query.toString()}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "rag hint failed");
+        const hintBox = document.getElementById("hintBox");
+        const focusSubskill = safeSubskillLabel(state.detectedSubskillLabel) || safeSubskillLabel(state.detectedSubskill) || (state.currentSubskills[0] ? safeSubskillLabel(state.currentSubskills[0]) : "");
+        const focusPrefix = state.isRemediationActive ? "目前補救重點" : "系統偵測斷點";
+        const focusHtml = focusSubskill ? `<div class="hint-focus">${focusPrefix}：${escapeHtml(focusSubskill)}</div>` : "";
+        hintBox.innerHTML = `${focusHtml}${data.hint_html || ""}`;
+        await typesetMath(hintBox);
+        if (data.hint_summary) {
+          addMessage("bot", `這題先看：${data.hint_summary}。`);
+        } else if (Array.isArray(data.subskill_labels) && data.subskill_labels.length) {
+          const cleanLabels = normalizeSubskillLabels(data.subskill_labels);
+          if (cleanLabels.length) {
+            addMessage("bot", `這題先看這些重點：${cleanLabels.join("、")}。`);
+          } else {
+            addMessage("bot", "這題先看：先確認正負號、括號範圍與同類項整理。");
+          }
+        }
+        scrollChatToBottom();
+        return data;
+      }
+
+    async function askTutor(question, sourceLabel = "user") {
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再使用 AI 助教。"); return; }
+      await addMessage(sourceLabel === "user" ? "user" : "bot", question);
+      const thinking = await addMessage("bot", "AI 助教正在整理提示...");
+      try {
+        const response = await fetch("/chat_ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question,
+            context: `Adaptive diagnosis | family=${state.currentFamilyId} | subskills=${state.currentSubskills.join(", ")}`,
+            question_text: state.currentQuestionText,
+            question_context: state.currentContext,
+            family_id: state.currentFamilyId,
+            subskill_nodes: state.currentSubskills
+          })
+        });
+        const data = await response.json();
+        setMessageContent(thinking, (data.reply || "先檢查題目的條件與運算順序。").trim());
+        await typesetMath(thinking);
+        scrollChatToBottom();
+      } catch (err) {
+        setMessageContent(thinking, "目前助教暫時沒有整理出新提示，先檢查你是不是抓對了這一題的核心觀念。");
+        scrollChatToBottom();
+      }
+    }
+
+    async function analyzeHandwriting() {
+      if (!state.currentQuestionText) { setStatus("請先開始診斷，再進行手寫檢查。"); return; }
+      try {
+        if (isCanvasBlank()) {
+          setStatus("白板目前是空白的，請先寫下解題步驟再送出 AI 檢查。");
+          await addMessage("bot", "我目前看不到你的手寫步驟，請先在白板寫一點內容後再檢查。");
+          return;
+        }
+        const imageDataUrl = canvas.toDataURL("image/png");
+        console.log("handwriting image length =", imageDataUrl.length);
+        console.log("handwriting prefix =", imageDataUrl.slice(0, 80));
+        await addMessage("user", "請幫我檢查我白板上的手寫步驟。");
+        const thinking = await addMessage("bot", "正在分析你的手寫內容...");
+        const response = await fetch("/analyze_handwriting", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_data_url: imageDataUrl,
+            image_base64: imageDataUrl,
+            handwriting_image: imageDataUrl,
+            scratchpad_image: imageDataUrl,
+            session_id: state.sessionId,
+            question_text: state.currentQuestionText,
+            question_context: state.currentContext,
+            family_id: state.currentFamilyId,
+            subskill_nodes: state.currentSubskills,
+          })
+        });
+        const rawText = await response.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (parseErr) {
+          console.error("analyze_handwriting parse error:", parseErr, rawText?.slice?.(0, 300));
+          throw parseErr;
+        }
+        if (data && data.success === false) {
+          setMessageContent(
+            thinking,
+            "目前無法辨識你的手寫內容，請確認筆跡清楚或再試一次"
+          );
+          await typesetMath(thinking);
+          scrollChatToBottom();
+          return;
+        }
+        if (!response.ok) {
+          console.error("analyze_handwriting non-OK:", response.status, data);
+          throw new Error(data?.reply || data?.error || `handwriting api failed (${response.status})`);
+        }
+        setMessageContent(thinking, summarizeHandwritingResult(data));
+        await typesetMath(thinking);
+      } catch (err) {
+        console.error("analyzeHandwriting failed:", err);
+        await addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
+      }
+    }
+
+    function renderQuestion(response) {
+      const q = response.new_question_data || {};
+      const previousMode = state.learningMode;
+      state.isCompleted = false;
+      state.sessionId = response.session_id;
+      state.stepNumber = response.step_number;
+      state.currentApr = response.current_apr;
+      state.ppoStrategy = response.ppo_strategy;
+      state.frustrationIndex = response.frustration_index;
+      state.selectedFamilyForRender = String(
+        response?.selected_family_for_render
+        || response?.selected_family
+        || response?.target_family_id
+        || ""
+      );
+      state.currentFamilyId = state.selectedFamilyForRender;
+      state.originFamily = String(
+        response?.origin_family
+        || response?.origin_family_id
+        || state.originFamily
+        || state.selectedFamilyForRender
+      );
+      const responseRemediationFamily = String(
+        response?.remediation_family
+        || response?.remediation_family_id
+        || ""
+      );
+      state.remediationFamily = responseRemediationFamily;
+      state.familyNameEn = String((response.new_question_data || {}).family_name || "");
+      state.currentQuestionText = q.question_text || q.question || "";
+      state.currentContext = q.context_string || "";
+      state.currentSubskills = response.target_subskills || [];
+      state.currentMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");
+      state.postMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");
+      state.displayMode = String(response?.display_mode || "");
+      state.displayFamily = String(response?.display_family || "");
+      state.displaySubskill = String(response?.display_subskill || "");
+      state.displaySkill = String(response?.display_skill || "");
+      state.mode = String(response?.mode || state.mode || adaptiveEntryMode || "teaching").toLowerCase();
+      updateEntryModeBadge();
+      state.milestoneState = String(response?.milestone_state || "");
+      state.localRemediationCompleted = normalizeBoolean(response?.local_remediation_completed, false);
+      state.unitCompleted = normalizeBoolean(response?.unit_completed, false);
+      state.assessmentCompleted = normalizeBoolean(response?.assessment_completed, false);
+      state.assessmentStopReason = String(response?.assessment_stop_reason || "");
+      state.remediationTriggeredFinal = normalizeBoolean(response?.remediation_triggered_final, false);
+      state.remediationReviewReady = normalizeBoolean(response?.remediation_review_ready, false);
+      state.crossSkillTrigger = normalizeBoolean(response?.cross_skill_trigger, false);
+      const allowedActions = parseAllowedActions(response?.allowed_actions || response?.action_mask);
+      state.actionMaskHasRemediate = allowedActions.includes("remediate");
+      const inferredMode = inferLearningModeFromResponse(response, previousMode);
+      const hasInRemediationField = response && Object.prototype.hasOwnProperty.call(response, "in_remediation");
+      const primarySubskill = String(response.detected_subskill_node || state.currentSubskills[0] || state.detectedSubskill || "");
+      state.mainSkill = String(response.main_skill || state.mainSkill || skillId || "");
+      state.mainSkillLabel = String(response.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
+      state.currentFamilyLabel = resolveFamilyLabel({
+        skillKey: response.main_skill || state.mainSkill || skillId,
+        familyId: state.currentFamilyId,
+        familyNameEn: q.family_name || state.familyNameEn,
+        backendFamilyLabel: response.target_family_label,
+      });
+      state.detectedSubskill = primarySubskill;
+      state.detectedSubskillLabel = safeSubskillLabel(response.detected_subskill_label) || safeSubskillLabel(state.detectedSubskill) || "尚未偵測";
+      state.remediationSkill = String(response.remediation_skill || state.remediationSkill || "");
+      state.remediationSkillLabel = String(
+        response.remediation_skill_label
+        || getSubskillLabel(state.remediationSkill)
+        || toSkillLabel(state.remediationSkill)
+        || (state.remediationTriggeredFinal ? state.detectedSubskillLabel : "")
+      );
+      state.inRemediation = normalizeBoolean(response?.in_remediation, false);
+      state.bridgeActive = normalizeBoolean(response?.bridge_active, false);
+      state.errorConcept = String(response?.error_concept || "none").trim();
+      state.rescueRecommended = Number(response?.rescue_recommended ?? 0);
+      state.learningMode = normalizeLearningMode(inferredMode);
+      if (hasInRemediationField) {
+        // Frontend interpretation rule: remediation only when backend in_remediation === true.
+        state.isRemediationActive = state.inRemediation;
+      } else {
+        state.isRemediationActive = normalizeDisplayMode(state.displayMode) === "remediation"
+          ? true
+          : isRemediationActiveFromState();
+      }
+      if (state.mode === "assessment") {
+        state.isRemediationActive = false;
+        state.isRemediationCandidate = false;
+      }
+      if (!state.learningMode) {
+        state.learningMode = state.isRemediationActive ? "remediation" : "main";
+      }
+      if (!state.isRemediationActive && state.learningMode !== "remediation") {
+        state.remediationFamily = "";
+        if (!response?.remediation_skill && !response?.remediation_skill_label) {
+          state.remediationSkill = "";
+          state.remediationSkillLabel = "";
+        }
+      }
+      state.isRemediationCandidate = isRemediationCandidateOnlyFromState();
+      state.returnReady = normalizeBoolean(response.return_ready, inferredMode === "returned");
+      state.hasReturnedToMain = normalizeBoolean(response?.return_to_mainline, state.learningMode === "returned");
+      state.ppoRouteActionIdx = response?.route_action_idx ?? response?.action_idx ?? null;
+      state.ppoRouteAction = String(
+        response?.ppo_action
+        || response?.route_action
+        || response?.selection_debug?.route_action
+        || response?.selection_debug?.ppo_action
+        || state.ppoRouteAction
+        || ""
+      );
+      if (response.switch_reason) {
+        state.switchReason = String(response.switch_reason);
+      } else if (state.isRemediationActive || state.learningMode === "remediation") {
+        state.switchReason = previousMode === "remediation" ? (state.switchReason || "目前維持補救模式，持續加強前置子技能") : "偵測到前置技能不足，已切換補救";
+      } else if (state.isRemediationCandidate) {
+        state.switchReason = "偵測到補救需求，但本輪仍維持主線";
+      } else if (state.learningMode === "returned") {
+        state.switchReason = "補救達到返回條件，已回到主技能";
+      } else {
+        state.switchReason = "無";
+      }
+      state.history.push({
+        step_number: response.step_number,
+        current_apr: response.current_apr,
+        ppo_strategy: response.ppo_strategy,
+        learning_mode: state.learningMode,
+        detected_subskill: state.detectedSubskill,
+      });
+      updateOverview(response, q);
+      updateAdaptiveStatePanel();
+      applyDemoRouteMsg(response.demo_route_msg);
+      updateAnswerFormatHint(state.mainSkill || skillId, state.currentFamilyId, q.family_name || state.familyNameEn);
+      const questionEl = document.getElementById("questionText");
+      questionEl.textContent = state.currentQuestionText || "(no question)";
+      setText("questionContext", state.currentContext);
+      const subskillsBox = document.getElementById("subskillsBox");
+      if (subskillsBox) {
+        const chips = state.currentSubskills
+          .map((item) => toFriendlySubskillLabel(item))
+          .filter((label) => !!label)
+          .map((label) => `<span>${escapeHtml(label)}</span>`);
+        subskillsBox.innerHTML = chips.join("");
+      }
+      setText("jsonBox", JSON.stringify(q, null, 2));
+      setFinishedState(false);
+      answerInput.value = "";
+      renderTrajectory();
+      clearCanvas(true);
+      resetChatHistory();
+      resetHintBox();
+      if (state.mode === "assessment" && deriveMilestoneStateFromState() === "assessment_breakpoint_detected") {
+        setAssistantBanner("已偵測到本單元學習斷點，建議切換到 teaching 模式補強後再回來評量。", true, "remediation");
+      } else if (state.mode === "assessment") {
+        setAssistantBanner("目前先練這一題，助教會在你卡住時提供提示。", false, "neutral");
+      } else if (state.isRemediationActive) {
+        const hasErrorConcept = Boolean(state.errorConcept) && state.errorConcept.toLowerCase() !== "none";
+        const rescueRecommended = Number.isFinite(state.rescueRecommended) ? state.rescueRecommended : 0;
+        const hasDiagnosisSignal = hasErrorConcept || rescueRecommended === 1 || state.isRemediationActive;
+        if (hasDiagnosisSignal) {
+          if (previousMode !== "remediation") {
+            setAssistantBanner(`系統診斷出你在「${state.detectedSubskillLabel || "前置觀念"}」上容易混淆，已切換到「${state.remediationSkillLabel || "補救技能"}」補救。`, true, "remediation");
+          } else {
+            setAssistantBanner(`系統診斷出你在「${state.detectedSubskillLabel || "前置觀念"}」上容易混淆，已切換到「${state.remediationSkillLabel || state.detectedSubskillLabel || "補救子技能"}」補救。`, true, "remediation");
+          }
+        } else {
+          setAssistantBanner("系統正在根據你的表現微調學習路徑。", false, "neutral");
+        }
+      } else if (state.bridgeActive || deriveMilestoneStateFromState() === "remediation_returned_success" || state.learningMode === "returned") {
+        setAssistantBanner("系統已完成本輪補救，正在返回主線並重新檢核下一個題型。", false, "bridge");
+      } else if (state.isRemediationCandidate) {
+        setAssistantBanner("系統正在根據你的表現微調學習路徑。", false, "neutral");
+      } else {
+        setAssistantBanner("系統正在根據你的表現微調學習路徑。", false, "neutral");
+      }
+      setStatus(`已載入 Step ${response.step_number}，模式：${toLearningModeLabel(state.learningMode)}，策略：${strategyName(response.ppo_strategy)}，latency=${response.execution_latency}ms`);
+      typesetMath(questionEl);
+    }
+
+    function renderDiagnosticReport(report) {
+      const box = document.getElementById("diagnosticReportBox");
+      if (!box) return;
+      if (!report || typeof report !== "object") {
+        box.className = "diagnostic-report";
+        box.innerHTML = "";
+        return;
+      }
+      const familyResults = Array.isArray(report.family_results) ? report.family_results : [];
+      const strengths = Array.isArray(report.strengths) ? report.strengths : [];
+      const weaknesses = Array.isArray(report.weaknesses) ? report.weaknesses : [];
+      const nextStepsRaw = Array.isArray(report.recommended_next_steps) ? report.recommended_next_steps : [];
+      const trajectory = Array.isArray(report.trajectory) ? report.trajectory : [];
+      const breakpointObj = (report.breakpoint && typeof report.breakpoint === "object") ? report.breakpoint : null;
+      const nextSteps = nextStepsRaw.map((step) => {
+        if (typeof step === "string") return step;
+        return String(step?.reason || step?.label_zh || step?.target_id || "").trim();
+      }).filter(Boolean);
+
+      const coreFamilyOrder = ["F1", "F2", "F5", "F11", "F7", "F8", "F9", "F10"];
+      const familyOrderMap = Object.fromEntries(coreFamilyOrder.map((fid, idx) => [fid, idx]));
+      const sortedFamilyResults = [...familyResults].sort((a, b) => {
+        const ai = familyOrderMap[String(a?.family_id || a?.family || "").trim()];
+        const bi = familyOrderMap[String(b?.family_id || b?.family || "").trim()];
+        const av = Number.isFinite(ai) ? ai : 999;
+        const bv = Number.isFinite(bi) ? bi : 999;
+        return av - bv;
+      });
+
+      const familyBars = sortedFamilyResults.slice(0, 10).map((row) => {
+        const familyCode = String(row?.family || row?.family_id || "-");
+        const family = escapeHtml(row?.label_zh || familyCode);
+        const desc = escapeHtml(row?.description_zh || "");
+        const accuracy = Number(row?.accuracy ?? 0);
+        const width = Math.max(0, Math.min(100, accuracy * 100));
+        const pct = `${Math.round(width)}%`;
+        const rawStatus = String(row?.status || "").trim();
+        let color = "#4CAF50";
+        if (rawStatus === "weak" || rawStatus === "breakpoint") color = "#ff4d4f";
+        else if (rawStatus === "incomplete") color = "#f0ad4e";
+        return `
+          <div class="diag-bar-row">
+            <span class="label">${family}${desc ? `<small>${desc}</small>` : ""}</span>
+            <div class="diag-bar">
+              <div class="diag-fill" style="width:${width}%; background:${color};"></div>
+            </div>
+            <span class="pct">${pct}</span>
+          </div>
+        `;
+      }).join("");
+
+      const reportScore = Number(report?.score);
+      const aprMastery = Number(report?.apr_mastery);
+      const skillType = String(report?.skill_type || "-");
+      const failedFamily = String(report?.failed_family || breakpointObj?.family || "-");
+      const breakpointReason = String(breakpointObj?.reason || "-");
+      const breakpointAccuracy = Number(breakpointObj?.accuracy ?? 0);
+      const breakpointLabel = String(breakpointObj?.label_zh || failedFamily);
+      const breakpointDesc = String(breakpointObj?.description_zh || "");
+      const breakpointCommonError = String(breakpointObj?.common_error_zh || breakpointReason);
+      const breakpointPrereq = Array.isArray(breakpointObj?.prerequisite_labels_zh) ? breakpointObj.prerequisite_labels_zh : [];
+      const breakpointPrereqText = breakpointPrereq.length ? breakpointPrereq.join("、") : "（無）";
+      const strengthsDisplay = Array.isArray(report?.strengths_zh) && report.strengths_zh.length ? report.strengths_zh : strengths;
+      const weaknessesDisplay = Array.isArray(report?.weaknesses_zh) && report.weaknesses_zh.length ? report.weaknesses_zh : weaknesses;
+      const strengthsHtml = (strengthsDisplay.length ? strengthsDisplay : ["-"]).map((s) => `<p>${escapeHtml(String(s))}</p>`).join("");
+      const weaknessesHtml = (weaknessesDisplay.length ? weaknessesDisplay : ["-"]).map((w) => `<p>${escapeHtml(String(w))}</p>`).join("");
+      const nextStepsHtml = (nextSteps.length ? nextSteps : ["建議回顧基礎概念"]).map((text, idx) => `<p>${idx + 1}. ${escapeHtml(String(text))}</p>`).join("");
+      const actionLabel = { stay: "", remediate: "↘補救", return: "↗返回" };
+      const trajectoryHtml = trajectory.map((step, i) => {
+        const icon = step?.is_correct ? "✔" : "❌";
+        const label = actionLabel[String(step?.action || "stay")] || "";
+        const family = escapeHtml(String(step?.family || "-"));
+        const arrow = i < trajectory.length - 1 ? `<span class="arrow">→</span>` : "";
+        return `
+          <span class="traj-step">
+            ${family} ${icon}
+            <small>${escapeHtml(label)}</small>
+          </span>
+          ${arrow}
+        `;
+      }).join("");
+
+      box.innerHTML = `
+        <div class="diagnostic-dashboard">
+          <div class="diag-card diag-summary">
+            <h3>學習評估總覽</h3>
+            <div class="diag-score">Score: ${Number.isFinite(reportScore) ? reportScore.toFixed(0) : "-"}</div>
+            <div class="diag-meta">APR: ${Number.isFinite(aprMastery) ? aprMastery.toFixed(2) : "-"}</div>
+            <div class="diag-meta">Skill: ${escapeHtml(skillType)}</div>
+          </div>
+
+          <div class="diag-card">
+            <h4>技能掌握度</h4>
+            ${familyBars}
+          </div>
+
+          ${breakpointObj ? `
+            <div class="diag-card diag-breakpoint">
+              <h4>學習卡點</h4>
+              <p class="big">${escapeHtml(breakpointLabel)}</p>
+              <p>你目前需要學會：${escapeHtml(breakpointDesc)}</p>
+              <p>正確率：${Number.isFinite(breakpointAccuracy) ? Math.round(breakpointAccuracy * 100) : 0}%</p>
+              <p>常見問題：${escapeHtml(breakpointCommonError)}</p>
+              <p>建議先補強：${escapeHtml(breakpointPrereqText)}</p>
+              <p>此技能為目前主要學習瓶頸</p>
+            </div>
+          ` : ""}
+
+          <div class="diag-card diag-flex">
+            <div class="diag-col">
+              <h4>強項</h4>
+              ${strengthsHtml}
+            </div>
+            <div class="diag-col">
+              <h4>弱項</h4>
+              ${weaknessesHtml}
+            </div>
+          </div>
+
+          ${trajectory.length ? `
+            <div class="diag-card diag-trajectory">
+              <h4>學習歷程（系統決策）</h4>
+              <div class="diag-trajectory-line">${trajectoryHtml}</div>
+            </div>
+          ` : ""}
+
+          <div class="diag-card diag-recommend">
+            <h4>建議學習路徑</h4>
+            ${nextStepsHtml}
+          </div>
+        </div>
+      `;
+      box.className = "diagnostic-report show";
+    }
+
+    function renderSummary(summary, responseMeta = {}) {
+      const card = document.getElementById("summaryCard");
+      const passed = Boolean(summary && summary.passed);
+      const finalApr = Number(summary?.final_apr ?? state.currentApr ?? 0);
+      state.isCompleted = normalizeBoolean(summary?.is_completed, true);
+      state.displayMode = String(summary?.display_mode || responseMeta?.display_mode || "completed");
+      state.displayFamily = String(summary?.display_family || responseMeta?.display_family || state.currentFamilyId || "");
+      state.displaySubskill = String(summary?.display_subskill || responseMeta?.display_subskill || state.detectedSubskill || "");
+      state.displaySkill = String(summary?.display_skill || responseMeta?.display_skill || state.mainSkill || skillId || "");
+      state.mode = String(summary?.mode || responseMeta?.mode || state.mode || adaptiveEntryMode || "teaching").toLowerCase();
+      updateEntryModeBadge();
+      state.milestoneState = String(summary?.milestone_state || responseMeta?.milestone_state || "unit_completed");
+      state.localRemediationCompleted = normalizeBoolean(
+        summary?.local_remediation_completed,
+        normalizeBoolean(responseMeta?.local_remediation_completed, false)
+      );
+      state.unitCompleted = normalizeBoolean(
+        summary?.unit_completed,
+        normalizeBoolean(responseMeta?.unit_completed, state.isCompleted)
+      );
+      state.assessmentCompleted = normalizeBoolean(
+        summary?.assessment_completed,
+        normalizeBoolean(responseMeta?.assessment_completed, false)
+      );
+      state.assessmentStopReason = String(summary?.assessment_stop_reason || responseMeta?.assessment_stop_reason || "");
+      state.learningMode = normalizeLearningMode(summary?.learning_mode || state.learningMode || "");
+      state.mainSkill = String(summary?.main_skill || state.mainSkill || skillId || "");
+      state.mainSkillLabel = String(summary?.main_skill_label || state.mainSkillLabel || toSkillLabel(state.mainSkill) || "待載入");
+      state.currentFamilyLabel = resolveFamilyLabel({
+        skillKey: summary?.main_skill || state.mainSkill || skillId,
+        familyId: summary?.target_family_id || state.currentFamilyId,
+        familyNameEn: summary?.target_family_name || state.familyNameEn,
+        backendFamilyLabel: summary?.target_family_label || state.currentFamilyLabel,
+      });
+      state.detectedSubskill = String(summary?.detected_subskill_node || state.detectedSubskill || "");
+      state.detectedSubskillLabel = safeSubskillLabel(summary?.detected_subskill_label) || safeSubskillLabel(state.detectedSubskill) || safeSubskillLabel(state.detectedSubskillLabel) || "尚未偵測";
+      state.remediationSkill = String(summary?.remediation_skill || state.remediationSkill || "");
+      state.remediationSkillLabel = String(
+        summary?.remediation_skill_label
+        || getSubskillLabel(state.remediationSkill)
+        || toSkillLabel(state.remediationSkill)
+        || state.remediationSkillLabel
+        || ""
+      );
+      state.switchReason = String(summary?.switch_reason || state.switchReason || "");
+      state.returnReady = normalizeBoolean(summary?.return_ready, state.returnReady);
+      state.ppoRouteAction = String(summary?.ppo_action || summary?.route_action || state.ppoRouteAction || "");
+      state.ppoRouteActionIdx = summary?.route_action_idx ?? state.ppoRouteActionIdx;
+      state.currentMode = normalizeLearningMode(summary?.post_mode || summary?.current_mode || state.currentMode || "");
+      state.postMode = normalizeLearningMode(summary?.post_mode || summary?.current_mode || state.postMode || "");
+      state.remediationTriggeredFinal = normalizeBoolean(summary?.remediation_triggered_final, state.remediationTriggeredFinal);
+      state.remediationReviewReady = normalizeBoolean(summary?.remediation_review_ready, state.remediationReviewReady);
+      state.crossSkillTrigger = normalizeBoolean(summary?.cross_skill_trigger, state.crossSkillTrigger);
+      state.selectedFamilyForRender = String(
+        summary?.selected_family_for_render
+        || summary?.selected_family
+        || state.selectedFamilyForRender
+        || state.currentFamilyId
+        || ""
+      );
+      state.currentFamilyId = state.selectedFamilyForRender || state.currentFamilyId;
+      state.originFamily = String(summary?.origin_family || summary?.origin_family_id || state.originFamily || state.selectedFamilyForRender || "");
+      state.remediationFamily = String(summary?.remediation_family || summary?.remediation_family_id || "");
+      state.actionMaskHasRemediate = parseAllowedActions(summary?.allowed_actions || summary?.action_mask).includes("remediate");
+      state.isRemediationActive = isRemediationActiveFromState();
+      state.isRemediationCandidate = isRemediationCandidateOnlyFromState();
+      if (state.mode === "assessment") {
+        state.isRemediationCandidate = false;
+      }
+      if (state.isCompleted || normalizeDisplayMode(state.displayMode) === "completed") {
+        state.learningMode = state.mode === "assessment" ? "main" : "returned";
+        state.currentMode = "main";
+        state.postMode = "main";
+        state.remediationTriggeredFinal = false;
+        state.remediationReviewReady = false;
+        state.actionMaskHasRemediate = false;
+        state.crossSkillTrigger = false;
+        state.remediationFamily = "";
+        state.remediationSkill = "";
+        state.remediationSkillLabel = "";
+        state.isRemediationActive = false;
+        state.isRemediationCandidate = false;
+      }
+      if (!state.isRemediationActive && state.learningMode !== "remediation") {
+        state.remediationFamily = "";
+        if (summary?.remediation_skill === undefined && summary?.remediation_skill_label === undefined) {
+          state.remediationSkill = "";
+          state.remediationSkillLabel = "";
+        }
+      }
+      if (summary?.has_returned_to_main !== undefined || summary?.return_to_mainline !== undefined || responseMeta?.return_to_mainline !== undefined) {
+        state.hasReturnedToMain = normalizeBoolean(
+          summary?.has_returned_to_main,
+          normalizeBoolean(summary?.return_to_mainline, normalizeBoolean(responseMeta?.return_to_mainline, state.hasReturnedToMain))
+        );
+      }
+      updateAdaptiveStatePanel();
+      applyDemoRouteMsg(responseMeta?.demo_route_msg || summary?.demo_route_msg);
+      card.classList.add("show");
+      card.classList.toggle("pass", passed);
+      card.classList.toggle("review", !passed);
+      setText("aprPercent", `${Math.round(finalApr * 100)}%`);
+      const aprRing = document.getElementById("aprRing");
+      if (aprRing) aprRing.style.background = `conic-gradient(var(--accent) 0deg, var(--accent) ${Math.max(4, Math.round(finalApr * 100)) * 3.6}deg, #e6eef8 ${Math.max(4, Math.round(finalApr * 100)) * 3.6}deg)`;
+      setText("stepValue", String(summary?.answered_steps ?? state.stepNumber));
+      setText("frustrationValue", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
+      setText("frustrationMini", String(summary?.frustration_index ?? state.frustrationIndex ?? 0));
+      setText("strategyMini", passed ? "完成" : strategyLabel(state.ppoStrategy));
+      setText("familyBadge", `微技能：${summary?.visited_families?.slice(-1)[0] || state.currentFamilyId || "待診斷"}`);
+      setText("summaryTitle", summary?.title || "本次診斷完成");
+      setText("summaryMessage", summary?.message || "");
+      setText("summaryAction", summary?.next_action || "");
+      const badges = [];
+      badges.push(`作答題數：${summary?.answered_steps ?? 0}`);
+      badges.push(`最終 APR：${Math.round((summary?.final_apr ?? 0) * 100)}%`);
+      if (summary?.standardized_score !== undefined && summary?.standardized_score !== null) {
+        const standardizedScore = Number(summary.standardized_score);
+        if (Number.isFinite(standardizedScore)) {
+          badges.push(`評量分數：${standardizedScore.toFixed(1)} / 100`);
+        }
+      }
+      if (Array.isArray(summary?.visited_families)) {
+        badges.push(`涉及 family：${summary.visited_families.filter(Boolean).join("、") || "-"}`);
+      }
+      document.getElementById("summaryBadges").innerHTML = badges.map((item) => `<span>${item}</span>`).join("");
+      renderDiagnosticReport(responseMeta?.diagnostic_report || summary?.diagnostic_report || null);
+      setFinishedState(true);
+      const polyTeachingSkill = String(skillId || state.mainSkill || "").includes("FourArithmeticOperationsOfPolynomial");
+      const midPolyTeaching = !passed && state.mode === "teaching" && polyTeachingSkill;
+      setText(
+        "questionText",
+        passed
+          ? (state.mode === "teaching" && polyTeachingSkill
+            ? (summary?.message || "你已完成本單元多項式教學主線（含 F10 除法原理回推）。")
+            : "你已完成本單元自適應診斷。")
+          : (midPolyTeaching
+            ? (summary?.message || "主線進行中，請繼續下一個核心題型（長除法 F9 → 反推除法 F10）。")
+            : "本次診斷已完成，請先看補強建議。"),
+      );
+      setText("questionContext", "");
+      const subskillsBox = document.getElementById("subskillsBox");
+      if (subskillsBox) subskillsBox.innerHTML = "";
+      setStatus(`本次診斷已結束。模式：${toLearningModeLabel(state.learningMode)}`);
+      if (state.mode === "assessment" && state.assessmentCompleted && state.assessmentStopReason === "stable_breakpoint_detected") {
+        setAssistantBanner("本輪診斷完成，系統已確認你目前的學習斷點，建議切換教學模式補強。", false, "completed");
+      } else if (state.mode === "assessment" && state.assessmentCompleted) {
+        setAssistantBanner("本輪診斷完成，系統已確認你可穩定處理目前主線題型。", false, "completed");
+      } else if (state.unitCompleted) {
+        setAssistantBanner("本輪診斷完成，系統已確認你可穩定處理目前主線題型。", false, "completed");
+      } else if (state.localRemediationCompleted) {
+        setAssistantBanner("補救已達標，系統現在返回主線，重新檢核多項式題型。", false, "returned");
+      } else {
+        setAssistantBanner(
+          passed
+            ? "本輪診斷完成，系統已確認你可穩定處理目前主線題型。"
+            : "本輪診斷完成，系統已整理你目前需要加強的子技能。",
+          false,
+          "completed",
+        );
+      }
+      updateRagScopeBadge("done");
+    }
+
+    bootstrapBtn.addEventListener("click", async () => {
+      try {
+        setStatus("正在建立診斷 session...");
+        state.history = [];
+        state.learningMode = "main";
+        state.mainSkill = "";
+        state.mainSkillLabel = "";
+        state.currentFamilyLabel = "";
+        state.detectedSubskill = "";
+        state.detectedSubskillLabel = "";
+        state.remediationSkill = "";
+        state.remediationSkillLabel = "";
+        state.switchReason = "";
+        state.returnReady = false;
+        state.hasReturnedToMain = false;
+        state.ppoRouteAction = "";
+        state.ppoRouteActionIdx = null;
+        state.familyNameEn = "";
+        state.currentMode = "";
+        state.postMode = "";
+        state.remediationTriggeredFinal = false;
+        state.remediationReviewReady = false;
+        state.actionMaskHasRemediate = false;
+        state.crossSkillTrigger = false;
+        state.selectedFamilyForRender = "";
+        state.originFamily = "";
+        state.remediationFamily = "";
+        state.isRemediationActive = false;
+        state.isRemediationCandidate = false;
+        state.isCompleted = false;
+        state.displayMode = "";
+        state.displayFamily = "";
+        state.displaySubskill = "";
+        state.displaySkill = "";
+        state.milestoneState = "";
+        state.localRemediationCompleted = false;
+        state.unitCompleted = false;
+        state.demoRouteMsg = "系統尚未開始診斷。";
+        setText("demoRouteMsgBox", state.demoRouteMsg);
+        setAssistantSummaryMessage("目前先練這一題，助教會在你卡住時提供提示。", "neutral");
+        updateAdaptiveStatePanel();
+        resetChatHistory();
+        resetHintBox();
+        updateRagScopeBadge("idle");
+        const data = await postAdaptive({ ...basePayload, step_number: 0 });
+        document.getElementById("summaryCard").className = "summary-card";
+        renderQuestion(data);
+      } catch (err) { setStatus(`啟動失敗：${err.message}`); }
+    });
+
+      submitBtn.addEventListener("click", async () => {
+        try {
+          const answer = answerInput.value.trim();
+          if (!answer) { setStatus("請先輸入答案。"); return; }
+          const data = await postAdaptive({ ...basePayload, session_id: state.sessionId, step_number: state.stepNumber, user_answer: answer });
+          if (data.completed) {
+            state.history.push({
+              step_number: data.step_number,
+              current_apr: data.current_apr,
+              ppo_strategy: data.ppo_strategy,
+              learning_mode: normalizeLearningMode(data.summary?.learning_mode || data.learning_mode || state.learningMode || ""),
+              detected_subskill: String(data.detected_subskill_node || state.detectedSubskill || ""),
+              completed: true,
+            });
+            renderTrajectory();
+            updateOverview(data, data.new_question_data || {});
+            renderSummary(data.summary || {}, data);
+            setText("jsonBox", JSON.stringify(data.summary || {}, null, 2));
+            return;
+          }
+        renderQuestion(data);
+        if (data.answer_feedback) {
+          setStatus(String(data.answer_feedback));
+        }
+        if (data.ppo_strategy === 3) {
+          updateRagScopeBadge("review");
+          await fetchHint();
+          addMessage("bot", "我已經依照你目前卡住的微技能，整理出補救提示。先看右側說明，再試下一題。");
+        } else {
+          updateRagScopeBadge("active");
+        }
+      } catch (err) { setStatus(`提交失敗：${err.message}`); }
+    });
+
+    answerInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); submitBtn.click(); } });
+    hintBtn.addEventListener("click", async () => { try { updateRagScopeBadge("review"); await fetchHint(); setAssistantBanner("你已手動請求補救提示。助教會優先針對本題相關的 subskill 給出提示。", true); setStatus("已載入補救提示。"); } catch (err) { setStatus(`提示載入失敗：${err.message}`); } });
+    document.querySelectorAll("[data-guide]").forEach((btn) => btn.addEventListener("click", async () => { await performAdvRagSearch(btn.dataset.guide); }));
+    assistantSendBtn.addEventListener("click", async () => { const question = assistantInput.value.trim(); if (!question) { setStatus("請輸入你想問助教的問題。"); return; } assistantInput.value = ""; await performAdvRagSearch(question); });
+    assistantInput.addEventListener("keydown", (event) => { if (event.key === "Enter") { event.preventDefault(); assistantSendBtn.click(); } });
+    analyzeCanvasBtn.addEventListener("click", analyzeHandwriting);
+
+    document.getElementById("penToolBtn").addEventListener("click", () => activatePen(currentColor, currentColor === "#1565c0" ? "blueInkBtn" : currentColor === "#dc2626" ? "redInkBtn" : currentColor === "#16a34a" ? "greenInkBtn" : "blackInkBtn"));
+    document.getElementById("eraserToolBtn").addEventListener("click", activateEraser);
+    document.getElementById("blackInkBtn").addEventListener("click", () => activatePen("#1f2937", "blackInkBtn"));
+    document.getElementById("blueInkBtn").addEventListener("click", () => activatePen("#1565c0", "blueInkBtn"));
+    document.getElementById("redInkBtn").addEventListener("click", () => activatePen("#dc2626", "redInkBtn"));
+    document.getElementById("greenInkBtn").addEventListener("click", () => activatePen("#16a34a", "greenInkBtn"));
+    clearCanvasBtn.addEventListener("click", () => clearCanvas(true));
+    undoBtn.addEventListener("click", undo);
+    redoBtn.addEventListener("click", redo);
+    penWidthRange.addEventListener("input", (event) => { currentWidth = Number.parseInt(event.target.value, 10) || 2; penWidthLabel.textContent = String(currentWidth); });
+
+    canvas.addEventListener("pointerdown", startDraw);
+    canvas.addEventListener("pointermove", draw);
+    canvas.addEventListener("pointerup", stopDraw);
+    canvas.addEventListener("pointerleave", stopDraw);
+    canvas.addEventListener("touchstart", startDraw, { passive: false });
+    canvas.addEventListener("touchmove", draw, { passive: false });
+    canvas.addEventListener("touchend", stopDraw, { passive: false });
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    saveState();
+    updateUndoRedoButtons();
+    updateEntryModeBadge();
+    updateAdaptiveStatePanel();
+    assistantSendBtn.disabled = true;
+    assistantInput.disabled = true;
+    assistantInput.disabled = true;
+    analyzeCanvasBtn.disabled = true;
+
+    // === RAG-backed assistant chat ===
+
+    async function performAdvRagSearch(queryOverride = "") {
+        const query = (queryOverride || '').trim();
+        if (!query) return;
+
+        const loading = document.getElementById('adv-rag-loading');
+        const resultsDiv = document.getElementById('adv-rag-results');
+        const buttonsDiv = document.getElementById('adv-rag-results-buttons');
+        const routingBadge = document.getElementById('adv-rag-routing-badge');
+
+        if (loading) loading.style.display = 'block';
+        if (resultsDiv) resultsDiv.style.display = 'none';
+        if (routingBadge) routingBadge.style.display = 'none';
+
+        await addMessage("user", query);
+        const thinking = await addMessage("bot", "我先用 RAG 找相關單元，再整理成這一題的提示...");
+
+        try {
+            // 1. Search Advanced RAG
+            const searchResp = await fetch('/api/adaptive/adv_rag_search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+
+            const searchParams = await searchResp.json();
+            console.log("[AI TUTOR META]", searchParams);
+            
+            if (searchParams.error) throw new Error(searchParams.error);
+
+            function formatRetrievalChannel(params) {
+                let rawChannel = params.retrieval_channel || params.retrieval_mode || params.rag_mode || params.search_mode || params.pipeline || params.source || params.used_pipeline;
+                if (!rawChannel && params.results && params.results.length > 0) {
+                    rawChannel = params.results[0].routing || params.results[0].source || params.results[0].pipeline || params.results[0].retrieval_channel;
+                }
+
+                const isFallback = (params.fallback_reason || params.advanced_rag_ready === false || params.used_pipeline === 'naive' || String(params.fallback_reason).length > 0);
+
+                if (!rawChannel) {
+                    if (isFallback) return "Naive RAG（Fallback）";
+                    return "未回報";
+                }
+
+                const lower = String(rawChannel).toLowerCase();
+                if (lower === "fallback_naive" || lower === "fallback_to_naive" || lower.includes("fallback")) {
+                    return "Naive RAG（Fallback）";
+                }
+                
+                if (lower === "advanced") return "Advanced RAG";
+                if (lower === "naive") {
+                    return isFallback ? "Naive RAG（Fallback）" : "Naive RAG";
+                }
+                if (lower === "hybrid") return "Hybrid RAG";
+
+                // 若都是未知，但被戳上 fallback 就標記
+                if (isFallback && lower === "unknown") return "Naive RAG（Fallback）";
+                
+                return lower === "unknown" ? "未回報" : rawChannel;
+            }
+
+            const results = searchParams.results || [];
+            if (buttonsDiv) buttonsDiv.innerHTML = '';
+
+            let channelDisplay = formatRetrievalChannel(searchParams);
+            let retrievedSkillsForChat = [];
+
+            if (results.length > 0) {
+                results.forEach((item, index) => {
+                    const btn = document.createElement('button');
+                    const chineseName = item.chinese_name || item.skill_id;
+                    const dispFamily = (typeof FAMILY_NAME_UI_MAP !== 'undefined' && FAMILY_NAME_UI_MAP[item.family_name]) ? FAMILY_NAME_UI_MAP[item.family_name] : item.family_name;
+                    const familyName = dispFamily ? ` (${dispFamily})` : '';
+                    btn.innerText = `${index + 1}. ${chineseName}${familyName}`;
+                    btn.title = item.skill_id;
+                    btn.style.cssText = `
+                        background: #f0f7ff;
+                        color: #1565c0;
+                        border: 1px solid #1565c0;
+                        border-radius: 6px;
+                        padding: 4px 8px;
+                        font-size: 0.85em;
+                        cursor: pointer;
+                        display: inline-block;
+                        text-align: left;
+                    `;
+                    btn.onclick = () => {
+                        fetch('/api/adaptive/rag_settings').then(r=>r.json()).then(data => {
+                            if (data.target_type === 'adaptive') {
+                                window.location.href = `/adaptive_summative?skill_id=${encodeURIComponent(item.skill_id)}&mode=teaching`;
+                            } else {
+                                window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
+                            }
+                        }).catch(e => {
+                            window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
+                        });
+                    };
+                    if (buttonsDiv) buttonsDiv.appendChild(btn);
+
+                    retrievedSkillsForChat.push({
+                        skill_id: item.skill_id,
+                        chinese_name: item.chinese_name,
+                        family_name: item.family_name,
+                        subskill_nodes: item.subskill_nodes
+                    });
+                });
+                if (resultsDiv) resultsDiv.style.display = 'block';
+                
+                if (channelDisplay !== "未回報") {
+                    if (routingBadge) {
+                        routingBadge.innerText = `檢索通道：${channelDisplay}`;
+                        routingBadge.style.display = 'inline-block';
+                    }
+                }
+
+                // 2. Query Chat AI
+                const chatResp = await fetch('/api/adaptive/adv_rag_chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        question_text: state.currentQuestionText || document.getElementById('questionText')?.innerText || '',
+                        family_id: state.currentFamilyId || '',
+                        retrieved_skills: retrievedSkillsForChat
+                    })
+                });
+
+                const chatParams = await chatResp.json();
+                if (chatParams.error) throw new Error(chatParams.error);
+                if (chatParams.reply) {
+                    const routingNote = channelDisplay !== "未回報" ? `檢索通道：${channelDisplay}\n\n` : "";
+                    setMessageContent(thinking, `${routingNote}${chatParams.reply}`);
+                    if (window.MathJax) {
+                        window.MathJax.typesetPromise([thinking]).catch(e => console.error("MathJax Error", e));
+                    }
+                } else {
+                    setMessageContent(thinking, "抱歉，處理你的問題時發生錯誤。");
+                }
+
+            } else {
+                if (buttonsDiv) buttonsDiv.innerHTML = '<span style="font-size:0.85em; color:#999;">找不到相關文章</span>';
+                if (resultsDiv) resultsDiv.style.display = 'block';
+                setMessageContent(thinking, "我目前找不到足夠相關的單元，請把題目或卡住的步驟說得更具體一點。");
+            }
+
+        } catch (err) {
+            console.error('RAG Search Failed:', err);
+            setMessageContent(thinking, `RAG 回答暫時失敗：${err.message}`);
+        } finally {
+            if (loading) loading.style.display = 'none';
+            scrollChatToBottom();
+        }
+    }
+
+
+    // AI 助教標題動態更新邏輯
+    async function fetchRuntimeAIStatus() {
+        try {
+            const res = await fetch('/api/runtime_ai_status');
+            const data = await res.json();
+            return data;
+        } catch (e) {
+            console.error('[AI STATUS] failed to fetch runtime ai status', e);
+            return null;
+        }
+    }
+
+    function formatMode(mode) {
+        if (!mode) return "Unknown";
+        if (mode === "edge") return "Edge";
+        if (mode === "cloud") return "Cloud";
+        if (mode === "hybrid") return "Hybrid";
+        return mode.charAt(0).toUpperCase() + mode.slice(1);
+    }
+
+    async function updateTutorAIStatus() {
+        const el = document.getElementById('tutor-ai-status');
+        if (!el) return;
+
+        try {
+            const data = await fetchRuntimeAIStatus();
+            if (data && data.success && data.tutor_model) {
+                const formattedMode = formatMode(data.ai_mode);
+                el.innerText = `AI 助教（${data.tutor_model}｜${formattedMode}）`;
+                
+                // 設定顏色提示
+                if (data.ai_mode === 'edge') {
+                    el.style.color = '#10b981'; // Tailwind emerald-500
+                } else if (data.ai_mode === 'cloud') {
+                    el.style.color = '#3b82f6'; // Tailwind blue-500
+                } else if (data.ai_mode === 'hybrid') {
+                    el.style.color = '#f59e0b'; // Tailwind amber-500
+                }
+            } else {
+                el.innerText = `AI 助教（無法取得狀態）`;
+                el.style.color = '#ef4444';
+            }
+        } catch (e) {
+            el.innerText = `AI 助教（無法取得狀態）`;
+            el.style.color = '#ef4444';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTutorAIStatus();
+    });
+
+  </script>
+</body>
+</html>

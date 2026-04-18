@@ -1,0 +1,4052 @@
+{
+  "units": [
+    {
+      "unit_info": {
+        "l0_grade": "國中",
+        "l1_domain": "代數與函數",
+        "l2_unit": "第1章_乘法公式與多項式",
+        "l2_unit_id": "JH_ALG_MULPOLY"
+      },
+      "nodes": [
+        {
+          "id": "L0_JH",
+          "level": "L0",
+          "name": "國中",
+          "parent_id": null
+        },
+        {
+          "id": "L1_JH_ALG",
+          "level": "L1",
+          "name": "代數與函數",
+          "parent_id": "L0_JH"
+        },
+        {
+          "id": "JH_ALG_MULPOLY",
+          "level": "L2",
+          "name": "第1章_乘法公式與多項式",
+          "parent_id": "L1_JH_ALG"
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_01",
+          "level": "L3",
+          "name": "乘法公式的基礎",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習乘法分配律在文字符號運算、面積模型及數值計算中的應用。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_01_a",
+          "level": "L4",
+          "name": "分配律的文字符號運算",
+          "parent_id": "JH_ALG_MULPOLY_L3_01",
+          "description": "理解並應用a(b+c)=ab+ac等分配律的文字符號運算。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_01_b",
+          "level": "L4",
+          "name": "分配律的面積模型",
+          "parent_id": "JH_ALG_MULPOLY_L3_01",
+          "description": "透過面積分割圖形，理解分配律a(a+3)=a²+3a的幾何意義。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_01_c",
+          "level": "L4",
+          "name": "分配律的數值計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_01",
+          "description": "利用分配律簡化數值計算，例如99x501。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_01_d",
+          "level": "L4",
+          "name": "分配律的應用",
+          "parent_id": "JH_ALG_MULPOLY_L3_01",
+          "description": "將分配律應用於實際數值計算，例如89x102。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02",
+          "level": "L3",
+          "name": "和的平方公式",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習和的平方公式(a+b)²=a²+2ab+b²的推導、應用與判斷。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02_a",
+          "level": "L4",
+          "name": "和的平方公式的面積模型",
+          "parent_id": "JH_ALG_MULPOLY_L3_02",
+          "description": "透過面積分割圖形，理解和的平方公式(a+b)²=a²+2ab+b²的幾何意義。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02_b",
+          "level": "L4",
+          "name": "和的平方公式的分配律推導",
+          "parent_id": "JH_ALG_MULPOLY_L3_02",
+          "description": "利用分配律推導和的平方公式(a+b)²=a²+2ab+b²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02_c",
+          "level": "L4",
+          "name": "和的平方公式的數值計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_02",
+          "description": "利用和的平方公式簡化數值計算，例如504²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02_d",
+          "level": "L4",
+          "name": "和的平方公式的逆向應用",
+          "parent_id": "JH_ALG_MULPOLY_L3_02",
+          "description": "將a²+2ab+b²形式的式子轉換為(a+b)²。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_02_e",
+          "level": "L4",
+          "name": "和的平方公式的判斷與更正",
+          "parent_id": "JH_ALG_MULPOLY_L3_02",
+          "description": "判斷給定等式是否符合和的平方公式，並進行更正。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03",
+          "level": "L3",
+          "name": "差的平方公式",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習差的平方公式(a-b)²=a²-2ab+b²的推導、應用與判斷。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03_a",
+          "level": "L4",
+          "name": "差的平方公式的面積模型",
+          "parent_id": "JH_ALG_MULPOLY_L3_03",
+          "description": "透過面積分割圖形，理解差的平方公式(a-b)²=a²-2ab+b²的幾何意義。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03_b",
+          "level": "L4",
+          "name": "差的平方公式的分配律推導",
+          "parent_id": "JH_ALG_MULPOLY_L3_03",
+          "description": "利用分配律推導差的平方公式(a-b)²=a²-2ab+b²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03_c",
+          "level": "L4",
+          "name": "差的平方公式的數值計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_03",
+          "description": "利用差的平方公式簡化數值計算，例如199²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03_d",
+          "level": "L4",
+          "name": "差的平方公式的逆向應用",
+          "parent_id": "JH_ALG_MULPOLY_L3_03",
+          "description": "將a²-2ab+b²形式的式子轉換為(a-b)²。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_03_e",
+          "level": "L4",
+          "name": "差的平方公式的判斷與更正",
+          "parent_id": "JH_ALG_MULPOLY_L3_03",
+          "description": "判斷給定等式是否符合差的平方公式，並進行更正。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04",
+          "level": "L3",
+          "name": "平方差公式",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習平方差公式(a+b)(a-b)=a²-b²的推導、應用與判斷。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04_a",
+          "level": "L4",
+          "name": "平方差公式的面積模型",
+          "parent_id": "JH_ALG_MULPOLY_L3_04",
+          "description": "透過面積分割圖形，理解平方差公式(a+b)(a-b)=a²-b²的幾何意義。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04_b",
+          "level": "L4",
+          "name": "平方差公式的分配律推導",
+          "parent_id": "JH_ALG_MULPOLY_L3_04",
+          "description": "利用分配律推導平方差公式(a+b)(a-b)=a²-b²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04_c",
+          "level": "L4",
+          "name": "平方差公式的數值計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_04",
+          "description": "利用平方差公式簡化數值計算，例如203x197。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04_d",
+          "level": "L4",
+          "name": "平方差公式的逆向應用",
+          "parent_id": "JH_ALG_MULPOLY_L3_04",
+          "description": "將a²-b²形式的式子轉換為(a+b)(a-b)。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_04_e",
+          "level": "L4",
+          "name": "平方差公式的判斷與更正",
+          "parent_id": "JH_ALG_MULPOLY_L3_04",
+          "description": "判斷給定等式是否符合平方差公式，並進行更正。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_05",
+          "level": "L3",
+          "name": "乘法公式的應用",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "將乘法公式應用於解決實際生活中的面積問題。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_05_a",
+          "level": "L4",
+          "name": "和的平方公式的應用 (L型拼布面積)",
+          "parent_id": "JH_ALG_MULPOLY_L3_05",
+          "description": "利用和的平方公式計算L型拼布後的總面積。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_05_b",
+          "level": "L4",
+          "name": "差的平方公式的應用 (L型水泥道路面積)",
+          "parent_id": "JH_ALG_MULPOLY_L3_05",
+          "description": "利用差的平方公式計算開闢L型水泥道路後剩餘的土地面積。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_05_c",
+          "level": "L4",
+          "name": "乘法公式的綜合應用 (周長與面積計算)",
+          "parent_id": "JH_ALG_MULPOLY_L3_05",
+          "description": "綜合運用乘法公式計算複雜圖形的周長與面積。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06",
+          "level": "L3",
+          "name": "認識多項式",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習多項式的基本概念，包括定義、項、係數、次數、排列方式及同類項。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06_a",
+          "level": "L4",
+          "name": "多項式的定義",
+          "parent_id": "JH_ALG_MULPOLY_L3_06",
+          "description": "理解多項式是由數和文字符號x進行加法與乘法運算所構成的式子。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06_b",
+          "level": "L4",
+          "name": "多項式的項、係數、次數",
+          "parent_id": "JH_ALG_MULPOLY_L3_06",
+          "description": "識別多項式中的項、係數和次數，並理解最高次項的次數即為多項式的次數。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06_c",
+          "level": "L4",
+          "name": "單項式與常數多項式",
+          "parent_id": "JH_ALG_MULPOLY_L3_06",
+          "description": "區分單項式（只有一項）和常數多項式（常數項），並理解零次多項式的概念。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06_d",
+          "level": "L4",
+          "name": "升冪排列與降冪排列",
+          "parent_id": "JH_ALG_MULPOLY_L3_06",
+          "description": "將多項式按照x的次數大小進行升冪或降冪排列。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_06_e",
+          "level": "L4",
+          "name": "同類項的定義",
+          "parent_id": "JH_ALG_MULPOLY_L3_06",
+          "description": "理解文字符號及次數均相同的項稱為同類項。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_07",
+          "level": "L3",
+          "name": "多項式的加法",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習多項式加法的圖像模型、直式與橫式計算，以及缺項多項式的加法。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_07_a",
+          "level": "L4",
+          "name": "多項式加法的圖像模型",
+          "parent_id": "JH_ALG_MULPOLY_L3_07",
+          "description": "透過圖形合併，理解多項式加法是將同類項合併計算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_07_b",
+          "level": "L4",
+          "name": "多項式加法的直式計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_07",
+          "description": "使用直式將多項式按降冪排列並對齊同類項進行加法運算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_07_c",
+          "level": "L4",
+          "name": "多項式加法的橫式計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_07",
+          "description": "使用橫式將多項式去括號後合併同類項進行加法運算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_07_d",
+          "level": "L4",
+          "name": "缺項多項式的加法",
+          "parent_id": "JH_ALG_MULPOLY_L3_07",
+          "description": "處理缺少某些項的多項式加法，直式計算時可補上0。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_08",
+          "level": "L3",
+          "name": "多項式的減法",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習多項式減法的直式與橫式計算，以及缺項多項式的減法。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_08_a",
+          "level": "L4",
+          "name": "多項式減法的直式計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_08",
+          "description": "使用直式將多項式按降冪排列並對齊同類項進行減法運算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_08_b",
+          "level": "L4",
+          "name": "多項式減法的橫式計算",
+          "parent_id": "JH_ALG_MULPOLY_L3_08",
+          "description": "使用橫式將多項式去括號後合併同類項進行減法運算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_08_c",
+          "level": "L4",
+          "name": "缺項多項式的減法",
+          "parent_id": "JH_ALG_MULPOLY_L3_08",
+          "description": "處理缺少某些項的多項式減法，直式計算時可補上0。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_09",
+          "level": "L3",
+          "name": "多項式的加減混合運算",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習多項式加減混合運算的步驟與應用。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_09_a",
+          "level": "L4",
+          "name": "多項式加減混合運算的步驟",
+          "parent_id": "JH_ALG_MULPOLY_L3_09",
+          "description": "遵循先去括號再合併同類項的步驟進行多項式加減混合運算。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_09_b",
+          "level": "L4",
+          "name": "多項式加減混合運算的應用 (求未知多項式)",
+          "parent_id": "JH_ALG_MULPOLY_L3_09",
+          "description": "利用多項式加減混合運算求解含有未知多項式的等式。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10",
+          "level": "L3",
+          "name": "多項式的乘法",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習單項式與多項式的乘法，包括指數律、分配律應用、直式與橫式計算，以及乘法公式的應用。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_a",
+          "level": "L4",
+          "name": "單項式乘法的指數律",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "應用指數律am×an=am+n於單項式乘法。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_b",
+          "level": "L4",
+          "name": "單項式乘法的係數與文字符號分開相乘",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "將單項式乘法中的係數與文字符號分開相乘，並將係數寫在文字符號前面。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_c",
+          "level": "L4",
+          "name": "單項式乘以多項式",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "利用分配律計算單項式與多項式的乘積。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_d",
+          "level": "L4",
+          "name": "多項式乘以多項式",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "使用分配律或直式乘法計算多項式與多項式的乘積。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_e",
+          "level": "L4",
+          "name": "缺項多項式的乘法",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "處理缺少某些項的多項式乘法，直式計算時可補上0。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_10_f",
+          "level": "L4",
+          "name": "乘法公式在多項式乘法中的應用",
+          "parent_id": "JH_ALG_MULPOLY_L3_10",
+          "description": "利用和的平方、差的平方及平方差公式簡化多項式乘法。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11",
+          "level": "L3",
+          "name": "多項式的除法",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習單項式與多項式的除法，包括指數律、直式除法、被除式與商式餘式的關係，以及除法的應用。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_a",
+          "level": "L4",
+          "name": "單項式除法的指數律",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "應用指數律am÷an=am-n於單項式除法。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_b",
+          "level": "L4",
+          "name": "單項式除法的係數與文字符號分開相除",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "將單項式除法中的係數與文字符號分開相除，並將係數寫在文字符號前面。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_c",
+          "level": "L4",
+          "name": "多項式除以單項式",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "使用直式除法計算多項式除以單項式。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_d",
+          "level": "L4",
+          "name": "多項式除以多項式 (除式為一次式)",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "使用直式除法計算多項式除以一次式多項式，並理解商式與餘式。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_e",
+          "level": "L4",
+          "name": "多項式除以多項式 (除式為二次式)",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "使用直式除法計算多項式除以二次式多項式，並理解商式與餘式。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_f",
+          "level": "L4",
+          "name": "被除式=商式×除式+餘式 (關係式)",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "理解多項式除法中被除式、商式、除式與餘式之間的關係。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_11_g",
+          "level": "L4",
+          "name": "多項式除法的應用 (求未知除式)",
+          "parent_id": "JH_ALG_MULPOLY_L3_11",
+          "description": "利用被除式、商式、餘式的關係求解未知除式。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_12",
+          "level": "L3",
+          "name": "多項式的四則混合運算",
+          "parent_id": "JH_ALG_MULPOLY",
+          "description": "學習多項式四則混合運算的順序與應用。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_12_a",
+          "level": "L4",
+          "name": "多項式四則運算的順序",
+          "parent_id": "JH_ALG_MULPOLY_L3_12",
+          "description": "遵循先乘除後加減、括號內先算的規則進行多項式四則混合運算。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_MULPOLY_L3_12_b",
+          "level": "L4",
+          "name": "多項式四則運算的應用 (周長與面積)",
+          "parent_id": "JH_ALG_MULPOLY_L3_12",
+          "description": "將多項式四則運算應用於計算複雜圖形的周長與面積。",
+          "difficulty": 5
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "L0_JH",
+          "to_id": "L1_JH_ALG",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "L1_JH_ALG",
+          "to_id": "JH_ALG_MULPOLY",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_01",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_01_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_01_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_01_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_01_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_02",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_02_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_02_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_02_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_02_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_02_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_03",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_03_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_03_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_03_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_03_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_03_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_04",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_04_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_04_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_04_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_04_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_04_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_05",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_05",
+          "to_id": "JH_ALG_MULPOLY_L3_05_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_05",
+          "to_id": "JH_ALG_MULPOLY_L3_05_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_05",
+          "to_id": "JH_ALG_MULPOLY_L3_05_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_06",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_06_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_06_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_06_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_06_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_06_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_07",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_07_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_07_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_07_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_07_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_08",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08",
+          "to_id": "JH_ALG_MULPOLY_L3_08_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08",
+          "to_id": "JH_ALG_MULPOLY_L3_08_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08",
+          "to_id": "JH_ALG_MULPOLY_L3_08_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_09",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_09",
+          "to_id": "JH_ALG_MULPOLY_L3_09_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_09",
+          "to_id": "JH_ALG_MULPOLY_L3_09_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_10",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_10_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_11",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_11_g",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY",
+          "to_id": "JH_ALG_MULPOLY_L3_12",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_12",
+          "to_id": "JH_ALG_MULPOLY_L3_12_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_12",
+          "to_id": "JH_ALG_MULPOLY_L3_12_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_02",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_03",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_04",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_05",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_05",
+          "to_id": "JH_ALG_MULPOLY_L3_06",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_07",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_08",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08",
+          "to_id": "JH_ALG_MULPOLY_L3_09",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_09",
+          "to_id": "JH_ALG_MULPOLY_L3_10",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_11",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_12",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01_a",
+          "to_id": "JH_ALG_MULPOLY_L3_01_b",
+          "type": "prerequisite",
+          "reason": "文字符號運算是理解面積模型的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01_a",
+          "to_id": "JH_ALG_MULPOLY_L3_01_c",
+          "type": "prerequisite",
+          "reason": "分配律的文字符號運算是數值計算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01_c",
+          "to_id": "JH_ALG_MULPOLY_L3_01_d",
+          "type": "prerequisite",
+          "reason": "分配律的數值計算是其應用的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_02",
+          "type": "prerequisite",
+          "reason": "分配律是乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02_a",
+          "to_id": "JH_ALG_MULPOLY_L3_02_b",
+          "type": "prerequisite",
+          "reason": "面積模型有助於理解公式的推導。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02_b",
+          "to_id": "JH_ALG_MULPOLY_L3_02_c",
+          "type": "prerequisite",
+          "reason": "公式推導後才能應用於數值計算。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02_c",
+          "to_id": "JH_ALG_MULPOLY_L3_02_d",
+          "type": "prerequisite",
+          "reason": "正向計算是逆向應用的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_03",
+          "type": "prerequisite",
+          "reason": "分配律是乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03_a",
+          "to_id": "JH_ALG_MULPOLY_L3_03_b",
+          "type": "prerequisite",
+          "reason": "面積模型有助於理解公式的推導。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03_b",
+          "to_id": "JH_ALG_MULPOLY_L3_03_c",
+          "type": "prerequisite",
+          "reason": "公式推導後才能應用於數值計算。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03_c",
+          "to_id": "JH_ALG_MULPOLY_L3_03_d",
+          "type": "prerequisite",
+          "reason": "正向計算是逆向應用的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_01",
+          "to_id": "JH_ALG_MULPOLY_L3_04",
+          "type": "prerequisite",
+          "reason": "分配律是乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04_a",
+          "to_id": "JH_ALG_MULPOLY_L3_04_b",
+          "type": "prerequisite",
+          "reason": "面積模型有助於理解公式的推導。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04_b",
+          "to_id": "JH_ALG_MULPOLY_L3_04_c",
+          "type": "prerequisite",
+          "reason": "公式推導後才能應用於數值計算。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04_c",
+          "to_id": "JH_ALG_MULPOLY_L3_04_d",
+          "type": "prerequisite",
+          "reason": "正向計算是逆向應用的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_05",
+          "type": "prerequisite",
+          "reason": "和的平方公式是乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_05",
+          "type": "prerequisite",
+          "reason": "差的平方公式是乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_05",
+          "type": "prerequisite",
+          "reason": "平方差公式是乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06_a",
+          "to_id": "JH_ALG_MULPOLY_L3_06_b",
+          "type": "prerequisite",
+          "reason": "理解多項式定義是識別項、係數、次數的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06_b",
+          "to_id": "JH_ALG_MULPOLY_L3_06_c",
+          "type": "prerequisite",
+          "reason": "理解項、係數、次數是區分單項式和常數多項式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06_b",
+          "to_id": "JH_ALG_MULPOLY_L3_06_d",
+          "type": "prerequisite",
+          "reason": "理解次數是進行多項式排列的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06_b",
+          "to_id": "JH_ALG_MULPOLY_L3_06_e",
+          "type": "prerequisite",
+          "reason": "理解項是定義同類項的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_07",
+          "type": "prerequisite",
+          "reason": "認識多項式是進行多項式加法運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07_a",
+          "to_id": "JH_ALG_MULPOLY_L3_07_b",
+          "type": "prerequisite",
+          "reason": "圖像模型有助於理解直式計算的原理。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07_a",
+          "to_id": "JH_ALG_MULPOLY_L3_07_c",
+          "type": "prerequisite",
+          "reason": "圖像模型有助於理解橫式計算的原理。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07_b",
+          "to_id": "JH_ALG_MULPOLY_L3_07_d",
+          "type": "prerequisite",
+          "reason": "直式計算是處理缺項多項式加法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07_c",
+          "to_id": "JH_ALG_MULPOLY_L3_07_d",
+          "type": "prerequisite",
+          "reason": "橫式計算是處理缺項多項式加法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_08",
+          "type": "prerequisite",
+          "reason": "認識多項式是進行多項式減法運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08_a",
+          "to_id": "JH_ALG_MULPOLY_L3_08_c",
+          "type": "prerequisite",
+          "reason": "直式計算是處理缺項多項式減法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08_b",
+          "to_id": "JH_ALG_MULPOLY_L3_08_c",
+          "type": "prerequisite",
+          "reason": "橫式計算是處理缺項多項式減法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_07",
+          "to_id": "JH_ALG_MULPOLY_L3_09",
+          "type": "prerequisite",
+          "reason": "多項式加法是加減混合運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_08",
+          "to_id": "JH_ALG_MULPOLY_L3_09",
+          "type": "prerequisite",
+          "reason": "多項式減法是加減混合運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_10",
+          "type": "prerequisite",
+          "reason": "認識多項式是進行多項式乘法運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10_a",
+          "to_id": "JH_ALG_MULPOLY_L3_10_b",
+          "type": "prerequisite",
+          "reason": "指數律是單項式乘法中係數與文字符號分開相乘的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10_b",
+          "to_id": "JH_ALG_MULPOLY_L3_10_c",
+          "type": "prerequisite",
+          "reason": "單項式乘法是單項式乘以多項式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10_c",
+          "to_id": "JH_ALG_MULPOLY_L3_10_d",
+          "type": "prerequisite",
+          "reason": "單項式乘以多項式是多項式乘以多項式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10_d",
+          "to_id": "JH_ALG_MULPOLY_L3_10_e",
+          "type": "prerequisite",
+          "reason": "多項式乘法是處理缺項多項式乘法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10_d",
+          "to_id": "JH_ALG_MULPOLY_L3_10_f",
+          "type": "prerequisite",
+          "reason": "多項式乘法是乘法公式應用的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_02",
+          "to_id": "JH_ALG_MULPOLY_L3_10_f",
+          "type": "prerequisite",
+          "reason": "和的平方公式是多項式乘法中乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_03",
+          "to_id": "JH_ALG_MULPOLY_L3_10_f",
+          "type": "prerequisite",
+          "reason": "差的平方公式是多項式乘法中乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_04",
+          "to_id": "JH_ALG_MULPOLY_L3_10_f",
+          "type": "prerequisite",
+          "reason": "平方差公式是多項式乘法中乘法公式應用的一部分。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_06",
+          "to_id": "JH_ALG_MULPOLY_L3_11",
+          "type": "prerequisite",
+          "reason": "認識多項式是進行多項式除法運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_a",
+          "to_id": "JH_ALG_MULPOLY_L3_11_b",
+          "type": "prerequisite",
+          "reason": "指數律是單項式除法中係數與文字符號分開相除的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_b",
+          "to_id": "JH_ALG_MULPOLY_L3_11_c",
+          "type": "prerequisite",
+          "reason": "單項式除法是多項式除以單項式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_c",
+          "to_id": "JH_ALG_MULPOLY_L3_11_d",
+          "type": "prerequisite",
+          "reason": "多項式除以單項式是多項式除以多項式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_d",
+          "to_id": "JH_ALG_MULPOLY_L3_11_e",
+          "type": "prerequisite",
+          "reason": "除式為一次式的多項式除法是除式為二次式除法的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_d",
+          "to_id": "JH_ALG_MULPOLY_L3_11_f",
+          "type": "prerequisite",
+          "reason": "理解多項式除法過程是建立被除式、商式、除式、餘式關係的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11_f",
+          "to_id": "JH_ALG_MULPOLY_L3_11_g",
+          "type": "prerequisite",
+          "reason": "被除式、商式、除式、餘式關係是應用於求解未知除式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_09",
+          "to_id": "JH_ALG_MULPOLY_L3_12",
+          "type": "prerequisite",
+          "reason": "多項式加減混合運算是四則混合運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_10",
+          "to_id": "JH_ALG_MULPOLY_L3_12",
+          "type": "prerequisite",
+          "reason": "多項式乘法是四則混合運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_11",
+          "to_id": "JH_ALG_MULPOLY_L3_12",
+          "type": "prerequisite",
+          "reason": "多項式除法是四則混合運算的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_MULPOLY_L3_05",
+          "to_id": "JH_ALG_MULPOLY_L3_12_b",
+          "type": "prerequisite",
+          "reason": "乘法公式的應用是多項式四則運算應用於周長與面積計算的基礎。"
+        }
+      ],
+      "warnings": [],
+      "stats": {
+        "total_nodes": 66,
+        "total_edges": 128,
+        "l3_count": 12,
+        "l4_count": 51,
+        "l4_avg_per_l3": 4.25
+      }
+    },
+    {
+      "unit_info": {
+        "l0_grade": "國中",
+        "l1_domain": "數與量",
+        "l2_unit": "第2章_平方根與畢氏定理",
+        "l2_unit_id": "JH_NUM_SQRT"
+      },
+      "nodes": [
+        {
+          "id": "L0_JH",
+          "level": "L0",
+          "name": "國中",
+          "parent_id": null
+        },
+        {
+          "id": "L1_JH_NUM",
+          "level": "L1",
+          "name": "數與量",
+          "parent_id": "L0_JH"
+        },
+        {
+          "id": "JH_NUM_SQRT",
+          "level": "L2",
+          "name": "第2章_平方根與畢氏定理",
+          "parent_id": "L1_JH_NUM"
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01",
+          "level": "L3",
+          "name": "平方根的意義",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "介紹平方根的由來與基本概念，透過正方形面積與邊長的關係，引導學生理解平方根的意義，並探討其數值特性。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_a",
+          "level": "L4",
+          "name": "平方根概念的建立",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "透過正方形面積與邊長的關係，引入平方根的概念，例如面積為1、4、9的正方形，其邊長分別為1、2、3。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_b",
+          "level": "L4",
+          "name": "面積為2和5的正方形邊長探索",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "透過拼圖與面積計算，探索面積為2和5的正方形邊長，並初步認識其數值特性。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_c",
+          "level": "L4",
+          "name": "邊長不是整數、有限小數或分數的證明",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "透過逐步逼近和分數的性質，證明面積為2的正方形邊長m不是整數、有限位小數或分數，引出無理數的概念。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_d",
+          "level": "L4",
+          "name": "√a的定義 (a>0)",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "定義符號「√a」來表示面積為a的正方形邊長，並說明其讀法，例如√2讀作「根號二」。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_e",
+          "level": "L4",
+          "name": "根號值的比較 (√a > √b if a > b)",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "說明若a>b>0，則√a > √b，並應用此性質比較不同根號數的大小關係。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_01_f",
+          "level": "L4",
+          "name": "(√a)²=a的性質",
+          "parent_id": "JH_NUM_SQRT_L3_01",
+          "description": "說明面積為a的正方形，其邊長為√a，因此(√a)²=a，並透過練習加深理解。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02",
+          "level": "L3",
+          "name": "√a^2 的值",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習如何計算形如√a^2的數值，並認識完全平方數及其應用。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02_a",
+          "level": "L4",
+          "name": "完全平方數的定義與判斷",
+          "parent_id": "JH_NUM_SQRT_L3_02",
+          "description": "定義若一個正整數是另一個整數的平方，就稱這個數為完全平方數，並提供1~625的完全平方數表。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02_b",
+          "level": "L4",
+          "name": "利用完全平方數求√a^2的值",
+          "parent_id": "JH_NUM_SQRT_L3_02",
+          "description": "說明若a為正數，則√a^2=a，並應用此性質計算完全平方數的平方根，例如√49=7。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02_c",
+          "level": "L4",
+          "name": "利用標準分解式求√a的值",
+          "parent_id": "JH_NUM_SQRT_L3_02",
+          "description": "當無法直接看出一個數是否為另一個數的平方時，可利用標準分解式和指數律來求其值，例如√784。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02_d",
+          "level": "L4",
+          "name": "小數與分數的√a值計算",
+          "parent_id": "JH_NUM_SQRT_L3_02",
+          "description": "應用√a^2=a的性質，計算小數和分數的平方根，例如√(9/25)和√1.69。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_02_e",
+          "level": "L4",
+          "name": "√a^2 = a (a>0) 的性質",
+          "parent_id": "JH_NUM_SQRT_L3_02",
+          "description": "總結對於一個正數a，√a^2=a的性質，這是計算平方根的基礎。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03",
+          "level": "L3",
+          "name": "利用十分逼近法求值",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習如何使用十分逼近法估算含有根號的數值，並將其四捨五入到指定的小數位數。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_a",
+          "level": "L4",
+          "name": "十分逼近法的原理",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "利用若b<a則√b<√a的性質，透過逐步縮小範圍來估算無理數的近似值。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_b",
+          "level": "L4",
+          "name": "估算√a的整數部分",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "找出√a介於哪兩個相鄰整數之間，以確定其整數部分，例如√3介於1和2之間。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_c",
+          "level": "L4",
+          "name": "估算√a的一位小數部分",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "將整數區間分成10等分，找出√a介於哪兩個相鄰一位小數之間，例如√3介於1.7和1.8之間。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_d",
+          "level": "L4",
+          "name": "估算√a的二位小數部分",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "將一位小數區間再分成10等分，找出√a介於哪兩個相鄰二位小數之間，例如√3介於1.73和1.74之間。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_e",
+          "level": "L4",
+          "name": "將√a的值四捨五入到指定位數",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "根據十分逼近法得到的近似值，應用四捨五入法將√a的值取到小數點後指定位數。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_03_f",
+          "level": "L4",
+          "name": "在數線上標示√a的近似位置",
+          "parent_id": "JH_NUM_SQRT_L3_03",
+          "description": "利用十分逼近法估算出的近似值，在數線上標示出√a的大概位置。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04",
+          "level": "L3",
+          "name": "利用計算機求值",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習如何使用計算機的√鍵來求取平方根的近似值，並將結果四捨五入到指定位數。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04_a",
+          "level": "L4",
+          "name": "計算機√鍵操作說明",
+          "parent_id": "JH_NUM_SQRT_L3_04",
+          "description": "說明計算機上√鍵的功能及操作步驟，例如先按SHIFT再按x²鍵。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04_b",
+          "level": "L4",
+          "name": "利用計算機求整數的√a近似值",
+          "parent_id": "JH_NUM_SQRT_L3_04",
+          "description": "使用計算機計算整數的平方根近似值，例如√2的近似值。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04_c",
+          "level": "L4",
+          "name": "利用計算機求小數的√a近似值",
+          "parent_id": "JH_NUM_SQRT_L3_04",
+          "description": "使用計算機計算小數的平方根近似值，例如√2.6的近似值。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04_d",
+          "level": "L4",
+          "name": "利用計算機求分數的√a近似值",
+          "parent_id": "JH_NUM_SQRT_L3_04",
+          "description": "使用計算機計算分數的平方根近似值，例如√(5/7)的近似值。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_04_e",
+          "level": "L4",
+          "name": "將計算機結果四捨五入到指定位數",
+          "parent_id": "JH_NUM_SQRT_L3_04",
+          "description": "將計算機顯示的平方根近似值，根據四捨五入法取到小數點後指定位數。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05",
+          "level": "L3",
+          "name": "平方根的意義",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "深入探討平方根的定義，包括正平方根、負平方根以及0的平方根，並理解負數沒有平方根。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05_a",
+          "level": "L4",
+          "name": "正數的平方根 (±√a)",
+          "parent_id": "JH_NUM_SQRT_L3_05",
+          "description": "說明對於正數a，其平方根有兩個，分別為正平方根√a和負平方根-√a，可合併記為±√a。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05_b",
+          "level": "L4",
+          "name": "0的平方根",
+          "parent_id": "JH_NUM_SQRT_L3_05",
+          "description": "說明0的平方根只有一個，即0。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05_c",
+          "level": "L4",
+          "name": "負數沒有平方根",
+          "parent_id": "JH_NUM_SQRT_L3_05",
+          "description": "解釋因為任何非0的數的平方皆為正數，所以負數沒有平方根。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05_d",
+          "level": "L4",
+          "name": "求給定數的平方根",
+          "parent_id": "JH_NUM_SQRT_L3_05",
+          "description": "應用平方根的定義，求出給定正數、分數或小數的平方根。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_05_e",
+          "level": "L4",
+          "name": "根據平方根定義解方程式",
+          "parent_id": "JH_NUM_SQRT_L3_05",
+          "description": "應用平方根的定義，解出含有平方根概念的簡單方程式，例如若-5是2x-1的負平方根，求x。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06",
+          "level": "L3",
+          "name": "根式運算的基本性質",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "介紹根式的定義、表示方法以及乘除運算的基本性質，為後續的根式四則運算奠定基礎。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06_a",
+          "level": "L4",
+          "name": "根式的定義與表示",
+          "parent_id": "JH_NUM_SQRT_L3_06",
+          "description": "定義含有根號的算式為根式，並說明根式在乘法和除法中的表示方法，例如3×√5可寫成3√5。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06_b",
+          "level": "L4",
+          "name": "根式的乘法性質 (a√b = a√b)",
+          "parent_id": "JH_NUM_SQRT_L3_06",
+          "description": "說明若a≠0, b≥0，則a×√b=a√b，並應用此性質進行根式乘法運算。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06_c",
+          "level": "L4",
+          "name": "根式的乘法運算 (√a × √b = √ab)",
+          "parent_id": "JH_NUM_SQRT_L3_06",
+          "description": "說明若a≥0, b≥0，則√a×√b=√ab，並應用此性質進行根式乘法運算，例如√2×√3=√6。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06_d",
+          "level": "L4",
+          "name": "根式的除法性質 (√b ÷ a = √b/a)",
+          "parent_id": "JH_NUM_SQRT_L3_06",
+          "description": "說明若a≠0, b≥0，則√b÷a=√b/a (或1/a × √b)，並應用此性質進行根式除法運算。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_06_e",
+          "level": "L4",
+          "name": "根式的除法運算 (√a ÷ √b = √(a/b))",
+          "parent_id": "JH_NUM_SQRT_L3_06",
+          "description": "說明若a≥0, b>0，則√a÷√b=√(a/b)，並應用此性質進行根式除法運算，例如√35÷√5=√7。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07",
+          "level": "L3",
+          "name": "最簡根式與有理化",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習最簡根式的定義、判斷與化簡方法，以及分母有理化的技巧，使根式表達更為簡潔。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07_a",
+          "level": "L4",
+          "name": "最簡根式的定義與判斷",
+          "parent_id": "JH_NUM_SQRT_L3_07",
+          "description": "定義最簡根式為a√b的形式，其中b為正整數且其標準分解式中質因數次數皆為1，並學習判斷根式是否為最簡形式。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07_b",
+          "level": "L4",
+          "name": "將根號內有完全平方因數的根式化簡",
+          "parent_id": "JH_NUM_SQRT_L3_07",
+          "description": "針對根號內的數其標準分解式中有質因數次數大於1的情形，將完全平方因數提出根號外，化簡為最簡根式，例如√18=3√2。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07_c",
+          "level": "L4",
+          "name": "分母有理化的意義與方法 (單項根式)",
+          "parent_id": "JH_NUM_SQRT_L3_07",
+          "description": "定義分母有理化為將分母化為不帶有根號的過程，並學習透過擴分將分母為單項根式的根式有理化，例如2/√10。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07_d",
+          "level": "L4",
+          "name": "將根號內為分數或小數的根式化簡",
+          "parent_id": "JH_NUM_SQRT_L3_07",
+          "description": "針對根號內的數為分數或小數的情形，先將其化為分數，再利用分母有理化化簡為最簡根式，例如√0.8。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_07_e",
+          "level": "L4",
+          "name": "化簡為最簡根式的綜合應用",
+          "parent_id": "JH_NUM_SQRT_L3_07",
+          "description": "綜合運用各種化簡技巧，將不同形式的根式化簡為最簡根式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08",
+          "level": "L3",
+          "name": "根式的四則運算",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習根式的加減乘除四則運算，包括同類方根的合併、先化簡再運算以及利用乘法公式進行根式運算和分母有理化。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_a",
+          "level": "L4",
+          "name": "同類方根的定義與判斷",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "定義當兩個或兩個以上的根式化為最簡根式後，若根號內的數b相同，則稱它們是同類方根，並學習判斷。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_b",
+          "level": "L4",
+          "name": "同類方根的加減運算",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "說明根式的加減運算如同類項合併，將同類方根的係數相加減，例如2√3+3√3=5√3。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_c",
+          "level": "L4",
+          "name": "先化簡再進行根式的加減運算",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "當根式不是最簡形式時，需先將各項化為最簡根式，再進行同類方根的加減運算，例如3√2+√8。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_d",
+          "level": "L4",
+          "name": "根式的四則混合運算",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "學習根式的加減乘除混合運算，並遵守先乘方後乘除、再加減的運算順序。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_e",
+          "level": "L4",
+          "name": "利用乘法公式進行根式運算 (平方差、和平方)",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "應用乘法公式，例如平方差公式(a-b)(a+b)=a²-b²和和平方公式(a+b)²=a²+2ab+b²，簡化根式運算。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_08_f",
+          "level": "L4",
+          "name": "利用乘法公式將分母有理化 (雙項根式)",
+          "parent_id": "JH_NUM_SQRT_L3_08",
+          "description": "當分母為雙項根式時，利用平方差公式將分母有理化，例如1/(√3-√2)。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09",
+          "level": "L3",
+          "name": "發現畢氏定理",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "透過歷史背景和圖形探索，引導學生發現直角三角形三邊長的特殊關係，並認識畢氏定理的數學表達。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_a",
+          "level": "L4",
+          "name": "直角三角形的定義 (斜邊、股)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "定義直角三角形、斜邊和股，並介紹等腰直角三角形。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_b",
+          "level": "L4",
+          "name": "畢氏定理的歷史背景 (古埃及操繩師)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "介紹古埃及操繩師利用繩圈製作直角三角形的歷史，引導學生思考其原理。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_c",
+          "level": "L4",
+          "name": "透過面積關係探索畢氏定理 (P+Q=R)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "透過在直角三角形三邊上繪製正方形，觀察兩股上正方形面積和等於斜邊上正方形面積的關係。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_d",
+          "level": "L4",
+          "name": "趙爽證明法 (面積分解)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "透過將四個相同的直角三角形和一個小正方形組成一個大正方形，推導出c²=a²+b²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_e",
+          "level": "L4",
+          "name": "畢氏定理的數學表達 (c²=a²+b²)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "總結畢氏定理的數學表達：設一直角三角形斜邊長為c，兩股長分別為a和b，則c²=a²+b²。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_09_f",
+          "level": "L4",
+          "name": "畢氏定理的名稱由來 (畢達哥拉斯、勾股弦)",
+          "parent_id": "JH_NUM_SQRT_L3_09",
+          "description": "介紹畢氏定理又稱畢達哥拉斯定理、勾股弦定理或商高定理的歷史背景。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10",
+          "level": "L3",
+          "name": "畢氏定理的應用",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習畢氏定理在幾何圖形和實際問題中的應用，包括求邊長、高、面積以及解決生活中的問題。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_a",
+          "level": "L4",
+          "name": "求直角三角形的第三邊長",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "應用畢氏定理，已知直角三角形的兩邊長，求出第三邊長。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_b",
+          "level": "L4",
+          "name": "複合圖形中直角三角形邊長的計算",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "在複合圖形中，識別直角三角形並應用畢氏定理計算未知邊長。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_c",
+          "level": "L4",
+          "name": "直角三角形斜邊上的高計算",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "應用畢氏定理和面積公式，計算直角三角形斜邊上的高。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_d",
+          "level": "L4",
+          "name": "等腰三角形的高與面積計算",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "應用畢氏定理計算等腰三角形底邊上的高，進而計算其面積。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_e",
+          "level": "L4",
+          "name": "正三角形的高與面積公式",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "推導並應用正三角形的高(√3/2)a和面積(√3/4)a²公式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_f",
+          "level": "L4",
+          "name": "長方形對角線的應用",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "應用畢氏定理計算長方形的對角線長度，解決實際問題，例如手機螢幕尺寸比較。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_10_g",
+          "level": "L4",
+          "name": "梯子問題 (實際應用)",
+          "parent_id": "JH_NUM_SQRT_L3_10",
+          "description": "應用畢氏定理解決梯子斜靠牆壁，當梯頂或梯腳移動時，另一端移動距離的問題。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11",
+          "level": "L3",
+          "name": "直角坐標平面上兩點的距離公式",
+          "parent_id": "JH_NUM_SQRT",
+          "description": "學習如何在直角坐標平面上計算任意兩點之間的距離，並理解其與畢氏定理的關係。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11_a",
+          "level": "L4",
+          "name": "水平線或鉛垂線上兩點的距離",
+          "parent_id": "JH_NUM_SQRT_L3_11",
+          "description": "說明當兩點在同一水平線或鉛垂線上時，其距離可透過坐標差的絕對值計算。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11_b",
+          "level": "L4",
+          "name": "利用畢氏定理推導兩點距離公式",
+          "parent_id": "JH_NUM_SQRT_L3_11",
+          "description": "透過在直角坐標平面上構造直角三角形，利用畢氏定理推導出任意兩點間的距離公式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11_c",
+          "level": "L4",
+          "name": "直角坐標平面上兩點距離公式 (AB = √((x1-x2)² + (y1-y2)²))",
+          "parent_id": "JH_NUM_SQRT_L3_11",
+          "description": "總結直角坐標平面上任意兩點A(x1,y1)和B(x2,y2)的距離公式AB = √((x1-x2)² + (y1-y2)²)。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11_d",
+          "level": "L4",
+          "name": "計算任意兩點間的距離",
+          "parent_id": "JH_NUM_SQRT_L3_11",
+          "description": "應用兩點距離公式，計算直角坐標平面上任意兩點之間的距離。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_NUM_SQRT_L3_11_e",
+          "level": "L4",
+          "name": "距離公式的應用 (如航行問題)",
+          "parent_id": "JH_NUM_SQRT_L3_11",
+          "description": "將距離公式應用於實際問題，例如計算航行後兩點之間的直線距離。",
+          "difficulty": 4
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "L0_JH",
+          "to_id": "L1_JH_NUM",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "L1_JH_NUM",
+          "to_id": "JH_NUM_SQRT",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_01",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_01_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_02",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_02_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_02_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_02_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_02_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_02_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_03",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_03_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_04",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_04_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_04_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_04_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_04_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_04_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_05",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_05_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_05_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_05_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_05_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_05_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_06",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_06_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_06_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_06_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_06_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_06_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_07",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_07_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_07_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_07_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_07_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_07_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_08",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_08_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_09",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_09_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_10",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_10_g",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT",
+          "to_id": "JH_NUM_SQRT_L3_11",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_11",
+          "to_id": "JH_NUM_SQRT_L3_11_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_11",
+          "to_id": "JH_NUM_SQRT_L3_11_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_11",
+          "to_id": "JH_NUM_SQRT_L3_11_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_11",
+          "to_id": "JH_NUM_SQRT_L3_11_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_11",
+          "to_id": "JH_NUM_SQRT_L3_11_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_02",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_03",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_03",
+          "to_id": "JH_NUM_SQRT_L3_04",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_04",
+          "to_id": "JH_NUM_SQRT_L3_05",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_05",
+          "to_id": "JH_NUM_SQRT_L3_06",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_07",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_08",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_09",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_10",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_10",
+          "to_id": "JH_NUM_SQRT_L3_11",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_02",
+          "type": "prerequisite",
+          "reason": "理解平方根的意義是學習計算√a^2值的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_03",
+          "type": "prerequisite",
+          "reason": "理解平方根的意義和比較大小是學習十分逼近法的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_04",
+          "type": "prerequisite",
+          "reason": "理解平方根的意義是學習使用計算機求平方根的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_05",
+          "type": "prerequisite",
+          "reason": "初步理解平方根的意義是深入學習平方根定義的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_02",
+          "to_id": "JH_NUM_SQRT_L3_05",
+          "type": "prerequisite",
+          "reason": "理解√a^2的值是深入學習平方根定義的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_06",
+          "type": "prerequisite",
+          "reason": "理解平方根的意義是學習根式運算基本性質的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_07",
+          "type": "prerequisite",
+          "reason": "掌握根式的乘除運算是學習最簡根式與有理化的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_06",
+          "to_id": "JH_NUM_SQRT_L3_08",
+          "type": "prerequisite",
+          "reason": "掌握根式的基本運算性質是進行根式四則運算的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_07",
+          "to_id": "JH_NUM_SQRT_L3_08",
+          "type": "prerequisite",
+          "reason": "掌握最簡根式與有理化是進行根式四則運算的關鍵前置知識。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_01",
+          "to_id": "JH_NUM_SQRT_L3_09",
+          "type": "prerequisite",
+          "reason": "理解正方形面積與邊長的關係是透過面積探索畢氏定理的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_10",
+          "type": "prerequisite",
+          "reason": "理解畢氏定理是應用畢氏定理解決問題的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_08",
+          "to_id": "JH_NUM_SQRT_L3_10",
+          "type": "prerequisite",
+          "reason": "掌握根式運算能力是應用畢氏定理進行計算的基礎。"
+        },
+        {
+          "from_id": "JH_NUM_SQRT_L3_09",
+          "to_id": "JH_NUM_SQRT_L3_11",
+          "type": "prerequisite",
+          "reason": "理解畢氏定理是推導直角坐標平面上兩點距離公式的基礎。"
+        }
+      ],
+      "warnings": [],
+      "stats": {
+        "total_nodes": 75,
+        "total_edges": 97,
+        "l3_count": 11,
+        "l4_count": 61,
+        "l4_avg_per_l3": 5.545454545454546
+      }
+    },
+    {
+      "unit_info": {
+        "l0_grade": "國中",
+        "l1_domain": "代數與函數",
+        "l2_unit": "第3章_因式分解",
+        "l2_unit_id": "JH_ALG_FACTOR"
+      },
+      "nodes": [
+        {
+          "id": "L0_JH",
+          "level": "L0",
+          "name": "國中",
+          "parent_id": null
+        },
+        {
+          "id": "L1_JH_ALG",
+          "level": "L1",
+          "name": "代數與函數",
+          "parent_id": "L0_JH"
+        },
+        {
+          "id": "JH_ALG_FACTOR",
+          "level": "L2",
+          "name": "第3章_因式分解",
+          "parent_id": "L1_JH_ALG"
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01",
+          "level": "L3",
+          "name": "因式與倍式",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "學習多項式因式與倍式的定義，並能利用除法判斷多項式之間的因式與倍式關係。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_a",
+          "level": "L4",
+          "name": "整數因數與倍數的複習",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "回顧整數因數與倍數的定義與判斷方法。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_b",
+          "level": "L4",
+          "name": "多項式因式與倍式的定義",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "理解多項式A能被B整除時，B是A的因式，A是B的倍式。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_c",
+          "level": "L4",
+          "name": "利用除法判斷多項式因式與倍式",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "透過多項式除法，判斷餘式是否為0，以確定因式與倍式關係。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_d",
+          "level": "L4",
+          "name": "判斷給定多項式是否為因式",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "練習判斷一個多項式是否為另一個多項式的因式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_e",
+          "level": "L4",
+          "name": "判斷給定多項式是否為倍式",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "練習判斷一個多項式是否為另一個多項式的倍式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_01_f",
+          "level": "L4",
+          "name": "因式與倍式的綜合判斷",
+          "parent_id": "JH_ALG_FACTOR_L3_01",
+          "description": "掌握多項式A、B、C之間的因式與倍式關係。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02",
+          "level": "L3",
+          "name": "因式分解的意義與方法概述",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "理解因式分解的定義，並初步認識因式分解與多項式乘法的關係，以及因式分解的應用。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_a",
+          "level": "L4",
+          "name": "因式分解的定義",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "將一個二次式寫成兩個一次式的乘積，稱為因式分解。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_b",
+          "level": "L4",
+          "name": "因式分解與多項式乘法的關係",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "理解因式分解是多項式乘法的逆運算。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_c",
+          "level": "L4",
+          "name": "利用除法進行因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "透過多項式除法，若餘式為0，則可將被除式因式分解為商式與除式的乘積。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_d",
+          "level": "L4",
+          "name": "利用比較係數法進行因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "透過展開因式分解後的式子，比較兩邊多項式的係數來求解未知數。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_e",
+          "level": "L4",
+          "name": "利用除法求解因式分解中的未知數",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "透過多項式除法，利用餘式為0的條件求解因式分解中的未知數。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_02_f",
+          "level": "L4",
+          "name": "因式分解方法的初步認識",
+          "parent_id": "JH_ALG_FACTOR_L3_02",
+          "description": "認識除了除法外，還有其他因式分解方法。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03",
+          "level": "L3",
+          "name": "提公因式法",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "學習找出多項式的公因式，並利用分配律將公因式提出，完成因式分解。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_a",
+          "level": "L4",
+          "name": "多項式公因式的定義與判斷",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "理解多項式A和B的公因式C，是同時能整除A和B的多項式。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_b",
+          "level": "L4",
+          "name": "找出單項式的公因式",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "練習找出給定單項式的公因式。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_c",
+          "level": "L4",
+          "name": "找出多項式的公因式",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "練習找出給定多項式的公因式，特別是含有多項式因子的情況。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_d",
+          "level": "L4",
+          "name": "提出單項公因式進行因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "應用分配律將多項式中的單項公因式提出。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_e",
+          "level": "L4",
+          "name": "提出多項式公因式進行因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "應用分配律將多項式中的多項式公因式提出。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_03_f",
+          "level": "L4",
+          "name": "利用變號技巧提出公因式",
+          "parent_id": "JH_ALG_FACTOR_L3_03",
+          "description": "學習在因式分解時，透過變號將看似不同的項轉化為可提出公因式的形式。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04",
+          "level": "L3",
+          "name": "乘法公式法",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "學習利用平方差公式、和的平方公式及差的平方公式進行因式分解。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_a",
+          "level": "L4",
+          "name": "複習乘法公式",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "回顧平方差公式、和的平方公式及差的平方公式。",
+          "difficulty": 1
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_b",
+          "level": "L4",
+          "name": "平方差公式的因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "將形如a²-b²的多項式分解為(a+b)(a-b)。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_c",
+          "level": "L4",
+          "name": "平方差公式的應用",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "練習將具體數字或變數的平方差形式進行因式分解。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_d",
+          "level": "L4",
+          "name": "複雜形式的平方差公式因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "學習將含有多項式作為a或b的平方差形式進行因式分解。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_e",
+          "level": "L4",
+          "name": "和的平方公式的因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "將形如a²+2ab+b²的多項式分解為(a+b)²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_f",
+          "level": "L4",
+          "name": "差的平方公式的因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "將形如a²-2ab+b²的多項式分解為(a-b)²。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_04_g",
+          "level": "L4",
+          "name": "和或差的平方公式的應用",
+          "parent_id": "JH_ALG_FACTOR_L3_04",
+          "description": "練習將符合和或差的平方公式形式的多項式進行因式分解。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05",
+          "level": "L3",
+          "name": "十字交乘法",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "學習利用十字交乘法將二次多項式分解為兩個一次式的乘積。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_a",
+          "level": "L4",
+          "name": "十字交乘法的基本原理",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "理解十字交乘法是將二次多項式分解為兩個一次式乘積的視覺化方法。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_b",
+          "level": "L4",
+          "name": "二次項係數為1的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "學習將x²+px+q形式的二次多項式分解為(x+a)(x+b)，其中a+b=p且ab=q。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_c",
+          "level": "L4",
+          "name": "常數項為正數時的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "練習當二次項係數為1且常數項為正數時，利用十字交乘法進行因式分解。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_d",
+          "level": "L4",
+          "name": "常數項為負數時的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "練習當二次項係數為1且常數項為負數時，利用十字交乘法進行因式分解。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_e",
+          "level": "L4",
+          "name": "二次項係數不為1的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "學習將ax²+bx+c形式的二次多項式分解為(dx+e)(fx+g)。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_f",
+          "level": "L4",
+          "name": "二次項係數不為1且常數項為正數的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "練習當二次項係數不為1且常數項為正數時，利用十字交乘法進行因式分解。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_05_g",
+          "level": "L4",
+          "name": "二次項係數不為1且常數項為負數的十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_05",
+          "description": "練習當二次項係數不為1且常數項為負數時，利用十字交乘法進行因式分解。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06",
+          "level": "L3",
+          "name": "因式分解綜合應用",
+          "parent_id": "JH_ALG_FACTOR",
+          "description": "學習綜合運用提公因式法、乘法公式法和十字交乘法進行因式分解，並處理特殊形式的多項式。",
+          "difficulty": 7
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_a",
+          "level": "L4",
+          "name": "提出負數公因數再因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "學習當二次項係數為負時，先提出負數公因數再進行因式分解。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_b",
+          "level": "L4",
+          "name": "提出係數公因數再因式分解",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "學習當多項式各項有數值公因數時，先提出公因數再進行因式分解。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_c",
+          "level": "L4",
+          "name": "綜合運用提公因式與乘法公式",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "練習先提出公因數，再利用乘法公式進行因式分解。",
+          "difficulty": 6
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_d",
+          "level": "L4",
+          "name": "綜合運用提公因式與十字交乘法",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "練習先提出公因數，再利用十字交乘法進行因式分解。",
+          "difficulty": 6
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_e",
+          "level": "L4",
+          "name": "因式分解方法的選擇與應用",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "學習根據多項式形式，選擇最合適的因式分解方法。",
+          "difficulty": 7
+        },
+        {
+          "id": "JH_ALG_FACTOR_L3_06_f",
+          "level": "L4",
+          "name": "替換法在因式分解中的應用",
+          "parent_id": "JH_ALG_FACTOR_L3_06",
+          "description": "學習利用未知數替換簡化複雜的多項式，再進行因式分解。",
+          "difficulty": 7
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "L0_JH",
+          "to_id": "L1_JH_ALG",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "L1_JH_ALG",
+          "to_id": "JH_ALG_FACTOR",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_01",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_01_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_02",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_02_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_03",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_03_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_04",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_04_g",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_05",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_05_g",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR",
+          "to_id": "JH_ALG_FACTOR_L3_06",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06",
+          "to_id": "JH_ALG_FACTOR_L3_06_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_02",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_03",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_04",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_05",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01",
+          "to_id": "JH_ALG_FACTOR_L3_02",
+          "type": "prerequisite",
+          "reason": "因式分解的意義建立在因式與倍式的概念之上。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_03",
+          "type": "prerequisite",
+          "reason": "提公因式法是因式分解的第一種具體方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_04",
+          "type": "prerequisite",
+          "reason": "乘法公式法是因式分解的另一種具體方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_05",
+          "type": "prerequisite",
+          "reason": "十字交乘法是因式分解的另一種具體方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06",
+          "type": "prerequisite",
+          "reason": "綜合應用需要掌握提公因式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_06",
+          "type": "prerequisite",
+          "reason": "綜合應用需要掌握乘法公式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06",
+          "type": "prerequisite",
+          "reason": "綜合應用需要掌握十字交乘法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_a",
+          "to_id": "JH_ALG_FACTOR_L3_01_b",
+          "type": "prerequisite",
+          "reason": "多項式因式與倍式的概念建立在整數因數與倍數的基礎上。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_b",
+          "to_id": "JH_ALG_FACTOR_L3_01_c",
+          "type": "prerequisite",
+          "reason": "利用除法判斷因式與倍式是應用其定義的具體方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_c",
+          "to_id": "JH_ALG_FACTOR_L3_01_d",
+          "type": "prerequisite",
+          "reason": "判斷給定多項式是否為因式是利用除法判斷的練習。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_c",
+          "to_id": "JH_ALG_FACTOR_L3_01_e",
+          "type": "prerequisite",
+          "reason": "判斷給定多項式是否為倍式是利用除法判斷的練習。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_d",
+          "to_id": "JH_ALG_FACTOR_L3_01_f",
+          "type": "prerequisite",
+          "reason": "綜合判斷需要整合因式與倍式的個別判斷能力。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_01_e",
+          "to_id": "JH_ALG_FACTOR_L3_01_f",
+          "type": "prerequisite",
+          "reason": "綜合判斷需要整合因式與倍式的個別判斷能力。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02_a",
+          "to_id": "JH_ALG_FACTOR_L3_02_b",
+          "type": "prerequisite",
+          "reason": "因式分解與多項式乘法的關係是基於因式分解的定義。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02_b",
+          "to_id": "JH_ALG_FACTOR_L3_02_c",
+          "type": "prerequisite",
+          "reason": "利用除法進行因式分解是應用因式分解與乘法關係的具體方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02_b",
+          "to_id": "JH_ALG_FACTOR_L3_02_d",
+          "type": "prerequisite",
+          "reason": "利用比較係數法進行因式分解是另一種應用因式分解與乘法關係的方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02_c",
+          "to_id": "JH_ALG_FACTOR_L3_02_e",
+          "type": "prerequisite",
+          "reason": "利用除法求解因式分解中的未知數是除法因式分解的進階應用。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02_a",
+          "to_id": "JH_ALG_FACTOR_L3_02_f",
+          "type": "prerequisite",
+          "reason": "初步認識因式分解方法是為後續學習具體方法做準備。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03_a",
+          "to_id": "JH_ALG_FACTOR_L3_03_b",
+          "type": "prerequisite",
+          "reason": "找出單項式的公因式是應用公因式定義的基礎練習。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03_b",
+          "to_id": "JH_ALG_FACTOR_L3_03_c",
+          "type": "prerequisite",
+          "reason": "找出多項式的公因式是單項式公因式概念的延伸。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03_c",
+          "to_id": "JH_ALG_FACTOR_L3_03_d",
+          "type": "prerequisite",
+          "reason": "提出單項公因式進行因式分解是將公因式概念應用於因式分解的第一步。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_03_d",
+          "type": "prerequisite",
+          "reason": "進行因式分解需要先理解因式分解的意義。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03_d",
+          "to_id": "JH_ALG_FACTOR_L3_03_e",
+          "type": "prerequisite",
+          "reason": "提出多項式公因式是單項公因式提取的進階應用。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03_e",
+          "to_id": "JH_ALG_FACTOR_L3_03_f",
+          "type": "prerequisite",
+          "reason": "利用變號技巧提出公因式是提公因式法的進階技巧。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_a",
+          "to_id": "JH_ALG_FACTOR_L3_04_b",
+          "type": "prerequisite",
+          "reason": "平方差公式的因式分解是應用乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_04_b",
+          "type": "prerequisite",
+          "reason": "進行因式分解需要先理解因式分解的意義。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_b",
+          "to_id": "JH_ALG_FACTOR_L3_04_c",
+          "type": "prerequisite",
+          "reason": "平方差公式的應用是練習基礎公式的因式分解。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_c",
+          "to_id": "JH_ALG_FACTOR_L3_04_d",
+          "type": "prerequisite",
+          "reason": "複雜形式的平方差公式因式分解是基礎公式應用的延伸。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_a",
+          "to_id": "JH_ALG_FACTOR_L3_04_e",
+          "type": "prerequisite",
+          "reason": "和的平方公式的因式分解是應用乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_04_e",
+          "type": "prerequisite",
+          "reason": "進行因式分解需要先理解因式分解的意義。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_a",
+          "to_id": "JH_ALG_FACTOR_L3_04_f",
+          "type": "prerequisite",
+          "reason": "差的平方公式的因式分解是應用乘法公式的基礎。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_02",
+          "to_id": "JH_ALG_FACTOR_L3_04_f",
+          "type": "prerequisite",
+          "reason": "進行因式分解需要先理解因式分解的意義。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_e",
+          "to_id": "JH_ALG_FACTOR_L3_04_g",
+          "type": "prerequisite",
+          "reason": "和或差的平方公式的應用是練習兩種公式的因式分解。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04_f",
+          "to_id": "JH_ALG_FACTOR_L3_04_g",
+          "type": "prerequisite",
+          "reason": "和或差的平方公式的應用是練習兩種公式的因式分解。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_a",
+          "to_id": "JH_ALG_FACTOR_L3_05_b",
+          "type": "prerequisite",
+          "reason": "二次項係數為1的十字交乘法是十字交乘法的基礎應用。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_b",
+          "to_id": "JH_ALG_FACTOR_L3_05_c",
+          "type": "prerequisite",
+          "reason": "常數項為正數時的十字交乘法是二次項係數為1的特殊情況。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_b",
+          "to_id": "JH_ALG_FACTOR_L3_05_d",
+          "type": "prerequisite",
+          "reason": "常數項為負數時的十字交乘法是二次項係數為1的特殊情況。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_a",
+          "to_id": "JH_ALG_FACTOR_L3_05_e",
+          "type": "prerequisite",
+          "reason": "二次項係數不為1的十字交乘法是十字交乘法的進階應用。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_e",
+          "to_id": "JH_ALG_FACTOR_L3_05_f",
+          "type": "prerequisite",
+          "reason": "二次項係數不為1且常數項為正數的十字交乘法是其特殊情況。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05_e",
+          "to_id": "JH_ALG_FACTOR_L3_05_g",
+          "type": "prerequisite",
+          "reason": "二次項係數不為1且常數項為負數的十字交乘法是其特殊情況。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06_a",
+          "type": "prerequisite",
+          "reason": "提出負數公因數再因式分解需要掌握提公因式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06_a",
+          "type": "prerequisite",
+          "reason": "提出負數公因數後常需搭配十字交乘法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06_b",
+          "type": "prerequisite",
+          "reason": "提出係數公因數再因式分解需要掌握提公因式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06_b",
+          "type": "prerequisite",
+          "reason": "提出係數公因數後常需搭配十字交乘法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06_c",
+          "type": "prerequisite",
+          "reason": "綜合運用需要掌握提公因式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_06_c",
+          "type": "prerequisite",
+          "reason": "綜合運用需要掌握乘法公式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06_d",
+          "type": "prerequisite",
+          "reason": "綜合運用需要掌握提公因式法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06_d",
+          "type": "prerequisite",
+          "reason": "綜合運用需要掌握十字交乘法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_03",
+          "to_id": "JH_ALG_FACTOR_L3_06_e",
+          "type": "prerequisite",
+          "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_04",
+          "to_id": "JH_ALG_FACTOR_L3_06_e",
+          "type": "prerequisite",
+          "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_05",
+          "to_id": "JH_ALG_FACTOR_L3_06_e",
+          "type": "prerequisite",
+          "reason": "因式分解方法的選擇與應用需要掌握所有基本方法。"
+        },
+        {
+          "from_id": "JH_ALG_FACTOR_L3_06_e",
+          "to_id": "JH_ALG_FACTOR_L3_06_f",
+          "type": "prerequisite",
+          "reason": "替換法是因式分解方法的進階應用技巧。"
+        }
+      ],
+      "warnings": [],
+      "stats": {
+        "total_nodes": 47,
+        "total_edges": 104,
+        "l3_count": 6,
+        "l4_count": 38,
+        "l4_avg_per_l3": 6.333333333333333
+      }
+    },
+    {
+      "unit_info": {
+        "l0_grade": "國中",
+        "l1_domain": "代數與函數",
+        "l2_unit": "第4章_一元二次方程式",
+        "l2_unit_id": "JH_ALG_QUAD"
+      },
+      "nodes": [
+        {
+          "id": "L0_JH",
+          "level": "L0",
+          "name": "國中",
+          "parent_id": null
+        },
+        {
+          "id": "L1_JH_ALG",
+          "level": "L1",
+          "name": "代數與函數",
+          "parent_id": "L0_JH"
+        },
+        {
+          "id": "JH_ALG_QUAD",
+          "level": "L2",
+          "name": "第4章_一元二次方程式",
+          "parent_id": "L1_JH_ALG"
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01",
+          "level": "L3",
+          "name": "因式分解解一元二次方程式",
+          "parent_id": "JH_ALG_QUAD",
+          "description": "學習一元二次方程式的定義、解的意義，並利用因式分解法（提公因式、乘法公式、十字交乘法）求解。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01_a",
+          "level": "L4",
+          "name": "一元二次方程式的意義",
+          "parent_id": "JH_ALG_QUAD_L3_01",
+          "description": "認識一元二次方程式的定義，並判斷一個數是否為方程式的解。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01_b",
+          "level": "L4",
+          "name": "利用提公因式解方程式",
+          "parent_id": "JH_ALG_QUAD_L3_01",
+          "description": "學習當A×B=0時，則A=0或B=0的性質，並應用提公因式法解一元二次方程式，包含先移項再提公因式的情境。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01_c",
+          "level": "L4",
+          "name": "利用十字交乘法解方程式",
+          "parent_id": "JH_ALG_QUAD_L3_01",
+          "description": "應用十字交乘法將一元二次方程式因式分解後求解。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01_d",
+          "level": "L4",
+          "name": "利用乘法公式解方程式",
+          "parent_id": "JH_ALG_QUAD_L3_01",
+          "description": "應用平方差公式或和/差的平方公式將一元二次方程式因式分解後求解。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_01_e",
+          "level": "L4",
+          "name": "已知一根求另一根與係數",
+          "parent_id": "JH_ALG_QUAD_L3_01",
+          "description": "根據一元二次方程式的已知解，代入方程式求出未知係數或另一根。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02",
+          "level": "L3",
+          "name": "配方法與公式解",
+          "parent_id": "JH_ALG_QUAD",
+          "description": "學習利用平方根概念、配方法和公式解來求解一元二次方程式，並理解判別式的意義。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_a",
+          "level": "L4",
+          "name": "利用平方根概念解方程式",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "學習利用平方根概念解形如x²=k或(ax+b)²=c的一元二次方程式，包含先移項的情境。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_b",
+          "level": "L4",
+          "name": "配成完全平方式",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "認識完全平方式的定義，並學習如何將x²+px配成完全平方式。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_c",
+          "level": "L4",
+          "name": "利用配方法解方程式",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "學習利用配方法求解一元二次方程式，包含二次項係數為1或不為1，以及常數項絕對值較大的情境。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_d",
+          "level": "L4",
+          "name": "一元二次方程式的公式解",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "學習公式解的推導過程，並應用公式解求解一元二次方程式，包含二次項係數為負數的情境。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_e",
+          "level": "L4",
+          "name": "判別式與方程式解的情形",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "學習判別式b²-4ac的意義，並利用其值判斷一元二次方程式解的種類（兩個相異根、重根、無解）。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_02_f",
+          "level": "L4",
+          "name": "已知方程式解的情形應用",
+          "parent_id": "JH_ALG_QUAD_L3_02",
+          "description": "應用判別式判斷方程式解的種類，進而求解未知係數。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03",
+          "level": "L3",
+          "name": "應用問題",
+          "parent_id": "JH_ALG_QUAD",
+          "description": "學習解一元二次方程式應用問題的步驟，並應用於各種實際情境。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03_a",
+          "level": "L4",
+          "name": "解應用問題的步驟",
+          "parent_id": "JH_ALG_QUAD_L3_03",
+          "description": "學習解一元二次方程式應用問題的四個步驟：設未知數、列方程式、解方程式、檢查並寫答案。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03_b",
+          "level": "L4",
+          "name": "數字與年齡問題",
+          "parent_id": "JH_ALG_QUAD_L3_03",
+          "description": "應用一元二次方程式解決涉及數字關係或年齡的應用問題。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03_c",
+          "level": "L4",
+          "name": "價格與數量問題",
+          "parent_id": "JH_ALG_QUAD_L3_03",
+          "description": "應用一元二次方程式解決涉及商品價格、數量與總收入的應用問題。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03_d",
+          "level": "L4",
+          "name": "面積與幾何問題",
+          "parent_id": "JH_ALG_QUAD_L3_03",
+          "description": "應用一元二次方程式解決涉及幾何圖形面積或邊長的應用問題。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_ALG_QUAD_L3_03_e",
+          "level": "L4",
+          "name": "解與情境的合理性",
+          "parent_id": "JH_ALG_QUAD_L3_03",
+          "description": "學習在應用問題中，檢查求出的解是否符合實際情境的合理性，並捨棄不合理的解。",
+          "difficulty": 5
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "L0_JH",
+          "to_id": "L1_JH_ALG",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "L1_JH_ALG",
+          "to_id": "JH_ALG_QUAD",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD",
+          "to_id": "JH_ALG_QUAD_L3_01",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_01_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_01_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_01_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_01_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_01_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD",
+          "to_id": "JH_ALG_QUAD_L3_02",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_02_f",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD",
+          "to_id": "JH_ALG_QUAD_L3_03",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03",
+          "to_id": "JH_ALG_QUAD_L3_03_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03",
+          "to_id": "JH_ALG_QUAD_L3_03_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03",
+          "to_id": "JH_ALG_QUAD_L3_03_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03",
+          "to_id": "JH_ALG_QUAD_L3_03_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03",
+          "to_id": "JH_ALG_QUAD_L3_03_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_02",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_03",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_a",
+          "to_id": "JH_ALG_QUAD_L3_01_b",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_b",
+          "to_id": "JH_ALG_QUAD_L3_01_c",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_c",
+          "to_id": "JH_ALG_QUAD_L3_01_d",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_d",
+          "to_id": "JH_ALG_QUAD_L3_01_e",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_a",
+          "to_id": "JH_ALG_QUAD_L3_02_b",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_b",
+          "to_id": "JH_ALG_QUAD_L3_02_c",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_c",
+          "to_id": "JH_ALG_QUAD_L3_02_d",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_d",
+          "to_id": "JH_ALG_QUAD_L3_02_e",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_e",
+          "to_id": "JH_ALG_QUAD_L3_02_f",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_a",
+          "to_id": "JH_ALG_QUAD_L3_03_b",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_b",
+          "to_id": "JH_ALG_QUAD_L3_03_c",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_c",
+          "to_id": "JH_ALG_QUAD_L3_03_d",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_d",
+          "to_id": "JH_ALG_QUAD_L3_03_e",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_a",
+          "to_id": "JH_ALG_QUAD_L3_01_b",
+          "type": "prerequisite",
+          "reason": "理解一元二次方程式的意義是利用因式分解求解的前提"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_b",
+          "to_id": "JH_ALG_QUAD_L3_01_c",
+          "type": "prerequisite",
+          "reason": "提公因式是因式分解的基礎方法之一"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_b",
+          "to_id": "JH_ALG_QUAD_L3_01_d",
+          "type": "prerequisite",
+          "reason": "提公因式是因式分解的基礎方法之一"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01_b",
+          "to_id": "JH_ALG_QUAD_L3_01_e",
+          "type": "prerequisite",
+          "reason": "因式分解是已知一根求另一根與係數的常用方法"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_a",
+          "to_id": "JH_ALG_QUAD_L3_02_b",
+          "type": "prerequisite",
+          "reason": "平方根概念是配成完全平方式的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_b",
+          "to_id": "JH_ALG_QUAD_L3_02_c",
+          "type": "prerequisite",
+          "reason": "配成完全平方式是利用配方法解方程式的核心步驟"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_c",
+          "to_id": "JH_ALG_QUAD_L3_02_d",
+          "type": "prerequisite",
+          "reason": "公式解是由配方法推導而來"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_d",
+          "to_id": "JH_ALG_QUAD_L3_02_e",
+          "type": "prerequisite",
+          "reason": "判別式是公式解的一部分，用於判斷解的種類"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02_e",
+          "to_id": "JH_ALG_QUAD_L3_02_f",
+          "type": "prerequisite",
+          "reason": "理解判別式才能應用於已知方程式解的情形"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_01",
+          "to_id": "JH_ALG_QUAD_L3_03_a",
+          "type": "prerequisite",
+          "reason": "掌握一元二次方程式的解法是解決應用問題的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_02",
+          "to_id": "JH_ALG_QUAD_L3_03_a",
+          "type": "prerequisite",
+          "reason": "掌握一元二次方程式的解法是解決應用問題的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_a",
+          "to_id": "JH_ALG_QUAD_L3_03_b",
+          "type": "prerequisite",
+          "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_a",
+          "to_id": "JH_ALG_QUAD_L3_03_c",
+          "type": "prerequisite",
+          "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_a",
+          "to_id": "JH_ALG_QUAD_L3_03_d",
+          "type": "prerequisite",
+          "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+        },
+        {
+          "from_id": "JH_ALG_QUAD_L3_03_a",
+          "to_id": "JH_ALG_QUAD_L3_03_e",
+          "type": "prerequisite",
+          "reason": "理解應用問題的步驟是解決各類應用問題的基礎"
+        }
+      ],
+      "warnings": [],
+      "stats": {
+        "total_nodes": 22,
+        "total_edges": 51,
+        "l3_count": 3,
+        "l4_count": 16,
+        "l4_avg_per_l3": 5.333333333333333
+      }
+    },
+    {
+      "unit_info": {
+        "l0_grade": "國中",
+        "l1_domain": "統計與機率",
+        "l2_unit": "第5章_資料處理與統計圖表",
+        "l2_unit_id": "JH_STA_CHARTS_ADV"
+      },
+      "nodes": [
+        {
+          "id": "L0_JH",
+          "level": "L0",
+          "name": "國中",
+          "parent_id": null
+        },
+        {
+          "id": "L1_JH_STA",
+          "level": "L1",
+          "name": "統計與機率",
+          "parent_id": "L0_JH"
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV",
+          "level": "L2",
+          "name": "第5章_資料處理與統計圖表",
+          "parent_id": "L1_JH_STA"
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01",
+          "level": "L3",
+          "name": "統計分配表的製作與報讀",
+          "parent_id": "JH_STA_CHARTS_ADV",
+          "description": "學習次數、累積次數、相對次數與累積相對次數分配表的定義、製作方法及報讀技巧。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01_a",
+          "level": "L4",
+          "name": "次數分配表的製作",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+          "description": "了解次數分配表的定義，能將原始資料分組並製作次數分配表。",
+          "difficulty": 2
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "level": "L4",
+          "name": "累積次數分配表的製作",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+          "description": "了解累積次數的定義，能從次數分配表整理成累積次數分配表。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "level": "L4",
+          "name": "相對次數分配表的製作",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+          "description": "了解相對次數的定義，能將次數分配表轉換成相對次數分配表。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "level": "L4",
+          "name": "累積相對次數分配表的製作",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+          "description": "了解累積相對次數的定義，能從相對次數分配表或累積次數分配表製作累積相對次數分配表。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_01_e",
+          "level": "L4",
+          "name": "統計分配表的報讀與分析",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+          "description": "根據次數、累積次數、相對次數與累積相對次數分配表，回答相關問題並進行資料分析。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02",
+          "level": "L3",
+          "name": "統計折線圖的繪製與報讀",
+          "parent_id": "JH_STA_CHARTS_ADV",
+          "description": "學習次數、累積次數、相對次數與累積相對次數折線圖的繪製方法及報讀分析技巧。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02_a",
+          "level": "L4",
+          "name": "次數分配折線圖的繪製",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+          "description": "了解次數分配折線圖的繪製方式，能根據次數分配表繪製折線圖。",
+          "difficulty": 3
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02_b",
+          "level": "L4",
+          "name": "累積次數分配折線圖的繪製",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+          "description": "了解累積次數分配折線圖的繪製方式，能根據累積次數分配表繪製折線圖。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02_c",
+          "level": "L4",
+          "name": "相對次數分配折線圖的繪製",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+          "description": "了解相對次數分配折線圖的繪製方式，能根據相對次數分配表繪製折線圖。",
+          "difficulty": 4
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02_d",
+          "level": "L4",
+          "name": "累積相對次數分配折線圖的繪製",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+          "description": "了解累積相對次數分配折線圖的繪製方式，能根據累積相對次數分配表繪製折線圖。",
+          "difficulty": 5
+        },
+        {
+          "id": "JH_STA_CHARTS_ADV_L3_02_e",
+          "level": "L4",
+          "name": "統計折線圖的報讀與分析",
+          "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+          "description": "根據次數、累積次數、相對次數與累積相對次數折線圖，回答相關問題並進行資料分析與比較。",
+          "difficulty": 5
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "L0_JH",
+          "to_id": "L1_JH_STA",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "L1_JH_STA",
+          "to_id": "JH_STA_CHARTS_ADV",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_a",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_b",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_c",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_d",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+          "type": "parent-child"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02_a",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_b",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02_b",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_c",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02_c",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_d",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02_d",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+          "type": "sequence"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "type": "prerequisite",
+          "reason": "累積次數分配表需以次數分配表為基礎"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "type": "prerequisite",
+          "reason": "相對次數分配表需以次數分配表為基礎"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_b",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "type": "prerequisite",
+          "reason": "累積相對次數分配表可由累積次數換算而得"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_c",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "type": "prerequisite",
+          "reason": "累積相對次數分配表可由相對次數累加而得"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_01_d",
+          "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+          "type": "prerequisite",
+          "reason": "報讀與分析分配表需先能製作各類分配表"
+        },
+        {
+          "from_id": "JH_STA_CHARTS_ADV_L3_02_d",
+          "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+          "type": "prerequisite",
+          "reason": "報讀與分析折線圖需先能繪製各類折線圖"
+        }
+      ],
+      "warnings": [],
+      "stats": {
+        "total_nodes": 15,
+        "total_edges": 33,
+        "l3_count": 2,
+        "l4_count": 10,
+        "l4_avg_per_l3": 5.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+﻿On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    ../../../templates/README_UI.md
+	deleted:    ../../../templates/_admin_navbar.html
+	deleted:    ../../../templates/_filter_sidebar.html
+	deleted:    ../../../templates/adaptive_learning_entry.html
+	deleted:    ../../../templates/adaptive_practice_v2.html
+	deleted:    ../../../templates/adaptive_selection.html
+	deleted:    ../../../templates/add_mistake.html
+	deleted:    ../../../templates/admin_curriculum.html
+	deleted:    ../../../templates/admin_examples.html
+	deleted:    ../../../templates/admin_prerequisites.html
+	deleted:    ../../../templates/admin_skills.html
+	deleted:    ../../../templates/ai_prompt_settings.html
+	deleted:    ../../../templates/base.html
+	deleted:    ../../../templates/dashboard.html
+	deleted:    ../../../templates/db_maintenance.html
+	deleted:    ../../../templates/exam_upload.html
+	deleted:    ../../../templates/grade_view.html
+	deleted:    ../../../templates/image_quiz_generator.html
+	deleted:    ../../../templates/importer_status.html
+	deleted:    ../../../templates/index.html
+	deleted:    ../../../templates/knowledge_graph.html
+	deleted:    ../../../templates/live_show.html
+	deleted:    ../../../templates/login.html
+	deleted:    ../../../templates/mistake_notebook.html
+	deleted:    ../../../templates/register.html
+	deleted:    ../../../templates/similar_questions.html
+	deleted:    ../../../templates/student_diagnosis.html
+	deleted:    ../../../templates/teacher_analysis.html
+	deleted:    ../../../templates/teacher_dashboard.html
+	deleted:    ../../../templates/textbook_importer.html
+	deleted:    ../../../templates/unit_view.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../../.antigravity/
+	../../../.bash_history
+	../../../.config/
+	../../../.copilot/
+	../../../.gemini/
+	../../../.gitconfig
+	../../../.idlerc/
+	../../../.lesshst
+	../../../.matplotlib/
+	../../../.ssh/
+	../../../.viminfo
+	../../../.vscode/
+	../../../AppData/
+	../../../Contacts/
+	../../../Desktop/
+	../../../Documents/
+	../../../Favorites/
+	../../../Figure_1.png
+	../../../Links/
+	../../../Mathproject/
+	../../../Music/
+	../../../NTUSER.DAT
+	../../../NTUSER.DAT{408b5a80-7ff5-11f0-b296-c76de23175b0}.TM.blf
+	../../../NTUSER.DAT{408b5a80-7ff5-11f0-b296-c76de23175b0}.TMContainer00000000000000000001.regtrans-ms
+	../../../NTUSER.DAT{408b5a80-7ff5-11f0-b296-c76de23175b0}.TMContainer00000000000000000002.regtrans-ms
+	../../../OneDrive/
+	../../../Pictures/
+	../../../Saved Games/
+	../../../Searches/
+	../../../Videos/
+	../../../ntuser.dat.LOG1
+	../../../ntuser.dat.LOG2
+	../../../ntuser.ini
+	"../../../\346\274\224\347\256\227\346\263\225\345\217\257\350\241\214\346\200\247\346\270\254\350\251\246\350\205\263\346\234\254.py"
+
+no changes added to commit (use "git add" and/or "git commit -a")

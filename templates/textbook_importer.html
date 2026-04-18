@@ -1,0 +1,291 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/textbook_importer.html
+功能說明 (Description): 教科書匯入介面
+後端呼叫 (Backend Call): core/routes/admin.py -> admin_textbook_importer
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 教材分析工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar 樣式改由 _admin_navbar.html 提供，避免頁面覆寫 */
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            max-width: 800px;
+            /* 限制表單寬度 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card-header {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #34495e;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.95em;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+            width: 100%;
+            display: block;
+        }
+
+        .btn-primary:hover {
+            background: #229954;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <div class="header" style="justify-content: center; flex-direction: column; text-align: center;">
+            <h1><i class="bi bi-robot" style="color: #2980b9;"></i> AI 教材分析與匯入工具</h1>
+            <p style="color: #555; margin-top: 10px; max-width: 800px;">
+                請上傳課本的 PDF 檔案，並指定其所屬的課綱資訊。系統將會自動在背景分析內容，並建立對應的技能單元、課程綱要與例題。
+            </p>
+        </div>
+
+        <!-- 顯示 Flash 訊息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div style="max-width: 800px; margin: 0 auto;">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-upload"></i> 上傳教材
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="curriculum">課綱 (Curriculum)</label>
+                    <select id="curriculum" name="curriculum" required>
+                        <option value="general">普通高中 (general)</option>
+                        <option value="vocational">技術型高中 (vocational)</option>
+                        <option value="junior_high">國民中學 (junior_high)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="publisher">出版社 (Publisher)</label>
+                    <select id="publisher" name="publisher" required>
+                        <option value="kangxuan">康軒</option>
+                        <option value="longteng">龍騰</option>
+                        <!-- 未來可在此處新增更多出版社 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="grade">年級 (Grade)</label>
+                    <input type="number" id="grade" name="grade" placeholder="例如: 10" required>
+                </div>
+                <div class="form-group">
+                    <label for="volume">冊別 (Volume)</label>
+                    <input type="text" id="volume" name="volume" placeholder="例如: 數學3A" required>
+                </div>
+                <div class="form-group">
+                    <label>匯入模式 (Import Mode)</label>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <div style="display: flex; align-items: center;">
+                            <input type="radio" id="mode_single" name="import_mode" value="single" checked
+                                style="width: auto; margin-right: 8px;">
+                            <label for="mode_single" style="margin-bottom: 0; cursor: pointer;">單一檔案 (Single
+                                File)</label>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <input type="radio" id="mode_batch" name="import_mode" value="batch"
+                                style="width: auto; margin-right: 8px;">
+                            <label for="mode_batch" style="margin-bottom: 0; cursor: pointer;">批次資料夾 (Batch
+                                Folder)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 單一檔案上傳區塊 -->
+                <div id="single_file_input" class="form-group">
+                    <label for="textbook_pdf">選擇檔案 (PDF/Word)</label>
+                    <input type="file" id="textbook_pdf" name="textbook_pdf" accept=".pdf,.docx,.doc" required>
+                    <small class="text-muted" style="display: block; margin-top: 5px;">
+                        支援格式：.pdf, .docx, .doc
+                    </small>
+                </div>
+
+                <!-- 資料夾上傳區塊 -->
+                <div id="batch_folder_input" class="form-group" style="display: none;">
+                    <label for="textbook_folder">選擇資料夾 (包含多個檔案)</label>
+                    <input type="file" id="textbook_folder" name="textbook_folder" webkitdirectory directory multiple>
+                    <small class="text-muted" style="display: block; margin-top: 5px;">
+                        請選擇包含教材檔案的資料夾。系統將會自動過濾並處理其中的 .pdf 與 .docx 檔案。
+                    </small>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 20px;">
+                    <i class="bi bi-info-circle"></i> <strong>注意：</strong>
+                    此為耗時操作，提交後頁面會立即刷新，您可以從伺服器後台日誌查看處理進度。
+                </div>
+
+                <!-- 新增：跳過程式碼生成選項 -->
+                <div class="mb-3 form-check" style="margin-top: 20px; margin-bottom: 20px;">
+                    <input type="checkbox" class="form-check-input" id="skip_code_gen" name="skip_code_gen"
+                        style="width: auto; cursor: pointer;" checked>
+                    <label class="form-check-label" for="skip_code_gen" style="cursor: pointer; font-weight: 500;">
+                        跳過自動生成 Python 出題程式 (僅匯入資料庫結構)
+                    </label>
+                    <small class="text-muted" style="display: block; margin-top: 5px; margin-left: 24px;">
+                        勾選此選項可加快大量匯入速度，稍後可透過後台腳本批次生成程式碼。
+                    </small>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const modeSingle = document.getElementById('mode_single');
+                        const modeBatch = document.getElementById('mode_batch');
+                        const singleInputDiv = document.getElementById('single_file_input');
+                        const batchInputDiv = document.getElementById('batch_folder_input');
+                        const singleInput = document.getElementById('textbook_pdf');
+                        const batchInput = document.getElementById('textbook_folder');
+
+                        function updateVisibility() {
+                            if (modeSingle.checked) {
+                                singleInputDiv.style.display = 'block';
+                                batchInputDiv.style.display = 'none';
+                                singleInput.required = true;
+                                batchInput.required = false;
+                                batchInput.value = ''; // 清空另一個輸入
+                            } else {
+                                singleInputDiv.style.display = 'none';
+                                batchInputDiv.style.display = 'block';
+                                singleInput.required = false;
+                                batchInput.required = true;
+                                singleInput.value = ''; // 清空另一個輸入
+                            }
+                        }
+
+                        modeSingle.addEventListener('change', updateVisibility);
+                        modeBatch.addEventListener('change', updateVisibility);
+
+                        // 初始化狀態
+                        updateVisibility();
+                    });
+                </script>
+                <button type="submit" class="btn-primary">開始分析與匯入</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,3081 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Project — Live Show Dashboard</title>
+    <meta name="description"
+        content="Math Project Live Show: Ab1 (Native LLM) vs Ab3 (Active Healer Engine) ablation comparison dashboard.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- MathJax -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ================================================
+           DESIGN TOKENS  (Aligned with Clean/Clear Style)
+        ================================================ */
+        :root {
+            --bg: #f5f7fa;
+            --panel-bg: #ffffff;
+            --border-subtle: #e9ecef;
+            --text-main: #2c3e50;
+            --text-muted: #6c757d;
+
+            --gemini: #4285F4;
+            --qwen: #0F9D58;
+            --healer: #d35400;
+
+            --ab1-border: #e74c3c;
+            --ab1-glow: rgba(231, 76, 60, 0.08);
+            --ab3-border: #27ae60;
+            --ab3-glow: rgba(39, 174, 96, 0.08);
+
+            --console-bg: #f8f9fa;
+            --console-text: #2c3e50;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* ── Body ── */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Diagnostic Overlay ── */
+        #transition-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            gap: 1.5rem;
+        }
+
+        #transition-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        #overlay-icon {
+            font-size: 3rem;
+            animation: pulse-icon 1s ease-in-out infinite alternate;
+        }
+
+        #overlay-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-main);
+        }
+
+        #overlay-pipeline {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .overlay-step {
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            background: var(--panel-bg);
+        }
+
+        .overlay-step.active-step {
+            color: #2980b9;
+            border-color: #3498db;
+            background: #e1f0fa;
+        }
+
+        .overlay-color-cloud {
+            color: var(--gemini);
+        }
+
+        .overlay-color-transfer {
+            color: var(--qwen);
+        }
+
+        @keyframes pulse-icon {
+            from {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            to {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        /* ── Header ── */
+        header {
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-subtle);
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin: 0 0 0.25rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1a252f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #process-log {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: #2c3e50;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100px;
+            overflow-y: auto;
+        }
+
+        .header-subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .status-ready {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #4caf50;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(76, 175, 80, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+
+        /* ── Pipeline Banner ── */
+        .pipeline-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .pipe-step {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+            font-weight: 600;
+            background: var(--bg);
+        }
+
+        .pipe-step.gemini {
+            color: var(--gemini);
+            border-color: rgba(66, 133, 244, 0.3);
+            background: rgba(66, 133, 244, 0.05);
+        }
+
+        .pipe-step.amber {
+            color: #d35400;
+            border-color: rgba(211, 84, 0, 0.3);
+            background: rgba(211, 84, 0, 0.05);
+        }
+
+        .pipe-step.qwen {
+            color: var(--qwen);
+            border-color: rgba(15, 157, 88, 0.3);
+            background: rgba(15, 157, 88, 0.05);
+        }
+
+        .pipe-arrow {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* ── Multimodal Workstation ── */
+        .workstation {
+            display: grid;
+            grid-template-columns: 3fr 2fr 166px;
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .workstation-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: #ffffff;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* ── Skill Diagnostics Card ── */
+        .skill-diagnostics {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            color: #2c3e50;
+            font-family: 'JetBrains Mono', monospace;
+            /* Remove height: 100% to stop dynamic flex stretch */
+        }
+
+        .sd-header {
+            font-size: 1rem;
+            font-weight: 800;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #1a73e8;
+        }
+
+        .process-log {
+            height: 100px;
+            /* Fixed height for scrollbar */
+            font-size: 0.8rem;
+            color: #4b5563;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+
+        .process-log-line {
+            margin-bottom: 0.25rem;
+        }
+
+        .confidence-meter-container {
+            margin-bottom: 0.5rem;
+        }
+
+        .cm-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cm-track {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .cm-fill {
+            height: 100%;
+            background: #3498db;
+            width: 0%;
+            transition: width 0.5s ease-out;
+        }
+
+        .selected-skill-container {
+            text-align: center;
+        }
+
+        .selected-skill-badge {
+            display: inline-block;
+            background: #e1f0fa;
+            color: #2980b9;
+            border: 1px solid #3498db;
+            padding: 0.4rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .structure-compare {
+            margin-top: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #f8f9fa;
+            padding: 0.6rem;
+        }
+
+        .structure-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #4b5563;
+            margin-bottom: 0.35rem;
+        }
+
+        .structure-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .structure-status.ok {
+            color: #16a34a;
+        }
+
+        .structure-status.fail {
+            color: #dc2626;
+        }
+
+        .structure-line {
+            font-size: 0.72rem;
+            color: #374151;
+            line-height: 1.35;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .mirror-narrow-frame {
+            position: relative;
+            width: 166px;
+            min-width: 166px;
+            max-width: 166px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 0.55rem;
+            text-align: left;
+            align-self: stretch;
+        }
+
+        .mirror-narrow-frame .structure-compare {
+            margin-top: 0;
+            border: none;
+            background: transparent;
+            padding: 0;
+        }
+
+        .workstation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .model-selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .model-selector-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .model-select {
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-subtle);
+            background: #f8f9fa;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .model-select:focus {
+            border-color: #3498db;
+        }
+
+        .canvas-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            background: #f8f9fa;
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .tool-btn:hover {
+            background: #e9ecef;
+        }
+
+        .tool-btn.active {
+            background: #e1f0fa;
+            color: #2980b9;
+            border-color: #3498db;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 80px;
+            border: 2px dashed var(--border-subtle);
+            border-radius: 6px;
+            background-color: #fff;
+            background-image:
+                linear-gradient(#f1f3f5 1px, transparent 1px),
+                linear-gradient(90deg, #f1f3f5 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .canvas-container.dragover {
+            border-color: #3498db;
+            background-color: #f8fbff;
+        }
+
+        canvas#inputCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fff;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        button.action-btn {
+            padding: 0.55rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        button#recognizeBtn {
+            background: #f39c12;
+            color: white;
+        }
+
+        button#recognizeBtn:hover {
+            background: #e67e22;
+        }
+
+        button#submitBtn {
+            background: #3498db;
+            color: white;
+        }
+
+        button#submitBtn:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #95a5a6 !important;
+        }
+
+        /* ── Skill Badge in Workstation ── */
+        #detected-skill {
+            display: none;
+            margin-top: 0.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        /* ── Main triple panel grid ── */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem 2rem;
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ── Panel card ── */
+        .panel {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            padding: 1.75rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .ab-panel {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            max-height: 480px;
+            /* Reduced to ~2/3 of previous 800px depending on content, was unspecified max but taking up entire view */
+            overflow-y: auto;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .ab1-panel::before {
+            background: var(--ab1-border);
+        }
+
+        .ab2-panel::before {
+            background: #f39c12;
+            /* Amber for Ab2 */
+        }
+
+        .ab3-panel::before {
+            background: var(--ab3-border);
+        }
+
+        /* Glow states post-result replaced by simple shadow */
+        .panel.state-failed {
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.15);
+        }
+
+        .panel.state-healed {
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.15);
+        }
+
+        .panel.state-success {
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.15);
+        }
+
+        /* ── Panel header ── */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+            color: #2c3e50;
+        }
+
+        .panel-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Status Badges ── */
+        .badge {
+            padding: 0.3rem 0.9rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .badge-standby {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .badge-loading {
+            background: #e1f0fa;
+            color: #2980b9;
+        }
+
+        .badge-failed {
+            background: #fdf2f2;
+            color: #c0392b;
+            border: 1px solid #f5c6cb;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .badge-healed {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* ── Content boxes ── */
+        .content-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            min-height: 200px;
+        }
+
+        .content-box.hidden {
+            display: none;
+        }
+
+        .math-block {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1.25rem;
+            font-size: 1.1rem;
+            min-height: 80px;
+            border: 1px solid #e9ecef;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #f1f3f5;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #495057;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border: 1px solid #e9ecef;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .healer-log-content {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            line-height: 1.5;
+            max-height: 100px;
+            /* Reduced to ~2/3 */
+            overflow-y: auto;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+
+        /* ── Loading skeleton ── */
+        .loader-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .loader-wrap.hidden {
+            display: none;
+        }
+
+        .skeleton {
+            height: 16px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ── Stat cards ── */
+        .meta-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .stat-value.text-error {
+            color: #e74c3c;
+        }
+
+        .stat-value.text-warning {
+            color: #f39c12;
+        }
+
+        .stat-value.text-success {
+            color: #27ae60;
+        }
+
+        /* ── FLASH overlay animation ── */
+        @keyframes healerFlashGlow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7);
+                border-color: #f39c12;
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(243, 156, 18, 0);
+                border-color: #f39c12;
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(243, 156, 18, 0);
+                border-color: #e9ecef;
+            }
+        }
+
+        .healer-flash {
+            animation: healerFlashGlow 1.5s ease-out 2;
+            border-color: #f39c12 !important;
+        }
+
+        .flash-warning {
+            color: #d35400;
+            font-weight: 600;
+        }
+
+        /* ═══════════════════════════════════════
+           ENGINE CONSOLE 
+        ═══════════════════════════════════════ */
+        .monitor-section {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1.2fr 1.2fr 1fr;
+            gap: 1.5rem;
+            padding: 0 2rem 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .monitor-section-header {
+            grid-column: 1 / -1;
+            padding: 1rem 0 0.5rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .monitor-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .monitor-panel {
+            background: #ffffff;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            height: 600px;
+            /* Force uniform height across the 4 blocks */
+            overflow-y: auto;
+        }
+
+        .monitor-node-label {
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 0 0 0.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        /* Progress tracks */
+        .progress-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .monitor-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            height: 14px;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            background: #e9ecef;
+            border-radius: 99px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 99px;
+            background: #3498db;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-fill.cpu {
+            background: #9b59b6;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* Engine Console log box */
+        .engine-console {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 1rem;
+            min-height: 80px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            overflow-y: auto;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        /* Radar wrapper */
+        .radar-wrapper {
+            position: relative;
+            height: 200px;
+            margin-top: 1rem;
+        }
+
+        /* ── Code Display ── */
+        pre {
+            background: #f8f9fa;
+            padding: 1.25rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            line-height: 1.5;
+            margin: 0;
+            max-height: 15rem;
+            /* Reduced height to ~2/3 of previous */
+            min-height: 6rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* ── Log Badges ── */
+        .log-badge {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+
+        .badge-gemini {
+            background: var(--gemini);
+            color: #fff;
+        }
+
+        .badge-qwen {
+            background: var(--qwen);
+            color: #fff;
+        }
+
+        .badge-healer {
+            background: var(--healer);
+            color: #fff;
+        }
+
+        /* ── Thinking Sandbox (Ab1) ── */
+        .thought-sandbox {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background: #fff;
+            border: 1px dashed #ccc;
+            display: none;
+        }
+
+        .thought-sandbox.active {
+            display: block;
+        }
+
+        /* ── Logic Diagnosis Panels ── */
+        .diag-panel {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            resize: horizontal;
+            min-width: 300px;
+            height: 600px;
+            /* Force uniform height across the 4 blocks */
+        }
+
+        .diag-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #58a6ff;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .diag-header.opt {
+            color: #3fb950;
+        }
+
+        .diag-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            color: #e6edf3;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Pre format inside diag */
+        .diag-block {
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .diag-label {
+            color: #8b949e;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 0.25rem;
+            display: inline-block;
+        }
+
+        .diag-code {
+            color: #e6edf3;
+        }
+
+        .diag-comment {
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        .diag-highlight {
+            color: #ff7b72;
+        }
+
+        .diag-fix {
+            color: #d29922;
+            /* Orange highlight for healer logs */
+        }
+
+        .diag-success {
+            color: #3fb950;
+        }
+
+        .thought-sandbox-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animated ping dot */
+        .ping-dot {
+            position: relative;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f39c12;
+            animation: pulse-simple 1.5s infinite;
+        }
+
+        @keyframes pulse-simple {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+
+        .thought-sandbox.done .ping-dot {
+            background: #95a5a6;
+            animation: none;
+        }
+
+        #ab1-thought-stream {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #6c757d;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* ─────────────────────────── PLAN B: ABLATION COMPARISON ──────────────── */
+        .comparison-section {
+            background: var(--bg-main);
+            border-top: 2px solid var(--border-subtle);
+            padding: 1.5rem 2rem 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .comparison-section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .comparison-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
+        }
+
+        .comparison-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        /* SCORE ROW */
+        .cmp-score-card {
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
+            padding: 1.25rem 1.5rem;
+            background: var(--panel-bg);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+
+        .cmp-score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .cmp-score-card.ab1::before {
+            background: #e74c3c;
+        }
+
+        .cmp-score-card.ab2::before {
+            background: #f39c12;
+        }
+
+        .cmp-score-card.ab3::before {
+            background: #27ae60;
+        }
+
+        .cmp-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .cmp-score-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cmp-score-label.ab1 {
+            color: #e74c3c;
+        }
+
+        .cmp-score-label.ab2 {
+            color: #f39c12;
+        }
+
+        .cmp-score-label.ab3 {
+            color: #27ae60;
+        }
+
+        .cmp-mcri-big {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .cmp-mcri-big.ab1 {
+            color: #e74c3c;
+        }
+
+        .cmp-mcri-big.ab2 {
+            color: #f39c12;
+        }
+
+        .cmp-mcri-big.ab3 {
+            color: #27ae60;
+        }
+
+        .cmp-mini-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .cmp-mini-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cmp-mini-val {
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cmp-mini-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .cmp-winner-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 99px;
+            font-weight: 700;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* CODE ROW */
+        .cmp-code-card {
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            background: #0d1117;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .cmp-code-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cmp-code-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .cmp-code-title.ab1 {
+            color: #ff7b7b;
+        }
+
+        .cmp-code-title.ab2 {
+            color: #f39c12;
+        }
+
+        .cmp-code-title.ab3 {
+            color: #3fb950;
+        }
+
+        .cmp-code-body {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #e6edf3;
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-y: auto;
+            max-height: 280px;
+            line-height: 1.6;
+        }
+
+        /* ──────────── END PLAN B ──────────── */
+
+        /* --- Vanilla Bootstrap-like Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            outline: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-dialog {
+            width: 90%;
+            max-width: 800px;
+            background: #212529;
+            color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #343a40;
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-close-white {
+            background: transparent;
+            border: none;
+            color: #f8f9fa;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        /* 讓小圓鈕正確顯示且具備懸停效果 */
+        .rounded-circle {
+            transition: all 0.2s ease;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+
+        .rounded-circle:hover {
+            background: rgba(243, 156, 18, 0.1) !important;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.3);
+        }
+
+        /* 確保 Modal 彈窗在最上層 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            /* 提高層級，確保在所有面板之上 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            /* 加深背景遮罩 */
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex !important;
+        }
+
+        /* 讓 JSON 顯示區塊看起來像駭客終端機 */
+        #jsonDisplayArea {
+            max-height: 500px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #333 #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══ TRANSITION DIAGNOSTIC OVERLAY ═══ -->
+    <div id="transition-overlay">
+        <div id="overlay-icon">☁️</div>
+        <div id="overlay-text" class="overlay-color-cloud">
+            <span class="log-badge badge-gemini">ARCHITECT</span>
+            [CLOUD] Perceiving Mathematics via Qwen3-VL...
+        </div>
+        <div id="overlay-pipeline">
+            <span class="overlay-step active-step" id="pipe-cloud">CLOUD PERCEPTION</span>
+            <span class="pipe-arrow">→</span>
+            <span class="overlay-step" id="pipe-scaffold">SCAFFOLD INJECTION</span>
+            <span class="pipe-arrow">→</span>
+            <span class="overlay-step" id="pipe-local">LOCAL ENGINE</span>
+        </div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header>
+        <div class="header-title-container">
+            <h1><span style="color: #f39c12; font-size: 1.5rem; text-shadow: 0 0 8px rgba(243,156,18,0.5);">⚡</span>
+                Small but Precise:Outperforming Large Language Models in K12 Mathematics through Engineered Self-Healing
+            </h1>
+            <div class="status-ready">
+                <div class="status-dot"></div>STATUS: READY
+            </div>
+        </div>
+        <div class="header-subtitle" style="font-size:1.25rem; font-weight:800; letter-spacing:0.02em;">
+            精準致勝：透過工程化自癒機制使小型模型在 K12 數學出題任務中超越雲端大模型</div>
+        <!-- ═══ MULTIMODAL WORKSTATION ═══ -->
+        <div class="workstation">
+            <!-- Left: Multimodal Input -->
+            <div class="workstation-left">
+                <div class="workstation-header">
+                    <div class="canvas-toolbar">
+                        <button type="button" class="tool-btn active" id="tool-pen">✏️ 畫筆</button>
+                        <button type="button" class="tool-btn" id="tool-eraser">🧹 橡皮擦</button>
+                        <div style="width:1px; height:20px; background:var(--border-subtle); margin:0 0.25rem;"></div>
+                        <button type="button" class="tool-btn" id="tool-clear">🗑️ 清空</button>
+                        <label class="tool-btn" style="cursor:pointer;">
+                            🖼️ 匯入圖片
+                            <input type="file" id="image-upload" accept="image/*" style="display:none;">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="canvas-container" id="canvas-container">
+                    <canvas id="inputCanvas"></canvas>
+                </div>
+
+                <form id="genForm" class="input-group">
+                    <input type="text" id="promptInput" placeholder="在此輸入、手寫，或直接 Ctrl+V 貼上數學測驗截圖...">
+                    <button type="submit" id="submitBtn" class="action-btn"
+                        style="background:#95a5a6; cursor:not-allowed;">⚡ 啟動平行運算</button>
+                </form>
+            </div>
+
+            <!-- Right: Skill Diagnostics -->
+            <div class="skill-diagnostics">
+                <div class="sd-header">🧬 Skill DNA Identification</div>
+                <div class="process-log" id="process-log">
+                    <div class="process-log-line" style="color:#9ca3af;">Awaiting input...</div>
+                </div>
+                <div class="confidence-meter-container">
+                    <div class="cm-label">
+                        <span>Alignment Score</span>
+                        <span id="cm-value">0%</span>
+                    </div>
+                    <div class="cm-track">
+                        <div class="cm-fill" id="cm-fill"></div>
+                    </div>
+                </div>
+                <div class="selected-skill-container">
+                    <div class="selected-skill-badge" id="selected-skill-badge">UNKNOWN_SKILL</div>
+                </div>
+            </div>
+
+            <div class="mirror-narrow-frame">
+                <div class="structure-compare" id="structure-compare">
+                    <div class="structure-title">🧪 Complexity Mirror</div>
+                    <div class="structure-status" id="structure-status">等待生成...</div>
+                    <div class="structure-line" id="structure-expected">Expected: -</div>
+                    <div class="structure-line" id="structure-generated">Generated: -</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ DUAL PANEL MAIN ═══ -->
+    <main>
+        <!-- Left: Ab1 Native LLM -->
+        <div class="panel ab1-panel" id="panel-ab1">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Ab1 — Native LLM</div>
+                    <div class="panel-subtitle">Bare Prompt · No Scaffold · No Healer</div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+                    <div id="badge-ab1" class="badge badge-standby">STANDBY</div>
+                    <select id="model-select-ab1" class="model-select"
+                        style="padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-subtle); background: #f8f9fa; font-size: 0.75rem; color: var(--text-main); outline: none;">
+                        <option value="pause" selected>暫停測試</option>
+                        <option value="gemini-3-flash">Gemini 3 Flash (Cloud)</option>
+                        <option value="qwen3-vl-8b">Qwen3-VL-8B (Local)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading skeleton -->
+            <div id="loader-ab1" class="loader-wrap hidden">
+                <div class="skeleton" style="width:80%"></div>
+                <div class="skeleton" style="width:55%"></div>
+                <div class="skeleton" style="width:90%"></div>
+                <div class="skeleton" style="width:65%"></div>
+            </div>
+
+            <!-- Result -->
+            <div id="result-ab1" class="content-box hidden">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="section-label">Generated Problem</div>
+                        <button type="button" class="action-btn"
+                            style="padding: 0.2rem 0.5rem; font-size: 0.8rem; background: var(--border-subtle); color: var(--text-main); cursor: pointer;"
+                            onclick="runNextQuestion('ab1', this); return false;">
+                            下一題
+                        </button>
+                    </div>
+                    <div id="math-ab1" class="math-block"></div>
+                </div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <div class="section-label">Ab1 BARE PROMPT</div>
+                    <pre id="code-ab1" class="code-block"></pre>
+                </div>
+
+                <!-- Stats -->
+                <div class="meta-stats">
+                    <div class="stat-card">
+                        <div id="time-ab1" class="stat-value">--</div>
+                        <div class="stat-label">AI Latency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="fix-ab1" class="stat-value">0</div>
+                        <div class="stat-label">Healer Fixes</div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(239,68,68,0.35)">
+                        <div id="mcri-ab1" class="stat-value text-error">--</div>
+                        <div class="stat-label">MCRI Grade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle: Ab2 Scaffold Prompt (No Healer) -->
+        <div class="panel ab2-panel" id="panel-ab2">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Ab2 — Scaffold Prompt</div>
+                    <div class="panel-subtitle">@SKILL.md Scaffold · <b style="color:#d35400;">No Healer</b></div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+                    <div id="badge-ab2" class="badge badge-standby">STANDBY</div>
+                    <div class="model-select"
+                        style="padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-subtle); background: #fdf2f2; font-size: 0.75rem; color: #c0392b; cursor: not-allowed;"
+                        title="與 Ab3 連動，共用同一份生成程式碼">
+                        🔗 綁定 Ab3 模型
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading skeleton -->
+            <div id="loader-ab2" class="loader-wrap hidden">
+                <div class="skeleton" style="width:80%"></div>
+                <div class="skeleton" style="width:55%"></div>
+                <div class="skeleton" style="width:90%"></div>
+                <div class="skeleton" style="width:65%"></div>
+            </div>
+
+            <!-- Result -->
+            <div id="result-ab2" class="content-box hidden">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="section-label">Generated Problem</div>
+                        <button type="button" class="action-btn"
+                            style="padding: 0.2rem 0.5rem; font-size: 0.8rem; background: var(--border-subtle); color: var(--text-main); cursor: pointer;"
+                            onclick="runNextQuestion('ab2', this); return false;">
+                            下一題
+                        </button>
+                    </div>
+                    <div id="math-ab2" class="math-block"></div>
+                    <div id="ans-ab2"
+                        style="text-align:center;color:var(--text-muted);margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">
+                    </div>
+                </div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <h5 class="section-label" style="margin-bottom:0.5rem; font-size:0.85rem;">Ab2 Scaffold Prompt</h5>
+                    <pre id="code-ab2" class="code-block"></pre>
+                </div>
+
+                <!-- Stats -->
+                <div class="meta-stats">
+                    <div class="stat-card">
+                        <div id="time-ab2" class="stat-value">--</div>
+                        <div class="stat-label">AI Latency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="fix-ab2" class="stat-value text-error">0</div>
+                        <div class="stat-label">Healer Fixes</div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(239,68,68,0.35)">
+                        <div id="mcri-ab2" class="stat-value text-error">--</div>
+                        <div class="stat-label">MCRI Grade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Ab3 Active Healer -->
+        <div class="panel ab3-panel" id="panel-ab3">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title">Ab3 — Active Healer</div>
+                    <div class="panel-subtitle">@SKILL.md Scaffold · <b style="color:#d35400;">Full Healer</b></div>
+                </div>
+                <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;">
+                    <div id="badge-ab3" class="badge badge-standby">STANDBY</div>
+                    <select id="model-select-ab3" class="model-select"
+                        style="padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-subtle); background: #f8f9fa; font-size: 0.75rem; color: var(--text-main); outline: none;">
+                        <option value="gemini-3-flash">Gemini 3 Flash (Cloud)</option>
+                        <option value="qwen3-vl-8b" selected>Qwen3-VL-8B (Local)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading skeleton -->
+            <div id="loader-ab3" class="loader-wrap hidden">
+                <div class="skeleton" style="width:80%"></div>
+                <div class="skeleton" style="width:55%"></div>
+                <div class="skeleton" style="width:90%"></div>
+                <div class="skeleton" style="width:65%"></div>
+            </div>
+
+            <!-- Result -->
+            <div id="result-ab3" class="content-box hidden">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="section-label">Generated Problem</div>
+                        <button type="button" class="action-btn"
+                            style="padding: 0.2rem 0.5rem; font-size: 0.8rem; background: var(--border-subtle); color: var(--text-main); cursor: pointer;"
+                            onclick="runNextQuestion('ab3', this); return false;">
+                            下一題
+                        </button>
+                    </div>
+                    <div id="math-ab3" class="math-block"></div>
+                    <div id="ans-ab3"
+                        style="text-align:center;color:var(--text-muted);margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">
+                    </div>
+                </div>
+                <div style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <h5 class="section-label" style="margin-bottom:0.5rem; font-size:0.85rem;">Ab2 Scaffold Prompt +
+                        Healer</h5>
+                    <pre id="code-ab3" class="code-block" style="color:var(--text-muted)"></pre>
+                </div>
+
+                <!-- Stats -->
+                <div class="meta-stats">
+                    <div class="stat-card">
+                        <div id="time-ab3" class="stat-value">--</div>
+                        <div class="stat-label">AI Latency</div>
+                    </div>
+                    <div class="stat-card" style="border-color:rgba(255,109,0,0.35)">
+                        <div id="fix-ab3" class="stat-value text-warning">--</div>
+                        <div class="stat-label">Healer Fixes</div>
+                    </div>
+                    <div class="stat-card" style="border-color:rgba(16,185,129,0.35)">
+                        <div id="mcri-ab3" class="stat-value text-success">--</div>
+                        <div class="stat-label">MCRI Grade</div>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+
+
+    <!-- ═══ ABLATION COMPARISON SECTION (Plan B) ═══ -->
+    <div class="comparison-section">
+        <div class="comparison-section-header">
+            <h3 class="comparison-title">ABLATION.COMPARE — SIDE-BY-SIDE RESULT</h3>
+            <span class="comparison-subtitle">Ab1 (Native) &nbsp;▶&nbsp; Ab2 (Scaffold) &nbsp;▶&nbsp; Ab3
+                (Healed)</span>
+        </div>
+
+        <!-- ROW 1: THREE monitor-panels (stats + radar) -->
+        <div class="comparison-row" style="align-items: stretch;">
+
+            <!-- Ab1 monitor-panel -->
+            <div class="monitor-panel">
+                <h4 class="monitor-node-label" style="color:#ef4444;text-shadow:0 0 8px #ef4444;">[ Ab1 Node — Native ]
+                </h4>
+                <div class="progress-row">
+                    <span class="monitor-label">GPU · AI Inference Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab1-gpu" class="progress-fill"></div>
+                        </div>
+                        <span id="cmp-text-ab1-gpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div class="progress-row">
+                    <span class="monitor-label">CPU · Code Execution Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab1-cpu" class="progress-fill cpu"></div>
+                        </div>
+                        <span id="cmp-text-ab1-cpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+                    <span class="monitor-label">MCRI Score</span>
+                    <span id="cmp-mcri-ab1"
+                        style="font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:800; color:#ef4444;">--</span>
+                </div>
+                <div>
+                    <span class="monitor-label">Kernel Log</span>
+                    <div id="cmp-log-ab1" class="engine-console">AWAITING EXECUTION...</div>
+                </div>
+                <div class="radar-wrapper">
+                    <canvas id="cmpRadarAb1"></canvas>
+                </div>
+            </div>
+
+            <!-- Ab2 monitor-panel -->
+            <div class="monitor-panel">
+                <h4 class="monitor-node-label" style="color:#f39c12;text-shadow:0 0 8px #f39c12;">[ Ab2 Node — Scaffold
+                    Prompt ]</h4>
+                <div class="progress-row">
+                    <span class="monitor-label">GPU · AI Inference Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab2-gpu" class="progress-fill" style="background:#f39c12;"></div>
+                        </div>
+                        <span id="cmp-text-ab2-gpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div class="progress-row">
+                    <span class="monitor-label">CPU · Code Execution Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab2-cpu" class="progress-fill cpu"
+                                style="background:linear-gradient(90deg,#f39c12,#e67e22);"></div>
+                        </div>
+                        <span id="cmp-text-ab2-cpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+                    <span class="monitor-label">MCRI Score</span>
+                    <span id="cmp-mcri-ab2"
+                        style="font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:800; color:#f39c12;">--</span>
+                </div>
+                <div>
+                    <span class="monitor-label">Scaffold Log</span>
+                    <div id="cmp-log-ab2" class="engine-console">AWAITING EXECUTION...</div>
+                </div>
+                <div class="radar-wrapper">
+                    <canvas id="cmpRadarAb2"></canvas>
+                </div>
+            </div>
+
+            <!-- Ab3 monitor-panel -->
+            <div class="monitor-panel">
+                <h4 class="monitor-node-label" style="color:#10b981;text-shadow:0 0 8px #10b981;">[ Ab3 Node — Active
+                    Healer ]</h4>
+                <div class="progress-row">
+                    <span class="monitor-label">GPU · AI Inference Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab3-gpu" class="progress-fill"></div>
+                        </div>
+                        <span id="cmp-text-ab3-gpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div class="progress-row">
+                    <span class="monitor-label">CPU · Code Execution Time</span>
+                    <div class="progress-track">
+                        <div class="progress-bar-bg">
+                            <div id="cmp-bar-ab3-cpu" class="progress-fill cpu"></div>
+                        </div>
+                        <span id="cmp-text-ab3-cpu" class="progress-text">0.0s</span>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.5rem;">
+                    <span class="monitor-label">MCRI Score</span>
+                    <span id="cmp-mcri-ab3"
+                        style="font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:800; color:#10b981;">--</span>
+                </div>
+                <div>
+                    <span class="monitor-label">Healer Trace Log</span>
+                    <div id="cmp-log-ab3" class="engine-console">AWAITING EXECUTION...</div>
+                </div>
+                <div class="radar-wrapper">
+                    <canvas id="cmpRadarAb3"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 2: THREE diag-panels (code viewers) -->
+        <div class="comparison-row" id="cmp-score-row" style="align-items: stretch; margin-top: 1rem;">
+
+            <!-- Ab1 diag-panel -->
+            <div class="diag-panel" style="height: 320px; min-width: unset; resize: none;">
+                <div class="diag-header" style="color:#ff7b7b;">
+                    [BASELINE: BARE_PROMPT — Ab1]
+                    <span id="cmp-winner-badge-ab1" class="cmp-winner-badge"
+                        style="display:none; margin-left:auto;">WINNER</span>
+                </div>
+                <div class="diag-content" id="cmp-diag-ab1">
+                    <div class="diag-comment">AWAITING SYSTEM INITIALIZATION...</div>
+                </div>
+            </div>
+
+            <!-- Ab2 diag-panel -->
+            <div class="diag-panel" style="height: 320px; min-width: unset; resize: none;">
+                <div class="diag-header" style="color:#f39c12;">
+                    [SCAFFOLD_ONLY: NO_HEALER — Ab2]
+                    <span id="cmp-winner-badge-ab2" class="cmp-winner-badge"
+                        style="display:none; margin-left:auto;">WINNER</span>
+                </div>
+                <div class="diag-content" id="cmp-diag-ab2">
+                    <div class="diag-comment">AWAITING SYSTEM INITIALIZATION...</div>
+                </div>
+            </div>
+
+            <!-- Ab3 diag-panel -->
+            <div class="diag-panel" style="height: 320px; min-width: unset; resize: none;">
+                <div class="diag-header opt">
+                    [OPTIMIZED: SCAFFOLD_GUIDED — Ab3]
+                    <span id="cmp-winner-badge-ab3" class="cmp-winner-badge"
+                        style="display:none; margin-left:auto;">WINNER</span>
+                </div>
+                <div class="diag-content" id="cmp-diag-ab3">
+                    <div class="diag-comment">AWAITING SYSTEM INITIALIZATION...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        /* ═══════════════════════════════════════════
+        CHART.JS — MCRI RADAR (LAB_SPEC.md)
+        Axes: Syntax · Logic · Rendering · Stability
+        ═══════════════════════════════════════════ */
+        Chart.defaults.color = '#3a4a3a';
+        Chart.defaults.font.family = "'JetBrains Mono', monospace";
+
+        const radarOpts = (borderColor, bgColor) => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0, max: 100,
+                    angleLines: { color: 'rgba(0,0,0,0.1)' },
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    pointLabels: { color: '#2c3e50', font: { size: 9 } },
+                    ticks: { display: false, stepSize: 25 }
+                }
+            },
+            plugins: { legend: { display: false } }
+        });
+
+        const RADAR_LABELS = ['Syntax', 'Logic', 'Rendering', 'Stability'];
+        const EMPTY_DATA = [0, 0, 0, 0];
+
+        // chartAb1 / chartAb3 removed — radars now live in ABLATION.COMPARE section (cmpChartAb1/2/3)
+
+        // Comparison section radars (dark background)
+        const cmpRadarOpts = (borderColor, bgColor) => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    min: 0, max: 100,
+                    angleLines: { color: 'rgba(255,255,255,0.1)' },
+                    grid: { color: 'rgba(255,255,255,0.1)' },
+                    pointLabels: { color: '#adbac7', font: { size: 9 } },
+                    ticks: { display: false, stepSize: 25 }
+                }
+            },
+            plugins: { legend: { display: false } }
+        });
+
+        const cmpChartAb1 = new Chart(document.getElementById('cmpRadarAb1'), {
+            type: 'radar',
+            data: {
+                labels: RADAR_LABELS,
+                datasets: [{
+                    data: EMPTY_DATA, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.15)', borderWidth: 2,
+                    pointRadius: 3
+                }]
+            },
+            options: cmpRadarOpts('#ef4444', 'rgba(239,68,68,0.15)')
+        });
+
+        const cmpChartAb2 = new Chart(document.getElementById('cmpRadarAb2'), {
+            type: 'radar',
+            data: {
+                labels: RADAR_LABELS,
+                datasets: [{
+                    data: EMPTY_DATA, borderColor: '#f39c12', backgroundColor: 'rgba(243,156,18,0.15)', borderWidth: 2,
+                    pointRadius: 3
+                }]
+            },
+            options: cmpRadarOpts('#f39c12', 'rgba(243,156,18,0.15)')
+        });
+
+        const cmpChartAb3 = new Chart(document.getElementById('cmpRadarAb3'), {
+            type: 'radar',
+            data: {
+                labels: RADAR_LABELS,
+                datasets: [{
+                    data: EMPTY_DATA, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 2,
+                    pointRadius: 3
+                }]
+            },
+            options: cmpRadarOpts('#10b981', 'rgba(16,185,129,0.15)')
+        });
+
+        /* ═══════════════════════════════════════════
+        HELPER UTILITIES
+        ═══════════════════════════════════════════ */
+        const GPU_MAX = 60, CPU_MAX = 5;
+        let lastFinalFilePath = { ab1: null, ab2: null, ab3: null };
+        let lastHealerFixes = { ab1: 0, ab2: 0, ab3: 0 };
+        let latestExpectedProfile = null;
+        let latestSkillId = null;
+        let latestJsonSpec = null;
+        let latestOcrText = '';
+
+        function setBar(barId, textId, val, maxVal) {
+            const b = document.getElementById(barId), t = document.getElementById(textId);
+            if (!b || !t) return; // guard for removed elements
+            const pct = Math.min((val / maxVal) * 100, 100);
+            b.style.width = pct + '%';
+            t.textContent = val.toFixed(2) + 's';
+        }
+
+        function setBadge(id, cls, text) {
+            const el = document.getElementById(id);
+            el.className = 'badge ' + cls;
+            el.textContent = text;
+        }
+
+        function startLoading(target) {
+            lastFinalFilePath[target] = null;
+            lastHealerFixes[target] = 0;
+            // Keep result panel visible so prompts shown in code blocks remain visible
+            document.getElementById('result-' + target).classList.remove('hidden');
+            // Inject a small skeleton loader into the math block
+            document.getElementById('math-' + target).innerHTML = `<div class="loader-wrap" style="padding:1rem 0;"><div class="skeleton" style="width:80%"></div><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:90%"></div></div>`;
+
+            // Hide the old full-panel loader just in case
+            const oldLoader = document.getElementById('loader-' + target);
+            if (oldLoader) oldLoader.classList.add('hidden');
+
+            const ans = document.getElementById('ans-' + target);
+            if (ans) ans.textContent = '';
+
+            setBadge('badge-' + target, 'badge-loading', 'COMPUTING...');
+            const pClass = target === 'ab1' ? 'ab1-panel' : (target === 'ab2' ? 'ab2-panel' : 'ab3-panel');
+            document.getElementById('panel-' + target).className = 'panel ' + pClass;
+            document.getElementById('panel-' + target).classList.remove('state-failed', 'state-healed', 'state-success');
+        }
+
+        function updateRadar(chart, mcri) {
+            if (!mcri) return;
+            chart.data.datasets[0].data = [
+                mcri.syntax_score ?? 0,
+                mcri.logic_score ?? 0,
+                mcri.render_score ?? 0,
+                mcri.stability_score ?? 0
+            ];
+            chart.update();
+        }
+
+        /* ═══════════════════════════════════════════
+        DIAGNOSTIC PANEL HELPERS
+        ═══════════════════════════════════════════ */
+        function createDiagBlock(label, content, customClass = '') {
+            return `<div class="diag-block">
+        <div class="diag-label">${label}</div>
+        <div class="${customClass}">${content}</div>
+    </div>`;
+        }
+
+        /* ═══════════════════════════════════════════
+        RENDER RESULT
+        ═══════════════════════════════════════════ */
+        function renderResult(target, data) {
+            const isAb1 = target === 'ab1';
+            const isAb2 = target === 'ab2';
+            const isAb3 = target === 'ab3';
+
+            if (data && !data.error) {
+                lastFinalFilePath[target] = data.file_path || null;
+                lastHealerFixes[target] = data.fixes ?? 0;
+                console.debug('[renderResult] target=', target, 'file_path=', lastFinalFilePath[target]);
+            }
+
+            document.getElementById('loader-' + target).classList.add('hidden');
+            const panel = document.getElementById('panel-' + target);
+
+            // Diagnostic Panel References
+            const diagContent = document.getElementById(`diag-${target}-content`);
+
+            if (!data || data.error) {
+                // FAILED state
+                const errMsg = data?.error || 'Unknown error';
+                document.getElementById('result-' + target).classList.remove('hidden');
+                document.getElementById('math-' + target).innerHTML = '<span style="color:#e74c3c">⚠ ' + errMsg + '</span>';
+
+                if (isAb3) {
+                    updateStructureCompare({
+                        iso_profile_expected: latestExpectedProfile,
+                        iso_profile_generated: null,
+                        iso_isomorphic: false
+                    });
+                }
+
+                // [MODIFIED] Do not overwrite source code box on failure. Keep the prompt visible.
+
+                setBadge('badge-' + target, 'badge-failed', '⛔ FAILED');
+                panel.classList.add('state-failed');
+
+                const badgeStr = '<span class="log-badge badge-qwen">QWEN</span>';
+                const logElement = document.getElementById('log-' + target);
+                if (logElement) {
+                    logElement.innerHTML = badgeStr + ' <span style="color:#e74c3c">> [ERROR] Generation failed. Raw LLM output rejected.</span>';
+                }
+
+                // Diagnostic Error
+                if (diagContent) {
+                    diagContent.innerHTML = createDiagBlock('SYSTEM FATAL ERROR', errMsg, 'diag-highlight') +
+                        createDiagBlock('RAW_TEXT (FAILED TO HEAL)', (data.raw_text || data.raw_code || ""), 'diag-comment');
+                    requestAnimationFrame(() => diagContent.scrollTop = diagContent.scrollHeight);
+                }
+                return;
+            }
+
+            // SUCCESS
+            const res = data;
+            document.getElementById('result-' + target).classList.remove('hidden');
+            document.getElementById('math-' + target).innerHTML = res.problem || '(no problem rendered)';
+
+            if (isAb3) {
+                updateStructureCompare(res);
+            }
+
+            if (isAb2 || isAb3) {
+                if (res.answer !== undefined) {
+                    const ansEl = document.getElementById('ans-' + target);
+                    if (ansEl) ansEl.textContent = '答案 = ' + res.answer;
+                }
+
+                // [MODIFIED V45.8] Do not overwrite `code-target` with generated code so the Prompt template stays visible.
+                // The generated code is already displayed in the bottom Diagnostic Panel.
+            }
+
+            // Diagnostic Panel Population (Ab1 & Ab3 only, Ab2 has console logs handled below)
+            let ab2DiagHtml = '';
+            // Escape HTML tags to render safely in pre blocks
+            const escapeHtml = (unsafe) => {
+                return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g,
+                    "&quot;").replace(/'/g, "&#039;");
+            };
+
+            if (isAb2) {
+                const rawCode = res.raw_code || res.final_code || '';
+                ab2DiagHtml += createDiagBlock('[UNHEALED_SCAFFOLD_CODE]', escapeHtml(rawCode), 'diag-comment');
+            } else if (diagContent) {
+                let diagHtml = '';
+
+                if (isAb1) {
+                    // Left Panel (Baseline Hub - Ab1)
+
+                    // thought_stream: the AI's <thought> tag content
+                    const rawThinking = res.thinking || '';
+                    const ab1FinalCode = res.final_code || res.raw_code || '';
+
+                    if (rawThinking) {
+                        diagHtml += createDiagBlock('THOUGHT_STREAM', escapeHtml(rawThinking), 'diag-comment');
+                    }
+                    diagHtml += createDiagBlock('[FINAL_EXECUTABLE_CODE]', escapeHtml(ab1FinalCode), 'diag-code');
+
+                } else if (isAb3) {
+                    // Right Panel (Evolution Hub - Ab3)
+                    const finalCode = res.final_code || res.raw_code || '';
+                    const fixLogs = res.healer_logs || [];
+                    const fixLogStr = fixLogs.join('\\n');
+
+                    if (fixLogs.length > 0) {
+                        // healer_fix_logs colored orange in CSS (diag-fix)
+                        diagHtml += createDiagBlock('HEALER_FIX_LOGS', escapeHtml(fixLogStr), 'diag-fix');
+                        // ab3_final_code with green glowing border (use diag-success css)
+                        diagHtml += createDiagBlock('[PRODUCTION_READY_CODE] (Healer Output Applied)', escapeHtml(finalCode), 'diag-success');
+                    } else {
+                        diagHtml += createDiagBlock('[PRODUCTION_READY_CODE]', escapeHtml(finalCode), 'diag-success');
+                    }
+                }
+
+                diagContent.innerHTML = diagHtml;
+                // Auto-scroll to bottom
+                requestAnimationFrame(() => {
+                    diagContent.style.scrollBehavior = 'smooth';
+                    diagContent.scrollTop = diagContent.scrollHeight;
+                });
+            }
+
+            // [NEW] Capture JSON Source Origin and Output
+            if (isAb3) {
+                if (res.architect_raw_spec || res.gemini_raw_spec) {
+                    currentGeminiJson = res.architect_raw_spec || res.gemini_raw_spec;
+                } else if (res.raw_code && !res.architect_raw_spec && !res.gemini_raw_spec) {
+                    currentGeminiJson = ""; // fallback
+                }
+
+                if (res.architect_model) {
+                    currentArchitect = res.architect_model;
+                }
+            }
+
+            // Stats
+            const gpuTime = res.ai_inference_time_sec ?? 0;
+            const cpuTime = res.cpu_execution_time_sec ?? 0;
+            const totalFixes = res.fixes ?? 0;
+            const mcriScore = res.mcri?.total_score != null ? res.mcri.total_score.toFixed(1) : '--';
+
+            document.getElementById('time-' + target).textContent = gpuTime.toFixed(2) + 's';
+            document.getElementById('fix-' + target).textContent = totalFixes;
+            document.getElementById('mcri-' + target).textContent = mcriScore !== '--' ? mcriScore + '%' : '--';
+
+            // Progress bars
+            setBar('bar-' + target + '-gpu', 'text-' + target + '-gpu', gpuTime, GPU_MAX);
+            setBar('bar-' + target + '-cpu', 'text-' + target + '-cpu', cpuTime, CPU_MAX);
+
+            // Radar charts now handled in updateComparisonSection via cmpChartAb1/2/3
+
+            if (isAb3 && totalFixes > 0) {
+                setBadge('badge-ab3', 'badge-healed', '🛡 HEALED BY ACTIVE HEALER');
+                panel.classList.add('state-healed');
+                const logAb3h = document.getElementById('log-ab3');
+                if (logAb3h) logAb3h.innerHTML = '<span class="log-badge badge-healer">HEALER</span> <span class="flash-warning">🚨 [SYSTEM ALERT]: 偵測到 LaTeX / 邏輯瑕疵，已自動套用正規修正。(' + totalFixes + ' RULES APPLIED)</span>';
+            } else if (isAb3) {
+                setBadge('badge-ab3', 'badge-success', '✅ PASS (NO FIXES)');
+                panel.classList.add('state-success');
+                const logAb3 = document.getElementById('log-ab3');
+                if (logAb3) logAb3.innerHTML = '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#27ae60">>> SYSTEM OPTIMAL. NO REPAIRS REQUIRED.</span>';
+            } else if (isAb2) {
+                if (res._same_as_ab3) {
+                    setBadge('badge-ab2', 'badge-success', '= Ab3');
+                    panel.classList.add('state-success');
+                    const logAb2s = document.getElementById('log-ab2');
+                    if (logAb2s) logAb2s.innerHTML =
+                        '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#27ae60">' +
+                        '>> [Ab2 ≡ Ab3] Healer 未修改任何程式碼，Ab2 與 Ab3 共享相同輸出。</span>';
+                } else {
+                    setBadge('badge-ab2', 'badge-success', '✅ GENERATED');
+                    panel.classList.add('state-success');
+                    const logAb2 = document.getElementById('log-ab2');
+                    if (logAb2) logAb2.innerHTML =
+                        '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#e67e22">>> [SCAFFOLD OUTPUT] Executing Native String (No Safety Guards)...</span>';
+                }
+            } else if (res.is_paused) {
+                setBadge('badge-ab1', 'badge-failed', '⏸ PAUSED');
+                panel.classList.add('state-failed'); // Or a distinct paused style if you have one
+                const logAb1 = document.getElementById('log-ab1');
+                if (logAb1) logAb1.innerHTML =
+                    '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#f39c12">>> TEST PAUSED. Token Generation Skipped.</span>';
+            } else {
+                setBadge('badge-ab1', 'badge-success', '✅ GENERATED');
+                panel.classList.add('state-success');
+                const logAb1 = document.getElementById('log-ab1');
+                if (logAb1) logAb1.innerHTML =
+                    '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#27ae60">>> OUTPUT ACCEPTED.</span>';
+            }
+
+            // Re-typeset MathJax
+            if (window.MathJax) MathJax.typesetPromise();
+
+            // Ab1: render <think> content from raw_code into thought sandbox
+            if (isAb1) renderThinkContent(res.raw_code || '');
+
+            // [PLAN B] Update the Ablation Comparison section
+            try {
+                updateComparisonSection(target, res);
+            } catch (err) {
+                console.error('updateComparisonSection failed:', target, err);
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+        ABLATION COMPARISON UPDATER (Plan B)
+        ═══════════════════════════════════════════ */
+        function updateComparisonSection(target, res) {
+            const mcriScore = res.mcri?.total_score != null ? res.mcri.total_score.toFixed(1) + '%' : '--';
+            const gpuTime = res.ai_inference_time_sec ?? 0;
+            const cpuTime = res.cpu_execution_time_sec ?? 0;
+            const fixes = res.fixes ?? 0;
+
+            // ── diag-panel: code viewer (bottom row) ──
+            const cmpDiag = document.getElementById('cmp-diag-' + target);
+            if (cmpDiag) {
+                const finalCode = res.final_code || res.raw_code || '// (no code captured)';
+                const escapeHtml = (s) => (s || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                let diagHtml = '';
+                if (target === 'ab3') {
+                    const fixLogs = res.healer_logs || [];
+                    if (fixLogs.length > 0)
+                        diagHtml += createDiagBlock('HEALER_FIX_LOGS', escapeHtml(fixLogs.join('\n')), 'diag-fix');
+                    diagHtml += createDiagBlock('[PRODUCTION_READY_CODE]', escapeHtml(finalCode), 'diag-success');
+                } else if (target === 'ab2') {
+                    diagHtml += createDiagBlock('[UNHEALED_SCAFFOLD_CODE]', escapeHtml(finalCode), 'diag-comment');
+                } else {
+                    const thinking = res.thinking || '';
+                    if (thinking) diagHtml += createDiagBlock('THOUGHT_STREAM', escapeHtml(thinking), 'diag-comment');
+                    diagHtml += createDiagBlock('[FINAL_EXECUTABLE_CODE]', escapeHtml(finalCode), 'diag-code');
+                }
+                cmpDiag.innerHTML = diagHtml;
+                requestAnimationFrame(() => cmpDiag.scrollTop = cmpDiag.scrollHeight);
+            }
+
+            // ── monitor-panel: progress bars (top row) ──
+            const safeSetBar = (barId, textId, val, maxVal) => {
+                const b = document.getElementById(barId), t = document.getElementById(textId);
+                if (b && t) {
+                    b.style.width = Math.min((val / maxVal) * 100, 100) + '%'; t.textContent = val.toFixed(2) +
+                        's';
+                }
+            };
+            safeSetBar('cmp-bar-' + target + '-gpu', 'cmp-text-' + target + '-gpu', gpuTime, GPU_MAX);
+            safeSetBar('cmp-bar-' + target + '-cpu', 'cmp-text-' + target + '-cpu', cpuTime, CPU_MAX);
+
+            // ── monitor-panel: MCRI score ──
+            const cmpMcri = document.getElementById('cmp-mcri-' + target);
+            if (cmpMcri) cmpMcri.textContent = mcriScore;
+
+            // ── monitor-panel: log console ──
+            const cmpLog = document.getElementById('cmp-log-' + target);
+            if (cmpLog) {
+                if (target === 'ab3') {
+                    cmpLog.innerHTML = fixes > 0
+                        ? `<span class="log-badge badge-healer">HEALER</span> <span class="flash-warning">🚨 ${fixes} FIX(ES)
+                APPLIED — MCRI: ${mcriScore}</span>`
+                        : `<span class="log-badge badge-qwen">QWEN</span> <span style="color:#10b981">>> SYSTEM OPTIMAL. NO REPAIRS.
+                MCRI: ${mcriScore}</span>`;
+                } else if (target === 'ab2') {
+                    cmpLog.innerHTML = res._same_as_ab3
+                        ? `<span class="log-badge badge-qwen">QWEN</span> <span style="color:#27ae60">>> [= Ab3] Healer 未修改，共享相同結果。MCRI: ${mcriScore}</span>`
+                        : `<span class="log-badge badge-qwen">QWEN</span> <span style="color:#f39c12">>> [SCAFFOLD
+                ONLY] No Healer. MCRI: ${mcriScore}</span>`;
+                } else {
+                    cmpLog.innerHTML = `<span class="log-badge badge-qwen">QWEN</span> <span style="color:#ef4444">>>
+                [NATIVE-BARE] No Scaffold. MCRI: ${mcriScore}</span>`;
+                }
+            }
+
+            // ── monitor-panel: radar chart ──
+            const cmpChartMap = { ab1: cmpChartAb1, ab2: cmpChartAb2, ab3: cmpChartAb3 };
+            if (cmpChartMap[target]) updateRadar(cmpChartMap[target], res.mcri);
+
+            highlightWinner();
+        }
+
+
+        function highlightWinner() {
+            const ids = ['ab1', 'ab2', 'ab3'];
+            const scores = ids.map(id => {
+                const el = document.getElementById('cmp-mcri-' + id);
+                if (!el || el.textContent === '--') return -1;
+                return parseFloat(el.textContent) || -1;
+            });
+
+            const maxScore = Math.max(...scores);
+            if (maxScore <= 0) return; ids.forEach((id, i) => {
+                const badge = document.getElementById('cmp-winner-badge-' + id);
+                if (!badge) return;
+                if (scores[i] === maxScore && scores[i] > 0) {
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        async function runNextQuestion(target, btnEl = null) {
+            const filePath = lastFinalFilePath[target];
+            console.debug('[runNextQuestion] target=', target, 'file_path=', filePath);
+            if (!filePath) {
+                alert(`?????????? file_path: ${target}`);
+                return;
+            }
+            const btn = btnEl || document.querySelector(`#result-${target} .action-btn`);
+            if (!btn) {
+                console.error('runNextQuestion button not found for target=', target);
+                alert(`下一題按鈕初始化失敗: ${target}`);
+                return;
+            }
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '生成中...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/run_generated_code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        file_path: filePath,
+                        level: 1,
+                        next_question: true,
+                        ablation_mode: target === 'ab1',
+                        target,
+                        skill_id: latestSkillId,
+                        ocr_text: latestOcrText,
+                        json_spec: latestJsonSpec,
+                        healer_trace: {
+                            regex_fixes: target === 'ab3' ? (lastHealerFixes.ab3 || 0) : 0,
+                            ast_fixes: 0
+                        }
+                    })
+                });
+
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+
+                if (data.error) throw new Error(data.error);
+                if (data.file_path) {
+                    lastFinalFilePath[target] = data.file_path;
+                }
+
+                document.getElementById('math-' + target).innerHTML = data.problem || '(no problem rendered)';
+                if (data.answer !== undefined) {
+                    document.getElementById('ans-' + target).textContent = '答案 = ' + data.answer;
+                }
+
+                // Update CPU latency
+                const cpuTime = data.api_time ?? 0;
+                setBar('bar-' + target + '-cpu', 'text-' + target + '-cpu', cpuTime, CPU_MAX);
+
+                // Update Radar and MCRI
+                if (data.mcri) {
+                    const cmpChartMap = { ab1: cmpChartAb1, ab2: cmpChartAb2, ab3: cmpChartAb3 };
+                    if (cmpChartMap[target]) updateRadar(cmpChartMap[target], data.mcri);
+                    const mcriScore = data.mcri.total_score != null ? data.mcri.total_score.toFixed(1) : '--';
+                    document.getElementById('mcri-' + target).textContent = mcriScore !== '--' ? mcriScore + '%' : '--';
+                }
+
+                if (window.MathJax) MathJax.typesetPromise();
+
+            } catch (err) {
+                alert(`下一題生成失敗: ${err.message}`);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+        TRANSITION DIAGNOSTIC ANIMATION
+        Phase 1: CLOUD PERCEPTION (Architect/Qwen3-VL)
+        Phase 2: SCAFFOLD INJECTION (Amber)
+        Phase 3: LOCAL ENGINE (Qwen)
+        Phase 4: SYSTEM READY
+        ═══════════════════════════════════════════ */
+        async function simulatePipeline() {
+            const overlay = document.getElementById('transition-overlay');
+            const overlayText = document.getElementById('overlay-text');
+            const pipeCloud = document.getElementById('pipe-cloud');
+            const pipeScaffold = document.getElementById('pipe-scaffold');
+            const pipeLocal = document.getElementById('pipe-local');
+            const log1 = document.getElementById('log-ab1');
+            const log3 = document.getElementById('log-ab3');
+
+            if (log1) log1.innerHTML = 'AWAITING EXECUTION...';
+            if (log3) log3.innerHTML = 'AWAITING EXECUTION...';
+            const diagAb1 = document.getElementById('diag-ab1-content');
+            const diagAb3 = document.getElementById('diag-ab3-content');
+            if (diagAb1) diagAb1.innerHTML = '<div class="diag-comment">AWAITING SYSTEM INITIALIZATION...</div>';
+            if (diagAb3) diagAb3.innerHTML = '<div class="diag-comment">AWAITING SYSTEM INITIALIZATION...</div>';
+
+            const activate = (el) => {
+                [pipeCloud, pipeScaffold, pipeLocal].forEach(e => e.classList.remove('active-step'));
+                el.classList.add('active-step');
+            };
+
+            // Phase 1 — Cloud Perception
+            overlay.classList.add('active');
+            document.getElementById('overlay-icon').textContent = '☁️';
+            overlayText.className = 'overlay-color-cloud';
+            overlayText.innerHTML = '<span class="log-badge badge-gemini">ARCHITECT</span> [CLOUD] Perceiving Mathematics via Qwen3-VL...';;
+            activate(pipeCloud);
+            await new Promise(r => setTimeout(r, 1100));
+
+            // Phase 2 — Scaffold Injection
+            document.getElementById('overlay-icon').textContent = '📋';
+            overlayText.className = '';
+            overlayText.style.color = '#f59e0b';
+            overlayText.innerHTML = '<span class="log-badge badge-gemini">ARCHITECT</span> [SCAFFOLD] Injecting @SKILL.md Prompt Architecture...';;
+            activate(pipeScaffold);
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Phase 3 — Local Engine
+            document.getElementById('overlay-icon').textContent = '🖥';
+            overlayText.className = 'overlay-color-transfer';
+            overlayText.innerHTML = '<span class="log-badge badge-qwen">QWEN</span> [LOCAL] Dispatching to Qwen-8B Logic Engine...';;
+            activate(pipeLocal);
+            await new Promise(r => setTimeout(r, 1000));
+
+            // Dismiss overlay
+            overlay.classList.remove('active');
+            await new Promise(r => setTimeout(r, 350));
+
+            // Phase 4 — Boot logs
+            const m1_val = document.getElementById('model-select-ab1').value;
+            const m3_val = document.getElementById('model-select-ab3').value;
+            
+            // 動態判斷 Badge (如果是 gemini 就用藍色 gemini badge，否則預設 qwen)
+            const badge1 = m1_val === 'gemini-3-flash' ? '<span class="log-badge badge-gemini">GEMINI</span>' : '<span class="log-badge badge-qwen">QWEN</span>';
+            const badge3 = m3_val === 'gemini-3-flash' ? '<span class="log-badge badge-gemini">GEMINI</span>' : '<span class="log-badge badge-qwen">QWEN</span>';
+            
+            // 動態判斷顯示名稱
+            const name1 = m1_val === 'gemini-3-flash' ? 'Gemini 3 Flash' : (m1_val === 'qwen3-vl-8b' ? 'Qwen3-VL-8B' : 'Local Engine');
+            const name3 = m3_val === 'gemini-3-flash' ? 'Gemini 3 Flash' : (m3_val === 'qwen3-vl-8b' ? 'Qwen3-VL-8B' : 'Local Engine');
+
+            log1.innerHTML = `${badge1} <span style="color:#3498db">> [NATIVE] Initializing ${name1} (Zero-shot)...</span>`;
+            log3.innerHTML = `${badge3} <span style="color:#3498db">> [LOCAL] Initializing ${name3} (Active Healer)...</span>`;
+            await new Promise(r => setTimeout(r, 500));
+            log3.innerHTML += '<br><span class="log-badge badge-qwen">QWEN</span> <span style="color:#8e44ad">> [SCAFFOLD] @SKILL.md System Prompts loaded.</span>';
+            await new Promise(r => setTimeout(r, 400));
+            log1.innerHTML += '<br><span style="color:#27ae60">> [SYSTEM] Ready. Awaiting generation...</span>';
+            log3.innerHTML += '<br><span style="color:#27ae60">> [SYSTEM] Ready. Active Healer armed.</span>';
+            await new Promise(r => setTimeout(r, 300));
+        }
+
+        /* ═══════════════════════════════════════════
+        API FETCH
+        ═══════════════════════════════════════════ */
+        async function fetchParams(text, isAb1, modelId, skillId, imageData = null, jsonSpec = null) {
+            try {
+                const reqBody = {
+                    prompt: text, ablation_mode: isAb1, model_id: modelId, skill_id: skillId,
+                    image_data: imageData
+                };
+                if (jsonSpec) reqBody.json_spec = jsonSpec;
+
+                const res = await fetch('/api/generate_live', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reqBody)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } catch (e) {
+                return { error: e.message };
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+        AB1 THOUGHT DISPLAY (post-hoc from raw_code, no extra Ollama call)
+        ═══════════════════════════════════════════ */
+        function renderThinkContent(rawCode) {
+            const sandboxEl = document.getElementById('thought-sandbox');
+            const thoughtBox = document.getElementById('ab1-thought-stream');
+            if (!sandboxEl || !thoughtBox || !rawCode) return;
+
+            // Extract all <think>...</think> blocks from raw LLM output
+            const pattern = /<think>([\s\S]*?)<\/think>/gi;
+            const matches = [];
+            let m;
+            while ((m = pattern.exec(rawCode)) !== null) {
+                matches.push(m[1].trim());
+            }
+
+            if (matches.length === 0) {
+                // No think tags found – hide sandbox
+                sandboxEl.classList.remove('active');
+                return;
+            }
+
+            thoughtBox.textContent = matches.join('\n\n---\n\n');
+            sandboxEl.classList.add('active', 'done'); // done = ping stops blinking
+            thoughtBox.scrollTop = 0;
+        }
+
+        function resetThoughtSandbox() {
+            const sandboxEl = document.getElementById('thought-sandbox');
+            const thoughtBox = document.getElementById('ab1-thought-stream');
+            if (!sandboxEl || !thoughtBox) return;
+            sandboxEl.classList.remove('active', 'done');
+            thoughtBox.textContent = '';
+        }
+
+        /* ═══════════════════════════════════════════
+        MULTIMODAL WORKSTATION LOGIC
+        ═══════════════════════════════════════════ */
+        const canvas = document.getElementById('inputCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('canvas-container');
+        let isDrawing = false;
+        let isEraser = false;
+        let hasCanvasContent = false;
+
+        function updateSubmitState() {
+            const input = document.getElementById('promptInput').value.trim();
+            const btn = document.getElementById('submitBtn');
+            if (!input && !hasCanvasContent) {
+                btn.style.background = '#95a5a6';
+                btn.style.cursor = 'not-allowed';
+            } else {
+                btn.style.background = ''; // Use default CSS
+                btn.style.cursor = 'pointer';
+            }
+        }
+
+        document.getElementById('promptInput').addEventListener('input', updateSubmitState);
+
+        // Resize config
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = isEraser ? 20 : 3;
+            ctx.strokeStyle = isEraser ? '#ffffff' : '#2c3e50';
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Tools
+        const toolPen = document.getElementById('tool-pen');
+        const toolEraser = document.getElementById('tool-eraser');
+
+        function setTool(eraserMode) {
+            isEraser = eraserMode;
+            toolPen.classList.toggle('active', !isEraser);
+            toolEraser.classList.toggle('active', isEraser);
+            ctx.lineWidth = isEraser ? 20 : 3;
+            // Use globalCompositeOperation for real erasing so the grid shows through
+            ctx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+        }
+        toolPen.addEventListener('click', () => setTool(false));
+        toolEraser.addEventListener('click', () => setTool(true));
+
+        document.getElementById('tool-clear').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hasCanvasContent = false;
+            updateSubmitState();
+            document.getElementById('promptInput').value = '';
+            if (typeof resetDiagnostics === 'function') resetDiagnostics();
+        });
+
+        // Drawing events
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            if (e.touches && e.touches.length > 0) {
+                return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+            }
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+
+        function startPosition(e) {
+            isDrawing = true;
+            ctx.beginPath();
+            if (!isEraser) ctx.strokeStyle = '#2c3e50'; // Ensure color is correct when drawing
+            draw(e);
+        }
+
+        function endPosition() {
+            isDrawing = false;
+            ctx.beginPath();
+            if (!isEraser) {
+                hasCanvasContent = true;
+                updateSubmitState();
+            }
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault(); // prevent scrolling on touch
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+            if (!isEraser) {
+                hasCanvasContent = true;
+                updateSubmitState();
+            }
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseout', endPosition);
+
+        canvas.addEventListener('touchstart', startPosition, { passive: false });
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', draw, { passive: false });
+
+        // Image Handling (Paste/Upload/Drag)
+        function drawImageOnCanvas(img) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Calculate scale to fit within canvas while maintaining aspect ratio
+            const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+            const w = img.width * scale;
+            const h = img.height * scale;
+            const x = (canvas.width - w) / 2;
+            const y = (canvas.height - h) / 2;
+
+            // Draw image
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.drawImage(img, x, y, w, h);
+
+            // Keep tool state consistent
+            setTool(isEraser);
+            hasCanvasContent = true;
+            updateSubmitState();
+        }
+
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => drawImageOnCanvas(img);
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Paste event
+        window.addEventListener('paste', (e) => {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.type.indexOf('image') === 0) {
+                    const blob = item.getAsFile();
+                    handleFile(blob);
+                }
+            }
+        });
+
+        // File input
+        document.getElementById('image-upload').addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Drag and Drop
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            container.classList.add('dragover');
+        });
+        container.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            container.classList.remove('dragover');
+        });
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            container.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        /* ═══════════════════════════════════════════
+        SKILL DIAGNOSTICS LOGIC
+        ═══════════════════════════════════════════ */
+        async function typeWriterLog(msg, color = '#2c3e50') {
+            const logBox = document.getElementById('process-log');
+            if (logBox.innerHTML.includes('Awaiting input')) {
+                logBox.innerHTML = '';
+            }
+            const line = document.createElement('div');
+            line.className = 'process-log-line';
+            line.style.color = color;
+            line.textContent = msg;
+            logBox.appendChild(line);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function updateConfidence(pct) {
+            document.getElementById('cm-fill').style.width = pct + '%';
+            document.getElementById('cm-value').textContent = pct + '%';
+        }
+
+        function summarizeProfile(profile) {
+            if (!profile || typeof profile !== 'object' || !profile.counts) {
+                return '-';
+            }
+            const c = profile.counts || {};
+            return `nums=${profile.number_count ?? 0}, ops=${profile.operator_count ?? 0}, []=${profile.bracket_count ?? 0}, ||=${profile.abs_count ?? 0}, +=${c.plus ?? 0}, -=${c.minus ?? 0}, ×=${c.times ?? 0}, ÷=${c.divide ?? 0}`;
+        }
+
+        function updateStructureCompare(res) {
+            const statusEl = document.getElementById('structure-status');
+            const expEl = document.getElementById('structure-expected');
+            const genEl = document.getElementById('structure-generated');
+            if (!statusEl || !expEl || !genEl) return;
+
+            const expected = res?.iso_profile_expected || latestExpectedProfile;
+            const generated = res?.iso_profile_generated;
+            const iso = res?.iso_isomorphic;
+
+            if (expected) {
+                latestExpectedProfile = expected;
+            }
+
+            expEl.textContent = `Expected: ${summarizeProfile(expected)}`;
+            genEl.textContent = `Generated: ${summarizeProfile(generated)}`;
+
+            statusEl.classList.remove('ok', 'fail');
+            if (iso === true) {
+                statusEl.textContent = '✅ Isomorphic Match';
+                statusEl.classList.add('ok');
+            } else if (iso === false) {
+                statusEl.textContent = '❌ Structure Drift Detected';
+                statusEl.classList.add('fail');
+            } else {
+                statusEl.textContent = '等待生成...';
+            }
+        }
+
+        function setSkillBadge(skillName) {
+            const badge = document.getElementById('selected-skill-badge');
+            // If it's a real skill, add the Double Helix icon
+            if (skillName && skillName !== "Unknown") {
+                badge.innerHTML = `🧬 ${skillName}`;
+            } else {
+                badge.textContent = skillName;
+            }
+            badge.style.opacity = '1';
+        }
+
+        function resetDiagnostics() {
+            document.getElementById('process-log').innerHTML = '<div class="process-log-line" style="color:#9ca3af;"> Awaiting input...</div>';
+            updateConfidence(0);
+            const badge = document.getElementById('selected-skill-badge');
+            badge.style.opacity = '0';
+            badge.textContent = 'UNKNOWN_SKILL';
+            const statusEl = document.getElementById('structure-status');
+            const expEl = document.getElementById('structure-expected');
+            const genEl = document.getElementById('structure-generated');
+            if (statusEl) {
+                statusEl.textContent = '等待生成...';
+                statusEl.classList.remove('ok', 'fail');
+            }
+            if (expEl) expEl.textContent = 'Expected: -';
+            if (genEl) genEl.textContent = 'Generated: -';
+        }
+
+        /* ═══════════════════════════════════════════
+        FORM SUBMIT & OCR INTEGRATION
+        ═══════════════════════════════════════════ */
+        document.getElementById('genForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let input = document.getElementById('promptInput').value.trim();
+            const btn = document.getElementById('submitBtn');
+
+            if (!input && !hasCanvasContent) {
+                alert('請輸入題目或在畫布上繪製/貼上圖片！');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '⚙️ Computing...';
+
+            // Ready engine logs (null-safe: log-ab1/ab3 may not exist after layout cleanup)
+            const log1 = document.getElementById('log-ab1');
+            const log3 = document.getElementById('log-ab3');
+            if (log1) log1.innerHTML = 'AWAITING EXECUTION...';
+            if (log3) log3.innerHTML = 'AWAITING EXECUTION...';
+
+            resetDiagnostics();
+
+            if (log1) log1.innerHTML = '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#f39c12">>> [SYSTEM] Engaging Local Perception Engine...</span>';
+            if (log3) log3.innerHTML = '<span class="log-badge badge-qwen">QWEN</span> <span style="color:#f39c12">>> [SYSTEM] Engaging Local Perception Engine...</span>';
+
+            // Prepare unified payload
+            let payload = {};
+
+            // --- 全域變數控制 ---
+            let isAnalyzing = false;
+            let resolvedSkillId = null;
+            let resolvedJsonSpec = null; // holds json_spec from /api/classify; same for image and text paths
+
+            if (input) {
+                payload.text_data = input;
+            } else if (hasCanvasContent) {
+                if (isAnalyzing) return; // 狀態鎖定：如果正在辨識中，則跳過
+                isAnalyzing = true;
+
+                // Create a temporary canvas to composite a white background
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                tempCtx.drawImage(canvas, 0, 0);
+
+                // 壓縮影像 (JPEG 0.8) 以提升本地傳輸效能
+                payload.image_data = tempCanvas.toDataURL('image/jpeg', 0.8);
+            }
+
+            try {
+                // Send to unified classification endpoint
+                const res = await fetch('/api/classify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                isAnalyzing = false;
+
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const result = await res.json();
+
+                if (result.success) {
+                    input = result.ocr_text; // use recognized or passed text
+                    latestOcrText = input || '';
+                    document.getElementById('promptInput').value = input; // populate UI
+                    // Keep the classify json_spec so generate_live receives the same
+                    // structural metadata regardless of image-paste vs text-box input.
+                    resolvedJsonSpec = result.json_spec || null;
+                    latestJsonSpec = resolvedJsonSpec;
+
+                    if (result.structural_profile) {
+                        updateStructureCompare({
+                            iso_profile_expected: result.structural_profile,
+                            iso_profile_generated: null,
+                            iso_isomorphic: null
+                        });
+                    }
+
+                    // Render process logs from backend with typewriter effect
+                    let currentConfidence = 10;
+                    const logCount = result.process_logs ? result.process_logs.length : 1;
+                    const confidenceStep = Math.floor(90 / logCount);
+
+                    if (result.process_logs) {
+                        for (const msg of result.process_logs) {
+                            const isErr = msg.includes('Failed') || msg.includes('Unknown');
+                            const isSucc = msg.includes('Complete') || msg.includes('Found');
+                            const color = isErr ? '#e74c3c' : (isSucc ? '#27ae60' : '#3498db');
+
+                            await typeWriterLog(msg, color);
+                            currentConfidence += confidenceStep;
+                            updateConfidence(Math.min(currentConfidence, 95));
+                        }
+                    }
+
+                    // Final diagnostic updates
+                    updateConfidence(result.confidence_scores);
+                    setSkillBadge(result.skill_id);
+                    resolvedSkillId = result.skill_id;
+                    latestSkillId = resolvedSkillId;
+                    await typeWriterLog(`> Validation Score: ${result.confidence_scores}%`, '#f39c12');
+
+                    if (log1) log1.innerHTML += `<br><span class="log-badge badge-qwen">QWEN</span> <span
+                            style="color:#27ae60">>> [SYSTEM] Skill Mode: ${result.skill_id}</span>`;
+                    if (log3) log3.innerHTML += `<br><span class="log-badge badge-qwen">QWEN</span> <span
+                            style="color:#27ae60">>> [SYSTEM] Skill Mode: ${result.skill_id}</span>`;
+
+
+                    // [NEW] Inject Prompt Previews into Code Blocks
+                    if (result.bare_prompt) {
+                        const codeAb1 = document.getElementById('code-ab1');
+                        codeAb1.textContent = "=== BARE PROMPT PREVIEW ===\\n" + result.bare_prompt;
+                        codeAb1.style.color = "var(--text-muted)";
+                    }
+                    if (result.scaffold_prompt) {
+                        const codeAb3 = document.getElementById('code-ab3');
+                        codeAb3.textContent = "=== SCAFFOLD PROMPT PREVIEW ===\n" + result.scaffold_prompt;
+                        codeAb3.style.color = "#d35400"; // display scaffold in orange to distinguish it
+
+                        const codeAb2 = document.getElementById('code-ab2');
+                        codeAb2.textContent = "=== SCAFFOLD PROMPT PREVIEW ===\n" + result.scaffold_prompt;
+                        codeAb2.style.color = "#d35400";
+                    }
+
+                    // Show result panels early so user can read the prompts
+                    document.getElementById('result-ab1').classList.remove('hidden');
+                    document.getElementById('result-ab2').classList.remove('hidden');
+                    document.getElementById('result-ab3').classList.remove('hidden');
+                    document.getElementById('math-ab1').innerHTML = '<span style="color:var(--text-muted);font-style:italic;">等待生成...</span>';
+                    document.getElementById('math-ab2').innerHTML = '<span style="color:var(--text-muted);font-style:italic;">等待生成...</span>';
+                    document.getElementById('math-ab3').innerHTML = '<span style="color:var(--text-muted);font-style:italic;">等待生成...</span>';
+                } else {
+                    throw new Error(result.error || '不明錯誤');
+                }
+            } catch (e) {
+                alert('辨識失敗: ' + e.message);
+                btn.disabled = false;
+                btn.innerHTML = '⚡ 啟動平行運算';
+                return;
+            }
+
+            // Transition animation bypassed completely
+            // await simulatePipeline();
+
+            // Start loading state for both panels
+            startLoading('ab1');
+            startLoading('ab2');
+            startLoading('ab3');
+
+            // Reset thought sandbox before each run
+            resetThoughtSandbox();
+
+            // Parallel generation requests
+            const modelIdAb3 = document.getElementById('model-select-ab3').value;
+            const modelIdAb1 = document.getElementById('model-select-ab1').value;
+
+            const p3 = fetchParams(input, false, modelIdAb3, resolvedSkillId, null,
+                resolvedJsonSpec)
+                .then(r2 => {
+                    if (r2.ab2_result) {
+                        renderResult('ab2', r2.ab2_result);
+                    } else {
+                        renderResult('ab2', { error: 'Ab2 interception failed or not supported in this mode.' });
+                    }
+                    renderResult('ab3', r2);
+                })
+                .catch(err => {
+                    renderResult('ab2', { error: err.message });
+                    renderResult('ab3', { error: err.message });
+                });
+
+            const p1 = (modelIdAb1 === 'pause')
+                ? Promise.resolve({
+                    success: true,
+                    is_paused: true,
+                    raw_code: document.getElementById('code-ab1').textContent, // keep the preview
+                    final_code: "=== PAUSED ===\nToken Generation Skipped.",
+                    fixes: 0,
+                    ai_inference_time_sec: 0,
+                    cpu_execution_time_sec: 0,
+                    mcri: { total_score: 0 }
+                }).then(r1 => renderResult('ab1', r1))
+                : fetchParams(input, true, modelIdAb1, resolvedSkillId, null, resolvedJsonSpec)
+                    .then(r1 => renderResult('ab1', r1))
+                    .catch(err => renderResult('ab1', { error: err.message }));
+
+            Promise.all([p1, p3]).then(() => {
+                btn.disabled = false;
+                btn.innerHTML = '⚡ 啟動平行運算';
+                hasCanvasContent = false; // reset flag after submission
+                updateSubmitState();
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2351 @@
+﻿commit bc7f63e19de0634151cc4f7dc6751ba320ef4a7e
+Author: nick26138 <s310162@hlhs.hlc.edu.tw>
+Date:   Sat Apr 11 15:07:03 2026 +0800
+
+    AKT 璅∪?閮毀摰?
+
+ .../Mathproject-main/.gitattributes                |     2 +
+ .../Mathproject-main/.gitignore                    |   152 +
+ .../complete_changes.md"                           |   323 +
+ .../complete_changes.md.metadata.json"             |     5 +
+ .../complete_changes.md.resolved"                  |   323 +
+ .../complete_changes.md.resolved.0"                |   323 +
+ .../implementation_plan.md"                        |   192 +
+ .../implementation_plan.md.metadata.json"          |     5 +
+ .../implementation_plan.md.resolved"               |   192 +
+ .../implementation_plan.md.resolved.0"             |   183 +
+ .../implementation_plan.md.resolved.1"             |   191 +
+ .../implementation_plan.md.resolved.2"             |   192 +
+ .../knowledge_graph_test_1769874313611.webp"       |   Bin 0 -> 11418 bytes
+ .../task.md"                                       |    31 +
+ .../task.md.metadata.json"                         |     5 +
+ .../task.md.resolved"                              |    31 +
+ .../task.md.resolved.0"                            |    31 +
+ .../task.md.resolved.1"                            |    31 +
+ .../task.md.resolved.2"                            |    31 +
+ .../task.md.resolved.3"                            |    31 +
+ .../walkthrough.md"                                |   260 +
+ .../walkthrough.md.metadata.json"                  |     5 +
+ .../walkthrough.md.resolved"                       |   260 +
+ .../walkthrough.md.resolved.0"                     |   260 +
+ .../Mathproject-main/AGENTS.md                     |    97 +
+ .../Mathproject-main/AKT_COMPLETE_INVENTORY.md     |   744 +
+ .../Mathproject-main/AKT_INDEX.md                  |   306 +
+ .../Mathproject-main/AKT_TRAINING_REPORT.md        |   284 +
+ .../Mathproject-main/COMPLETION_REPORT.md          |   327 +
+ .../Mathproject-main/CURRICULUM_FIX_REPORT.md      |   362 +
+ .../Mathproject-main/README.md                     |   252 +
+ .../Mathproject-main/README_DOCUMENTATION.md       |   396 +
+ .../Mathproject-main/README_FOR_HOME.md            |    24 +
+ .../Mathproject-main/SHOWREEL_LOGIC.md             |   501 +
+ .../Mathproject-main/Simulated_student/__init__.py |     5 +
+ .../plot_adaptive_vs_baseline_20260407_062538.png  |   Bin 0 -> 200161 bytes
+ .../outputs/plot_apr_curves_20260407_062538.png    |   Bin 0 -> 142535 bytes
+ .../plot_family_coverage_20260407_062538.png       |   Bin 0 -> 33336 bytes
+ .../outputs/plot_frustration_20260407_062538.png   |   Bin 0 -> 112402 bytes
+ .../plot_llm_accuracy_trend_20260408_062241.png    |   Bin 0 -> 55411 bytes
+ .../plot_llm_apr_confidence_20260408_062241.png    |   Bin 0 -> 67525 bytes
+ .../plot_llm_confidence_hist_20260408_062241.png   |   Bin 0 -> 33714 bytes
+ .../outputs/plot_llm_latency_20260408_062241.png   |   Bin 0 -> 25963 bytes
+ .../plot_llm_remediation_20260408_062241.png       |   Bin 0 -> 54401 bytes
+ .../outputs/plot_ppo_strategy_20260407_062538.png  |   Bin 0 -> 173931 bytes
+ .../plot_remediation_timeline_20260407_062538.png  |   Bin 0 -> 148449 bytes
+ .../plot_summary_comparison_20260407_062538.png    |   Bin 0 -> 56613 bytes
+ .../sim_llm_medium_teaching_20260408_062241.json   |   574 +
+ .../Simulated_student/run_sim_fixed.py             |   457 +
+ .../Simulated_student/run_sim_llm.py               |   363 +
+ .../Mathproject-main/Simulated_student/sim_api.py  |   146 +
+ .../Mathproject-main/Simulated_student/sim_core.py |   526 +
+ .../Simulated_student/sim_llm_judge.py             |   237 +
+ .../SKILL.md"                                      |   256 +
+ .../evals.json"                                    |    76 +
+ .../experiments/ab1_bare_prompt.md"                |    31 +
+ .../prompt_benchmark.md"                           |   113 +
+ .../prompt_liveshow.md"                            |   165 +
+ .../skill.json"                                    |    17 +
+ .../SKILL.md"                                      |   292 +
+ .../evals.json"                                    |    76 +
+ .../experiments/ab1_bare_prompt.md"                |    31 +
+ .../prompt_benchmark.md"                           |   155 +
+ .../prompt_liveshow.md"                            |   155 +
+ .../skill.json"                                    |    17 +
+ .../SKILL.md"                                      |    27 +
+ .../__init__.py"                                   |     1 +
+ .../evals.json"                                    |    64 +
+ .../experiments/ab1_bare_prompt.md"                |     1 +
+ .../generator.py"                                  |     8 +
+ .../prompt_benchmark.md"                           |     2 +
+ .../prompt_liveshow.md"                            |     2 +
+ .../skill.json"                                    |    27 +
+ .../SKILL.md"                                      |   357 +
+ .../evals.json"                                    |   260 +
+ .../experiments/ab1_bare_prompt.md"                |    35 +
+ .../prompt_benchmark.md"                           |    40 +
+ .../prompt_liveshow.md"                            |   124 +
+ .../skill.json"                                    |    16 +
+ .../SKILL.md"                                      |   194 +
+ .../evals.json"                                    |   341 +
+ .../experiments/ab1_bare_prompt.md"                |    35 +
+ .../prompt_benchmark.md"                           |   117 +
+ .../prompt_liveshow.md"                            |   133 +
+ .../skill.json"                                    |    15 +
+ .../Mathproject-main/agent_tools/MQI_FIX_REPORT.md |   208 +
+ .../agent_tools/Math_Score_Analysis.md             |   260 +
+ .../agent_tools/VERIFICATION_REPORT.md             |   211 +
+ .../agent_tools/analyze_results.py                 |   190 +
+ .../Mathproject-main/agent_tools/benchmark.py      |   928 +
+ .../Mathproject-main/agent_tools/check_fake_api.py |    85 +
+ .../Mathproject-main/agent_tools/demo_menu.py      |    34 +
+ .../Mathproject-main/agent_tools/evals_analysis.md |   294 +
+ .../Mathproject-main/agent_tools/plot_benchmark.py |    79 +
+ .../agent_tools/test_ab_verification.py            |   137 +
+ .../agent_tools/test_client_creation.py            |    55 +
+ .../Mathproject-main/agent_tools/test_full_flow.py |    83 +
+ .../agent_tools/test_integers_fractions_mqi.py     |   138 +
+ .../agent_tools/test_model_selection.py            |    53 +
+ .../Mathproject-main/agent_tools/test_mqi_logic.py |   155 +
+ .../agent_tools/validate_all_evals.py              |   103 +
+ .../Mathproject-main/agent_tools/validate_code.py  |   157 +
+ .../Mathproject-main/agent_tools/validate_evals.py |    68 +
+ .../agent_tools/validate_skill_md.py               |    73 +
+ .../Mathproject-main/agent_tools/verify_mqi_fix.py |   117 +
+ .../Mathproject-main/akt_inference.py              |   285 +
+ .../Mathproject-main/akt_v2.py                     |   618 +
+ .../Mathproject-main/analyze_skills.py             |    11 +
+ .../Mathproject-main (3)/Mathproject-main/app.py   |   495 +
+ .../Mathproject-main/artifacts/ppo_skill_policy.pt |   Bin 0 -> 2316 bytes
+ .../backup/DashBoard.html_Grox_20251022            |   134 +
+ .../Mathproject-main/backup/app.py_Grox_20251022   |   798 +
+ .../Mathproject-main/backup/app.py_Grox_20251023   |   841 +
+ .../Mathproject-main/backup/app_20251024.py        |   856 +
+ .../Mathproject-main/backup/desktop.ini            |   Bin 0 -> 246 bytes
+ .../Mathproject-main/backup/index.html             |   498 +
+ .../backup/index.html_Grox_20251022                |   671 +
+ .../backup/index.html_Grox_20251023                |   966 +
+ .../Mathproject-main/check_db.py                   |    39 +
+ .../Mathproject-main/check_prereqs.py              |    19 +
+ .../Mathproject-main/config.py                     |   404 +
+ .../config/unit_pattern_config.json                |     9 +
+ .../configs/adaptive/policy_findings_mapping.yaml  |    18 +
+ .../configs/adaptive/rag_diagnosis_mapping.yaml    |    79 +
+ .../configs/adaptive/subskill_remediation.yaml     |   243 +
+ .../adaptive/textbook_progression_polynomial.yaml  |   191 +
+ .../configs/policy_findings_mapping.yaml           |    18 +
+ .../configs/rag_diagnosis_mapping.yaml             |    59 +
+ .../configs/skill_breakpoint_catalog.json          |  1304 +
+ .../configs/skill_breakpoint_catalog.md            |   172 +
+ .../configs/skill_breakpoint_ui_map.json           |   278 +
+ .../configs/subskill_remediation.yaml              |   103 +
+ .../Mathproject-main/core/__init__.py              |     1 +
+ .../Mathproject-main/core/adaptive/__init__.py     |    24 +
+ .../core/adaptive/ablation_experiment.py           |  1066 +
+ .../core/adaptive/agent_skill_schema.py            |    98 +
+ .../Mathproject-main/core/adaptive/akt_adapter.py  |    34 +
+ .../core/adaptive/catalog_loader.py                |    36 +
+ .../Mathproject-main/core/adaptive/judge.py        |   362 +
+ .../core/adaptive/manifest_registry.py             |    74 +
+ .../core/adaptive/micro_generators.py              |  1398 +
+ .../core/adaptive/policy_findings_mapping.py       |   161 +
+ .../Mathproject-main/core/adaptive/ppo_adapter.py  |   892 +
+ .../core/adaptive/qwen_diagnostic_classifier.py    |    90 +
+ .../core/adaptive/rag_choice_diagnoser.py          |   261 +
+ .../core/adaptive/rag_diagnosis_mapping.py         |   256 +
+ .../core/adaptive/rag_hint_engine.py               |   462 +
+ .../core/adaptive/remediation_retriever.py         |    91 +
+ .../Mathproject-main/core/adaptive/routing.py      |   545 +
+ .../Mathproject-main/core/adaptive/schema.py       |   126 +
+ .../core/adaptive/script_dispatch.py               |   120 +
+ .../core/adaptive/session_engine.py                |  3444 +
+ .../core/adaptive/skill_diagnostic_labels.py       |   389 +
+ .../core/adaptive/skill_policy_trainer.py          |   385 +
+ .../core/adaptive/state_builder.py                 |   121 +
+ .../core/adaptive/subskill_ontology.py             |   108 +
+ .../core/adaptive/subskill_selector.py             |   144 +
+ .../core/adaptive/textbook_progression.py          |   283 +
+ .../Mathproject-main/core/adaptive_config.py       |    35 +
+ .../Mathproject-main/core/adaptive_engine.py       |   178 +
+ .../Mathproject-main/core/advanced_rag_engine.py   |   355 +
+ .../Mathproject-main/core/ai_analyzer.py           |  1284 +
+ .../Mathproject-main/core/ai_client.py             |    53 +
+ .../Mathproject-main/core/ai_wrapper.py            |   630 +
+ .../Mathproject-main/core/architect_v01.py         |   590 +
+ .../Mathproject-main/core/code_generator.py        |  1431 +
+ .../Mathproject-main/core/code_utils/__init__.py   |    38 +
+ .../Mathproject-main/core/code_utils/file_utils.py |    46 +
+ .../core/code_utils/latex_utils.py                 |   104 +
+ .../core/code_utils/live_show_math_utils.py        |   948 +
+ .../Mathproject-main/core/code_utils/math_utils.py |   462 +
+ .../core/code_utils/unit_spec_loader.py            |    84 +
+ .../Mathproject-main/core/data_importer.py         |   234 +
+ .../Mathproject-main/core/diagnosis_analyzer.py    |   200 +
+ .../Mathproject-main/core/domain_functions.py      |  1187 +
+ .../Mathproject-main/core/engine/classifier.py     |   117 +
+ .../Mathproject-main/core/engine/clean_start.py    |   129 +
+ .../Mathproject-main/core/engine/engine.py         |    90 +
+ .../Mathproject-main/core/engine/scaler.py         |  1030 +
+ .../Mathproject-main/core/exam_analyzer.py         |   362 +
+ .../core/fraction_domain_functions.py              |  1565 +
+ .../Mathproject-main/core/globals.py               |    16 +
+ .../Mathproject-main/core/healers/__init__.py      |    75 +
+ .../core/healers/anti_duplication_healer.py        |   459 +
+ .../Mathproject-main/core/healers/ast_healer.py    |   587 +
+ .../core/healers/live_show_healer.py               |   970 +
+ .../core/healers/live_show_iso_guard.py            |    52 +
+ .../Mathproject-main/core/healers/regex_healer.py  |  1527 +
+ .../core/healers/unified_cleanup_healer.py         |   258 +
+ .../Mathproject-main/core/helpers.py               |   111 +
+ .../core/integer_domain_functions.py               |   600 +
+ .../Mathproject-main/core/kg_data_loader.py        |   285 +
+ .../Mathproject-main/core/math_solvers/__init__.py |     4 +
+ .../core/math_solvers/radical_solver.py            |   985 +
+ .../core/polynomial_domain_functions.py            |  1299 +
+ .../Mathproject-main/core/prompt_architect.py      |  1094 +
+ .../Mathproject-main/core/prompts/__init__.py      |    24 +
+ .../core/prompts/domain_function_library.py        |  2018 +
+ .../core/prompts/polynomial_helpers_template.py    |    61 +
+ .../core/prompts/prompt_builder.py                 |   568 +
+ .../Mathproject-main/core/rag_engine.py            |   455 +
+ .../Mathproject-main/core/routes/__init__.py       |    18 +
+ .../Mathproject-main/core/routes/adaptive_api.py   |   347 +
+ .../Mathproject-main/core/routes/admin.py          |  1112 +
+ .../Mathproject-main/core/routes/analysis.py       |  4013 ++
+ .../Mathproject-main/core/routes/auth.py           |    21 +
+ .../Mathproject-main/core/routes/classroom.py      |   286 +
+ .../Mathproject-main/core/routes/exam.py           |   212 +
+ .../core/routes/knowledge_graph.py                 |   186 +
+ .../Mathproject-main/core/routes/live_show.py      |  2860 +
+ .../core/routes/live_show_pipeline.py              |  2602 +
+ .../Mathproject-main/core/routes/practice.py       |   904 +
+ .../Mathproject-main/core/scaffold/__init__.py     |     1 +
+ .../Mathproject-main/core/scaffold/domain_libs.py  |    12 +
+ .../Mathproject-main/core/session.py               |    50 +
+ .../core/skill_policies/__init__.py                |    17 +
+ .../core/skill_policies/fraction.py                |    21 +
+ .../core/skill_policies/integer.py                 |    21 +
+ .../core/skill_policies/polynomial.py              |    20 +
+ .../core/skill_policies/radical.py                 |    32 +
+ .../core/skill_policies/radical_logic.py           |   696 +
+ .../core/skill_policies/registry.py                |   184 +
+ .../Mathproject-main/core/textbook_processor.py    |   931 +
+ .../Mathproject-main/core/unit_selector.py         |   176 +
+ .../Mathproject-main/core/utils.py                 |   275 +
+ .../Mathproject-main/core/v01_pipeline.py          |   171 +
+ .../Mathproject-main/core/validators/__init__.py   |    17 +
+ .../core/validators/code_validator.py              |   128 +
+ .../core/validators/dynamic_sampler.py             |    75 +
+ .../core/validators/syntax_validator.py            |    43 +
+ .../Mathproject-main/curriculum_structure.py       |   161 +
+ ...lum_\346\225\270\345\255\2701\344\270\212.xlsx" |   Bin 0 -> 12494 bytes
+ ...lum_\346\225\270\345\255\2701\344\270\213.xlsx" |   Bin 0 -> 10608 bytes
+ ...lum_\346\225\270\345\255\2702\344\270\212.xlsx" |   Bin 0 -> 10151 bytes
+ ...lum_\346\225\270\345\255\2702\344\270\213.xlsx" |   Bin 0 -> 7242 bytes
+ ...lum_\346\225\270\345\255\2703\344\270\212.xlsx" |   Bin 0 -> 6698 bytes
+ ...lum_\346\225\270\345\255\2703\344\270\213.xlsx" |   Bin 0 -> 9696 bytes
+ ...nfo_\346\225\270\345\255\2701\344\270\212.xlsx" |   Bin 0 -> 18664 bytes
+ ...nfo_\346\225\270\345\255\2701\344\270\213.xlsx" |   Bin 0 -> 14264 bytes
+ ...nfo_\346\225\270\345\255\2702\344\270\212.xlsx" |   Bin 0 -> 13172 bytes
+ ...nfo_\346\225\270\345\255\2702\344\270\213.xlsx" |   Bin 0 -> 14257 bytes
+ ...nfo_\346\225\270\345\255\2703\344\270\212.xlsx" |   Bin 0 -> 12837 bytes
+ ...nfo_\346\225\270\345\255\2703\344\270\213.xlsx" |   Bin 0 -> 12681 bytes
+ ...01\344\270\212 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 24503 bytes
+ ...01\344\270\213 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 18431 bytes
+ ...02\344\270\212 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 17680 bytes
+ ...02\344\270\213 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 22448 bytes
+ ...03\344\270\212 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 16166 bytes
+ ...03\344\270\213 - \350\244\207\350\243\275.xlsx" |   Bin 0 -> 15942 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B1.xlsx" |   Bin 0 -> 7185 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B2.xlsx" |   Bin 0 -> 7183 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B3.xlsx" |   Bin 0 -> 7283 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B4.xlsx" |   Bin 0 -> 7051 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C1.xlsx" |   Bin 0 -> 8072 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C2.xlsx" |   Bin 0 -> 7685 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C3.xlsx" |   Bin 0 -> 8664 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C4.xlsx" |   Bin 0 -> 7203 bytes
+ .../skills_info_\346\225\270\345\255\270B1.xlsx"   |   Bin 0 -> 11886 bytes
+ .../skills_info_\346\225\270\345\255\270B2.xlsx"   |   Bin 0 -> 10269 bytes
+ .../skills_info_\346\225\270\345\255\270B3.xlsx"   |   Bin 0 -> 8806 bytes
+ .../skills_info_\346\225\270\345\255\270B4.xlsx"   |   Bin 0 -> 10623 bytes
+ .../skills_info_\346\225\270\345\255\270C1.xlsx"   |   Bin 0 -> 8540 bytes
+ .../skills_info_\346\225\270\345\255\270C2.xlsx"   |   Bin 0 -> 8920 bytes
+ .../skills_info_\346\225\270\345\255\270C3_0"      |     0
+ .../skills_info_\346\225\270\345\255\270C4_0"      |     0
+ ...kill_curriculum_\346\225\270\345\255\2701.xlsx" |   Bin 0 -> 13316 bytes
+ ...kill_curriculum_\346\225\270\345\255\2702.xlsx" |   Bin 0 -> 12989 bytes
+ ...ill_curriculum_\346\225\270\345\255\2703A.xlsx" |   Bin 0 -> 12467 bytes
+ ...ill_curriculum_\346\225\270\345\255\2703B.xlsx" |   Bin 0 -> 11538 bytes
+ ...ill_curriculum_\346\225\270\345\255\2704A.xlsx" |   Bin 0 -> 12479 bytes
+ ...ill_curriculum_\346\225\270\345\255\2704B.xlsx" |   Bin 0 -> 10826 bytes
+ ...270\345\255\270\344\271\231(\344\270\212).xlsx" |   Bin 0 -> 10999 bytes
+ ...270\345\255\270\344\271\231(\344\270\213).xlsx" |   Bin 0 -> 10290 bytes
+ ...270\345\255\270\347\224\262(\344\270\212).xlsx" |   Bin 0 -> 11426 bytes
+ ...270\345\255\270\347\224\262(\344\270\213).xlsx" |   Bin 0 -> 11298 bytes
+ .../skills_info_\346\225\270\345\255\2701.xlsx"    |   Bin 0 -> 21040 bytes
+ .../skills_info_\346\225\270\345\255\2702.xlsx"    |   Bin 0 -> 18517 bytes
+ .../skills_info_\346\225\270\345\255\2703A.xlsx"   |   Bin 0 -> 16109 bytes
+ .../skills_info_\346\225\270\345\255\2703B_0"      |     0
+ .../skills_info_\346\225\270\345\255\2704A.xlsx"   |   Bin 0 -> 17307 bytes
+ .../skills_info_\346\225\270\345\255\2704B.xlsx"   |   Bin 0 -> 10010 bytes
+ ...270\345\255\270\344\271\231(\344\270\212).xlsx" |   Bin 0 -> 8961 bytes
+ ...270\345\255\270\344\271\231(\344\270\213).xlsx" |   Bin 0 -> 8238 bytes
+ ...270\345\255\270\347\224\262(\344\270\212).xlsx" |   Bin 0 -> 13782 bytes
+ ...270\345\255\270\347\224\262(\344\270\213).xlsx" |   Bin 0 -> 13759 bytes
+ ...lum_\346\225\270\345\255\2701\344\270\212.xlsx" |   Bin 0 -> 12494 bytes
+ ...lum_\346\225\270\345\255\2701\344\270\213.xlsx" |   Bin 0 -> 10608 bytes
+ ...lum_\346\225\270\345\255\2702\344\270\212.xlsx" |   Bin 0 -> 10151 bytes
+ ...lum_\346\225\270\345\255\2702\344\270\213.xlsx" |   Bin 0 -> 7242 bytes
+ ...lum_\346\225\270\345\255\2703\344\270\212.xlsx" |   Bin 0 -> 6698 bytes
+ ...lum_\346\225\270\345\255\2703\344\270\213.xlsx" |   Bin 0 -> 9696 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B1.xlsx" |   Bin 0 -> 11494 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B2.xlsx" |   Bin 0 -> 11481 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B3.xlsx" |   Bin 0 -> 11602 bytes
+ ...ill_curriculum_\346\225\270\345\255\270B4.xlsx" |   Bin 0 -> 11345 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C1.xlsx" |   Bin 0 -> 12451 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C2.xlsx" |   Bin 0 -> 12031 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C3.xlsx" |   Bin 0 -> 13081 bytes
+ ...ill_curriculum_\346\225\270\345\255\270C4.xlsx" |   Bin 0 -> 11482 bytes
+ ...kill_curriculum_\346\225\270\345\255\2701.xlsx" |   Bin 0 -> 13316 bytes
+ ...kill_curriculum_\346\225\270\345\255\2702.xlsx" |   Bin 0 -> 12989 bytes
+ ...ill_curriculum_\346\225\270\345\255\2703A.xlsx" |   Bin 0 -> 12467 bytes
+ ...ill_curriculum_\346\225\270\345\255\2703B.xlsx" |   Bin 0 -> 11538 bytes
+ ...ill_curriculum_\346\225\270\345\255\2704A.xlsx" |   Bin 0 -> 12479 bytes
+ ...ill_curriculum_\346\225\270\345\255\2704B.xlsx" |   Bin 0 -> 10826 bytes
+ ...270\345\255\270\344\271\231(\344\270\212).xlsx" |   Bin 0 -> 10999 bytes
+ ...270\345\255\270\344\271\231(\344\270\213).xlsx" |   Bin 0 -> 10290 bytes
+ ...270\345\255\270\347\224\262(\344\270\212).xlsx" |   Bin 0 -> 13035 bytes
+ ...270\345\255\270\347\224\262(\344\270\213).xlsx" |   Bin 0 -> 11298 bytes
+ .../skill_curriculum_all.xlsx"                     |   Bin 0 -> 66489 bytes
+ .../skill_info_all.xlsx"                           |   Bin 0 -> 132140 bytes
+ .../skill_prerequisites_all.xlsx"                  |   Bin 0 -> 45999 bytes
+ ...nfo_\346\225\270\345\255\2701\344\270\212.xlsx" |   Bin 0 -> 23003 bytes
+ ...nfo_\346\225\270\345\255\2701\344\270\213.xlsx" |   Bin 0 -> 16951 bytes
+ ...nfo_\346\225\270\345\255\2702\344\270\212.xlsx" |   Bin 0 -> 15563 bytes
+ ...nfo_\346\225\270\345\255\2702\344\270\213.xlsx" |   Bin 0 -> 17042 bytes
+ ...nfo_\346\225\270\345\255\2703\344\270\212.xlsx" |   Bin 0 -> 15174 bytes
+ ...nfo_\346\225\270\345\255\2703\344\270\213.xlsx" |   Bin 0 -> 11715 bytes
+ ...nfo_\346\225\270\345\255\2703\344\270\213.xlsx" |   Bin 0 -> 165 bytes
+ .../skills_info_\346\225\270\345\255\270B1.xlsx"   |   Bin 0 -> 9328 bytes
+ .../skills_info_\346\225\270\345\255\270B2.xlsx"   |   Bin 0 -> 6892 bytes
+ .../skills_info_\346\225\270\345\255\270B3.xlsx"   |   Bin 0 -> 6390 bytes
+ .../skills_info_\346\225\270\345\255\270B4.xlsx"   |   Bin 0 -> 8818 bytes
+ .../skills_info_\346\225\270\345\255\270C1.xlsx"   |   Bin 0 -> 6063 bytes
+ .../skills_info_\346\225\270\345\255\270C2.xlsx"   |   Bin 0 -> 6638 bytes
+ .../skills_info_\346\225\270\345\255\270C3_0"      |     0
+ .../skills_info_\346\225\270\345\255\270C4_0"      |     0
+ .../skills_info_\346\225\270\345\255\2701.xlsx"    |   Bin 0 -> 21789 bytes
+ ...ls_info_\346\225\270\345\255\2701_updated.xlsx" |   Bin 0 -> 27906 bytes
+ .../skills_info_\346\225\270\345\255\2702.xlsx"    |   Bin 0 -> 19579 bytes
+ .../skills_info_\346\225\270\345\255\2703A.xlsx"   |   Bin 0 -> 19210 bytes
+ .../skills_info_\346\225\270\345\255\2703B_0"      |     0
+ .../skills_info_\346\225\270\345\255\2704A.xlsx"   |   Bin 0 -> 17857 bytes
+ .../skills_info_\346\225\270\345\255\2704B.xlsx"   |   Bin 0 -> 8174 bytes
+ ...270\345\255\270\344\271\231(\344\270\212).xlsx" |   Bin 0 -> 6705 bytes
+ ...270\345\255\270\344\271\231(\344\270\213).xlsx" |   Bin 0 -> 5756 bytes
+ ...270\345\255\270\347\224\262(\344\270\212).xlsx" |   Bin 0 -> 13198 bytes
+ ...270\345\255\270\347\224\262(\344\270\213).xlsx" |   Bin 0 -> 13123 bytes
+ ...25\231\345\255\270\347\220\206\350\253\226.txt" |    13 +
+ .../Mathproject-main/datasource/prompt.txt         |    62 +
+ .../datasource/skill_curriculum.csv                |   132 +
+ .../datasource/skill_prerequisites_all.csv         |  1598 +
+ .../Mathproject-main/datasource/skills_info.csv    |   132 +
+ .../datasource/student_account/test1129.xlsx       |   Bin 0 -> 8244 bytes
+ ...5\230\351\273\236\351\217\210\347\265\220.xlsx" |   Bin 0 -> 10925 bytes
+ ...5\230\351\273\236\351\217\210\347\265\220.xlsx" |   Bin 0 -> 10551 bytes
+ ...6\256\345\205\203\345\210\206\351\241\236.xlsx" |   Bin 0 -> 52515 bytes
+ .../datasource/\350\252\262\347\266\261.xlsx"      |   Bin 0 -> 12870 bytes
+ ...1\347\257\204\344\276\213(23\345\240\261).pptx" |   Bin 0 -> 1089963 bytes
+ .../Mathproject-main/docs/58FCE000                 |   Bin 0 -> 708959 bytes
+ .../docs/ADVANCED_RAG_IMPLEMENTATION.md            |    54 +
+ .../Mathproject-main/docs/Database_Schema.xlsx     |   Bin 0 -> 14259 bytes
+ .../docs/Database_Schema_Split.xlsx                |   Bin 0 -> 14339 bytes
+ .../Mathproject-main/docs/KG_JSON_USAGE_GUIDE.md   |   412 +
+ .../Mathproject-main/docs/KG_MIGRATION_SUMMARY.md  |   341 +
+ .../Mathproject-main/docs/KG_QUICK_REFERENCE.md    |   164 +
+ .../Mathproject-main/docs/Table Schema.xlsx        |   Bin 0 -> 20654 bytes
+ .../docs/Table Schema_20251216_before.txt          |   129 +
+ .../docs/UNIT_PATTERN_ARCHITECTURE.md              |   214 +
+ .../adaptive_learning_implementation_report.md     |   293 +
+ .../docs/backend_workflow_diagram.html             |   153 +
+ .../docs/codex_prompts/audit_prompt.md             |    29 +
+ .../docs/codex_prompts/debug_prompt.md             |    23 +
+ .../docs/codex_prompts/patch_prompt.md             |    25 +
+ .../docs/codex_prompts/safe_patch_prompt.md        |    18 +
+ .../docs/codex_prompts/test_prompt.md              |    19 +
+ .../docs/gemini_pro3_project_context.md            |   885 +
+ .../docs/kumon_math_20251217_2323.xlsx             |   Bin 0 -> 628399 bytes
+ ...1\256\351\253\230\345\256\214\346\210\220.xlsx" |   Bin 0 -> 709191 bytes
+ .../Mathproject-main/docs/simulated_student.md     |   433 +
+ .../Mathproject-main/docs/temp/CHANGELOG.md        |   114 +
+ .../docs/temp/DRAW_DIAGRAM_FIX_REPORT.md           |   113 +
+ .../Mathproject-main/docs/temp/EXCEL_ANALYSIS.md   |   106 +
+ .../docs/temp/Gemini_Code_Analysis_Report.md       |   159 +
+ .../docs/temp/HOW_TO_FIX_MISSING_SKILLS.md         |    50 +
+ .../docs/temp/HOW_TO_PUSH_TO_GITHUB.md             |    68 +
+ .../docs/temp/MISTAKE_NOTEBOOK_DOCUMENTATION.md    |    92 +
+ .../docs/temp/PROJECT_DOCUMENTATION.md             |   249 +
+ .../Mathproject-main/docs/temp/SDD.md              |   194 +
+ .../docs/temp/code_generator 1204.txt              |   248 +
+ .../Mathproject-main/docs/temp/table.html          |   146 +
+ ...252\262\345\240\202\345\212\237\350\203\275.md" |   125 +
+ ...34\200\346\226\260\347\211\2101206_backup.xlsx" |   Bin 0 -> 632469 bytes
+ ...2 (Intelligent Adaptive Practice Interface).md" |   181 +
+ ...63\273\347\265\261 (Curriculum Maintenance).md" |   191 +
+ ...\273\347\265\261 (AI Exam Diagnosis System).md" |   131 +
+ ...\347\265\261 (Textbook Example Maintenance).md" |   184 +
+ ...\266\345\217\260 (Skill Management Console).md" |   164 +
+ ...12 (Student Learning Analysis for Teachers).md" |    63 +
+ ...241\214\347\233\256\345\212\237\350\203\275.md" |    50 +
+ ...5\261 (Student Upload & Variant Generation).md" |   170 +
+ ...6\241\347\220\206 (Prerequisite Management).md" |   196 +
+ .../admin_curriculum1.png"                         |   Bin 0 -> 124540 bytes
+ .../admin_curriculum2.png"                         |   Bin 0 -> 43440 bytes
+ .../admin_curriculum3.png"                         |   Bin 0 -> 246365 bytes
+ .../admin_examples.html1.png"                      |   Bin 0 -> 263620 bytes
+ .../admin_prerequisites.html1.png"                 |   Bin 0 -> 72547 bytes
+ .../admin_prerequisites.html2.png"                 |   Bin 0 -> 240144 bytes
+ .../admin_skills.html1.png"                        |   Bin 0 -> 152934 bytes
+ .../admin_skills.html2.png"                        |   Bin 0 -> 33515 bytes
+ .../admin_skills.html3.png"                        |   Bin 0 -> 23553 bytes
+ .../admin_skills.html4.png"                        |   Bin 0 -> 24219 bytes
+ .../admin_skills.html5.png"                        |   Bin 0 -> 249090 bytes
+ .../practice1.png"                                 |   Bin 0 -> 191028 bytes
+ ...75\225\345\256\211\350\243\235 ImageMagick.txt" |    48 +
+ ...\235 Tesseract OCR\347\250\213\345\274\217.txt" |   105 +
+ ...\247\213)Smart-Edu Content Generator (SECG).md" |   233 +
+ ...1\347\265\204\344\270\200)textbook_importer.md" |   267 +
+ ...0\241\347\265\204\344\270\211)enrich_skills.md" |   210 +
+ ...1\347\265\204\344\272\214)sync_skills_files.md" |   191 +
+ ...65\204\345\233\233)auto_build_prerequisites.md" |   199 +
+ .../textbook_importer.png"                         |   Bin 0 -> 161866 bytes
+ .../textbook_importer2.png"                        |   Bin 0 -> 255994 bytes
+ .../Gemini_Generated_Image_1w9pa41w9pa41w9p.png"   |   Bin 0 -> 5386178 bytes
+ ...emini_Generated_Image_5y5i2z5y5i2z5y5i (1).png" |   Bin 0 -> 810823 bytes
+ .../Gemini_Generated_Image_cgovh3cgovh3cgov.png"   |   Bin 0 -> 5279615 bytes
+ .../Gemini_Generated_Image_f6wy1if6wy1if6wy.png"   |   Bin 0 -> 6966373 bytes
+ .../Gemini_Generated_Image_myhoy1myhoy1myho.png"   |   Bin 0 -> 1385618 bytes
+ .../Gemini_Generated_Image_pg94oppg94oppg94.png"   |   Bin 0 -> 5495145 bytes
+ .../Gemini_Generated_Image_pnh5iapnh5iapnh5.png"   |   Bin 0 -> 6688127 bytes
+ .../Gemini_Generated_Image_ugorzyugorzyugor.png"   |   Bin 0 -> 7086862 bytes
+ .../Gemini_Generated_Image_y73sr1y73sr1y73s.png"   |   Bin 0 -> 6189804 bytes
+ ...pilot)\345\205\255\347\222\260\345\234\226.png" |   Bin 0 -> 5977714 bytes
+ ...4\226_\347\204\241\346\250\231\351\241\214.png" |   Bin 0 -> 6546548 bytes
+ ...IGC_A3\344\275\234\345\223\201\345\234\226.png" |   Bin 0 -> 2832379 bytes
+ ...345\255\270AIGC_A3\346\265\267\345\240\261.png" |   Bin 0 -> 4591658 bytes
+ ...36\220\350\210\207\345\214\257\345\205\245.png" |   Bin 0 -> 74807 bytes
+ ...4\250\350\200\205\351\240\201\351\235\2421.png" |   Bin 0 -> 443992 bytes
+ ...4\250\350\200\205\351\240\201\351\235\2422.png" |   Bin 0 -> 480655 bytes
+ ...56\241\347\220\206\344\270\255\345\277\203.png" |   Bin 0 -> 133939 bytes
+ ...77\222\345\204\200\350\241\250\347\211\210.png" |   Bin 0 -> 41557 bytes
+ ...56\241\347\220\206\344\270\255\345\277\203.png" |   Bin 0 -> 90639 bytes
+ ...12\200\350\203\275\351\227\234\350\201\257.png" |   Bin 0 -> 35966 bytes
+ ...56\241\347\220\206\344\270\255\345\277\203.png" |   Bin 0 -> 138736 bytes
+ ...10\206\351\241\236\347\256\241\347\220\206.png" |   Bin 0 -> 94646 bytes
+ ...347\277\222\347\263\273\347\265\261_RAG_PPO.md" |    90 +
+ .../ADAPTIVE_PRODUCT_SPEC_v1.md"                   |   232 +
+ .../ADAPTIVE_QUALITY_SCAN_v1.md"                   |    64 +
+ .../ADAPTIVE_QUALITY_SCAN_v2.md"                   |    60 +
+ .../ARCHITECTURE_NOTES.md"                         |   244 +
+ .../IMPLEMENTATION_BLUEPRINT_v1.1.md"              |   241 +
+ .../LOCAL_APR_AKT_STUB_EXPLAINER.md"               |   410 +
+ .../TEACHING_MODE_DETAILED_GUIDE.md"               |   637 +
+ .../TODO.md"                                       |   177 +
+ .../family_subskill_map.json"                      |   220 +
+ .../skill_breakpoint_catalog.csv"                  |    67 +
+ .../skill_breakpoint_catalog.md"                   |   172 +
+ .../skill_manifest.json"                           |   725 +
+ ...255\270\347\224\237\345\210\206\346\236\220.md" |    48 +
+ ...46\226\231\345\272\253Table_Schema_20260111.md" |   343 +
+ ...5\350\250\210\346\226\207\344\273\266 (SDD).md" |   273 +
+ .../Mathproject-main/final_verification.py         |    72 +
+ .../Mathproject-main/find_skills.py                |    26 +
+ .../generate_curriculum_aware_data.py              |   262 +
+ .../generate_sequential_training_data.py           |   258 +
+ .../Mathproject-main/generate_training_data.py     |   199 +
+ .../generate_training_data_v2_curriculum.py        |   275 +
+ .../live_show_1775454960_25155b.py                 |    72 +
+ .../live_show_int_1775454990_7a5bd0.py             |    19 +
+ .../live_show_int_1775457669_426354.py             |    19 +
+ .../live_show_int_1775457825_5204ca.py             |    19 +
+ .../scaler_1775454960_2408bd_ab2.py                |    20 +
+ .../JH_ALG_LINEAR1.json"                           |  1108 +
+ .../JH_NUM_FRAC_OPS.json"                          |  2424 +
+ .../JH_NUM_INT_NL.json"                            |  2118 +
+ .../all_units.json"                                |  3426 +
+ .../JH_ALG_INEQ_LINEAR1.json"                      |   580 +
+ .../JH_ALG_LINEAR2_GRAPH.json"                     |   659 +
+ .../JH_ALG_LINEAR2_SYS.json"                       |   507 +
+ .../JH_GEO_PERPSYM.json"                           |   706 +
+ .../JH_NUM_RATIO.json"                             |   987 +
+ .../JH_STA_CHARTS.json"                            |   594 +
+ .../all_units.json"                                |  9687 +++
+ .../JH_ALG_FACTOR.json"                            |   957 +
+ .../JH_ALG_MULPOLY.json"                           |  1234 +
+ .../JH_ALG_QUAD.json"                              |   460 +
+ .../JH_NUM_SQRT.json"                              |  1112 +
+ .../JH_STA_CHARTS_ADV.json"                        |   285 +
+ .../all_units.json"                                |  4052 ++
+ .../batch_report_20260406_225112.json"             |    62 +
+ .../validation_report.txt"                         |   130 +
+ .../JH_ALG_FUNC.json"                              |   318 +
+ .../JH_GEO_PARA.json"                              |  1150 +
+ .../JH_GEO_TRI_POLY.json"                          |  1069 +
+ .../JH_NUM_SEQ.json"                               |  1117 +
+ .../all_units.json"                                |  3658 +
+ .../batch_report_20260406_221528.json"             |    51 +
+ .../kumon_math_backup_20260130_1149.xlsx           |   Bin 0 -> 833802 bytes
+ .../Mathproject-main/list_jh_prereqs.py            |    28 +
+ .../Mathproject-main/models.py                     |  1477 +
+ .../models/adaptive/phase2_policy.pt               |   Bin 0 -> 2316 bytes
+ .../Mathproject-main/models/akt_curriculum.pth     |   Bin 0 -> 2637865 bytes
+ .../Mathproject-main/outputs/config_used.json      |    50 +
+ .../Mathproject-main/outputs/experiment_logs.csv   |  9944 +++
+ ...213\344\270\200\344\270\212_JH_NUM_INT_NL.html" |  1729 +
+ ..._\345\234\213\344\270\200\344\270\212_all.html" |  2547 +
+ .../Mathproject-main/outputs/plots/fail_streak.png |   Bin 0 -> 40043 bytes
+ .../outputs/plots/sample_trajectory.png            |   Bin 0 -> 219247 bytes
+ .../outputs/plots/success_rate.png                 |   Bin 0 -> 46041 bytes
+ .../Mathproject-main/outputs/plots/total_steps.png |   Bin 0 -> 37274 bytes
+ .../Mathproject-main/outputs/summary_metrics.csv   |    10 +
+ .../outputs_ab3_subskill/ab3_vs_ab2_summary.csv    |     4 +
+ .../outputs_ab3_subskill/config_used.json          |   113 +
+ .../outputs_ab3_subskill/experiment_logs.csv       |  9719 +++
+ .../outputs_ab3_subskill/plots/fail_streak.png     |   Bin 0 -> 46646 bytes
+ .../plots/sample_trajectory.png                    |   Bin 0 -> 198886 bytes
+ .../outputs_ab3_subskill/plots/success_rate.png    |   Bin 0 -> 46073 bytes
+ .../outputs_ab3_subskill/plots/total_steps.png     |   Bin 0 -> 37227 bytes
+ .../outputs_ab3_subskill/summary_metrics.csv       |    10 +
+ .../ab3_vs_ab2_summary.csv                         |     4 +
+ .../outputs_ab3_subskill_state/config_used.json    |   122 +
+ .../outputs_ab3_subskill_state/experiment_logs.csv | 18511 +++++
+ .../plots/fail_streak.png                          |   Bin 0 -> 41627 bytes
+ .../plots/sample_trajectory.png                    |   Bin 0 -> 200530 bytes
+ .../plots/success_rate.png                         |   Bin 0 -> 46204 bytes
+ .../plots/total_steps.png                          |   Bin 0 -> 35842 bytes
+ .../outputs_ab3_subskill_state/summary_metrics.csv |    10 +
+ .../outputs_ab3_v2/ab3_vs_ab2_summary.csv          |     4 +
+ .../outputs_ab3_v2/ab3_vs_old_summary.csv          |     4 +
+ .../outputs_ab3_v2/config_used.json                |    50 +
+ .../outputs_ab3_v2/experiment_logs.csv             | 10039 +++
+ .../outputs_ab3_v2/plots/fail_streak.png           |   Bin 0 -> 40041 bytes
+ .../outputs_ab3_v2/plots/sample_trajectory.png     |   Bin 0 -> 208840 bytes
+ .../outputs_ab3_v2/plots/success_rate.png          |   Bin 0 -> 46041 bytes
+ .../outputs_ab3_v2/plots/total_steps.png           |   Bin 0 -> 37247 bytes
+ .../outputs_ab3_v2/summary_metrics.csv             |    10 +
+ .../outputs_ab3_v3/ab3_vs_ab2_summary.csv          |     4 +
+ .../outputs_ab3_v3/config_used.json                |    50 +
+ .../outputs_ab3_v3/experiment_logs.csv             | 10017 +++
+ .../outputs_ab3_v3/plots/fail_streak.png           |   Bin 0 -> 40050 bytes
+ .../outputs_ab3_v3/plots/sample_trajectory.png     |   Bin 0 -> 203070 bytes
+ .../outputs_ab3_v3/plots/success_rate.png          |   Bin 0 -> 46081 bytes
+ .../outputs_ab3_v3/plots/total_steps.png           |   Bin 0 -> 36295 bytes
+ .../outputs_ab3_v3/summary_metrics.csv             |    10 +
+ .../outputs_ab3_v4/timing_sweep_summary.csv        |    82 +
+ .../tmp_m1_s1_d0.00/config_used.json               |   125 +
+ .../tmp_m1_s1_d0.00/experiment_logs.csv            | 18471 +++++
+ .../tmp_m1_s1_d0.00/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s1_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m1_s1_d0.00/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m1_s1_d0.00/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m1_s1_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m1_s1_d0.01/config_used.json               |   125 +
+ .../tmp_m1_s1_d0.01/experiment_logs.csv            | 18471 +++++
+ .../tmp_m1_s1_d0.01/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s1_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m1_s1_d0.01/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m1_s1_d0.01/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m1_s1_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m1_s1_d0.02/config_used.json               |   125 +
+ .../tmp_m1_s1_d0.02/experiment_logs.csv            | 18471 +++++
+ .../tmp_m1_s1_d0.02/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s1_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m1_s1_d0.02/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m1_s1_d0.02/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m1_s1_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m1_s2_d0.00/config_used.json               |   125 +
+ .../tmp_m1_s2_d0.00/experiment_logs.csv            | 18398 +++++
+ .../tmp_m1_s2_d0.00/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m1_s2_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 207819 bytes
+ .../tmp_m1_s2_d0.00/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m1_s2_d0.00/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m1_s2_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m1_s2_d0.01/config_used.json               |   125 +
+ .../tmp_m1_s2_d0.01/experiment_logs.csv            | 18398 +++++
+ .../tmp_m1_s2_d0.01/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m1_s2_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 207819 bytes
+ .../tmp_m1_s2_d0.01/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m1_s2_d0.01/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m1_s2_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m1_s2_d0.02/config_used.json               |   125 +
+ .../tmp_m1_s2_d0.02/experiment_logs.csv            | 18398 +++++
+ .../tmp_m1_s2_d0.02/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m1_s2_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 207819 bytes
+ .../tmp_m1_s2_d0.02/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m1_s2_d0.02/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m1_s2_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m1_s3_d0.00/config_used.json               |   125 +
+ .../tmp_m1_s3_d0.00/experiment_logs.csv            | 18409 +++++
+ .../tmp_m1_s3_d0.00/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s3_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 202702 bytes
+ .../tmp_m1_s3_d0.00/plots/success_rate.png         |   Bin 0 -> 46194 bytes
+ .../tmp_m1_s3_d0.00/plots/total_steps.png          |   Bin 0 -> 35853 bytes
+ .../tmp_m1_s3_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m1_s3_d0.01/config_used.json               |   125 +
+ .../tmp_m1_s3_d0.01/experiment_logs.csv            | 18409 +++++
+ .../tmp_m1_s3_d0.01/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s3_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 202702 bytes
+ .../tmp_m1_s3_d0.01/plots/success_rate.png         |   Bin 0 -> 46194 bytes
+ .../tmp_m1_s3_d0.01/plots/total_steps.png          |   Bin 0 -> 35853 bytes
+ .../tmp_m1_s3_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m1_s3_d0.02/config_used.json               |   125 +
+ .../tmp_m1_s3_d0.02/experiment_logs.csv            | 18409 +++++
+ .../tmp_m1_s3_d0.02/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m1_s3_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 202702 bytes
+ .../tmp_m1_s3_d0.02/plots/success_rate.png         |   Bin 0 -> 46194 bytes
+ .../tmp_m1_s3_d0.02/plots/total_steps.png          |   Bin 0 -> 35853 bytes
+ .../tmp_m1_s3_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m2_s1_d0.00/config_used.json               |   125 +
+ .../tmp_m2_s1_d0.00/experiment_logs.csv            | 18471 +++++
+ .../tmp_m2_s1_d0.00/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s1_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m2_s1_d0.00/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m2_s1_d0.00/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m2_s1_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m2_s1_d0.01/config_used.json               |   125 +
+ .../tmp_m2_s1_d0.01/experiment_logs.csv            | 18471 +++++
+ .../tmp_m2_s1_d0.01/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s1_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m2_s1_d0.01/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m2_s1_d0.01/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m2_s1_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m2_s1_d0.02/config_used.json               |   125 +
+ .../tmp_m2_s1_d0.02/experiment_logs.csv            | 18471 +++++
+ .../tmp_m2_s1_d0.02/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s1_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 210087 bytes
+ .../tmp_m2_s1_d0.02/plots/success_rate.png         |   Bin 0 -> 46182 bytes
+ .../tmp_m2_s1_d0.02/plots/total_steps.png          |   Bin 0 -> 35842 bytes
+ .../tmp_m2_s1_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m2_s2_d0.00/config_used.json               |   125 +
+ .../tmp_m2_s2_d0.00/experiment_logs.csv            | 18470 +++++
+ .../tmp_m2_s2_d0.00/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s2_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 207972 bytes
+ .../tmp_m2_s2_d0.00/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m2_s2_d0.00/plots/total_steps.png          |   Bin 0 -> 35846 bytes
+ .../tmp_m2_s2_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m2_s2_d0.01/config_used.json               |   125 +
+ .../tmp_m2_s2_d0.01/experiment_logs.csv            | 18470 +++++
+ .../tmp_m2_s2_d0.01/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s2_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 207972 bytes
+ .../tmp_m2_s2_d0.01/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m2_s2_d0.01/plots/total_steps.png          |   Bin 0 -> 35846 bytes
+ .../tmp_m2_s2_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m2_s2_d0.02/config_used.json               |   125 +
+ .../tmp_m2_s2_d0.02/experiment_logs.csv            | 18470 +++++
+ .../tmp_m2_s2_d0.02/plots/fail_streak.png          |   Bin 0 -> 41628 bytes
+ .../tmp_m2_s2_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 207972 bytes
+ .../tmp_m2_s2_d0.02/plots/success_rate.png         |   Bin 0 -> 46193 bytes
+ .../tmp_m2_s2_d0.02/plots/total_steps.png          |   Bin 0 -> 35846 bytes
+ .../tmp_m2_s2_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m2_s3_d0.00/config_used.json               |   125 +
+ .../tmp_m2_s3_d0.00/experiment_logs.csv            | 18451 +++++
+ .../tmp_m2_s3_d0.00/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m2_s3_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 202976 bytes
+ .../tmp_m2_s3_d0.00/plots/success_rate.png         |   Bin 0 -> 46204 bytes
+ .../tmp_m2_s3_d0.00/plots/total_steps.png          |   Bin 0 -> 35836 bytes
+ .../tmp_m2_s3_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m2_s3_d0.01/config_used.json               |   125 +
+ .../tmp_m2_s3_d0.01/experiment_logs.csv            | 18451 +++++
+ .../tmp_m2_s3_d0.01/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m2_s3_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 202976 bytes
+ .../tmp_m2_s3_d0.01/plots/success_rate.png         |   Bin 0 -> 46204 bytes
+ .../tmp_m2_s3_d0.01/plots/total_steps.png          |   Bin 0 -> 35836 bytes
+ .../tmp_m2_s3_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m2_s3_d0.02/config_used.json               |   125 +
+ .../tmp_m2_s3_d0.02/experiment_logs.csv            | 18451 +++++
+ .../tmp_m2_s3_d0.02/plots/fail_streak.png          |   Bin 0 -> 41629 bytes
+ .../tmp_m2_s3_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 202976 bytes
+ .../tmp_m2_s3_d0.02/plots/success_rate.png         |   Bin 0 -> 46204 bytes
+ .../tmp_m2_s3_d0.02/plots/total_steps.png          |   Bin 0 -> 35836 bytes
+ .../tmp_m2_s3_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m3_s1_d0.00/config_used.json               |   125 +
+ .../tmp_m3_s1_d0.00/experiment_logs.csv            | 18369 +++++
+ .../tmp_m3_s1_d0.00/plots/fail_streak.png          |   Bin 0 -> 41620 bytes
+ .../tmp_m3_s1_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 209501 bytes
+ .../tmp_m3_s1_d0.00/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s1_d0.00/plots/total_steps.png          |   Bin 0 -> 35840 bytes
+ .../tmp_m3_s1_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m3_s1_d0.01/config_used.json               |   125 +
+ .../tmp_m3_s1_d0.01/experiment_logs.csv            | 18369 +++++
+ .../tmp_m3_s1_d0.01/plots/fail_streak.png          |   Bin 0 -> 41620 bytes
+ .../tmp_m3_s1_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 209501 bytes
+ .../tmp_m3_s1_d0.01/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s1_d0.01/plots/total_steps.png          |   Bin 0 -> 35840 bytes
+ .../tmp_m3_s1_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m3_s1_d0.02/config_used.json               |   125 +
+ .../tmp_m3_s1_d0.02/experiment_logs.csv            | 18369 +++++
+ .../tmp_m3_s1_d0.02/plots/fail_streak.png          |   Bin 0 -> 41620 bytes
+ .../tmp_m3_s1_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 209501 bytes
+ .../tmp_m3_s1_d0.02/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s1_d0.02/plots/total_steps.png          |   Bin 0 -> 35840 bytes
+ .../tmp_m3_s1_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m3_s2_d0.00/config_used.json               |   125 +
+ .../tmp_m3_s2_d0.00/experiment_logs.csv            | 18435 +++++
+ .../tmp_m3_s2_d0.00/plots/fail_streak.png          |   Bin 0 -> 41626 bytes
+ .../tmp_m3_s2_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 202928 bytes
+ .../tmp_m3_s2_d0.00/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s2_d0.00/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m3_s2_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m3_s2_d0.01/config_used.json               |   125 +
+ .../tmp_m3_s2_d0.01/experiment_logs.csv            | 18435 +++++
+ .../tmp_m3_s2_d0.01/plots/fail_streak.png          |   Bin 0 -> 41626 bytes
+ .../tmp_m3_s2_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 202928 bytes
+ .../tmp_m3_s2_d0.01/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s2_d0.01/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m3_s2_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m3_s2_d0.02/config_used.json               |   125 +
+ .../tmp_m3_s2_d0.02/experiment_logs.csv            | 18435 +++++
+ .../tmp_m3_s2_d0.02/plots/fail_streak.png          |   Bin 0 -> 41626 bytes
+ .../tmp_m3_s2_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 202928 bytes
+ .../tmp_m3_s2_d0.02/plots/success_rate.png         |   Bin 0 -> 46186 bytes
+ .../tmp_m3_s2_d0.02/plots/total_steps.png          |   Bin 0 -> 35839 bytes
+ .../tmp_m3_s2_d0.02/summary_metrics.csv            |    10 +
+ .../tmp_m3_s3_d0.00/config_used.json               |   125 +
+ .../tmp_m3_s3_d0.00/experiment_logs.csv            | 18482 +++++
+ .../tmp_m3_s3_d0.00/plots/fail_streak.png          |   Bin 0 -> 41618 bytes
+ .../tmp_m3_s3_d0.00/plots/sample_trajectory.png    |   Bin 0 -> 205193 bytes
+ .../tmp_m3_s3_d0.00/plots/success_rate.png         |   Bin 0 -> 46197 bytes
+ .../tmp_m3_s3_d0.00/plots/total_steps.png          |   Bin 0 -> 35844 bytes
+ .../tmp_m3_s3_d0.00/summary_metrics.csv            |    10 +
+ .../tmp_m3_s3_d0.01/config_used.json               |   125 +
+ .../tmp_m3_s3_d0.01/experiment_logs.csv            | 18482 +++++
+ .../tmp_m3_s3_d0.01/plots/fail_streak.png          |   Bin 0 -> 41618 bytes
+ .../tmp_m3_s3_d0.01/plots/sample_trajectory.png    |   Bin 0 -> 205193 bytes
+ .../tmp_m3_s3_d0.01/plots/success_rate.png         |   Bin 0 -> 46197 bytes
+ .../tmp_m3_s3_d0.01/plots/total_steps.png          |   Bin 0 -> 35844 bytes
+ .../tmp_m3_s3_d0.01/summary_metrics.csv            |    10 +
+ .../tmp_m3_s3_d0.02/config_used.json               |   125 +
+ .../tmp_m3_s3_d0.02/experiment_logs.csv            | 18482 +++++
+ .../tmp_m3_s3_d0.02/plots/fail_streak.png          |   Bin 0 -> 41618 bytes
+ .../tmp_m3_s3_d0.02/plots/sample_trajectory.png    |   Bin 0 -> 205193 bytes
+ .../tmp_m3_s3_d0.02/plots/success_rate.png         |   Bin 0 -> 46197 bytes
+ .../tmp_m3_s3_d0.02/plots/total_steps.png          |   Bin 0 -> 35844 bytes
+ .../tmp_m3_s3_d0.02/summary_metrics.csv            |    10 +
+ .../Mathproject-main/pytest.ini                    |     3 +
+ .../reports/experiment_1_ablation/final/README.md  |    96 +
+ .../final/experiment1_summary_table.md             |    55 +
+ .../final/fig_exp1_student_type_improved.png       |   Bin 0 -> 149068 bytes
+ .../final/fig_multi_steps_efficiency.png           |   Bin 0 -> 268244 bytes
+ .../final/fig_multi_steps_success_rate.png         |   Bin 0 -> 227372 bytes
+ .../latest/ablation_simulation_results.csv         |   901 +
+ .../ablation_strategy_by_student_type_summary.csv  |    10 +
+ .../latest/ablation_strategy_summary.csv           |     4 +
+ .../latest/experiment1_summary_table.csv           |    10 +
+ .../multi_steps_strategy_by_type_summary.csv       |    28 +
+ .../ablation_simulation_results.csv                |   901 +
+ .../ablation_simulation_results_steps30.csv        |   901 +
+ .../ablation_simulation_results_steps40.csv        |   901 +
+ .../ablation_simulation_results_steps50.csv        |   901 +
+ .../ablation_strategy_by_student_type_summary.csv  |    10 +
+ ...on_strategy_by_student_type_summary_steps30.csv |    10 +
+ ...on_strategy_by_student_type_summary_steps40.csv |    10 +
+ ...on_strategy_by_student_type_summary_steps50.csv |    10 +
+ .../20260410_135312/ablation_strategy_summary.csv  |     4 +
+ .../ablation_strategy_summary_steps30.csv          |     4 +
+ .../ablation_strategy_summary_steps40.csv          |     4 +
+ .../ablation_strategy_summary_steps50.csv          |     4 +
+ .../20260410_135312/experiment1_summary_table.csv  |    10 +
+ .../20260410_135312/experiment1_summary_table.md   |    55 +
+ .../fig_exp1_student_type_improved.png             |   Bin 0 -> 149068 bytes
+ .../20260410_135312/fig_multi_steps_efficiency.png |   Bin 0 -> 268244 bytes
+ .../fig_multi_steps_success_rate.png               |   Bin 0 -> 227372 bytes
+ .../multi_steps_strategy_by_type_summary.csv       |    28 +
+ .../multi_steps_strategy_summary.csv               |    10 +
+ .../latest/ab3_failure_breakpoint_summary.csv      |     4 +
+ .../latest/ab3_student_type_detailed_summary.csv   |     4 +
+ .../latest/ab3_student_type_summary.csv            |     4 +
+ .../ab3_subskill_by_type_detailed_summary.csv      |    19 +
+ .../latest/ab3_subskill_progress_summary.csv       |    19 +
+ .../latest/experiment2_policy_behavior_summary.png |   Bin 0 -> 103824 bytes
+ .../latest/experiment2_student_type_summary.csv    |     4 +
+ .../latest/mastery_trajectory.csv                  | 37832 ++++++++++
+ .../mastery_trajectory_average_by_student_type.png |   Bin 0 -> 280950 bytes
+ .../ab3_failure_breakpoint_summary.csv             |     4 +
+ .../ab3_student_type_detailed_summary.csv          |     4 +
+ .../20260410_170310/ab3_student_type_summary.csv   |     4 +
+ .../ab3_subskill_by_type_detailed_summary.csv      |    19 +
+ .../ab3_subskill_progress_summary.csv              |    19 +
+ .../experiment2_policy_behavior_summary.png        |   Bin 0 -> 103824 bytes
+ .../experiment2_student_type_summary.csv           |     4 +
+ .../runs/20260410_170310/mastery_trajectory.csv    | 37832 ++++++++++
+ .../mastery_trajectory_average_by_student_type.png |   Bin 0 -> 280950 bytes
+ .../experiment_3_weak_foundation_support/README.md |   130 +
+ .../fig_weak_foundation_breakpoint_shift.png       |   Bin 0 -> 178301 bytes
+ .../fig_weak_foundation_cost.png                   |   Bin 0 -> 171753 bytes
+ .../fig_weak_foundation_marginal_gain.png          |   Bin 0 -> 205177 bytes
+ .../fig_weak_foundation_mastery.png                |   Bin 0 -> 183007 bytes
+ .../fig_weak_foundation_subskill_gain.png          |   Bin 0 -> 154450 bytes
+ .../fig_weak_foundation_success_rate.png           |   Bin 0 -> 156461 bytes
+ .../figure_caption_exp3_cost.md                    |     4 +
+ .../figure_caption_exp3_marginal.md                |     4 +
+ .../figure_caption_exp3_mastery.md                 |     4 +
+ .../figure_caption_exp3_success.md                 |     4 +
+ .../weak_foundation_breakpoint_summary.csv         |    37 +
+ .../weak_foundation_subskill_summary.csv           |    37 +
+ .../weak_foundation_support_summary.csv            |     7 +
+ .../reports/experiment_4_rag_tutor/README.md       |    21 +
+ .../fig_rag_breakpoint_shift.png                   |   Bin 0 -> 241507 bytes
+ .../experiment_4_rag_tutor/fig_rag_efficiency.png  |   Bin 0 -> 240547 bytes
+ .../experiment_4_rag_tutor/fig_rag_mastery.png     |   Bin 0 -> 106270 bytes
+ .../fig_rag_subskill_gain.png                      |   Bin 0 -> 333147 bytes
+ .../fig_rag_success_rate.png                       |   Bin 0 -> 101225 bytes
+ .../rag_breakpoint_shift.csv                       |    13 +
+ .../rag_efficiency_summary.csv                     |     3 +
+ .../rag_student_type_summary.csv                   |     3 +
+ .../rag_subskill_summary.csv                       |    13 +
+ .../rag_vs_baseline_summary.csv                    |     3 +
+ .../reports/experiments_overview.md                |   205 +
+ .../Mathproject-main/reproduce_crash.py            |    26 +
+ .../Mathproject-main/reproduce_radicals.py         |    31 +
+ .../Mathproject-main/requirements.txt              |    23 +
+ .../Mathproject-main/scripts/README.md             |   169 +
+ .../Mathproject-main/scripts/__init__.py           |     1 +
+ .../scripts/auto_build_prerequisites.py            |   299 +
+ .../Mathproject-main/scripts/batch_fix_v10_5.py    |   136 +
+ .../scripts/batch_update_skills.py                 |    47 +
+ .../scripts/batch_upgrade_v10_4.py                 |    93 +
+ .../Mathproject-main/scripts/benchmark_skills.py   |   212 +
+ .../Mathproject-main/scripts/build_micro_skills.py |   114 +
+ .../Mathproject-main/scripts/check_tables.py       |    33 +
+ .../scripts/cleanup_non_experiment1_outputs.py     |    97 +
+ .../Mathproject-main/scripts/enrich_skills.py      |   262 +
+ .../Mathproject-main/scripts/evaluate_mcri.py      |   293 +
+ .../Mathproject-main/scripts/figure_style.py       |   144 +
+ .../Mathproject-main/scripts/fix_missing_except.py |    72 +
+ .../Mathproject-main/scripts/fix_v10_5.py          |   119 +
+ .../scripts/generate_kg_visualization.py           |   582 +
+ .../scripts/generate_skill_breakpoint_maps.py      |   169 +
+ .../scripts/organize_experiment_outputs.py         |    95 +
+ .../scripts/plot_experiment_results.py             |  2169 +
+ .../scripts/plot_mastery_trajectory.py             |   120 +
+ .../Mathproject-main/scripts/prompt_factory_v9.py  |   182 +
+ .../scripts/run_ablation_experiment.py             |    46 +
+ .../scripts/run_multi_steps_experiment.py          |   475 +
+ .../scripts/run_rag_enhanced_experiment.py         |   320 +
+ .../scripts/run_rag_intervention_experiment.py     |   441 +
+ .../run_weak_foundation_support_experiment.py      |   277 +
+ .../scripts/scan_adaptive_question_quality.py      |   293 +
+ .../Mathproject-main/scripts/seed_analysis_data.py |    97 +
+ .../scripts/seed_unit_pattern_skills.py            |    83 +
+ .../Mathproject-main/scripts/simulate_student.py   |  2666 +
+ .../Mathproject-main/scripts/sync_skills_files.py  |   431 +
+ .../scripts/sync_unit_pattern_skills.py            |   147 +
+ .../scripts/temp/db_migration_manual.py            |    41 +
+ .../Mathproject-main/scripts/temp/debug_db_path.py |    58 +
+ .../Mathproject-main/scripts/temp/debug_re.py      |    21 +
+ .../Mathproject-main/scripts/temp/fix_db.py        |    18 +
+ .../scripts/temp/inject_v2.5_spec.py               |    77 +
+ .../scripts/temp/restore_full_db.py                |   120 +
+ .../scripts/temp/verify_architect_v9.py            |    42 +
+ .../scripts/temp/verify_codegen_v2.5.py            |    95 +
+ .../scripts/train_adaptive_skill_policy.py         |    78 +
+ .../scripts/verify_instant_internal.py             |    92 +
+ .../scripts/verify_instant_practice.py             |    39 +
+ .../scripts/verify_unit_pattern_mvp.py             |    82 +
+ ...52\244\347\232\204\346\252\224\346\241\210.txt" |    38 +
+ .../Mathproject-main/skills/Example_Program.py     |    48 +
+ ...\255\2701\344\270\212_IntegerExponentiation.py" |   579 +
+ ...270\345\255\2701\344\270\212_PowerOfNumbers.py" |   425 +
+ ...tionsOfIntegers__I1__int_numberline_add_sub.py" |    34 +
+ ...cOperationsOfIntegers__I2__int_flat_add_sub.py" |    29 +
+ ...tionsOfIntegers__I3__int_flat_mul_div_exact.py" |    38 +
+ ...ionsOfIntegers__I4__int_flat_mixed_four_ops.py" |    36 +
+ ...OperationsOfIntegers__I5__int_bracket_mixed.py" |    89 +
+ ...eticOperationsOfIntegers__I6__int_abs_value.py" |    27 +
+ ...nsOfIntegers__I7__int_division_exact_nested.py" |    36 +
+ ...ionsOfIntegers__I8__int_composite_structure.py" |    27 +
+ ...tionsOfNumbers__F10__Fraction_Word_Problems.py" |    27 +
+ ...tionsOfNumbers__F1__Fraction_Simplification.py" |    27 +
+ ...Numbers__F2__Equivalent_Fraction_Fill-Blank.py" |    27 +
+ ...ers__F3__Preserve-Value_Fraction_Invariance.py" |    27 +
+ ...perationsOfNumbers__F4__Fraction_Comparison.py" |    27 +
+ ...rationsOfNumbers__F5__Fraction_Add_Subtract.py" |    27 +
+ ...cOperationsOfNumbers__F6__Fraction_Multiply.py" |    27 +
+ ...ticOperationsOfNumbers__F7__Fraction_Divide.py" |    27 +
+ ...ithmeticOperationsOfNumbers__F8__Reciprocal.py" |    27 +
+ ...bers__F9__Decimal-Fraction_Mixed_Evaluation.py" |    27 +
+ ...nLinearExpressions__L1__linear_flat_mul_div.py" |    12 +
+ ...rExpressions__L2__linear_combine_like_terms.py" |    12 +
+ ...ns__L3__linear_flat_simplify_with_constants.py" |    12 +
+ ...arExpressions__L4__linear_outer_minus_scope.py" |    12 +
+ ...pressions__L5__linear_monomial_distribution.py" |    12 +
+ ...nearExpressions__L6__linear_nested_simplify.py" |    12 +
+ ...ns__L7__linear_fraction_expression_simplify.py" |    12 +
+ ...erationsOfPolynomial__F10__poly_div_reverse.py" |    27 +
+ ...tionsOfPolynomial__F11__poly_mixed_simplify.py" |    69 +
+ ...OfPolynomial__F12__poly_geom_formula_direct.py" |    27 +
+ ...Polynomial__F13__poly_geom_region_composite.py" |    27 +
+ ...erationsOfPolynomial__F1__poly_add_sub_flat.py" |    78 +
+ ...ationsOfPolynomial__F2__poly_add_sub_nested.py" |    72 +
+ ...tionsOfPolynomial__F3__poly_add_sub_unknown.py" |    27 +
+ ...erationsOfPolynomial__F4__poly_mul_monomial.py" |    27 +
+ ...icOperationsOfPolynomial__F5__poly_mul_poly.py" |    73 +
+ ...OfPolynomial__F6__poly_mul_special_identity.py" |    27 +
+ ...onsOfPolynomial__F7__poly_div_monomial_eval.py" |    27 +
+ ...tionsOfPolynomial__F8__poly_div_monomial_qr.py" |    27 +
+ ...perationsOfPolynomial__F9__poly_div_poly_qr.py" |    27 +
+ ...2_FourOperationsOfRadicals__p0__p0_simplify.py" |    27 +
+ ...12_FourOperationsOfRadicals__p1__p1_add_sub.py" |    27 +
+ ...rationsOfRadicals__p1b__p1b_add_sub_bracket.py" |    27 +
+ ...OfRadicals__p1c__p1c_mixed_frac_rad_add_sub.py" |    27 +
+ ...rOperationsOfRadicals__p2a__p2a_mult_direct.py" |    27 +
+ ...OperationsOfRadicals__p2b__p2b_mult_distrib.py" |    27 +
+ ...perationsOfRadicals__p2c__p2c_mult_binomial.py" |    27 +
+ ...erationsOfRadicals__p2d__p2d_perfect_square.py" |    27 +
+ ...rationsOfRadicals__p2e__p2e_diff_of_squares.py" |    27 +
+ ...OperationsOfRadicals__p2f__p2f_int_mult_rad.py" |    27 +
+ ...perationsOfRadicals__p2g__p2g_rad_mult_frac.py" |    27 +
+ ...perationsOfRadicals__p2h__p2h_frac_mult_rad.py" |    27 +
+ ...FourOperationsOfRadicals__p3a__p3a_div_expr.py" |    27 +
+ ...urOperationsOfRadicals__p3b__p3b_div_simple.py" |    27 +
+ ...urOperationsOfRadicals__p3c__p3c_div_direct.py" |    27 +
+ ..._FourOperationsOfRadicals__p4__p4_frac_mult.py" |    27 +
+ ...OperationsOfRadicals__p4b__p4b_frac_rad_div.py" |    27 +
+ ...tionsOfRadicals__p4c__p4c_nested_frac_chain.py" |    27 +
+ ...ionsOfRadicals__p4d__p4d_frac_rad_div_mixed.py" |    27 +
+ ...perationsOfRadicals__p5a__p5a_conjugate_int.py" |    27 +
+ ...perationsOfRadicals__p5b__p5b_conjugate_rad.py" |    27 +
+ ...\212_FourOperationsOfRadicals__p6__p6_combo.py" |    27 +
+ ...rOperationsOfRadicals__p7__p7_mixed_rad_add.py" |    27 +
+ .../skills/backup_GenByGemini/__init__.py          |     0
+ .../skills/backup_GenByGemini/abs_eq_linear.py     |    35 +
+ .../skills/backup_GenByGemini/abs_eq_simple.py     |    18 +
+ .../skills/backup_GenByGemini/abs_eq_two_vars.py   |    35 +
+ .../skills/backup_GenByGemini/abs_ineq_greater.py  |    38 +
+ .../backup_GenByGemini/abs_ineq_greater_simple.py  |    17 +
+ .../skills/backup_GenByGemini/abs_ineq_less.py     |    37 +
+ .../backup_GenByGemini/abs_ineq_less_simple.py     |    17 +
+ .../skills/backup_GenByGemini/abs_ineq_two_vars.py |    30 +
+ .../skills/backup_GenByGemini/abs_val_eq.py        |   169 +
+ .../skills/backup_GenByGemini/abs_val_ineq_gt.py   |    83 +
+ .../skills/backup_GenByGemini/abs_val_ineq_lt.py   |    75 +
+ .../skills/backup_GenByGemini/absolute_value.py    |    17 +
+ .../backup_GenByGemini/always_negative_cond.py     |    75 +
+ .../backup_GenByGemini/always_positive_cond.py     |    75 +
+ .../skills/backup_GenByGemini/am_gm_basic.py       |    31 +
+ .../backup_GenByGemini/antiderivative_calc_poly.py |    18 +
+ .../backup_GenByGemini/area_between_curves.py      |    19 +
+ .../backup_GenByGemini/area_upper_lower_sum.py     |    15 +
+ .../backup_GenByGemini/arithmetic_seq_mean.py      |    22 +
+ .../backup_GenByGemini/arithmetic_seq_term.py      |    30 +
+ .../backup_GenByGemini/arithmetic_series_sum.py    |    26 +
+ .../skills/backup_GenByGemini/bayes_theorem.py     |    33 +
+ .../backup_GenByGemini/binomial_distribution.py    |    23 +
+ .../binomial_geometric_distributions.py            |    27 +
+ .../backup_GenByGemini/binomial_theorem_expand.py  |    27 +
+ .../backup_GenByGemini/binomial_theorem_term.py    |    24 +
+ .../cauchy_schwarz_inequality.py                   |    22 +
+ .../skills/backup_GenByGemini/centroid_formula.py  |    66 +
+ .../circle_eq_from_center_radius.py                |    30 +
+ .../backup_GenByGemini/circle_eq_from_diameter.py  |    37 +
+ .../circle_eq_general_discriminate.py              |    41 +
+ .../circle_eq_general_to_standard.py               |    40 +
+ .../backup_GenByGemini/circle_eq_standard.py       |    33 +
+ .../skills/backup_GenByGemini/circle_equation.py   |    29 +
+ .../skills/backup_GenByGemini/circle_line.py       |    24 +
+ .../backup_GenByGemini/circle_line_intersection.py |    42 +
+ .../circle_line_relation_algebraic.py              |    45 +
+ .../circle_line_relation_geometric.py              |    45 +
+ .../backup_GenByGemini/circle_point_relation.py    |    39 +
+ .../circle_tangent_given_slope.py                  |    66 +
+ .../backup_GenByGemini/circle_tangent_on_circle.py |    36 +
+ .../circle_tangent_outside_point.py                |    31 +
+ .../backup_GenByGemini/classical_probability.py    |    24 +
+ .../skills/backup_GenByGemini/combination_calc.py  |    30 +
+ .../backup_GenByGemini/combination_grouping.py     |    30 +
+ .../backup_GenByGemini/combination_properties.py   |    28 +
+ .../backup_GenByGemini/combination_repetition_h.py |    31 +
+ .../skills/backup_GenByGemini/combinations.py      |    14 +
+ .../backup_GenByGemini/common_log_definition.py    |    35 +
+ .../skills/backup_GenByGemini/common_logarithm.py  |    55 +
+ .../skills/backup_GenByGemini/completing_square.py |    98 +
+ .../complex_conjugate_absolute.py                  |    26 +
+ .../complex_de_moivres_theorem.py                  |    22 +
+ .../backup_GenByGemini/complex_definition_ops.py   |    29 +
+ .../skills/backup_GenByGemini/complex_nth_roots.py |    20 +
+ .../backup_GenByGemini/complex_numbers_geometry.py |    25 +
+ .../skills/backup_GenByGemini/complex_plane.py     |    17 +
+ .../backup_GenByGemini/complex_plane_geometry.py   |    21 +
+ .../complex_polar_form_convert.py                  |    26 +
+ .../complex_polar_form_multiply_divide.py          |    24 +
+ .../complex_roots_polynomials.py                   |    24 +
+ .../backup_GenByGemini/conditional_probability.py  |    32 +
+ .../conic_ellipse_abc_relation.py                  |    19 +
+ .../backup_GenByGemini/conic_ellipse_definition.py |    19 +
+ .../backup_GenByGemini/conic_ellipse_parametric.py |    21 +
+ .../conic_ellipse_standard_eq_center.py            |    23 +
+ .../conic_ellipse_translation.py                   |    24 +
+ .../conic_hyperbola_abc_relation.py                |    19 +
+ .../conic_hyperbola_asymptotes.py                  |    22 +
+ .../conic_hyperbola_definition.py                  |    19 +
+ .../conic_hyperbola_standard_eq_center.py          |    23 +
+ .../backup_GenByGemini/conic_hyperbola_tangent.py  |    23 +
+ .../conic_hyperbola_translation.py                 |    24 +
+ .../conic_parabola_definition.py                   |    20 +
+ .../conic_parabola_standard_eq_vertex.py           |    27 +
+ .../backup_GenByGemini/conic_parabola_tangent.py   |    21 +
+ .../conic_parabola_translation.py                  |    25 +
+ .../skills/backup_GenByGemini/conic_sections.py    |    51 +
+ .../backup_GenByGemini/coordinate_systems.py       |    35 +
+ .../counting_addition_principle.py                 |    27 +
+ .../counting_inclusion_exclusion_2.py              |    31 +
+ .../counting_inclusion_exclusion_3.py              |    34 +
+ .../counting_multiplication_principle.py           |    27 +
+ .../backup_GenByGemini/counting_principles.py      |    15 +
+ .../skills/backup_GenByGemini/cramers_rule_2x2.py  |    30 +
+ .../backup_GenByGemini/cross_multiplication.py     |    82 +
+ .../backup_GenByGemini/cubic_func_complete_cube.py |    27 +
+ .../cubic_func_global_feature.py                   |    29 +
+ .../backup_GenByGemini/cubic_func_graph_ax3.py     |    28 +
+ .../backup_GenByGemini/cubic_func_graph_ax3_px.py  |    30 +
+ .../backup_GenByGemini/cubic_func_graph_general.py |    26 +
+ .../backup_GenByGemini/cubic_func_local_feature.py |    35 +
+ .../skills/backup_GenByGemini/cubic_function.py    |    19 +
+ .../skills/backup_GenByGemini/data_analysis_1d.py  |    25 +
+ .../skills/backup_GenByGemini/data_analysis_2d.py  |    26 +
+ .../data_correlation_coefficient_r.py              |    25 +
+ .../backup_GenByGemini/data_linear_transform.py    |    33 +
+ .../data_mean_median_percentile.py                 |    36 +
+ .../skills/backup_GenByGemini/data_r_properties.py |    25 +
+ .../data_range_variance_stddev.py                  |    31 +
+ .../backup_GenByGemini/data_regression_line.py     |    27 +
+ .../backup_GenByGemini/data_regression_predict.py  |    27 +
+ .../skills/backup_GenByGemini/data_scatter_plot.py |    25 +
+ .../data_standardization_zscore.py                 |    30 +
+ .../data_weighted_geometric_mean.py                |    30 +
+ .../skills/backup_GenByGemini/de_morgan_law.py     |    29 +
+ .../backup_GenByGemini/decimal_to_rational.py      |    29 +
+ .../definite_integral_definition.py                |    19 +
+ .../backup_GenByGemini/derivative_chain_rule.py    |    27 +
+ .../derivative_definition_limit.py                 |    23 +
+ .../backup_GenByGemini/derivative_formulas_poly.py |    25 +
+ .../derivative_marginal_concept.py                 |    26 +
+ .../backup_GenByGemini/derivative_product_rule.py  |    19 +
+ .../backup_GenByGemini/derivative_quotient_rule.py |    19 +
+ .../backup_GenByGemini/determinant_2x2_calc.py     |    23 +
+ .../skills/backup_GenByGemini/determinant_3x3.py   |    30 +
+ .../backup_GenByGemini/determinant_3x3_calc.py     |    26 +
+ .../determinant_3x3_properties.py                  |    23 +
+ .../backup_GenByGemini/determinant_area_formula.py |    25 +
+ .../determinant_volume_parallelepiped.py           |    27 +
+ .../skills/backup_GenByGemini/differentiability.py |    18 +
+ .../skills/backup_GenByGemini/differentiation.py   |    40 +
+ .../discrete_random_variables.py                   |    26 +
+ .../skills/backup_GenByGemini/dist_formula_1d.py   |   129 +
+ .../skills/backup_GenByGemini/dist_formula_2d.py   |    50 +
+ .../backup_GenByGemini/distance_parallel_lines.py  |    65 +
+ .../backup_GenByGemini/distance_point_line.py      |    71 +
+ .../backup_GenByGemini/division_algorithm.py       |    50 +
+ .../backup_GenByGemini/double_radical_simplify.py  |    17 +
+ .../skills/backup_GenByGemini/ellipse.py           |    20 +
+ .../backup_GenByGemini/eq_of_parallel_line.py      |    64 +
+ .../backup_GenByGemini/eq_of_perpendicular_line.py |    62 +
+ .../skills/backup_GenByGemini/exp_func_compare.py  |    26 +
+ .../backup_GenByGemini/exp_func_graph_a_gt_1.py    |    16 +
+ .../backup_GenByGemini/exp_func_graph_a_lt_1.py    |    20 +
+ .../backup_GenByGemini/exp_func_properties.py      |    24 +
+ .../skills/backup_GenByGemini/exp_func_solve_eq.py |    23 +
+ .../backup_GenByGemini/exp_func_solve_ineq.py      |    25 +
+ .../backup_GenByGemini/exp_func_transform.py       |    26 +
+ .../backup_GenByGemini/exp_log_inverse_relation.py |    21 +
+ .../skills/backup_GenByGemini/expected_value.py    |    14 +
+ .../backup_GenByGemini/exponent_law_integer.py     |    49 +
+ .../backup_GenByGemini/exponent_law_rational.py    |    39 +
+ .../exponent_radical_conversion.py                 |    39 +
+ .../backup_GenByGemini/exponent_zero_negative.py   |    35 +
+ .../skills/backup_GenByGemini/exponential.py       |    12 +
+ .../backup_GenByGemini/exponential_functions.py    |    14 +
+ .../extrema_first_derivative_test.py               |    24 +
+ .../extrema_second_derivative_test.py              |    24 +
+ .../skills/backup_GenByGemini/factor.py            |    49 +
+ .../skills/backup_GenByGemini/factor_theorem.py    |    33 +
+ .../skills/backup_GenByGemini/factorial_calc.py    |    27 +
+ .../skills/backup_GenByGemini/factoring_cubes.py   |    51 +
+ .../backup_GenByGemini/formula_expand_cubic.py     |    28 +
+ .../backup_GenByGemini/formula_factor_cubic.py     |    58 +
+ .../backup_GenByGemini/ftc_evaluation_theorem.py   |    23 +
+ .../skills/backup_GenByGemini/ftc_main.py          |    19 +
+ .../backup_GenByGemini/function_composition.py     |    29 +
+ .../backup_GenByGemini/function_concavity_test.py  |    24 +
+ .../backup_GenByGemini/function_continuity.py      |    25 +
+ .../skills/backup_GenByGemini/function_def.py      |    78 +
+ .../backup_GenByGemini/function_definition.py      |    38 +
+ .../function_increase_decrease_test.py             |    24 +
+ .../function_inflection_point.py                   |    19 +
+ .../backup_GenByGemini/function_limit_calc.py      |    28 +
+ .../backup_GenByGemini/function_limit_intuitive.py |    20 +
+ .../backup_GenByGemini/function_limit_onesided.py  |    23 +
+ .../backup_GenByGemini/function_limit_squeeze.py   |    19 +
+ .../skills/backup_GenByGemini/function_ops.py      |    31 +
+ .../backup_GenByGemini/function_properties.py      |    33 +
+ .../function_vertical_line_test.py                 |    19 +
+ .../skills/backup_GenByGemini/functions_limits.py  |    22 +
+ .../backup_GenByGemini/geometric_seq_mean.py       |    32 +
+ .../backup_GenByGemini/geometric_seq_term.py       |    37 +
+ .../backup_GenByGemini/geometric_series_sum.py     |    31 +
+ .../gh_AcuteAngleTrigonometricRatios.py            |   286 +
+ ...ractionAndScalarMultiplicationOfSpaceVectors.py |   305 +
+ .../gh_AdditionSubtractionEliminationMethod.py     |   429 +
+ .../backup_GenByGemini/gh_AngleBetweenTwoLines.py  |   159 +
+ .../backup_GenByGemini/gh_AngleBetweenTwoPlanes.py |   165 +
+ .../backup_GenByGemini/gh_AngleOfInclination.py    |   298 +
+ .../gh_AntiderivativeOfPolynomialFunction.py       |   282 +
+ .../gh_AntiderivativeOfPolynomialFunctions.py      |   340 +
+ .../gh_ApplicationsOfDerivatives.py                |   758 +
+ .../gh_ApplicationsOfExponentialFunctions.py       |   612 +
+ .../gh_ApplicationsOfLogarithmicFunctions.py       |   366 +
+ .../gh_ArcLengthAndAreaOfASector.py                |   261 +
+ .../backup_GenByGemini/gh_AreaAndDeterminants.py   |   282 +
+ .../backup_GenByGemini/gh_AreaBetweenCurves.py     |   219 +
+ .../gh_AreaRatioOfLinearTransformations.py         |    94 +
+ .../gh_AreaUnderFunctionGraph.py                   |   271 +
+ .../gh_ArithmeticOperationsOfPolynomials.py        |   649 +
+ .../gh_AverageValueOfContinuousFunction.py         |   290 +
+ .../gh_BasicConceptsOfPolynomials.py               |   269 +
+ .../gh_BasicTrigonometricIdentities.py             |   566 +
+ .../skills/backup_GenByGemini/gh_BayesTheorem.py   |   299 +
+ .../backup_GenByGemini/gh_BinomialDistribution.py  |   248 +
+ .../backup_GenByGemini/gh_BinomialTheorem.py       |   268 +
+ .../gh_CauchySchwarzInequality.py                  |   444 +
+ .../skills/backup_GenByGemini/gh_Combination.py    |   378 +
+ .../backup_GenByGemini/gh_CommonLogarithms.py      |   443 +
+ .../gh_CommonLogarithmsAndScientificNotation.py    |   434 +
+ .../gh_CommonSeriesSummationFormulas.py            |   398 +
+ .../skills/backup_GenByGemini/gh_ComplexNumbers.py |   414 +
+ .../skills/backup_GenByGemini/gh_ComplexPlane.py   |   352 +
+ .../gh_ComprehensiveExercises.py                   |   586 +
+ .../gh_ConditionalProbability.py                   |   486 +
+ ...versionBetweenRectangularAndPolarCoordinates.py |   396 +
+ .../gh_CoordinateRepresentationOfSpaceVectors.py   |   220 +
+ .../gh_CorrelationCoefficient.py                   |   133 +
+ .../skills/backup_GenByGemini/gh_CosineRule.py     |   256 +
+ .../backup_GenByGemini/gh_CountingPrinciples.py    |   444 +
+ .../skills/backup_GenByGemini/gh_CramersRule.py    |   187 +
+ .../gh_CrossProductOfSpaceVectors.py               |   454 +
+ .../gh_DataScalingAndShifting.py                   |   444 +
+ .../backup_GenByGemini/gh_DeMoivresTheorem.py      |   366 +
+ .../backup_GenByGemini/gh_DefiniteIntegral.py      |   204 +
+ .../gh_DefiniteIntegralAndArea.py                  |   255 +
+ .../gh_DefinitionOfClassicalProbability.py         |   229 +
+ .../gh_DefinitionOfRadianMeasure.py                |   483 +
+ .../gh_DiscreteRandomVariables.py                  |   382 +
+ .../gh_DistanceFromPointToLine.py                  |   310 +
+ .../gh_DistancesRelatedToLines.py                  |   384 +
+ .../backup_GenByGemini/gh_DoubleAngleFormulas.py   |   215 +
+ .../backup_GenByGemini/gh_EliminationMethod.py     |   372 +
+ .../gh_EllipseEquationCenteredAtOrigin.py          |   326 +
+ .../backup_GenByGemini/gh_EquationOfALine.py       |   421 +
+ .../skills/backup_GenByGemini/gh_Event.py          |   361 +
+ .../skills/backup_GenByGemini/gh_Exercises.py      |   319 +
+ ...arianceAndStandardDeviationOfRandomVariables.py |   430 +
+ .../gh_ExponentialFunctionsAndTheirGraphs.py       |   139 +
+ .../skills/backup_GenByGemini/gh_FactorTheorem.py  |   501 +
+ .../backup_GenByGemini/gh_FunctionConcept.py       |   479 +
+ .../gh_FundamentalTheoremOfCalculus.py             |   302 +
+ .../backup_GenByGemini/gh_GaussianElimination.py   |   492 +
+ .../backup_GenByGemini/gh_GeneralFormOfACircle.py  |   360 +
+ .../backup_GenByGemini/gh_GeneralizedAngle.py      |   251 +
+ .../gh_GeometricApplicationsOfEllipse.py           |   526 +
+ .../gh_GeometricDefinitionOfEllipse.py             |   393 +
+ .../gh_GeometricDefinitionOfHyperbola.py           |   214 +
+ .../gh_GeometricDefinitionOfParabola.py            |   261 +
+ .../backup_GenByGemini/gh_GeometricDistribution.py |   237 +
+ .../gh_GeometricMeaningOfLinearEquations.py        |   497 +
+ .../gh_GlobalAndLocalFeatures.py                   |   245 +
+ .../gh_GraphsOfCubicFunctions.py                   |   366 +
+ .../backup_GenByGemini/gh_HalfAngleFormulas.py     |   273 +
+ .../skills/backup_GenByGemini/gh_HeronsFormula.py  |    93 +
+ .../gh_HyperbolaEquationCenteredAtOrigin.py        |   223 +
+ .../backup_GenByGemini/gh_HypothesisTesting.py     |   236 +
+ .../gh_ImportantLinearTransformations.py           |   407 +
+ .../backup_GenByGemini/gh_IndependentEvents.py     |   247 +
+ .../gh_InnerProductOfSpaceVectors.py               |   267 +
+ .../gh_IntegerExponentsAndLaws.py                  |   326 +
+ .../gh_IntermediateValueTheoremForRoots.py         |   443 +
+ .../gh_InverseOfSecondOrderMatrix.py               |   431 +
+ .../gh_IrrationalAndRealNumbers.py                 |   308 +
+ .../gh_JudgingTheRelationshipOfCircleAndLine.py    |   606 +
+ .../gh_LeastSquaresMethodAndRegressionLine.py      |   524 +
+ .../skills/backup_GenByGemini/gh_LineEquations.py  |   565 +
+ .../skills/backup_GenByGemini/gh_LineSlope.py      |   286 +
+ .../gh_LineToLineRelationships.py                  |   205 +
+ .../gh_LineToPlaneRelationships.py                 |   159 +
+ ...rCombinationAndDivisionFormulaOfSpaceVectors.py |   305 +
+ .../gh_LinearCombinationOfVectors.py               |   365 +
+ .../gh_LinearEquationsWithAbsoluteValue.py         |   227 +
+ .../backup_GenByGemini/gh_LinearFunctions.py       |   326 +
+ .../gh_LinearInequalitiesWithAbsoluteValue.py      |   293 +
+ .../gh_LinearInequalityInTwoVariables.py           |   304 +
+ .../backup_GenByGemini/gh_LinearPermutation.py     |   167 +
+ .../gh_LinearTransformationsOnAPlane.py            |   288 +
+ .../gh_LogarithmLawsAndChangeOfBaseFormula.py      |   236 +
+ .../gh_LogarithmicFunctionsAndTheirGraphs.py       |   337 +
+ .../skills/backup_GenByGemini/gh_Logarithms.py     |   152 +
+ .../skills/backup_GenByGemini/gh_LogicAndSets.py   |   362 +
+ .../gh_MathematicalExpectation.py                  |   359 +
+ .../backup_GenByGemini/gh_MathematicalInduction.py |   235 +
+ .../backup_GenByGemini/gh_MatricesAndDataTables.py |   256 +
+ ...atrixAdditionSubtractionScalarMultiplication.py |   419 +
+ .../gh_MatrixMeaningAndEquality.py                 |   485 +
+ .../backup_GenByGemini/gh_MatrixMultiplication.py  |   425 +
+ .../skills/backup_GenByGemini/gh_Mean.py           |   279 +
+ .../backup_GenByGemini/gh_MedianAndPercentiles.py  |   251 +
+ .../gh_MultiplicationFormulas.py                   |   508 +
+ .../skills/backup_GenByGemini/gh_NewtonsMethod.py  |   235 +
+ .../gh_NthRootsOfComplexNumbers.py                 |   222 +
+ .../gh_OperationsOfRadicalsAndFractions.py         |   619 +
+ .../backup_GenByGemini/gh_OrthogonalProjection.py  |   324 +
+ .../gh_ParabolaEquationWithVertexAtOrigin.py       |   189 +
+ .../gh_ParallelAndPerpendicularLines.py            |   546 +
+ .../gh_PermutationWithIdenticalItems.py            |   207 +
+ .../skills/backup_GenByGemini/gh_PlaneEquation.py  |   418 +
+ .../gh_PlaneToPlaneRelationships.py                |   226 +
+ .../gh_PointAndCircleRelationship.py               |   356 +
+ .../gh_PointDivisionFormulaOnNumberLine.py         |   364 +
+ .../gh_PointLinePlaneBasicFacts.py                 |   203 +
+ .../backup_GenByGemini/gh_PointToPlaneDistance.py  |   341 +
+ .../gh_PolarFormOfComplexNumbers.py                |   550 +
+ .../gh_PolynomialFunctionGraphs.py                 |   345 +
+ .../gh_PolynomialInequalities.py                   |   931 +
+ .../gh_PositiveIntegerExponentsAndLaws.py          |   246 +
+ .../gh_PropertiesOfBinomialDistribution.py         |   169 +
+ .../gh_PropertiesOfGeometricDistribution.py        |   228 +
+ .../gh_PropertiesOfProbability.py                  |   244 +
+ .../gh_PropertiesOfSecondOrderDeterminants.py      |   297 +
+ .../backup_GenByGemini/gh_QuadraticFunctions.py    |   241 +
+ .../gh_RationalExponentsAndLaws.py                 |   447 +
+ .../backup_GenByGemini/gh_RationalNumbers.py       |   331 +
+ .../backup_GenByGemini/gh_RealExponentsAndLaws.py  |   714 +
+ .../backup_GenByGemini/gh_RecursiveRelation.py     |   208 +
+ .../gh_RelationshipBetweenLines.py                 |   210 +
+ .../gh_RelationshipBetweenLinesAndPlanes.py        |   447 +
+ .../backup_GenByGemini/gh_RemainderTheorem.py      |   411 +
+ .../backup_GenByGemini/gh_RepeatedPermutation.py   |   145 +
+ .../backup_GenByGemini/gh_ReviewOfProbability.py   |   201 +
+ .../gh_RootsOfNthDegreeEquations.py                |   601 +
+ .../gh_RootsOfQuadraticEquations.py                |   481 +
+ .../skills/backup_GenByGemini/gh_SampleSpace.py    |   225 +
+ .../gh_ScalarMultiplicationOfVectors.py            |   394 +
+ .../skills/backup_GenByGemini/gh_ScatterPlot.py    |   190 +
+ .../skills/backup_GenByGemini/gh_Sequence.py       |   586 +
+ .../skills/backup_GenByGemini/gh_Series.py         |   196 +
+ .../gh_SineAndCosineFunctionGraphs.py              |   541 +
+ .../gh_SineAndCosineFunctionSuperposition.py       |   338 +
+ .../skills/backup_GenByGemini/gh_SineRule.py       |   474 +
+ .../backup_GenByGemini/gh_StandardFormOfACircle.py |   291 +
+ .../backup_GenByGemini/gh_StandardFormOfEllipse.py |   261 +
+ .../gh_StandardFormOfHyperbola.py                  |   407 +
+ .../gh_StandardFormOfParabola.py                   |   278 +
+ .../backup_GenByGemini/gh_TangentFunctionGraph.py  |   338 +
+ .../backup_GenByGemini/gh_TangentLinesOfACircle.py |   409 +
+ .../gh_TangentSumAndDifferenceFormulas.py          |    69 +
+ .../backup_GenByGemini/gh_ThirdOrderDeterminant.py |   354 +
+ .../gh_ThreePerpendicularsTheorem.py               |   291 +
+ .../backup_GenByGemini/gh_TransitionMatrices.py    |   195 +
+ .../backup_GenByGemini/gh_TranslationOfALine.py    |   250 +
+ .../backup_GenByGemini/gh_TriangleAreaFormula.py   |   116 +
+ .../backup_GenByGemini/gh_TriangleInequality.py    |   304 +
+ .../gh_TrigonometricRatiosInRadians.py             |   313 +
+ .../gh_TrigonometricRatiosOfGeneralizedAngles.py   |   510 +
+ .../skills/backup_GenByGemini/gh_UnitExercises.py  |   566 +
+ .../gh_UsingSuperpositionToFindExtrema.py          |   656 +
+ .../gh_VarianceAndStandardDeviation.py             |   137 +
+ .../gh_VectorAdditionAndSubtraction.py             |   340 +
+ .../backup_GenByGemini/gh_VectorDotProduct.py      |   514 +
+ .../gh_VectorPerspectiveOfLinearEquations.py       |   237 +
+ .../backup_GenByGemini/gh_VectorRepresentation.py  |   183 +
+ .../backup_GenByGemini/gh_VectorSectionFormula.py  |   450 +
+ .../gh_VolumeOfParallelepiped.py                   |   268 +
+ ...5\270\345\255\2701_IrrationalAndRealNumbers.py" |   139 +
+ ...225\270\345\255\2701_MultiplicationFormulas.py" |   319 +
+ ...5\255\2701_OperationsOfRadicalsAndFractions.py" |   335 +
+ ...h_\346\225\270\345\255\2701_RationalNumbers.py" |   202 +
+ .../skills/backup_GenByGemini/horiz_vert_lines.py  |    60 +
+ .../skills/backup_GenByGemini/hyperbola.py         |    25 +
+ .../skills/backup_GenByGemini/inequality_graph.py  |    84 +
+ .../skills/backup_GenByGemini/inequality_judge.py  |    35 +
+ .../infinite_geometric_series_sum.py               |    30 +
+ .../backup_GenByGemini/integral_average_value.py   |    26 +
+ .../integral_consumer_surplus.py                   |    28 +
+ .../integral_producer_surplus.py                   |    28 +
+ .../backup_GenByGemini/integral_properties.py      |    27 +
+ .../backup_GenByGemini/integral_total_change.py    |    27 +
+ .../skills/backup_GenByGemini/intercept_form.py    |    68 +
+ .../backup_GenByGemini/interest_compound_calc.py   |    31 +
+ .../intermediate_value_theorem.py                  |    25 +
+ .../backup_GenByGemini/jh_abs_val_compare.py       |    52 +
+ .../skills/backup_GenByGemini/jh_abs_val_def.py    |    42 +
+ .../backup_GenByGemini/jh_algebra_2var_def.py      |    50 +
+ .../jh_algebra_2var_substitute_check.py            |    51 +
+ .../jh_algebra_combine_like_terms.py               |    64 +
+ .../jh_algebra_distributive_law_simplify.py        |    49 +
+ .../jh_algebra_fractional_simplify.py              |    55 +
+ .../jh_algebra_proof_odd_even.py                   |    36 +
+ .../jh_algebra_substitute_value.py                 |    50 +
+ .../backup_GenByGemini/jh_algebra_symbol_def.py    |    51 +
+ .../backup_GenByGemini/jh_arithmetic_seq_def.py    |    45 +
+ .../jh_arithmetic_seq_mean_calc.py                 |    35 +
+ .../jh_arithmetic_seq_term_calc.py                 |    37 +
+ .../backup_GenByGemini/jh_arithmetic_series_def.py |    34 +
+ .../jh_arithmetic_series_sum_calc.py               |    38 +
+ .../jh_circle_central_angle_arc.py                 |    37 +
+ .../backup_GenByGemini/jh_circle_chord_property.py |    32 +
+ .../backup_GenByGemini/jh_circle_def_parts.py      |    31 +
+ .../jh_circle_equal_chords_property.py             |    32 +
+ .../backup_GenByGemini/jh_circle_exterior_angle.py |    39 +
+ .../jh_circle_inscribed_angle_arc.py               |    38 +
+ .../jh_circle_inscribed_angle_diameter.py          |    32 +
+ .../jh_circle_inscribed_quadrilateral.py           |    32 +
+ .../backup_GenByGemini/jh_circle_interior_angle.py |    36 +
+ .../backup_GenByGemini/jh_circle_line_relation.py  |    41 +
+ .../backup_GenByGemini/jh_circle_point_relation.py |    44 +
+ .../jh_circle_tangent_chord_angle.py               |    36 +
+ .../jh_circle_tangent_property.py                  |    32 +
+ .../backup_GenByGemini/jh_divisibility_rules.py    |    59 +
+ .../backup_GenByGemini/jh_equation_2var_check.py   |    49 +
+ .../jh_equation_2var_find_solutions.py             |    49 +
+ .../jh_equation_2var_solve_elimination_scaling.py  |    54 +
+ .../jh_equation_2var_solve_elimination_simple.py   |    54 +
+ .../jh_equation_2var_solve_substitution.py         |    51 +
+ .../jh_equation_2var_system_check.py               |    54 +
+ .../jh_equation_2var_word_problem_setup.py         |    50 +
+ .../jh_equation_2var_word_problem_solve.py         |    50 +
+ .../jh_equation_quad_def_check.py                  |    49 +
+ .../jh_equation_quad_discriminant.py               |    47 +
+ .../jh_equation_quad_solve_complete_square.py      |    46 +
+ .../jh_equation_quad_solve_factor_ab_0.py          |    47 +
+ .../jh_equation_quad_solve_formula.py              |    46 +
+ .../jh_equation_quad_solve_sqrt.py                 |    42 +
+ .../jh_equation_quad_word_problem.py               |    47 +
+ .../jh_equation_solve_one_step_add_sub.py          |    49 +
+ .../jh_equation_solve_one_step_mul_div.py          |    47 +
+ .../jh_equation_solve_two_step.py                  |    42 +
+ .../jh_equation_solve_variables_both_sides.py      |    49 +
+ .../jh_equation_solve_with_fractions.py            |    48 +
+ .../jh_equation_solve_with_parentheses.py          |    45 +
+ .../jh_equation_word_problem_setup.py              |    47 +
+ .../jh_equation_word_problem_solve.py              |    42 +
+ .../jh_exponent_calc_negative_base.py              |    28 +
+ .../backup_GenByGemini/jh_exponent_def_integer.py  |    45 +
+ .../backup_GenByGemini/jh_exponent_law_divide.py   |    48 +
+ .../backup_GenByGemini/jh_exponent_law_multiply.py |    47 +
+ .../jh_exponent_law_power_of_power.py              |    47 +
+ .../jh_exponent_law_power_of_product.py            |    48 +
+ .../backup_GenByGemini/jh_exponent_ops_order.py    |    46 +
+ .../backup_GenByGemini/jh_exponent_power_of_10.py  |    44 +
+ .../backup_GenByGemini/jh_factor_common_factor.py  |    48 +
+ .../jh_factor_cross_method_mx2.py                  |    43 +
+ .../jh_factor_cross_method_x2.py                   |    39 +
+ .../backup_GenByGemini/jh_factor_def_check.py      |    46 +
+ .../jh_factor_diff_of_squares.py                   |    37 +
+ .../backup_GenByGemini/jh_factor_grouping.py       |    40 +
+ .../backup_GenByGemini/jh_factor_multiple_def.py   |    49 +
+ .../jh_factor_square_of_sum_diff.py                |    42 +
+ .../backup_GenByGemini/jh_fibonacci_seq_def.py     |    36 +
+ .../jh_formula_diff_of_squares_expand.py           |    39 +
+ .../jh_formula_square_of_diff_expand.py            |    39 +
+ .../jh_formula_square_of_sum_expand.py             |    39 +
+ .../jh_fraction_add_sub_diff_den.py                |    51 +
+ .../jh_fraction_add_sub_same_den.py                |    50 +
+ .../backup_GenByGemini/jh_fraction_compare.py      |    47 +
+ .../backup_GenByGemini/jh_fraction_divide.py       |    50 +
+ .../backup_GenByGemini/jh_fraction_multiply.py     |    50 +
+ .../backup_GenByGemini/jh_fraction_ops_order.py    |    55 +
+ .../jh_fraction_reciprocal_def.py                  |    46 +
+ .../backup_GenByGemini/jh_fraction_simplify.py     |    50 +
+ .../backup_GenByGemini/jh_function_def_check.py    |    49 +
+ .../backup_GenByGemini/jh_function_linear_def.py   |    49 +
+ .../jh_function_linear_find_eq.py                  |    42 +
+ .../backup_GenByGemini/jh_gcf_calc_prime_factor.py |    56 +
+ .../jh_gcf_calc_short_division.py                  |    40 +
+ .../skills/backup_GenByGemini/jh_gcf_def.py        |    47 +
+ .../backup_GenByGemini/jh_gcf_lcm_relation.py      |    43 +
+ .../jh_geo_3d_line_plane_relations_simple.py       |    30 +
+ .../backup_GenByGemini/jh_geo_3d_plane_def.py      |    29 +
+ .../backup_GenByGemini/jh_geo_3d_prism_def.py      |    28 +
+ .../backup_GenByGemini/jh_geo_3d_pyramid_def.py    |    28 +
+ .../backup_GenByGemini/jh_geo_3d_skew_lines_def.py |    28 +
+ .../jh_geo_3d_surface_area_prism.py                |    37 +
+ .../jh_geo_3d_surface_area_pyramid.py              |    45 +
+ .../backup_GenByGemini/jh_geo_3d_volume_prism.py   |    36 +
+ .../backup_GenByGemini/jh_geo_3d_volume_pyramid.py |    35 +
+ .../jh_geo_angle_bisector_property.py              |    32 +
+ .../jh_geo_angle_types_relations.py                |    44 +
+ .../backup_GenByGemini/jh_geo_congruence_aas.py    |    31 +
+ .../backup_GenByGemini/jh_geo_congruence_asa.py    |    31 +
+ .../backup_GenByGemini/jh_geo_congruence_def.py    |    31 +
+ .../backup_GenByGemini/jh_geo_congruence_rhs.py    |    31 +
+ .../backup_GenByGemini/jh_geo_congruence_sas.py    |    31 +
+ .../backup_GenByGemini/jh_geo_congruence_sss.py    |    31 +
+ .../backup_GenByGemini/jh_geo_construct_angle.py   |    29 +
+ .../jh_geo_construct_angle_bisector.py             |    27 +
+ .../jh_geo_construct_line_segment.py               |    28 +
+ .../jh_geo_construct_parallel_line.py              |    29 +
+ .../jh_geo_construct_perpendicular_bisector.py     |    29 +
+ ...h_geo_construct_perpendicular_point_off_line.py |    28 +
+ ...jh_geo_construct_perpendicular_point_on_line.py |    28 +
+ .../backup_GenByGemini/jh_geo_def_3d_views.py      |    31 +
+ .../backup_GenByGemini/jh_geo_def_line_symmetry.py |    33 +
+ .../jh_geo_def_perpendicular_bisector.py           |    30 +
+ .../jh_geo_def_point_line_angle.py                 |    39 +
+ .../backup_GenByGemini/jh_geo_def_polygon.py       |    36 +
+ .../jh_geo_kite_def_properties.py                  |    35 +
+ .../jh_geo_parallel_lines_def.py                   |    30 +
+ .../jh_geo_parallel_lines_property_angles.py       |    42 +
+ .../jh_geo_parallel_lines_proportional_segments.py |    45 +
+ .../jh_geo_parallel_lines_test.py                  |    46 +
+ .../jh_geo_parallelogram_def_properties.py         |    37 +
+ .../jh_geo_parallelogram_tests.py                  |    38 +
+ .../jh_geo_perpendicular_bisector_property.py      |    32 +
+ .../jh_geo_polygon_angle_sum_exterior.py           |    32 +
+ .../jh_geo_polygon_angle_sum_interior.py           |    35 +
+ .../jh_geo_rectangle_def_properties.py             |    35 +
+ .../jh_geo_rhombus_def_properties.py               |    35 +
+ .../jh_geo_similarity_application_area_ratio.py    |    43 +
+ .../jh_geo_similarity_application_measurement.py   |    40 +
+ .../jh_geo_similarity_scaling_def.py               |    39 +
+ .../jh_geo_similarity_test_aa.py                   |    31 +
+ .../jh_geo_similarity_test_sas.py                  |    31 +
+ .../jh_geo_similarity_test_sss.py                  |    31 +
+ .../jh_geo_square_def_properties.py                |    32 +
+ .../jh_geo_trapezoid_def_properties.py             |    36 +
+ .../jh_geo_triangle_angle_exterior.py              |    38 +
+ .../jh_geo_triangle_angle_side_relation.py         |    31 +
+ .../jh_geo_triangle_angle_sum_interior.py          |    34 +
+ .../jh_geo_triangle_centroid_def_property.py       |    31 +
+ .../jh_geo_triangle_circumcenter_def_property.py   |    31 +
+ .../jh_geo_triangle_circumcenter_location.py       |    31 +
+ .../jh_geo_triangle_incenter_area.py               |    41 +
+ .../jh_geo_triangle_incenter_def_property.py       |    31 +
+ .../jh_geo_triangle_midsegment_theorem.py          |    41 +
+ .../jh_geo_triangle_side_relation.py               |    42 +
+ .../backup_GenByGemini/jh_geometric_seq_def.py     |    44 +
+ .../jh_geometric_seq_mean_calc.py                  |    35 +
+ .../jh_geometric_seq_term_calc.py                  |    36 +
+ .../backup_GenByGemini/jh_graph_2var_plot_line.py  |    36 +
+ .../backup_GenByGemini/jh_graph_horizontal_line.py |    34 +
+ .../backup_GenByGemini/jh_graph_system_solution.py |    44 +
+ .../backup_GenByGemini/jh_graph_vertical_line.py   |    34 +
+ .../jh_inequality_check_solution.py                |    49 +
+ .../jh_inequality_def_symbols.py                   |    42 +
+ .../jh_inequality_plot_number_line.py              |    35 +
+ .../jh_inequality_solve_add_sub.py                 |    41 +
+ .../jh_inequality_solve_mul_div_negative.py        |    39 +
+ .../jh_inequality_solve_mul_div_positive.py        |    38 +
+ .../jh_inequality_solve_multi_step.py              |    40 +
+ .../jh_inequality_word_problem_setup.py            |    43 +
+ .../backup_GenByGemini/jh_integer_add_diff_sign.py |    42 +
+ .../jh_integer_add_properties.py                   |    49 +
+ .../backup_GenByGemini/jh_integer_add_same_sign.py |    45 +
+ .../backup_GenByGemini/jh_integer_compare.py       |    47 +
+ .../jh_integer_distributive_law.py                 |    43 +
+ .../jh_integer_divide_sign_rules.py                |    46 +
+ .../jh_integer_multiply_properties.py              |    47 +
+ .../jh_integer_multiply_sign_rules.py              |    42 +
+ .../backup_GenByGemini/jh_integer_ops_order.py     |    48 +
+ .../backup_GenByGemini/jh_integer_subtract_def.py  |    43 +
+ .../backup_GenByGemini/jh_lcm_calc_prime_factor.py |    59 +
+ .../jh_lcm_calc_short_division.py                  |    43 +
+ .../skills/backup_GenByGemini/jh_lcm_def.py        |    49 +
+ .../backup_GenByGemini/jh_number_line_distance.py  |    41 +
+ .../jh_number_line_midpoint_simple.py              |    47 +
+ .../backup_GenByGemini/jh_number_line_plot.py      |    40 +
+ .../backup_GenByGemini/jh_opposite_number_def.py   |    44 +
+ .../backup_GenByGemini/jh_plane_plot_point.py      |    37 +
+ .../jh_plane_point_translation.py                  |    40 +
+ .../jh_plane_quadrant_identify.py                  |    42 +
+ .../backup_GenByGemini/jh_plane_read_point.py      |    37 +
+ .../backup_GenByGemini/jh_poly_def_terms_degree.py |    49 +
+ .../jh_poly_division_relation.py                   |    47 +
+ .../jh_poly_ops_add_sub_simple.py                  |    47 +
+ .../backup_GenByGemini/jh_poly_ops_divide_poly.py  |    50 +
+ .../jh_poly_ops_multiply_mono.py                   |    49 +
+ .../jh_poly_ops_multiply_poly.py                   |    44 +
+ .../backup_GenByGemini/jh_positive_negative_def.py |    82 +
+ .../backup_GenByGemini/jh_prime_composite_def.py   |    43 +
+ .../backup_GenByGemini/jh_prime_factorization.py   |    51 +
+ .../jh_prime_factorization_standard.py             |    51 +
+ .../backup_GenByGemini/jh_prob_def_classical.py    |    49 +
+ .../jh_prob_event_complementary.py                 |    40 +
+ .../jh_prob_list_outcomes_simple.py                |    33 +
+ .../jh_prob_list_outcomes_table.py                 |    31 +
+ .../jh_prob_list_outcomes_tree_diagram.py          |    31 +
+ .../backup_GenByGemini/jh_proportion_direct_def.py |    43 +
+ .../jh_proportion_inverse_def.py                   |    42 +
+ .../backup_GenByGemini/jh_proportion_solve.py      |    45 +
+ .../jh_proportion_word_problem.py                  |    45 +
+ .../jh_pythagorean_theorem_calc.py                 |    48 +
+ .../jh_pythagorean_theorem_converse.py             |    45 +
+ .../jh_quad_func_axis_intercepts.py                |    50 +
+ .../jh_quad_func_complete_square_general.py        |    40 +
+ .../jh_quad_func_complete_square_simple.py         |    38 +
+ .../skills/backup_GenByGemini/jh_quad_func_def.py  |    44 +
+ .../jh_quad_func_discriminant_intercepts.py        |    46 +
+ .../jh_quad_func_graph_a_x_h_2.py                  |    31 +
+ .../jh_quad_func_graph_a_x_h_2_k.py                |    32 +
+ .../backup_GenByGemini/jh_quad_func_graph_ax2.py   |    28 +
+ .../backup_GenByGemini/jh_quad_func_graph_ax2_k.py |    31 +
+ .../jh_quad_func_max_min_vertex.py                 |    45 +
+ .../jh_quad_func_word_problem.py                   |    41 +
+ .../backup_GenByGemini/jh_ratio_chained_combine.py |    50 +
+ .../backup_GenByGemini/jh_ratio_chained_def.py     |    32 +
+ .../jh_ratio_chained_word_problem.py               |    45 +
+ .../backup_GenByGemini/jh_ratio_def_value.py       |    45 +
+ .../skills/backup_GenByGemini/jh_ratio_simplify.py |    41 +
+ .../backup_GenByGemini/jh_relatively_prime_def.py  |    44 +
+ .../backup_GenByGemini/jh_sci_note_compare.py      |    45 +
+ .../skills/backup_GenByGemini/jh_sci_note_def.py   |    53 +
+ .../jh_sqrt_combine_like_terms.py                  |    41 +
+ .../skills/backup_GenByGemini/jh_sqrt_def.py       |    38 +
+ .../backup_GenByGemini/jh_sqrt_ops_divide.py       |    36 +
+ .../backup_GenByGemini/jh_sqrt_ops_multiply.py     |    42 +
+ .../jh_sqrt_positive_negative.py                   |    38 +
+ .../jh_sqrt_simplify_perfect_square.py             |    38 +
+ .../backup_GenByGemini/jh_stats_box_plot_draw.py   |    31 +
+ .../backup_GenByGemini/jh_stats_box_plot_read.py   |    43 +
+ .../jh_stats_cumulative_relative_freq.py           |    51 +
+ .../jh_stats_freq_polygon_plot.py                  |    32 +
+ .../backup_GenByGemini/jh_stats_relative_freq.py   |    46 +
+ ...25\270\345\255\2701\344\270\212_AgeProblems.py" |   189 +
+ ...45\255\2701\344\270\212_ApplicationProblems.py" |   243 +
+ ...255\2701\344\270\212_ApplicationProblems_v2.py" |   185 +
+ ...55\2701\344\270\212_CommonDivisibilityRules.py" |   272 +
+ ...0\212_CommonDivisorAndGreatestCommonDivisor.py" |   261 +
+ ...70\212_CommonMultipleAndLeastCommonMultiple.py" |   203 +
+ ...0\345\255\2701\344\270\212_ComparingNumbers.py" |   193 +
+ ...5\270\345\255\2701\344\270\212_CostProblems.py" |   189 +
+ ...0\345\255\2701\344\270\212_DiscountProblems.py" |   133 +
+ ...70\212_DistanceBetweenTwoPointsOnNumberLine.py" |   164 +
+ ...5\255\2701\344\270\212_DistributionProblems.py" |   217 +
+ ...\344\270\212_EvaluatingAlgebraicExpressions.py" |   221 +
+ ...2701\344\270\212_FactorsAndMultiples_Gemini.py" |   144 +
+ ...0\212_FormulatingOneVariableLinearEquations.py" |   210 +
+ ...\270\212_FourArithmeticOperationsOfIntegers.py" |   249 +
+ ...4\270\212_FourArithmeticOperationsOfNumbers.py" |   248 +
+ ...\344\270\212_FractionAdditionAndSubtraction.py" |   264 +
+ ...0\345\255\2701\344\270\212_FractionDivision.py" |   232 +
+ ...255\2701\344\270\212_FractionMultiplication.py" |   240 +
+ ...0\345\255\2701\344\270\212_GeometryProblems.py" |   157 +
+ ...5\2701\344\270\212_IntegerAdditionOperation.py" |   185 +
+ ...2_IntegerAdditionOperation_qwen2.5-coder14b.py" |    44 +
+ ...70\345\255\2701\344\270\212_IntegerDivision.py" |   139 +
+ ...\255\2701\344\270\212_IntegerExponentiation.py" |   175 +
+ ...\255\2701\344\270\212_IntegerMultiplication.py" |   132 +
+ ...701\344\270\212_IntegerSubtractionOperation.py" |   147 +
+ ...70\345\255\2701\344\270\212_LawsOfExponents.py" |   198 +
+ ...\270\212_MixedIntegerAdditionAndSubtraction.py" |   218 +
+ ...umberLine_Phi-3.5(\351\214\257\350\252\244).py" |    32 +
+ ...\345\255\2701\344\270\212_NumberLine_gemini.py" |   276 +
+ ...01\344\270\212_NumberLine_qwen2.5-coder1.5b.py" |   122 +
+ ...2701\344\270\212_NumberLine_qwen2.5-coder3b.py" |   117 +
+ ...2701\344\270\212_NumberLine_qwen2.5-coder7b.py" |   127 +
+ ...270\345\255\2701\344\270\212_NumberProblems.py" |   175 +
+ ..._OperationsOfLinearExpressionsInOneVariable.py" |   413 +
+ ...44\270\212_OppositesAndAbsoluteValue_gemini.py" |   221 +
+ ...4\270\212_PositiveAndNegativeNumbers_gemini.py" |   307 +
+ ...270\345\255\2701\344\270\212_PowerOfNumbers.py" |   275 +
+ ...25\270\345\255\2701\344\270\212_PowersOfTen.py" |   141 +
+ ...4\270\212_PrimeNumbersAndPrimeFactorization.py" |   203 +
+ ...5\270\345\255\2701\344\270\212_RateProblems.py" |   181 +
+ ...resentingQuantitiesWithAlgebraicExpressions.py" |   233 +
+ ...345\255\2701\344\270\212_ScientificNotation.py" |   212 +
+ ...0\345\255\2701\344\270\212_SimplestFraction.py" |   208 +
+ ...255\2701\344\270\212_SolutionReasonableness.py" |   157 +
+ ...4\270\212_SolvingOneVariableLinearEquations.py" |   215 +
+ ...45\255\2701\344\270\213_ApplicationProblems.py" |   210 +
+ ...255\2701\344\270\213_ApplicationProblems_v2.py" |   180 +
+ ...0\345\255\2701\344\270\213_DirectProportion.py" |   197 +
+ ...3_DrawingGraphsOfTwoVariableLinearEquations.py" |   286 +
+ ...\345\255\2701\344\270\213_EliminationMethod.py" |   205 +
+ ...MeaningOfSystemOfTwoVariableLinearEquations.py" |   235 +
+ ...44\270\213_GraphOfTwoVariableLinearEquation.py" |   237 +
+ ...0\213_GroupedFrequencyDistributionAndCharts.py" |   265 +
+ ...IntroductionToOneVariableLinearInequalities.py" |   172 +
+ ...\345\255\2701\344\270\213_InverseProportion.py" |   236 +
+ ...01\344\270\213_LinearEquationInTwoVariables.py" |   187 +
+ ...\344\270\213_LinearExpressionInTwoVariables.py" |   313 +
+ ...\345\255\2701\344\270\213_MeanMedianAndMode.py" |   376 +
+ ...rpendicularBisectorsAndLineSymmetricFigures.py" |   223 +
+ ...01\344\270\213_PointsLinesAnglesAndNotation.py" |   146 +
+ ...6\225\270\345\255\2701\344\270\213_Polygons.py" |   184 +
+ ...5\2701\344\270\213_PropertiesOfInequalities.py" |   204 +
+ ...225\270\345\255\2701\344\270\213_Proportion.py" |   275 +
+ ...1\344\270\213_QuadrantsOnTheCoordinatePlane.py" |   209 +
+ ...345\255\2701\344\270\213_RatioAndRatioValue.py" |   295 +
+ ...rCoordinatePlaneAndCoordinateRepresentation.py" |   201 +
+ ...presentationOfOneVariableLinearInequalities.py" |   242 +
+ ...01\344\270\213_StatisticalChartsInDailyLife.py" |   256 +
+ ...345\255\2701\344\270\213_SubstitutionMethod.py" |   173 +
+ ...0\213_SystemOfLinearEquationsInTwoVariables.py" |   206 +
+ ...\345\255\2701\344\270\213_ThreeViewDrawings.py" |   138 +
+ ...5\270\345\255\2701\344\270\213_WordProblems.py" |   187 +
+ ...44\270\212_ApplicationsOfPythagoreanTheorem.py" |   311 +
+ ...\270\212_BasicPropertiesOfRadicalOperations.py" |   348 +
+ ...\2702\344\270\212_ComprehensiveApplications.py" |   124 +
+ ...02\344\270\212_ComprehensiveApplications_v2.py" |   281 +
+ ...02\344\270\212_ComprehensiveApplications_v3.py" |   293 +
+ ...02\344\270\212_ComprehensiveApplications_v4.py" |   265 +
+ ...CumulativeFrequencyDistributionAndLineChart.py" |   279 +
+ ...2702\344\270\212_DifferenceOfSquaresFormula.py" |   103 +
+ ...2\344\270\212_DiscoveringPythagoreanTheorem.py" |   188 +
+ ...344\270\212_DistanceFormulaOnCartesianPlane.py" |   188 +
+ ...5\255\2702\344\270\212_DistributiveProperty.py" |   113 +
+ ...oringQuadraticsWithLeadingCoefficientNotOne.py" |   213 +
+ ...actoringQuadraticsWithLeadingCoefficientOne.py" |   182 +
+ ...0\212_FactorizationByMultiplicationFormulas.py" |   202 +
+ ...\270\212_FactorizationByTakingCommonFactors.py" |   266 +
+ ...5\2702\344\270\212_FourOperationsOfRadicals.py" |   359 +
+ ...2702\344\270\212_MeaningOfQuadraticEquation.py" |   285 +
+ ...\2702\344\270\212_MeaningOfSquareRootSymbol.py" |   180 +
+ ...5\255\2702\344\270\212_MeaningOfSquareRoots.py" |   162 +
+ ...44\270\212_PolynomialAdditionAndSubtraction.py" |   245 +
+ ...02\344\270\212_PolynomialDefinitionAndTerms.py" |   293 +
+ ...345\255\2702\344\270\212_PolynomialDivision.py" |   347 +
+ ...702\344\270\212_PolynomialFactorAndMultiple.py" |   202 +
+ ...55\2702\344\270\212_PolynomialFactorization.py" |   227 +
+ ...5\2702\344\270\212_PolynomialMultiplication.py" |   269 +
+ ...veRelativeFrequencyDistributionAndLineChart.py" |   385 +
+ ...\212_SolvingEquationsUsingSquareRootConcept.py" |   208 +
+ ...vingQuadraticEquationsByCompletingTheSquare.py" |   314 +
+ ...70\212_SolvingQuadraticEquationsByFactoring.py" |   321 +
+ ...\2702\344\270\212_SquareOfDifferenceFormula.py" |   107 +
+ ...345\255\2702\344\270\212_SquareOfSumFormula.py" |   110 +
+ ...45\255\2702\344\270\212_TheQuadraticFormula.py" |   266 +
+ ...345\255\2702\344\270\212_ValueOfSquareRootA.py" |   248 +
+ ...5\270\345\255\2702\344\270\212_WordProblems.py" |   219 +
+ ...270\213_AngleClassificationAndRelationships.py" |   247 +
+ ...270\345\255\2702\344\270\213_ArithmeticMean.py" |    89 +
+ ...45\255\2702\344\270\213_ArithmeticSequences.py" |   279 +
+ ...\2702\344\270\213_ComprehensiveApplications.py" |   226 +
+ ...02\344\270\213_ComprehensiveApplications_v2.py" |   257 +
+ ...70\213_EqualLineSegmentAndAngleConstruction.py" |   226 +
+ ...\270\213_EqualSegmentsAndAnglesConstruction.py" |   133 +
+ ...\270\345\255\2702\344\270\213_FunctionGraph.py" |   219 +
+ ...\270\345\255\2702\344\270\213_FunctionValue.py" |   267 +
+ ...\270\345\255\2702\344\270\213_GeometricMean.py" |   147 +
+ ...\345\255\2702\344\270\213_GeometricSequence.py" |   260 +
+ ...213_IdentifyingAndConstructingParallelLines.py" |   266 +
+ ...13_IdentifyingAndConstructingParallelograms.py" |   294 +
+ ...55\2702\344\270\213_IntroductionToSequences.py" |   156 +
+ ...70\213_MeaningAndPropertiesOfParallelograms.py" |   347 +
+ ...702\344\270\213_MeaningOfCongruentTriangles.py" |   149 +
+ ...255\2702\344\270\213_MeaningOfParallelLines.py" |   148 +
+ ...702\344\270\213_MeaningOfTriangleCongruence.py" |   128 +
+ ...\213_NSidedPolygonInteriorAndExteriorAngles.py" |   232 +
+ ...702\344\270\213_NthTermOfArithmeticSequence.py" |   144 +
+ ...2702\344\270\213_NthTermOfGeometricSequence.py" |   184 +
+ ...213_PerpendicularAndAngleBisectorProperties.py" |   160 +
+ ...dicularBisectorAndAngleBisectorConstruction.py" |   154 +
+ ...44\270\213_PolygonInteriorAndExteriorAngles.py" |   163 +
+ ...\344\270\213_PropertiesOfCongruentTriangles.py" |   229 +
+ ...tiesOfPerpendicularBisectorAndAngleBisector.py" |   212 +
+ ...pertiesOfRectanglesRhombusesKitesAndSquares.py" |   270 +
+ ...255\2702\344\270\213_PropertiesOfTrapezoids.py" |   306 +
+ ...5\255\2702\344\270\213_RecognizingFunctions.py" |   292 +
+ ...270\213_RightTriangleIdentificationProperty.py" |   136 +
+ ...\255\2702\344\270\213_SumOfArithmeticSeries.py" |   168 +
+ ...Topic1PerpendicularBisectorAndAngleBisector.py" |   107 +
+ ...\344\270\213_Topic2ComprehensiveApplication.py" |   168 +
+ ...\255\2702\344\270\213_TransversalsAndAngles.py" |   256 +
+ ...\344\270\213_TriangleAngleSideRelationships.py" |   172 +
+ ...02\344\270\213_TriangleCongruenceProperties.py" |   416 +
+ ...4\270\213_TriangleInteriorAndExteriorAngles.py" |   348 +
+ ...2\344\270\213_TriangleSideAngleRelationship.py" |   237 +
+ ...\344\270\213_TriangleSideLengthRelationship.py" |   253 +
+ ...\2702\344\270\213_TriangleSideRelationships.py" |   156 +
+ ...255\2702\344\270\213_UnderstandingSequences.py" |   276 +
+ ...\344\270\213_WordProblemsOfArithmeticSeries.py" |   179 +
+ ...270\345\255\2703\344\270\212_AlgebraicProof.py" |   212 +
+ ...OfParallelLinesProportionalSegmentsProperty.py" |   284 +
+ ...270\212_AreaAndSideLengthOfSimilarTriangles.py" |   222 +
+ ...345\255\2703\344\270\212_CentroidOfTriangle.py" |   192 +
+ ...\255\2703\344\270\212_ChordAndChordDistance.py" |   235 +
+ ...346\225\270\345\255\2703\344\270\212_Circle.py" |   237 +
+ ...255\2703\344\270\212_CircumcenterOfTriangle.py" |   195 +
+ ...\270\212_ContinuousProportionAndApplication.py" |   311 +
+ ...70\345\255\2703\344\270\212_ContinuousRatio.py" |   248 +
+ ...270\345\255\2703\344\270\212_GeometricProof.py" |   281 +
+ ...345\255\2703\344\270\212_IncenterOfTriangle.py" |   188 +
+ ...edAngleParallelChordsAndCyclicQuadrilateral.py" |   260 +
+ ...\255\2703\344\270\212_LineAndCirclePosition.py" |   297 +
+ ...2_ParallelLinesProportionalSegmentsProperty.py" |   336 +
+ ...255\2703\344\270\212_PointAndCirclePosition.py" |   221 +
+ ...0\212_RelationshipBetweenCentralAngleAndArc.py" |   262 +
+ ...270\345\255\2703\344\270\212_ScalingFigures.py" |   187 +
+ ...70\345\255\2703\344\270\212_SimilarPolygons.py" |   246 +
+ ...\255\2703\344\270\212_SimilarRightTriangles.py" |   294 +
+ ...\345\255\2703\344\270\212_SimpleMeasurement.py" |   172 +
+ ...270\345\255\2703\344\270\212_TangentSegment.py" |   192 +
+ ...03\344\270\212_TriangleSimilarityProperties.py" |   240 +
+ ...4\270\213_BoxPlotRangeAndInterquartileRange.py" |   210 +
+ ...3\344\270\213_GraphOfQuadraticFunctionYAX2K.py" |   236 +
+ ...\344\270\213_GraphOfQuadraticFunctionYAXH2K.py" |   191 +
+ ...70\213_MaximumAndMinimumOfQuadraticFunction.py" |   247 +
+ ...2703\344\270\213_MeaningOfQuadraticFunction.py" |   270 +
+ ...\225\270\345\255\2703\344\270\213_Quartiles.py" |   212 +
+ ...5\270\345\255\2703\344\270\213_SolidFigures.py" |   205 +
+ ...SpatialVerticalParallelAndSkewRelationships.py" |   276 +
+ ...25\270\345\255\2703\344\270\213_TreeDiagram.py" |   268 +
+ ...5\2703\344\270\213_UnderstandingProbability.py" |   300 +
+ .../kinematics_velocity_acceleration.py            |    28 +
+ .../backup_GenByGemini/line_eq_general_form.py     |    43 +
+ .../skills/backup_GenByGemini/line_eq_intercept.py |    23 +
+ .../backup_GenByGemini/line_eq_point_slope.py      |    40 +
+ .../backup_GenByGemini/line_eq_slope_intercept.py  |    38 +
+ .../skills/backup_GenByGemini/line_eq_two_point.py |    24 +
+ .../backup_GenByGemini/line_normal_vector.py       |    29 +
+ .../backup_GenByGemini/line_parallel_condition.py  |    43 +
+ .../line_perpendicular_condition.py                |    41 +
+ .../skills/backup_GenByGemini/line_slope.py        |    41 +
+ .../skills/backup_GenByGemini/linear_add.py        |    35 +
+ .../backup_GenByGemini/linear_approximation.py     |    31 +
+ .../skills/backup_GenByGemini/linear_equation.py   |    36 +
+ .../skills/backup_GenByGemini/linear_func_graph.py |    30 +
+ .../skills/backup_GenByGemini/linear_func_type.py  |    85 +
+ .../linear_ineq_system_region.py                   |    31 +
+ .../backup_GenByGemini/linear_inequality_region.py |    29 +
+ .../backup_GenByGemini/linear_programming.py       |    47 +
+ .../linear_programming_optimize.py                 |    50 +
+ .../skills/backup_GenByGemini/linear_sub.py        |    59 +
+ .../skills/backup_GenByGemini/lines_in_space.py    |    21 +
+ .../backup_GenByGemini/log_change_of_base.py       |    27 +
+ .../skills/backup_GenByGemini/log_find_digits.py   |    33 +
+ .../backup_GenByGemini/log_find_leading_digit.py   |    40 +
+ .../skills/backup_GenByGemini/log_func_compare.py  |    25 +
+ .../backup_GenByGemini/log_func_graph_a_gt_1.py    |    16 +
+ .../backup_GenByGemini/log_func_graph_a_lt_1.py    |    20 +
+ .../backup_GenByGemini/log_func_properties.py      |    24 +
+ .../skills/backup_GenByGemini/log_func_solve_eq.py |    22 +
+ .../backup_GenByGemini/log_func_solve_ineq.py      |    25 +
+ .../backup_GenByGemini/log_func_transform.py       |    26 +
+ .../backup_GenByGemini/log_natural_definition.py   |    24 +
+ .../backup_GenByGemini/log_properties_basic.py     |    26 +
+ .../skills/backup_GenByGemini/log_to_exponent.py   |    35 +
+ .../backup_GenByGemini/logarithmic_functions.py    |    14 +
+ .../backup_GenByGemini/logarithmic_properties.py   |    34 +
+ .../backup_GenByGemini/math_induction_proof.py     |    29 +
+ .../backup_GenByGemini/matrix_applications.py      |    31 +
+ .../backup_GenByGemini/matrix_inverse_2x2_calc.py  |    27 +
+ .../backup_GenByGemini/matrix_inverse_condition.py |    20 +
+ .../matrix_linear_transform_def.py                 |    25 +
+ .../backup_GenByGemini/matrix_markov_chain.py      |    28 +
+ .../skills/backup_GenByGemini/matrix_operations.py |    31 +
+ .../backup_GenByGemini/matrix_ops_add_sub.py       |    27 +
+ .../backup_GenByGemini/matrix_ops_multiply.py      |    25 +
+ .../matrix_ops_scalar_multiply.py                  |    23 +
+ .../skills/backup_GenByGemini/matrix_properties.py |    25 +
+ .../matrix_transform_area_ratio.py                 |    25 +
+ .../backup_GenByGemini/matrix_transform_reflect.py |    23 +
+ .../backup_GenByGemini/matrix_transform_rotate.py  |    21 +
+ .../backup_GenByGemini/matrix_transform_scale.py   |    22 +
+ .../backup_GenByGemini/matrix_transform_shear.py   |    21 +
+ .../skills/backup_GenByGemini/matrix_transition.py |    26 +
+ .../skills/backup_GenByGemini/midpoint_formula.py  |    59 +
+ .../skills/backup_GenByGemini/num_line_basic.py    |   162 +
+ .../backup_GenByGemini/number_line_midpoint.py     |    25 +
+ .../number_line_section_formula.py                 |    23 +
+ .../backup_GenByGemini/optimization_problems.py    |    24 +
+ .../skills/backup_GenByGemini/parabola.py          |    35 +
+ .../backup_GenByGemini/parallel_lines_distance.py  |    44 +
+ .../backup_GenByGemini/parallel_lines_slope.py     |    71 +
+ .../skills/backup_GenByGemini/pascal_identity.py   |    30 +
+ .../backup_GenByGemini/permutation_adjacent.py     |    27 +
+ .../permutation_identical_items.py                 |    25 +
+ .../backup_GenByGemini/permutation_linear.py       |    29 +
+ .../backup_GenByGemini/permutation_not_adjacent.py |    28 +
+ .../backup_GenByGemini/permutation_repetition.py   |    26 +
+ .../skills/backup_GenByGemini/permutations.py      |    14 +
+ .../perpendicular_lines_slope.py                   |    73 +
+ .../backup_GenByGemini/plane_distance_formula.py   |    26 +
+ .../backup_GenByGemini/plane_midpoint_formula.py   |    28 +
+ .../backup_GenByGemini/plane_section_formula.py    |    29 +
+ .../skills/backup_GenByGemini/planes_in_space.py   |    41 +
+ .../skills/backup_GenByGemini/point_slope_form.py  |   115 +
+ .../backup_GenByGemini/point_to_line_distance.py   |    43 +
+ .../skills/backup_GenByGemini/polar_coordinates.py |    33 +
+ .../poly_algebraic_fundamental_theorem.py          |    22 +
+ .../poly_conjugate_root_theorem.py                 |    28 +
+ .../poly_division_theorem_basic.py                 |    31 +
+ .../skills/backup_GenByGemini/poly_gcf_lcm.py      |    33 +
+ .../poly_ineq_graph_multiplicity.py                |    41 +
+ .../backup_GenByGemini/poly_ineq_solve_factored.py |    36 +
+ .../backup_GenByGemini/poly_ineq_solve_general.py  |    17 +
+ .../backup_GenByGemini/poly_long_division.py       |    38 +
+ .../backup_GenByGemini/poly_op_add_sub_mult.py     |    33 +
+ .../skills/backup_GenByGemini/poly_ops_add_sub.py  |    30 +
+ .../skills/backup_GenByGemini/poly_ops_multiply.py |    30 +
+ .../poly_rational_root_theorem.py                  |    29 +
+ .../backup_GenByGemini/poly_synthetic_division.py  |    29 +
+ .../poly_synthetic_division_ax_b.py                |    32 +
+ .../poly_synthetic_division_powers.py              |    18 +
+ .../skills/backup_GenByGemini/polynomial_def.py    |    50 +
+ .../backup_GenByGemini/polynomial_division.py      |    30 +
+ .../backup_GenByGemini/polynomial_inequality.py    |    38 +
+ .../skills/backup_GenByGemini/polynomials_intro.py |    22 +
+ .../backup_GenByGemini/prob_addition_rule.py       |    30 +
+ .../backup_GenByGemini/prob_bayes_theorem.py       |    31 +
+ .../prob_classical_definition.py                   |    30 +
+ .../backup_GenByGemini/prob_complementary.py       |    26 +
+ .../skills/backup_GenByGemini/prob_conditional.py  |    27 +
+ .../backup_GenByGemini/prob_ev_application.py      |    27 +
+ .../backup_GenByGemini/prob_expected_value.py      |    28 +
+ .../backup_GenByGemini/prob_independent_events.py  |    24 +
+ .../backup_GenByGemini/prob_multiplication_rule.py |    29 +
+ .../backup_GenByGemini/prob_mutually_exclusive.py  |    23 +
+ .../skills/backup_GenByGemini/prob_sample_space.py |    23 +
+ .../skills/backup_GenByGemini/quad_func_prop.py    |    70 +
+ .../backup_GenByGemini/quad_ineq_discriminant.py   |    85 +
+ .../backup_GenByGemini/quad_ineq_factorable.py     |    78 +
+ .../skills/backup_GenByGemini/quadrant_points.py   |    70 +
+ .../skills/backup_GenByGemini/quadratic_curves.py  |    51 +
+ .../quadratic_eq_complex_roots.py                  |    33 +
+ .../backup_GenByGemini/quadratic_eq_real_roots.py  |    38 +
+ .../backup_GenByGemini/quadratic_eq_root_coeff.py  |    25 +
+ .../quadratic_func_complete_square.py              |    39 +
+ .../quadratic_func_discriminant.py                 |    42 +
+ .../backup_GenByGemini/quadratic_func_graph.py     |    29 +
+ .../quadratic_func_max_min_basic.py                |    37 +
+ .../quadratic_func_max_min_domain.py               |    44 +
+ .../backup_GenByGemini/quadratic_function.py       |    29 +
+ .../quadratic_ineq_solve_d_eq_0.py                 |    23 +
+ .../quadratic_ineq_solve_d_gt_0.py                 |    26 +
+ .../quadratic_ineq_solve_d_lt_0.py                 |    26 +
+ .../quadratic_inequality_solve.py                  |    48 +
+ .../skills/backup_GenByGemini/radian_measure.py    |    16 +
+ .../backup_GenByGemini/radical_operations.py       |    25 +
+ .../backup_GenByGemini/radical_rationalize_bi.py   |    24 +
+ .../backup_GenByGemini/radical_rationalize_mono.py |    16 +
+ .../skills/backup_GenByGemini/radical_simplify.py  |    27 +
+ .../skills/backup_GenByGemini/ratio_in_plane.py    |    37 +
+ .../skills/backup_GenByGemini/rational_eq_solve.py |    26 +
+ .../skills/backup_GenByGemini/rational_expr_def.py |    52 +
+ .../skills/backup_GenByGemini/rational_expr_op.py  |    30 +
+ .../skills/backup_GenByGemini/rational_expr_ops.py |    23 +
+ .../rational_expr_partial_fraction.py              |    25 +
+ .../backup_GenByGemini/rational_expr_simplify.py   |    26 +
+ .../backup_GenByGemini/rational_to_decimal.py      |    30 +
+ .../backup_GenByGemini/real_number_system.py       |    17 +
+ .../recursive_relation_linear.py                   |    31 +
+ .../backup_GenByGemini/recursive_relation_read.py  |    30 +
+ .../skills/backup_GenByGemini/remainder.py         |    51 +
+ .../skills/backup_GenByGemini/remainder_theorem.py |    46 +
+ .../backup_GenByGemini/remainder_theorem_linear.py |    32 +
+ .../remainder_theorem_quadratic.py                 |    34 +
+ .../backup_GenByGemini/remainder_theorem_x_a.py    |    25 +
+ .../backup_GenByGemini/rv_bernoulli_trial.py       |    21 +
+ .../backup_GenByGemini/rv_binomial_distribution.py |    31 +
+ .../backup_GenByGemini/rv_binomial_ev_var.py       |    27 +
+ .../backup_GenByGemini/rv_discrete_distribution.py |    24 +
+ .../skills/backup_GenByGemini/rv_expected_value.py |    24 +
+ .../rv_geometric_distribution.py                   |    25 +
+ .../skills/backup_GenByGemini/rv_geometric_ev.py   |    22 +
+ .../backup_GenByGemini/rv_linear_transform_ev.py   |    25 +
+ .../backup_GenByGemini/rv_linear_transform_var.py  |    25 +
+ .../backup_GenByGemini/rv_variance_stddev.py       |    26 +
+ .../backup_GenByGemini/scientific_notation_ops.py  |    45 +
+ .../skills/backup_GenByGemini/section_formula.py   |    75 +
+ .../skills/backup_GenByGemini/seq_limit_calc.py    |    28 +
+ .../backup_GenByGemini/seq_limit_converge.py       |    28 +
+ .../skills/backup_GenByGemini/seq_limit_squeeze.py |    22 +
+ .../skills/backup_GenByGemini/sequence.py          |    22 +
+ .../sequence_limits_infinite_series.py             |    23 +
+ .../skills/backup_GenByGemini/series.py            |    19 +
+ .../skills/backup_GenByGemini/set_operations.py    |    32 +
+ .../skills/backup_GenByGemini/sigma_notation.py    |    32 +
+ .../skills/backup_GenByGemini/sigma_properties.py  |    29 +
+ .../simultaneous_equations_3var.py                 |    43 +
+ .../skills/backup_GenByGemini/slope_definition.py  |    78 +
+ .../backup_GenByGemini/slope_general_form.py       |    84 +
+ .../backup_GenByGemini/slope_intercept_form.py     |    59 +
+ .../space_angle_between_planes.py                  |    30 +
+ .../backup_GenByGemini/space_cauchy_schwarz.py     |    29 +
+ .../skills/backup_GenByGemini/space_concepts.py    |    20 +
+ .../skills/backup_GenByGemini/space_coordinates.py |    27 +
+ .../backup_GenByGemini/space_dihedral_angle.py     |    23 +
+ .../backup_GenByGemini/space_distance_midpoint.py  |    30 +
+ .../backup_GenByGemini/space_line_eq_parametric.py |    39 +
+ .../backup_GenByGemini/space_line_eq_symmetric.py  |    24 +
+ .../space_line_from_plane_intersection.py          |    28 +
+ .../space_line_line_relations.py                   |    23 +
+ .../space_line_plane_intersection.py               |    29 +
+ .../space_line_plane_relations.py                  |    27 +
+ .../backup_GenByGemini/space_line_relations.py     |   162 +
+ .../space_parallel_planes_distance.py              |    30 +
+ .../backup_GenByGemini/space_plane_eq_general.py   |    26 +
+ .../space_plane_eq_point_normal.py                 |    29 +
+ .../space_plane_from_3_points.py                   |    30 +
+ .../space_plane_perpendicular_line.py              |    25 +
+ .../space_point_to_line_distance.py                |    27 +
+ .../space_point_to_plane_distance.py               |    28 +
+ .../space_skew_lines_distance.py                   |    28 +
+ .../backup_GenByGemini/space_vector_angle.py       |    33 +
+ .../backup_GenByGemini/space_vector_coordinates.py |    25 +
+ .../space_vector_coplanar_check.py                 |    28 +
+ .../space_vector_cross_product_calc.py             |    25 +
+ .../space_vector_cross_product_props.py            |    25 +
+ .../backup_GenByGemini/space_vector_dot_product.py |    24 +
+ .../space_vector_linear_combo.py                   |    29 +
+ .../backup_GenByGemini/space_vector_magnitude.py   |    25 +
+ .../skills/backup_GenByGemini/space_vector_ops.py  |    31 +
+ .../space_vector_orthogonality.py                  |    28 +
+ .../backup_GenByGemini/space_vector_parallel.py    |    33 +
+ .../backup_GenByGemini/space_vector_projection.py  |    29 +
+ .../space_vector_section_formula.py                |    30 +
+ .../backup_GenByGemini/stats_chart_reading.py      |    28 +
+ .../backup_GenByGemini/stats_cumulative_freq.py    |    27 +
+ .../stats_def_population_sample.py                 |    28 +
+ .../backup_GenByGemini/stats_freq_dist_table.py    |    25 +
+ .../backup_GenByGemini/stats_histogram_plot.py     |    19 +
+ .../backup_GenByGemini/stats_mean_calc_grouped.py  |    26 +
+ .../stats_mean_calc_ungrouped.py                   |    26 +
+ .../stats_median_calc_grouped.py                   |    34 +
+ .../stats_median_calc_ungrouped.py                 |    23 +
+ .../skills/backup_GenByGemini/stats_mode_calc.py   |    29 +
+ .../backup_GenByGemini/stats_percentile_calc.py    |    24 +
+ .../backup_GenByGemini/stats_range_quartile.py     |    27 +
+ .../backup_GenByGemini/stats_stem_leaf_plot.py     |    31 +
+ .../stats_variance_stddev_grouped.py               |    29 +
+ .../stats_variance_stddev_ungrouped.py             |    26 +
+ .../skills/backup_GenByGemini/sum_n_poly.py        |    30 +
+ .../backup_GenByGemini/synthetic_division.py       |    31 +
+ .../system_linear_2x2_elimination.py               |    34 +
+ .../system_linear_2x2_geometry.py                  |    25 +
+ .../system_linear_3x3_augmented_matrix.py          |    23 +
+ .../system_linear_3x3_cramers.py                   |    34 +
+ .../system_linear_3x3_gaussian.py                  |    20 +
+ .../system_linear_3x3_geometry.py                  |    25 +
+ .../backup_GenByGemini/tangent_line_slope.py       |    33 +
+ .../three_perpendiculars_theorem.py                |    21 +
+ .../backup_GenByGemini/trig_acute_definition.py    |    30 +
+ .../skills/backup_GenByGemini/trig_arc_length.py   |    27 +
+ .../skills/backup_GenByGemini/trig_area_formula.py |    33 +
+ .../trig_complementary_relation.py                 |    25 +
+ .../backup_GenByGemini/trig_conversion_formulas.py |    29 +
+ .../trig_coterminal_angle_find.py                  |    28 +
+ .../backup_GenByGemini/trig_degree_to_radian.py    |    31 +
+ .../skills/backup_GenByGemini/trig_double_angle.py |    30 +
+ .../backup_GenByGemini/trig_generalized_angle.py   |    26 +
+ .../trig_generalized_definition.py                 |    37 +
+ .../skills/backup_GenByGemini/trig_graph_cos.py    |    16 +
+ .../backup_GenByGemini/trig_graph_properties.py    |    26 +
+ .../skills/backup_GenByGemini/trig_graph_sin.py    |    16 +
+ .../skills/backup_GenByGemini/trig_graph_tan.py    |    16 +
+ .../backup_GenByGemini/trig_graph_transform.py     |    26 +
+ .../trig_graph_transform_amplitude.py              |    27 +
+ .../trig_graph_transform_horizontal_shift.py       |    28 +
+ .../trig_graph_transform_period.py                 |    28 +
+ .../trig_graph_transform_vertical_shift.py         |    27 +
+ .../backup_GenByGemini/trig_graphs_periodicity.py  |    19 +
+ .../skills/backup_GenByGemini/trig_half_angle.py   |    27 +
+ .../backup_GenByGemini/trig_herons_formula.py      |    33 +
+ .../backup_GenByGemini/trig_law_of_cosines.py      |    35 +
+ .../skills/backup_GenByGemini/trig_law_of_sines.py |    36 +
+ .../skills/backup_GenByGemini/trig_measurement.py  |    30 +
+ .../backup_GenByGemini/trig_polar_coordinates.py   |    29 +
+ .../backup_GenByGemini/trig_properties_laws.py     |    12 +
+ .../trig_pythagorean_relation.py                   |    20 +
+ .../backup_GenByGemini/trig_quotient_relation.py   |    20 +
+ .../trig_ratios_general_angle.py                   |    16 +
+ .../trig_ratios_right_triangle.py                  |    34 +
+ .../skills/backup_GenByGemini/trig_sector_area.py  |    28 +
+ .../skills/backup_GenByGemini/trig_signs_astc.py   |    24 +
+ .../trig_sine_cosine_combination.py                |    18 +
+ .../backup_GenByGemini/trig_special_angles.py      |    34 +
+ .../backup_GenByGemini/trig_standard_angle_def.py  |    35 +
+ .../skills/backup_GenByGemini/trig_sum_diff_cos.py |    27 +
+ .../skills/backup_GenByGemini/trig_sum_diff_sin.py |    26 +
+ .../skills/backup_GenByGemini/trig_sum_diff_tan.py |    27 +
+ .../backup_GenByGemini/trig_sum_difference.py      |    18 +
+ .../backup_GenByGemini/trig_synthesis_max_min.py   |    27 +
+ .../backup_GenByGemini/trig_synthesis_r_sin.py     |    27 +
+ .../skills/backup_GenByGemini/utils.py             |    66 +
+ .../backup_GenByGemini/vector_angle_between.py     |    37 +
+ .../vector_angle_between_lines.py                  |    39 +
+ .../vector_definition_coordinate.py                |    25 +
+ .../vector_dot_product_algebraic.py                |    24 +
+ .../vector_dot_product_geometric.py                |    25 +
+ .../vector_dot_product_properties.py               |    25 +
+ .../skills/backup_GenByGemini/vector_equality.py   |    23 +
+ .../vector_linear_combination.py                   |    29 +
+ .../backup_GenByGemini/vector_magnitude_calc.py    |    25 +
+ .../backup_GenByGemini/vector_ops_add_sub.py       |    31 +
+ .../vector_ops_scalar_multiply.py                  |    21 +
+ .../vector_orthogonality_check.py                  |    26 +
+ .../vector_parallel_condition.py                   |    33 +
+ .../skills/backup_GenByGemini/vector_projection.py |    29 +
+ .../backup_GenByGemini/vector_section_formula.py   |    30 +
+ .../vector_triangle_inequality.py                  |    25 +
+ .../skills/backup_GenByGemini/vectors_2d.py        |    19 +
+ .../backup_GenByGemini/vectors_2d_operations.py    |    24 +
+ .../backup_GenByGemini/vectors_3d_coordinates.py   |    28 +
+ .../backup_GenByGemini/vectors_3d_operations.py    |    34 +
+ .../skills/backup_GenByGemini/vertex_max_min.py    |   110 +
+ .../skills/backup_GenByGemini/volume_by_slicing.py |    18 +
+ .../volume_of_revolution_disk.py                   |    26 +
+ .../volume_of_revolution_washer.py                 |    19 +
+ ...45\255\2701\344\270\212_ApplicationProblems.py" |    99 +
+ ...55\2701\344\270\212_CommonDivisibilityRules.py" |   193 +
+ ...0\212_CommonDivisorAndGreatestCommonDivisor.py" |   120 +
+ ...70\212_CommonMultipleAndLeastCommonMultiple.py" |   128 +
+ ...70\212_DistanceBetweenTwoPointsOnNumberLine.py" |   100 +
+ ...45\255\2701\344\270\212_FactorsAndMultiples.py" |   104 +
+ ...4\270\212_FourArithmeticOperationsOfNumbers.py" |    86 +
+ ...\344\270\212_FractionAdditionAndSubtraction.py" |   193 +
+ ...0\345\255\2701\344\270\212_FractionDivision.py" |   133 +
+ ...255\2701\344\270\212_FractionMultiplication.py" |    97 +
+ ...5\2701\344\270\212_IntegerAdditionOperation.py" |    65 +
+ ...701\344\270\212_IntegerSubtractionOperation.py" |    92 +
+ ...70\345\255\2701\344\270\212_LawsOfExponents.py" |    77 +
+ ...\270\212_MixedIntegerAdditionAndSubtraction.py" |   118 +
+ ...225\270\345\255\2701\344\270\212_NumberLine.py" |    94 +
+ ...\2701\344\270\212_OppositesAndAbsoluteValue.py" |    86 +
+ ...2701\344\270\212_PositiveAndNegativeNumbers.py" |    99 +
+ ...270\345\255\2701\344\270\212_PowerOfNumbers.py" |   115 +
+ ...4\270\212_PrimeNumbersAndPrimeFactorization.py" |   128 +
+ ...0\345\255\2701\344\270\212_SimplestFraction.py" |   134 +
+ .../Mathproject-main/skills/custom_upload.py       |    99 +
+ .../gh_AntiderivativeOfPolynomialFunctions.py      |   656 +
+ .../skills/gh_ApplicationsOfDerivatives.py         |   758 +
+ .../skills/gh_AreaUnderFunctionGraph.py            |   737 +
+ .../skills/gh_AverageValueOfContinuousFunctions.py |   924 +
+ .../Mathproject-main/skills/gh_DefiniteIntegral.py |   670 +
+ .../skills/gh_DefiniteIntegralAndArea.py           |   876 +
+ .../skills/gh_DefinitionOfRadianMeasure.py         |   250 +
+ .../skills/gh_FundamentalTheoremOfCalculus.py      |   694 +
+ ...25\270\345\255\2701\344\270\212_AgeProblems.py" |   610 +
+ ...45\255\2701\344\270\212_ApplicationProblems.py" |   407 +
+ ...255\2701\344\270\212_ApplicationProblems_v2.py" |   418 +
+ ...55\2701\344\270\212_CommonDivisibilityRules.py" |   511 +
+ ...0\212_CommonDivisorAndGreatestCommonDivisor.py" |   512 +
+ ...70\212_CommonMultipleAndLeastCommonMultiple.py" |   486 +
+ ...0\345\255\2701\344\270\212_ComparingNumbers.py" |   239 +
+ ...5\270\345\255\2701\344\270\212_CostProblems.py" |   534 +
+ ...0\345\255\2701\344\270\212_DiscountProblems.py" |   538 +
+ ...70\212_DistanceBetweenTwoPointsOnNumberLine.py" |   420 +
+ ...5\255\2701\344\270\212_DistributionProblems.py" |   395 +
+ ...\344\270\212_EvaluatingAlgebraicExpressions.py" |   588 +
+ ...45\255\2701\344\270\212_FactorsAndMultiples.py" |   413 +
+ ...0\212_FormulatingOneVariableLinearEquations.py" |   457 +
+ ...\270\212_FourArithmeticOperationsOfIntegers.py" |   485 +
+ ...4\270\212_FourArithmeticOperationsOfNumbers.py" |   681 +
+ ...\344\270\212_FractionAdditionAndSubtraction.py" |   504 +
+ ...0\345\255\2701\344\270\212_FractionDivision.py" |   469 +
+ ...255\2701\344\270\212_FractionMultiplication.py" |   545 +
+ ...0\345\255\2701\344\270\212_GeometryProblems.py" |   294 +
+ ...5\2701\344\270\212_IntegerAdditionOperation.py" |   424 +
+ ...70\345\255\2701\344\270\212_IntegerDivision.py" |   501 +
+ ...\255\2701\344\270\212_IntegerMultiplication.py" |   455 +
+ ...701\344\270\212_IntegerSubtractionOperation.py" |   324 +
+ ...70\345\255\2701\344\270\212_LawsOfExponents.py" |   538 +
+ ...\270\212_MixedIntegerAdditionAndSubtraction.py" |   530 +
+ ...225\270\345\255\2701\344\270\212_NumberLine.py" |   165 +
+ ...270\345\255\2701\344\270\212_NumberProblems.py" |   571 +
+ ..._OperationsOfLinearExpressionsInOneVariable.py" |   645 +
+ ...1\344\270\212_OperationsOnLinearExpressions.py" |   255 +
+ ...\2701\344\270\212_OppositesAndAbsoluteValue.py" |   208 +
+ ...2701\344\270\212_PositiveAndNegativeNumbers.py" |   570 +
+ ...25\270\345\255\2701\344\270\212_PowersOfTen.py" |   376 +
+ ...4\270\212_PrimeNumbersAndPrimeFactorization.py" |   515 +
+ ...5\270\345\255\2701\344\270\212_RateProblems.py" |   602 +
+ ...resentingQuantitiesWithAlgebraicExpressions.py" |   649 +
+ ...345\255\2701\344\270\212_ScientificNotation.py" |   533 +
+ ...0\345\255\2701\344\270\212_SimplestFraction.py" |   521 +
+ ...255\2701\344\270\212_SolutionReasonableness.py" |   438 +
+ ...4\270\212_SolvingOneVariableLinearEquations.py" |   604 +
+ ...45\255\2701\344\270\213_ApplicationProblems.py" |   232 +
+ ...255\2701\344\270\213_ApplicationProblems_v2.py" |   630 +
+ ...0\345\255\2701\344\270\213_DirectProportion.py" |   690 +
+ ...3_DrawingGraphsOfTwoVariableLinearEquations.py" |   752 +
+ ...\345\255\2701\344\270\213_EliminationMethod.py" |   699 +
+ ...MeaningOfSystemOfTwoVariableLinearEquations.py" |   861 +
+ ...44\270\213_GraphOfTwoVariableLinearEquation.py" |   102 +
+ ...0\213_GroupedFrequencyDistributionAndCharts.py" |   936 +
+ ...IntroductionToOneVariableLinearInequalities.py" |   639 +
+ ...\345\255\2701\344\270\213_InverseProportion.py" |   872 +
+ ...01\344\270\213_LinearEquationInTwoVariables.py" |   742 +
+ ...\344\270\213_LinearExpressionInTwoVariables.py" |   520 +
+ ...\345\255\2701\344\270\213_MeanMedianAndMode.py" |   679 +
+ ...rpendicularBisectorsAndLineSymmetricFigures.py" |   790 +
+ ...01\344\270\213_PointsLinesAnglesAndNotation.py" |  1084 +
+ ...6\225\270\345\255\2701\344\270\213_Polygons.py" |   604 +
+ ...5\2701\344\270\213_PropertiesOfInequalities.py" |   829 +
+ ...225\270\345\255\2701\344\270\213_Proportion.py" |   672 +
+ ...1\344\270\213_QuadrantsOnTheCoordinatePlane.py" |   668 +
+ ...345\255\2701\344\270\213_RatioAndRatioValue.py" |   678 +
+ ...rCoordinatePlaneAndCoordinateRepresentation.py" |   301 +
+ ...presentationOfOneVariableLinearInequalities.py" |   784 +
+ ...01\344\270\213_StatisticalChartsInDailyLife.py" |   598 +
+ ...345\255\2701\344\270\213_SubstitutionMethod.py" |   618 +
+ ...0\213_SystemOfLinearEquationsInTwoVariables.py" |   818 +
+ ...\345\255\2701\344\270\213_ThreeViewDrawings.py" |   512 +
+ ...5\270\345\255\2701\344\270\213_WordProblems.py" |   592 +
+ ...44\270\212_ApplicationsOfPythagoreanTheorem.py" |   815 +
+ ...\270\212_BasicPropertiesOfRadicalOperations.py" |   780 +
+ ...\2702\344\270\212_ComprehensiveApplications.py" |   455 +
+ ...02\344\270\212_ComprehensiveApplications_v2.py" |   727 +
+ ...02\344\270\212_ComprehensiveApplications_v3.py" |   507 +
+ ...02\344\270\212_ComprehensiveApplications_v4.py" |   539 +
+ ...CumulativeFrequencyDistributionAndLineChart.py" |   510 +
+ ...2702\344\270\212_DifferenceOfSquaresFormula.py" |   485 +
+ ...2\344\270\212_DiscoveringPythagoreanTheorem.py" |   650 +
+ ...344\270\212_DistanceFormulaOnCartesianPlane.py" |   980 +
+ ...5\255\2702\344\270\212_DistributiveProperty.py" |   416 +
+ ...oringQuadraticsWithLeadingCoefficientNotOne.py" |   446 +
+ ...actoringQuadraticsWithLeadingCoefficientOne.py" |   411 +
+ ...0\212_FactorizationByMultiplicationFormulas.py" |   571 +
+ ...\270\212_FactorizationByTakingCommonFactors.py" |   939 +
+ ...5\2702\344\270\212_FourOperationsOfRadicals.py" |   864 +
+ ...2702\344\270\212_MeaningOfQuadraticEquation.py" |   639 +
+ ...\2702\344\270\212_MeaningOfSquareRootSymbol.py" |   449 +
+ ...5\255\2702\344\270\212_MeaningOfSquareRoots.py" |   600 +
+ ...44\270\212_PolynomialAdditionAndSubtraction.py" |   647 +
+ ...02\344\270\212_PolynomialDefinitionAndTerms.py" |   717 +
+ ...345\255\2702\344\270\212_PolynomialDivision.py" |   737 +
+ ...702\344\270\212_PolynomialFactorAndMultiple.py" |   740 +
+ ...55\2702\344\270\212_PolynomialFactorization.py" |   584 +
+ ...5\2702\344\270\212_PolynomialMultiplication.py" |   685 +
+ ...\270\345\255\2702\344\270\212_RadicalAddSub.py" |    57 +
+ ...70\345\255\2702\344\270\212_RadicalMultiply.py" |    55 +
+ ...70\345\255\2702\344\270\212_RadicalSimplify.py" |    66 +
+ ...veRelativeFrequencyDistributionAndLineChart.py" |   625 +
+ ...\212_SolvingEquationsUsingSquareRootConcept.py" |   653 +
+ ...vingQuadraticEquationsByCompletingTheSquare.py" |  1080 +
+ ...70\212_SolvingQuadraticEquationsByFactoring.py" |   549 +
+ ...\2702\344\270\212_SquareOfDifferenceFormula.py" |   683 +
+ ...345\255\2702\344\270\212_SquareOfSumFormula.py" |   476 +
+ ...45\255\2702\344\270\212_TheQuadraticFormula.py" |   738 +
+ ...345\255\2702\344\270\212_ValueOfSquareRootA.py" |   597 +
+ ...5\270\345\255\2702\344\270\212_WordProblems.py" |   414 +
+ ...270\213_AngleClassificationAndRelationships.py" |   906 +
+ ...270\345\255\2702\344\270\213_ArithmeticMean.py" |   512 +
+ ...45\255\2702\344\270\213_ArithmeticSequences.py" |   602 +
+ ...70\213_EqualLineSegmentAndAngleConstruction.py" |   747 +
+ ...\270\345\255\2702\344\270\213_FunctionGraph.py" |   794 +
+ ...\270\345\255\2702\344\270\213_FunctionValue.py" |   638 +
+ ...\270\345\255\2702\344\270\213_GeometricMean.py" |   678 +
+ ...\345\255\2702\344\270\213_GeometricSequence.py" |   488 +
+ ...213_IdentifyingAndConstructingParallelLines.py" |   537 +
+ ...13_IdentifyingAndConstructingParallelograms.py" |   834 +
+ ...70\213_MeaningAndPropertiesOfParallelograms.py" |   743 +
+ ...255\2702\344\270\213_MeaningOfParallelLines.py" |   679 +
+ ...702\344\270\213_MeaningOfTriangleCongruence.py" |   705 +
+ ...\213_NSidedPolygonInteriorAndExteriorAngles.py" |   667 +
+ ...702\344\270\213_NthTermOfArithmeticSequence.py" |   566 +
+ ...2702\344\270\213_NthTermOfGeometricSequence.py" |   603 +
+ ...dicularBisectorAndAngleBisectorConstruction.py" |   817 +
+ ...pertiesOfRectanglesRhombusesKitesAndSquares.py" |   835 +
+ ...5\255\2702\344\270\213_RecognizingFunctions.py" |   421 +
+ ...\255\2702\344\270\213_SumOfArithmeticSeries.py" |   539 +
+ ...Topic1PerpendicularBisectorAndAngleBisector.py" |   454 +
+ ...\344\270\213_Topic2ComprehensiveApplication.py" |   602 +
+ ...\255\2702\344\270\213_TransversalsAndAngles.py" |   739 +
+ ...\344\270\213_TriangleAngleSideRelationships.py" |   489 +
+ ...02\344\270\213_TriangleCongruenceProperties.py" |   893 +
+ ...4\270\213_TriangleInteriorAndExteriorAngles.py" |   641 +
+ ...\2702\344\270\213_TriangleSideRelationships.py" |   571 +
+ ...255\2702\344\270\213_UnderstandingSequences.py" |   511 +
+ ...\344\270\213_WordProblemsOfArithmeticSeries.py" |   615 +
+ .../Mathproject-main/skills/test_variant_gen.py    |   582 +
+ .../Mathproject-main/skills/verify_radicals.py     |     0
+ .../Mathproject-main/skills/verify_triangle.png    |   Bin 0 -> 25620 bytes
+ .../Mathproject-main/skills/verify_visual.py       |   116 +
+ .../Mathproject-main/static/diagram.png            |   Bin 0 -> 33925 bytes
+ .../Mathproject-main/static/style.css              |    16 +
+ .../Mathproject-main/synthesized_training_data.csv | 58011 ++++++++++++++++
+ .../synthesized_training_data_old.csv              | 68649 +++++++++++++++++++
+ .../synthesized_training_data_v2_curriculum.csv    | 48011 +++++++++++++
+ .../Mathproject-main/temp/adaptive_practice.html   |   219 +
+ .../Mathproject-main/temp/add_diagnosis_link.py    |    24 +
+ .../Mathproject-main/temp/add_diagnosis_link_v2.py |    33 +
+ .../temp/add_font_size_controls.py                 |   137 +
+ .../Mathproject-main/temp/add_latex_instruction.py |    53 +
+ .../Mathproject-main/temp/analyze_db.py            |    82 +
+ .../Mathproject-main/temp/apply_error_logging.py   |    99 +
+ .../Mathproject-main/temp/apply_pro_ui_v2.py       |   392 +
+ .../Mathproject-main/temp/apply_style_upgrade.py   |   120 +
+ .../Mathproject-main/temp/apply_ui_polish.py       |    97 +
+ .../Mathproject-main/temp/change_icon.py           |    40 +
+ .../Mathproject-main/temp/check_instance_db.py     |    60 +
+ .../Mathproject-main/temp/check_math_master_db.py  |    61 +
+ .../Mathproject-main/temp/check_models.py          |    28 +
+ .../Mathproject-main/temp/cleanup_old_tables.py    |    64 +
+ .../Mathproject-main/temp/cleanup_project.py       |   102 +
+ .../Mathproject-main/temp/cmd.txt                  |    78 +
+ .../temp/core/routes.py_Upgeade0112                |  3378 +
+ .../Mathproject-main/temp/core/routes.py_snippet   |    13 +
+ .../Mathproject-main/temp/create_db.py             |    15 +
+ .../temp/create_missing_skill_files.py             |    99 +
+ .../Mathproject-main/temp/debug_db_path.py         |    61 +
+ .../Mathproject-main/temp/debug_importer.py        |     0
+ .../Mathproject-main/temp/desktop.ini              |   Bin 0 -> 246 bytes
+ .../Mathproject-main/temp/dump_params_schema.py    |    24 +
+ .../Mathproject-main/temp/final_fix.py             |    53 +
+ .../Mathproject-main/temp/find_buttons.py          |    20 +
+ .../temp/fix_ai_limit_and_prompt.py                |   106 +
+ .../Mathproject-main/temp/fix_ai_truncation_v2.py  |    62 +
+ .../Mathproject-main/temp/fix_bubble_final.py      |    55 +
+ .../Mathproject-main/temp/fix_chat_layout_final.py |    80 +
+ .../Mathproject-main/temp/fix_chat_spacing.py      |    73 +
+ .../Mathproject-main/temp/fix_cursor_force.py      |    67 +
+ .../Mathproject-main/temp/fix_dashboard_syntax.py  |    30 +
+ .../Mathproject-main/temp/fix_db_final.py          |     0
+ .../Mathproject-main/temp/fix_eraser_cursor.py     |    62 +
+ .../Mathproject-main/temp/fix_gemini_chat_var.py   |    95 +
+ .../Mathproject-main/temp/fix_json_robustness.py   |   131 +
+ .../Mathproject-main/temp/fix_navbar.py            |    46 +
+ .../Mathproject-main/temp/fix_pen_colors.py        |    82 +
+ .../Mathproject-main/temp/fix_schema.py            |    58 +
+ .../Mathproject-main/temp/fix_style.py             |    54 +
+ .../Mathproject-main/temp/force_fix_final.py       |    70 +
+ .../Mathproject-main/temp/force_full_width.py      |    55 +
+ .../Mathproject-main/temp/generate_db_schema.py    |   207 +
+ .../temp/generate_db_schema_excel.py               |    86 +
+ .../temp/generate_db_schema_split.py               |    26 +
+ .../temp/generate_suggestions_script.py            |   139 +
+ .../Mathproject-main/temp/import_curriculum.py     |   127 +
+ .../Mathproject-main/temp/import_data.py           |    81 +
+ .../Mathproject-main/temp/import_dependencies.py   |    73 +
+ .../Mathproject-main/temp/init_exam_db.py          |    11 +
+ .../Mathproject-main/temp/list_tables.py           |    11 +
+ .../Mathproject-main/temp/manage_roles.py          |    53 +
+ .../Mathproject-main/temp/moved_log.txt            |    45 +
+ .../temp/optimize_initial_chat_message.py          |    81 +
+ .../Mathproject-main/temp/patch_routes.py          |    34 +
+ .../temp/remove_specific_button.py                 |    37 +
+ .../Mathproject-main/temp/remove_text_clear_btn.py |    39 +
+ .../Mathproject-main/temp/reproduce_issue.py       |    26 +
+ .../Mathproject-main/temp/reset_and_init_db.py     |     9 +
+ .../Mathproject-main/temp/revert_style_clean.py    |   249 +
+ .../Mathproject-main/temp/style_ai_header.py       |    84 +
+ .../Mathproject-main/temp/style_upgrade.py         |   260 +
+ .../Mathproject-main/temp/temp_double_braces.py    |    35 +
+ .../Mathproject-main/temp/temp_fix_fstring.py      |    65 +
+ .../Mathproject-main/temp/temp_fix_patterns.py     |    42 +
+ .../temp/temp_fix_wrong_examples.py                |    39 +
+ .../Mathproject-main/temp/temp_reduce_braces.py    |    51 +
+ .../Mathproject-main/temp/temp_update_codegen.py   |    49 +
+ .../Mathproject-main/temp/test_exam_analyzer.py    |    50 +
+ .../Mathproject-main/temp/test_excel_upload.py     |   105 +
+ .../Mathproject-main/temp/test_fix.py              |    26 +
+ .../Mathproject-main/temp/test_mistake_logging.py  |    58 +
+ .../Mathproject-main/temp/update_db_and_routes.py  |   303 +
+ .../Mathproject-main/temp/update_db_schema.py      |   186 +
+ .../Mathproject-main/temp/update_html_headers.py   |   124 +
+ .../Mathproject-main/temp/update_skills_headers.py |    81 +
+ .../Mathproject-main/temp/verify_app.py            |    31 +
+ .../temp/verify_teacher_features.py                |   153 +
+ ...24\271\351\200\262\346\226\271\345\220\221.txt" |     0
+ .../Mathproject-main/templates/README_UI.md        |    63 +
+ .../Mathproject-main/templates/_admin_navbar.html  |    47 +
+ .../templates/_filter_sidebar.html                 |   133 +
+ .../templates/adaptive_learning_entry.html         |   149 +
+ .../templates/adaptive_practice_v2.html            |  2204 +
+ .../templates/adaptive_selection.html              |    76 +
+ .../Mathproject-main/templates/add_mistake.html    |   179 +
+ .../templates/admin_curriculum.html                |   743 +
+ .../Mathproject-main/templates/admin_examples.html |   588 +
+ .../templates/admin_prerequisites.html             |   578 +
+ .../Mathproject-main/templates/admin_skills.html   |   958 +
+ .../templates/ai_prompt_settings.html              |   339 +
+ .../Mathproject-main/templates/base.html           |    53 +
+ .../Mathproject-main/templates/dashboard.html      |   615 +
+ .../Mathproject-main/templates/db_maintenance.html |   459 +
+ .../Mathproject-main/templates/exam_upload.html    |   677 +
+ .../Mathproject-main/templates/grade_view.html     |    64 +
+ .../templates/image_quiz_generator.html            |   108 +
+ .../templates/importer_status.html                 |   159 +
+ .../Mathproject-main/templates/index.html          |  3800 +
+ .../templates/knowledge_graph.html                 |   709 +
+ .../Mathproject-main/templates/live_show.html      |  3081 +
+ .../Mathproject-main/templates/login.html          |   104 +
+ .../templates/mistake_notebook.html                |   229 +
+ .../Mathproject-main/templates/register.html       |    98 +
+ .../templates/similar_questions.html               |   229 +
+ .../templates/student_diagnosis.html               |   438 +
+ .../templates/teacher_analysis.html                |   247 +
+ .../templates/teacher_dashboard.html               |   637 +
+ .../templates/textbook_importer.html               |   314 +
+ .../Mathproject-main/templates/unit_view.html      |   110 +
+ .../Mathproject-main/test_kg_loader.py             |    68 +
+ .../tests/comprehensive_stress_test.py             |   931 +
+ .../tests/fraction_phase1_cases.py                 |   118 +
+ .../Mathproject-main/tests/integer_phase1_cases.py |    38 +
+ .../tests/test_ablation_experiment.py              |   315 +
+ .../tests/test_adaptive_demo_family_smoke.py       |   132 +
+ .../tests/test_adaptive_judge_tolerant_parser.py   |    41 +
+ .../tests/test_adaptive_m1_core.py                 |    64 +
+ .../Mathproject-main/tests/test_adaptive_m2_api.py |   931 +
+ .../tests/test_adaptive_phase1_policy.py           |    58 +
+ .../tests/test_adaptive_phase2_policy.py           |    80 +
+ .../tests/test_adaptive_rag_hint.py                |    41 +
+ .../Mathproject-main/tests/test_ast_healer.py      |    71 +
+ .../tests/test_classify_image_text_consistency.py  |   155 +
+ .../Mathproject-main/tests/test_clean_latex.py     |    75 +
+ .../tests/test_clean_latex_standalone.py           |   103 +
+ .../Mathproject-main/tests/test_evaluate_mcri.py   |    49 +
+ .../tests/test_f9_long_division_analysis.py        |    68 +
+ .../tests/test_fraction_domain_functions.py        |   114 +
+ .../tests/test_generate_stability.py               |    62 +
+ .../tests/test_integer_phase1_regression.py        |   134 +
+ .../tests/test_live_show_fraction_helper.py        |   441 +
+ .../tests/test_live_show_geometry_guard.py         |    24 +
+ .../test_live_show_healer_negative_monomial.py     |    28 +
+ .../tests/test_live_show_healer_regression.py      |   170 +
+ .../tests/test_live_show_non_radical_regression.py |   148 +
+ .../tests/test_mapping_yaml_config.py              |   122 +
+ .../Mathproject-main/tests/test_performance.py     |   181 +
+ .../tests/test_policy_findings_mapping.py          |    36 +
+ .../tests/test_polynomial_division_latex.py        |    22 +
+ .../test_polynomial_division_micro_generators.py   |    45 +
+ .../test_polynomial_division_negative_divisor.py   |    13 +
+ .../tests/test_polynomial_geometry_word_problem.py |    21 +
+ ...est_polynomial_reverse_division_word_problem.py |    17 +
+ .../test_polynomial_special_identity_preserved.py  |    26 +
+ .../test_polynomial_unknown_equation_extract.py    |    23 +
+ .../tests/test_polynomial_unknown_refine.py        |    97 +
+ .../tests/test_polynomialops_compat.py             |    24 +
+ .../tests/test_question_answer_match.py            |    60 +
+ .../tests/test_radical_div_terms.py                |    44 +
+ .../tests/test_radical_full_regression.py          |   115 +
+ .../tests/test_radical_pattern_gate.py             |    66 +
+ .../tests/test_radical_sqrt_fix.py                 |    60 +
+ .../tests/test_radical_style_classifier.py         |    46 +
+ .../tests/test_rag_diagnosis_mapping.py            |    46 +
+ .../tests/test_run_generated_code_regression.py    |   161 +
+ .../tests/test_skill_policy_trainer_env.py         |    86 +
+ .../tests/test_tutor_f9_fallback.py                |    64 +
+ .../tests/verify_factoring_quad.py                 |    57 +
+ .../Mathproject-main/tests/verify_geometry_v12.py  |    45 +
+ .../tmp_adaptive_quality_report.json               |   358 +
+ .../tmp_adaptive_quality_report_v2.json            |  1491 +
+ .../Mathproject-main/train_akt_curriculum.py       |   490 +
+ .../Mathproject-main/training_curves.png           |   Bin 0 -> 48038 bytes
+ .../Mathproject-main/verify_curriculum_order.py    |   126 +
+ .../verify_curriculum_violation.py                 |   162 +
+ .../Mathproject-main/verify_kg_data.py             |   105 +
+ .../Mathproject-main/verify_training.py            |   109 +
+ ...2\262\346\234\254\351\241\214\345\272\253.xlsx" |   Bin 0 -> 165 bytes
+ ...275\234\350\250\210\347\225\253\346\233\270.md" |   229 +
+ ...2\262\346\234\254\351\241\214\345\272\253.xlsx" |   Bin 0 -> 201880 bytes
+ 2330 files changed, 1211125 insertions(+)
+
+commit 5791529fae4ef73597c7481e846d3d391a68a466
+Author: Yeh Yang-Fu <yeh.yangfu@gmail.com>
+Date:   Fri Apr 10 23:16:04 2026 +0800
+
+    ?蔥??憿芋蝯?
+ config.py                                          |   4 +-
+ core/advanced_rag_engine.py                        |  84 +++--
+ core/rag_engine.py                                 |  55 ++-
+ core/routes/adaptive_api.py                        |  11 +-
+ core/routes/analysis.py                            |  60 ++-
+ .../LOCAL_APR_AKT_STUB_EXPLAINER.md"               | 410 +++++++++++++++++++++
+ templates/adaptive_practice_v2.html                | 201 ++++------
+ 7 files changed, 647 insertions(+), 178 deletions(-)

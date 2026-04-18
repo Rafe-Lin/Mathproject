@@ -1,0 +1,285 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "統計與機率",
+    "l2_unit": "第5章_資料處理與統計圖表",
+    "l2_unit_id": "JH_STA_CHARTS_ADV"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_STA",
+      "level": "L1",
+      "name": "統計與機率",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV",
+      "level": "L2",
+      "name": "第5章_資料處理與統計圖表",
+      "parent_id": "L1_JH_STA"
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01",
+      "level": "L3",
+      "name": "統計分配表的製作與報讀",
+      "parent_id": "JH_STA_CHARTS_ADV",
+      "description": "學習次數、累積次數、相對次數與累積相對次數分配表的定義、製作方法及報讀技巧。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01_a",
+      "level": "L4",
+      "name": "次數分配表的製作",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+      "description": "了解次數分配表的定義，能將原始資料分組並製作次數分配表。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "level": "L4",
+      "name": "累積次數分配表的製作",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+      "description": "了解累積次數的定義，能從次數分配表整理成累積次數分配表。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "level": "L4",
+      "name": "相對次數分配表的製作",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+      "description": "了解相對次數的定義，能將次數分配表轉換成相對次數分配表。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "level": "L4",
+      "name": "累積相對次數分配表的製作",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+      "description": "了解累積相對次數的定義，能從相對次數分配表或累積次數分配表製作累積相對次數分配表。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_01_e",
+      "level": "L4",
+      "name": "統計分配表的報讀與分析",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_01",
+      "description": "根據次數、累積次數、相對次數與累積相對次數分配表，回答相關問題並進行資料分析。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02",
+      "level": "L3",
+      "name": "統計折線圖的繪製與報讀",
+      "parent_id": "JH_STA_CHARTS_ADV",
+      "description": "學習次數、累積次數、相對次數與累積相對次數折線圖的繪製方法及報讀分析技巧。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02_a",
+      "level": "L4",
+      "name": "次數分配折線圖的繪製",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+      "description": "了解次數分配折線圖的繪製方式，能根據次數分配表繪製折線圖。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02_b",
+      "level": "L4",
+      "name": "累積次數分配折線圖的繪製",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+      "description": "了解累積次數分配折線圖的繪製方式，能根據累積次數分配表繪製折線圖。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02_c",
+      "level": "L4",
+      "name": "相對次數分配折線圖的繪製",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+      "description": "了解相對次數分配折線圖的繪製方式，能根據相對次數分配表繪製折線圖。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02_d",
+      "level": "L4",
+      "name": "累積相對次數分配折線圖的繪製",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+      "description": "了解累積相對次數分配折線圖的繪製方式，能根據累積相對次數分配表繪製折線圖。",
+      "difficulty": 5
+    },
+    {
+      "id": "JH_STA_CHARTS_ADV_L3_02_e",
+      "level": "L4",
+      "name": "統計折線圖的報讀與分析",
+      "parent_id": "JH_STA_CHARTS_ADV_L3_02",
+      "description": "根據次數、累積次數、相對次數與累積相對次數折線圖，回答相關問題並進行資料分析與比較。",
+      "difficulty": 5
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_STA",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_STA",
+      "to_id": "JH_STA_CHARTS_ADV",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02_a",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02_b",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02_c",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02_d",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "type": "prerequisite",
+      "reason": "累積次數分配表需以次數分配表為基礎"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_a",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "type": "prerequisite",
+      "reason": "相對次數分配表需以次數分配表為基礎"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_b",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "type": "prerequisite",
+      "reason": "累積相對次數分配表可由累積次數換算而得"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_c",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "type": "prerequisite",
+      "reason": "累積相對次數分配表可由相對次數累加而得"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_01_d",
+      "to_id": "JH_STA_CHARTS_ADV_L3_01_e",
+      "type": "prerequisite",
+      "reason": "報讀與分析分配表需先能製作各類分配表"
+    },
+    {
+      "from_id": "JH_STA_CHARTS_ADV_L3_02_d",
+      "to_id": "JH_STA_CHARTS_ADV_L3_02_e",
+      "type": "prerequisite",
+      "reason": "報讀與分析折線圖需先能繪製各類折線圖"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 15,
+    "total_edges": 33,
+    "l3_count": 2,
+    "l4_count": 10,
+    "l4_avg_per_l3": 5.0
+  }
+}

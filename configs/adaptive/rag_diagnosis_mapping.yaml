@@ -1,0 +1,79 @@
+﻿concept_to_prereq:
+  negative_sign_handling:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: signed_arithmetic
+    concept_weight: 0.95
+  outer_minus_scope:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: outer_minus_scope
+    concept_weight: 0.96
+  bracket_scope_error:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: outer_minus_scope
+    concept_weight: 0.93
+  sign_distribution:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: monomial_distribution
+    concept_weight: 0.92
+  sign_flip_after_distribution:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: outer_minus_scope
+    concept_weight: 0.94
+  combine_like_terms_after_distribution:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: like_term_combination
+    concept_weight: 0.90
+  coefficient_arithmetic_error:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: coefficient_sign_handling
+    concept_weight: 0.91
+  nested_grouping_structure_error:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: nested_bracket_scope
+    concept_weight: 0.89
+  binomial_expansion_structure_error:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: expand_structure
+    concept_weight: 0.90
+  mixed_simplify_transition_error:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: nested_bracket_scope
+    concept_weight: 0.88
+  family_isomorphism_confusion:
+    suggested_prereq_skill: linear_expression_arithmetic
+    suggested_prereq_subskill: structure_isomorphism
+    concept_weight: 0.86
+  power_sign_parentheses_confusion:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: signed_power_interpretation
+    concept_weight: 0.90
+  power_precedence_confusion:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: power_precedence_in_mixed_ops
+    concept_weight: 0.88
+  same_base_power_rule_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: same_base_multiplication_rule
+    concept_weight: 0.90
+  power_of_power_rule_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: power_of_power_rule
+    concept_weight: 0.90
+  product_power_distribution_error:
+    suggested_prereq_skill: fraction_arithmetic
+    suggested_prereq_subskill: product_power_distribution
+    concept_weight: 0.90
+  division_misconception:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: division
+    concept_weight: 0.90
+  basic_arithmetic_instability:
+    suggested_prereq_skill: integer_arithmetic
+    suggested_prereq_subskill: basic_operations
+    concept_weight: 0.85
+
+scoring:
+  base: 0.25
+  retrieval_weight: 0.55
+  concept_weight: 0.20
+  unknown_concept_weight: 0.40

@@ -1,0 +1,606 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/teacher_dashboard.html
+功能說明 (Description): 教師管理儀表板
+後端呼叫 (Backend Call): app.py -> teacher_dashboard
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>教師儀表板 - 自適應性教學系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            filter: brightness(1.12);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <div class="welcome-banner">
+            <h2>歡迎回來！</h2>
+            <p>這是您的教學管理中心。您可以使用下方的管理功能來管理課程、技能與資料庫。</p>
+        </div>
+
+        <div class="card">
+            <h3>快速概覽</h3>
+            <div class="grid">
+                <div class="stat-box">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">班級數</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">學生總數</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">待批改作業</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 班級管理區塊 -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>班級管理</h3>
+                <button onclick="openCreateClassModal()"
+                    style="background-color: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                    + 建立新班級
+                </button>
+            </div>
+            <div id="classList" class="grid">
+                <!-- 班級列表將透過 JavaScript 動態載入 -->
+                <p style="color: #7f8c8d;">載入中...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>管理功能</h3>
+            <div class="grid">
+                <!-- 1. 學生分析報告 -->
+                <a href="{{ url_for('teacher_analysis') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #c039b4; color: white;">
+                        <div style="font-size: 2em;">📊</div>
+                        <div style="margin-top: 10px; font-weight: bold;">學生分析報告</div>
+                    </div>
+                </a>
+                <!-- 2. 課程分類管理 -->
+                <a href="{{ url_for('core.admin_curriculum') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #16a085; color: white;">
+                        <div style="font-size: 2em;">📚</div>
+                        <div style="margin-top: 10px; font-weight: bold;">課程分類管理</div>
+                    </div>
+                </a>
+                <!-- 3. 單元管理 -->
+                <a href="{{ url_for('core.admin_skills') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #9b59b6; color: white;">
+                        <div style="font-size: 2em;">⚙️</div>
+                        <div style="margin-top: 10px; font-weight: bold;">單元管理</div>
+                    </div>
+                </a>
+                <!-- 4. 技能關聯 -->
+                <a href="{{ url_for('core.admin_prerequisites') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #1abc9c; color: white;">
+                        <div style="font-size: 2em;">🔗</div>
+                        <div style="margin-top: 10px; font-weight: bold;">技能關聯</div>
+                    </div>
+                </a>
+                <!-- 5. 例題管理 -->
+                <a href="{{ url_for('core.admin_examples') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #e67e22; color: white;">
+                        <div style="font-size: 2em;">📖</div>
+                        <div style="margin-top: 10px; font-weight: bold;">例題管理</div>
+                    </div>
+                </a>
+                <!-- 6. AI教材匯入 -->
+                <a href="{{ url_for('core.admin_textbook_importer') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #2ecc71; color: white;">
+                        <div style="font-size: 2em;">🤖</div>
+                        <div style="margin-top: 10px; font-weight: bold;">AI 教材匯入</div>
+                    </div>
+                </a>
+                <!-- 7. 資料庫管理 -->
+                <a href="{{ url_for('core.db_maintenance') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #f1c40f; color: #2c3e50;">
+                        <div style="font-size: 2em;">🗃️</div>
+                        <div style="margin-top: 10px; font-weight: bold;">資料庫管理</div>
+                    </div>
+                </a>
+                <!-- 8. AI設定 -->
+                <a href="{{ url_for('core.ai_prompt_settings_page') }}" style="text-decoration: none;">
+                    <div class="stat-box" style="cursor: pointer; background: #e74c3c; color: white;">
+                        <div style="font-size: 2em;">🤖</div>
+                        <div style="margin-top: 10px; font-weight: bold;">AI 設定</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 管理學生 Modal -->
+    <div id="studentModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div
+            style="background-color: white; padding: 30px; border-radius: 8px; width: 600px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="studentModalTitle" style="margin: 0;">管理學生</h3>
+                <button onclick="closeStudentModal()"
+                    style="background: none; border: none; font-size: 1.5em; cursor: pointer;">&times;</button>
+            </div>
+
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <h4 style="margin-top: 0;">新增學生</h4>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="text" id="newStudentUsername" placeholder="帳號" style="flex: 1; padding: 8px;">
+                    <input type="text" id="newStudentPassword" placeholder="密碼" style="flex: 1; padding: 8px;">
+                    <button onclick="addStudent()"
+                        style="background-color: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer;">新增</button>
+                </div>
+
+                <div style="border-top: 1px dashed #ccc; padding-top: 15px;">
+                    <h4 style="margin-top: 0; font-size: 0.9em; color: #555;">批次新增 (Excel)</h4>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="file" id="studentExcelFile" accept=".xlsx, .xls" style="flex: 1;">
+                        <button onclick="uploadStudentExcel()"
+                            style="background-color: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer;">上傳
+                            Excel</button>
+                    </div>
+                    <p style="font-size: 0.8em; color: #7f8c8d; margin: 5px 0 0 0;">格式：第一欄為帳號，第二欄為密碼 (自動略過標題列)</p>
+                </div>
+            </div>
+
+            <h4>學生列表</h4>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #ecf0f1;">
+                        <th style="padding: 10px; text-align: left;">帳號</th>
+                        <th style="padding: 10px; text-align: left;">建立日期</th>
+                    </tr>
+                </thead>
+                <tbody id="studentListBody">
+                    <!-- 學生列表將動態載入 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 建立班級 Modal -->
+    <div id="createClassModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px;">
+            <h3>建立新班級</h3>
+            <input type="text" id="newClassName" placeholder="請輸入班級名稱 (例如：高一數學A班)"
+                style="width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box;">
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button onclick="closeCreateClassModal()"
+                    style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">取消</button>
+                <button onclick="createClass()"
+                    style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">建立</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAG Settings Modal -->
+    <div id="ragSettingsModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+        <div style="background-color: white; padding: 30px; border-radius: 8px; width: 400px;">
+            <h3>RAG 參數設定</h3>
+            <div style="margin-top: 15px;">
+                <label style="display:block; margin-bottom:5px; color:#555;">Advanced RAG 觸發閾值 (預設: 0.40)</label>
+                <input type="number" step="0.01" id="ragThreshold" style="width: 100%; padding: 10px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555;">搜索目標與 AI 解答設定</label>
+                <label style="display:inline-flex; align-items:center; margin-bottom:15px; color:#555; font-size: 0.9em;">
+                    <input type="checkbox" id="ragEnableAIChat" style="margin-right: 10px;">
+                    啟用 AI 助教回答 (會消耗 API 額度)
+                </label>
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px; color:#555;">搜尋結果點擊目標介面</label>
+                <select id="ragTargetType" style="width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="practice">基礎練習介面 (/practice/)</option>
+                    <option value="adaptive">自適應介面 (/adaptive_practice_v2)</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button onclick="closeRagSettingsModal()"
+                    style="background-color: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">取消</button>
+                <button onclick="saveRagSettings()"
+                    style="background-color: #273c75; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 頁面載入時獲取班級列表
+        document.addEventListener('DOMContentLoaded', loadClasses);
+
+        async function openRagSettingsModal() {
+            try {
+                const response = await fetch('/api/adaptive/rag_settings');
+                const data = await response.json();
+                document.getElementById('ragThreshold').value = data.threshold !== undefined ? data.threshold : 0.40;
+                document.getElementById('ragTargetType').value = data.target_type || 'practice';
+                document.getElementById('ragEnableAIChat').checked = data.enable_ai_chat !== false;
+                document.getElementById('ragSettingsModal').style.display = 'flex';
+            } catch (e) {
+                alert('無法載入設定');
+            }
+        }
+
+        function closeRagSettingsModal() {
+            document.getElementById('ragSettingsModal').style.display = 'none';
+        }
+
+        async function saveRagSettings() {
+            const threshold = parseFloat(document.getElementById('ragThreshold').value);
+            const target_type = document.getElementById('ragTargetType').value;
+            const enable_ai_chat = document.getElementById('ragEnableAIChat').checked;
+            try {
+                const response = await fetch('/admin/rag_settings/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ threshold, target_type, enable_ai_chat })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('設定已儲存！');
+                    closeRagSettingsModal();
+                } else {
+                    alert('儲存失敗：' + data.message);
+                }
+            } catch (error) {
+                alert('發生錯誤');
+            }
+        }
+
+        function openCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'flex';
+        }
+
+        function closeCreateClassModal() {
+            document.getElementById('createClassModal').style.display = 'none';
+            document.getElementById('newClassName').value = '';
+        }
+
+        async function loadClasses() {
+            try {
+                const response = await fetch("{{ url_for('core.get_teacher_classes') }}");
+                const data = await response.json();
+
+                if (data.success) {
+                    const container = document.getElementById('classList');
+                    if (data.classes.length === 0) {
+                        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #7f8c8d;">目前還沒有班級，請點擊右上角建立！</p>';
+                        return;
+                    }
+
+                    container.innerHTML = data.classes.map(cls => `
+                        <div class="stat-box" style="text-align: left; position: relative;">
+                            <div style="font-size: 1.2em; font-weight: bold; color: #2c3e50;">${cls.name}</div>
+                            <div style="margin-top: 10px; color: #7f8c8d; display: flex; align-items: center; gap: 5px;">
+                                <span>班級代碼：</span>
+                                <span id="code-${cls.id}" style="background-color: #f1c40f; color: #fff; padding: 2px 5px; border-radius: 3px; font-weight: bold;">
+                                    ${cls.class_code}
+                                </span>
+                                <button onclick="copyCode('${cls.class_code}')" title="複製邀請碼" style="background: none; border: none; cursor: pointer; font-size: 1em;">📋</button>
+                                <button onclick="regenerateCode(${cls.id})" title="產生新代碼" style="background: none; border: none; cursor: pointer; font-size: 1em;">🔄</button>
+                            </div>
+                            <div style="margin-top: 5px; color: #7f8c8d;">學生人數：${cls.student_count} 人</div>
+                            <div style="margin-top: 15px;">
+                                <button onclick="openStudentModal(${cls.id}, '${cls.name}')" style="background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 0.9em;">管理學生</button>
+                            </div>
+                            <button onclick="deleteClass(${cls.id})" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #e74c3c; cursor: pointer;" title="刪除班級">🗑️</button>
+                        </div>
+                    `).join('');
+
+                    // 更新概覽數據
+                    document.querySelector('.stat-number').textContent = data.classes.length;
+                }
+            } catch (error) {
+                console.error('Error loading classes:', error);
+            }
+        }
+
+        async function createClass() {
+            const name = document.getElementById('newClassName').value.trim();
+            if (!name) {
+                alert('請輸入班級名稱');
+                return;
+            }
+
+            try {
+                const response = await fetch("{{ url_for('core.create_class') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: name })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    closeCreateClassModal();
+                    loadClasses(); // 重新載入列表
+                } else {
+                    alert(data.message || '建立失敗');
+                }
+            } catch (error) {
+                console.error('Error creating class:', error);
+                alert('發生錯誤，請稍後再試');
+            }
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert('邀請碼已複製！');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                alert('複製失敗，請手動複製。');
+            });
+        }
+
+        async function regenerateCode(classId) {
+            if (!confirm('確定要產生新的邀請碼嗎？舊的代碼將會失效。')) {
+                return;
+            }
+            try {
+                const url = "{{ url_for('core.regenerate_class_code', class_id=0) }}".replace('0', classId);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    const codeSpan = document.getElementById(`code-${classId}`);
+                    if (codeSpan) {
+                        codeSpan.textContent = data.new_code;
+                        // Also update the copy button's onclick handler if necessary, though in this structure it's not needed
+                        alert('新的邀請碼已產生！');
+                        loadClasses(); // Easiest way to refresh all data including copy button onclick
+                    }
+                } else {
+                    alert(data.message || '產生新碼失敗');
+                }
+            } catch (error) {
+                console.error('Error regenerating code:', error);
+                alert('操作失敗，請稍後再試');
+            }
+        }
+
+
+        let currentClassId = null;
+
+        function openStudentModal(classId, className) {
+            currentClassId = classId;
+            document.getElementById('studentModalTitle').textContent = `管理學生 - ${className}`;
+            document.getElementById('studentModal').style.display = 'flex';
+            loadClassStudents(classId);
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').style.display = 'none';
+            document.getElementById('newStudentUsername').value = '';
+            document.getElementById('newStudentPassword').value = '';
+            currentClassId = null;
+        }
+
+        async function loadClassStudents(classId) {
+            const tbody = document.getElementById('studentListBody');
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px;">載入中...</td></tr>';
+
+            try {
+                const url = "{{ url_for('core.get_class_students', class_id=0) }}".replace('0', classId);
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.students.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 20px; color: #7f8c8d;">目前沒有學生</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = data.students.map(s => `
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;">${s.username}</td>
+                            <td style="padding: 10px;">${s.created_at}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: red;">${data.message}</td></tr>`;
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; color: red;">載入失敗</td></tr>';
+            }
+        }
+
+        async function addStudent() {
+            if (!currentClassId) return;
+
+            const usernameInput = document.getElementById('newStudentUsername');
+            const passwordInput = document.getElementById('newStudentPassword');
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (!username || !password) {
+                alert('請輸入帳號和密碼');
+                return;
+            }
+
+            try {
+                const url = "{{ url_for('core.add_student_to_class', class_id=0) }}".replace('0', currentClassId);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('學生新增成功！');
+                    usernameInput.value = '';
+                    passwordInput.value = '';
+                    loadClassStudents(currentClassId); // 重新載入列表
+                    loadClasses(); // 更新班級人數
+                } else {
+                    alert(data.message || '新增失敗');
+                }
+            } catch (error) {
+                console.error('Error adding student:', error);
+                alert('發生錯誤，請稍後再試');
+            }
+        }
+
+        async function uploadStudentExcel() {
+            if (!currentClassId) return;
+
+            const fileInput = document.getElementById('studentExcelFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('請選擇 Excel 檔案');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Show loading state
+            const btn = document.querySelector('button[onclick="uploadStudentExcel()"]');
+            const originalText = btn ? btn.textContent : '上傳 Excel';
+            if (btn) {
+                btn.textContent = '處理中...';
+                btn.disabled = true;
+            }
+
+            try {
+                const url = "{{ url_for('core.upload_students_excel', class_id=0) }}".replace('0', currentClassId);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    fileInput.value = ''; // Clear input
+                    loadClassStudents(currentClassId); // Reload list
+                    loadClasses(); // Update counts
+                } else {
+                    alert(data.message || '上傳失敗');
+                }
+            } catch (error) {
+                console.error('Error uploading Excel:', error);
+                alert('發生錯誤，請稍後再試');
+            } finally {
+                if (btn) {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        async function deleteClass(classId) {
+            if (!confirm('確定要刪除這個班級嗎？此動作無法復原！')) return;
+
+            try {
+                // 建構刪除 URL
+                const deleteUrl = "{{ url_for('core.delete_class', class_id=0) }}".replace('0', classId);
+
+                const response = await fetch(deleteUrl, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    loadClasses(); // 重新載入列表
+                } else {
+                    alert(data.message || '刪除失敗');
+                }
+            } catch (error) {
+                console.error('Error deleting class:', error);
+                alert('發生錯誤，請稍後再試');
+            }
+        }
+    </script>
+</body>
+
+</html>

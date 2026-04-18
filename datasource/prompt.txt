@@ -1,0 +1,62 @@
+仿照 skills/jh_positive_negative_def.py 這個程式 參考 skill_info 裡面的資料 生成以下所有技能對應的 python檔案 我們有一個skill_curriculum.difficulty_level的欄位 如果傳入是1 就把係數跟答案都設為整數. 如果是2則沒有限制 
+
+仿照 skills/jh_positive_negative_def.py 這個程式 參考 skill_info 裡面的資料 生成以下所有技能對應的 python檔案
+
+
+
+仿照 skills/jh_positive_negative_def.py 這個程式 設計一個jh_positive_negative_def.py	Positive & Negative Numbers	正負數與相反量	整數	熟練辨識生活中的相反量，並使用正、負號表示。	text	分析學生答案：{user_answer}，正確答案：{correct_answer}。如果錯誤，提醒學生「收入」是 +，「支出」是 -；「高於」是 +，「低於」是 -。 遵循功文式「精熟學習 (Mastery Learning)」原則,使用對象是國中生或著程度較低的高中高職生，數字與答案都為整數。
+
+
+
+規則一樣 這是這個系統的使用者主要會使用的部分 依功文數學的精神 將單元(技能)切得更細更清楚 幫助學生從及格變不及格 接著是技職高中的數學C2 我上傳整本課本給你分析 盡量共用skill 其他欄位如下 skill_curriculum.curriculum="vocational" skill_curriculum.grade="10" skill_curriculum.volume="數學C2"
+
+規則一樣 這是這個系統的使用者主要會使用的部分 依功文數學的精神 將單元(技能)切得更細更清楚 幫助學生從及格變不及格 接著是國中數學第一冊 我上傳整本課本給你分析 盡量共用skill 其他欄位如下 skill_curriculum.curriculum="junior_high" skill_curriculum.grade="7" skill_curriculum.volume="數學1上"
+
+
+
+規則一樣 這是這個系統的使用者主要會使用的部分 依功文數學的精神 將單元(技能)切得更細更清楚 幫助學生從及格變不及格 接著是國中數學3下 我上傳整本課本給你分析 盡量共用skill 其他欄位如下 skill_curriculum.curriculum="junior_high" skill_curriculum.grade="9" skill_curriculum.volume="數學3下" 我會分兩部分上傳 第一部分傳完先不用顯示 等到第二部分都傳完再一起顯示
+
+
+您好，我正在開發一個以「功文式教育 (Kumon method)」為核心理念的個人化數學線上學習網站。請您扮演一位精通教育內容設計與資料庫結構化的專家。
+
+我的目標是請您分析我稍後提供的高中數學課本內容（各年級、各分冊的目錄與章節），並幫我生成兩個關鍵資料表的內容：skills_info 和 skill_curriculum。
+
+專案核心理念：
+
+本網站遵循功文式「精熟學習 (Mastery Learning)」原則：
+
+細分知識點：將大的數學概念（如「多項式」）拆解成一系列可獨立練習的、細小的「技能 (Skill)」。
+個人化進度：每個學生針對每個技能都有自己的「等級 (Level)」。
+晉級與降級：學生必須在某個等級下「連續答對」指定數量的題目才能晉級到下一等級。若「連續答錯」數次，則會降級，回到更基礎的題目進行鞏固，以建立信心並避免挫折感。
+您的任務：
+
+請根據我提供的課本內容，分析並拆解出最小的、可練習的知識單元，然後為這些單元生成符合以下兩個資料表結構的資料。請以表格形式輸出，以便我能直接複製貼上到 Excel 或 CSV 檔案中。
+
+資料表一：skills_info (技能總目錄)
+這個資料表定義了系統中所有「技能」的靜態屬性。
+
+欄位名稱 (Column)	說明與生成要求
+skill_id	技能的唯一英文 ID。請使用小寫英文字母和底線 _ 組成，必須簡潔且有意義。例如：remainder_theorem, vector_dot_product。
+skill_en_name	技能的英文名稱。首字大寫。例如：Remainder Theorem。
+skill_ch_name	技能的中文顯示名稱。請使用課本上的標準術語。例如：「餘式定理」。
+category	技能所屬的大類別。例如：「多項式」、「三角函數」、「向量」、「排列組合」。
+description	對此技能的簡短描述。用一句話說明這個技能的學習目標。例如：「熟練使用餘式定理快速求得多項式 f(x) 除以一次式 ax+b 的餘式」。
+input_type	題目作答類型。如果這個技能的題目主要是計算或選擇題，請填 text。如果主要是繪圖題（如函數圖形、不等式區域），請填 handwriting。
+gemini_prompt	給 AI 助教的提示詞模板。這非常重要。請生成一段針對此技能的提示，用於分析學生的錯誤。模板中必須包含 {user_answer} 和 {correct_answer} 變數。例如：「分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生餘式定理 f(x) 除以 ax+b 的餘式為 f(-b/a) 的概念。」
+consecutive_correct_required	晉級門檻。預設填 3 即可。
+is_active	是否啟用。預設填 TRUE 即可。
+order_index	排序索引。請根據知識點的學習順序，由小到大給定一個數字，例如從 10 開始，間隔 10 (10, 20, 30...)。
+資料表二：skill_curriculum (技能與課程的對應關係)
+這個資料表將上述的「技能」對應到具體的課綱、年級、冊、章、節。一個技能可能會出現在多個課程中。
+
+欄位名稱 (Column)	說明與生成要求
+skill_id	對應到 skills_info 的技能 ID。
+curriculum	課綱。請根據課本是給普通高中還是技術型高中，填寫 general (普高) 或 vocational (技高)。
+grade	年級。請填寫 10, 11, 12 分別代表高一、二、三。
+volume	冊別。請填寫課本的冊別名稱，例如：「第一冊」、「數A」、「數B」、「數甲」、「數乙」。
+chapter	章。請填寫完整的章名稱，例如：「第一章 多項式函數」。
+section	節。請填寫完整的節名稱，例如：「1-2 餘式定理與因式定理」。
+paragraph	段 (可選)。如果節下面還有更細的分類，請填寫，否則留空。例如：「(一) 餘式定理」。
+display_order	顯示順序。在同一個章節中，技能的顯示順序，由小到大排序，例如 10, 20, 30...。
+difficulty_level	難易度。預設填 1 即可。
+請您嚴格按照上述兩個表格的結構和要求，為我生成資料。我將會提供課本的目錄結構給您。

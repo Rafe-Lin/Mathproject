@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECG Backend Workflow Diagram</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            border-radius: 8px;
+        }
+        h1 { margin-bottom: 20px; color: #333; }
+        .instructions { margin-bottom: 20px; color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>SECG Backend Workflow Diagram</h1>
+    <div class="instructions">
+        Right-click the diagram below to save as PNG, or use a screenshot tool.
+        <br>
+        (Ensure the diagram is fully rendered before capturing)
+    </div>
+    <div class="container">
+        <div class="mermaid">
+graph TD
+    %% Define Styles
+    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef process fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef ai fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef db fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef output fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef human fill:#ffebee,stroke:#c62828,stroke-width:2px;
+
+    %% --- Layer 1: Input & Preprocessing (Module 1) ---
+    subgraph Input_Layer ["1. 輸入處理與結構化 (Input & Preprocessing)"]
+        direction TB
+        UserFile["User Upload<br/>(PDF / DOCX)"]:::input
+        Router{"File Type?"}:::process
+        
+        %% PDF Path
+        subgraph PDF_Process ["PDF Processing"]
+            PyFit["PyMuPDF (fitz)<br/>Extract Text"]:::process
+            PyTes["PyTesseract<br/>OCR Images"]:::process
+        end
+        
+        %% Word Path
+        subgraph Word_Process ["Word Processing"]
+            Pandoc["Pypandoc<br/>DOCX to MD"]:::process
+            Wand["Wand (ImageMagick)<br/>Vector to PNG"]:::process
+            Clean["Regex Cleaning<br/>Fix LaTeX"]:::process
+        end
+
+        %% Common
+        Config["System Prompt<br/>Config"]:::input
+        GeminiStruct{{"Gemini API<br/>Parse Structure"}}:::ai
+        Sanitize["JSON Sanitizer<br/>Fix Syntax"]:::process
+    end
+
+    %% --- Layer 2: Persistence & Human-in-the-Loop ---
+    subgraph Data_Layer ["2. 資料持久化與人工校正 (Persistence & Maintenance)"]
+        direction TB
+        DB_Main[("SQLite / PostgreSQL<br/>SkillInfo / Examples")]:::db
+        
+        subgraph Admin_UI ["Admin Dashboard (Human-in-the-Loop)"]
+            AdminEx["Ex Maintenance<br/>(MathJax Preview)"]:::human
+            AdminGraph["Graph Maintenance<br/>(Select2 Search)"]:::human
+            AdminSkill["Skill Console<br/>(Regen Code)"]:::human
+        end
+    end
+
+    %% --- Layer 3: Core AI Pipeline (Modules 2, 3, 4) ---
+    subgraph Core_Pipeline ["3. 核心生成流水線 (Core AI Processing)"]
+        direction TB
+        
+        %% Module 2: Logic Gen
+        subgraph Logic_Gen ["Module 2: Code Sync"]
+            Scanner["Diff Scanner<br/>(DB vs Files)"]:::process
+            PromptGen["Prompt Builder"]:::process
+            GeminiCode{{"Gemini API<br/>Write Python"}}:::ai
+            AST["AST Validator<br/>Check Syntax"]:::process
+            PyFile["Write .py File"]:::output
+        end
+
+        %% Module 3: Enrichment
+        subgraph Enrich_Gen ["Module 3: Socratic Enrichment"]
+            FetchContext["Fetch Examples<br/>(Few-Shot)"]:::process
+            GeminiCoach{{"Gemini API<br/>Role: Kumon Coach"}}:::ai
+            UpdatePrompt["Update DB<br/>(Suggested Prompts)"]:::process
+        end
+
+        %% Module 4: Knowledge Graph
+        subgraph Graph_Gen ["Module 4: Knowledge Graph"]
+            DepAnalysis["Dependency Analysis"]:::process
+            GeminiGraph{{"Gemini API<br/>Predict Prereqs"}}:::ai
+            UpdateRel["Update SkillPrereqs"]:::process
+        end
+    end
+
+    %% --- Relationships ---
+    UserFile --> Router
+    Router -- ".pdf" --> PyFit & PyTes
+    Router -- ".docx" --> Pandoc & Wand
+    Pandoc --> Clean
+    Wand --> PyTes
+    
+    PyFit & PyTes & Clean --> GeminiStruct
+    Config --> GeminiStruct
+    GeminiStruct --> Sanitize --> DB_Main
+    
+    %% Human Loop
+    DB_Main <--> AdminEx
+    DB_Main <--> AdminGraph
+    DB_Main <--> AdminSkill
+    
+    %% Sync Logic
+    DB_Main --> Scanner
+    Scanner -- "Missing" --> PromptGen
+    PromptGen --> GeminiCode --> AST
+    AST -- "Valid" --> PyFile
+    AST -- "Invalid" --> GeminiCode
+    
+    %% Enrich Logic
+    DB_Main --> FetchContext
+    FetchContext --> GeminiCoach --> UpdatePrompt --> DB_Main
+    
+    %% Graph Logic
+    DB_Main --> DepAnalysis
+    DepAnalysis --> GeminiGraph --> UpdateRel --> DB_Main
+        </div>
+    </div>
+</body>
+</html>

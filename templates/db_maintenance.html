@@ -1,0 +1,431 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/db_maintenance.html
+功能說明 (Description): 資料庫維護與備份
+後端呼叫 (Backend Call): core/routes/admin.py -> db_maintenance
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料庫管理 - 自適應性教學系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar 樣式改由 _admin_navbar.html 提供，避免頁面覆寫 */
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .alert-error,
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffeeba;
+        }
+
+        /* Card 樣式 (參考 Filter Bar 與 Table 外框) */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d68910;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        input[type="file"] {
+            border: 1px solid #ced4da;
+            padding: 8px;
+            border-radius: 4px;
+            width: 100%;
+            background: #fff;
+        }
+
+        /* Operation Blocks */
+        .operation-grid {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .operation-item {
+            flex: 1;
+            min-width: 300px;
+            background: #fdfdfd;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .operation-item form {
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .operation-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .operation-item h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1em;
+        }
+
+        .operation-item p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+
+        /* Modal (從 admin_curriculum.html 複製並調整) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            /* Fallback */
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-header-custom {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .modal-header-custom h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        .modal-footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-database-gear" style="color: #34495e;"></i> 資料庫表格管理</h1>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-info-circle-fill" style="margin-right: 5px;"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-tools"></i> 資料庫全域操作 (Database Operations)
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" style="margin-bottom: 25px;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    請謹慎使用以下功能，特別是「匯入」與「清空」功能。操作前建議先進行備份（匯出）。
+                </div>
+
+                <div class="operation-grid">
+                    <!-- 匯出資料庫 -->
+                    <div class="operation-item" style="border-top: 3px solid #3498db;">
+                        <h3><i class="bi bi-download" style="color: #3498db;"></i> 備份資料庫</h3>
+                        <p>下載當前的資料庫所有表格為 Excel 檔案 (.xlsx)。可用於備份或遷移數據。</p>
+                        <form action="{{ url_for('core.db_maintenance') }}" method="POST">
+                            <input type="hidden" name="action" value="export_db">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i class="bi bi-cloud-download"></i> 一鍵匯出 (下載 Excel)
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 匯入資料庫 -->
+                    <div class="operation-item" style="border-top: 3px solid #f39c12;">
+                        <h3><i class="bi bi-upload" style="color: #f39c12;"></i> 資料匯入 (Excel/CSV)</h3>
+                        <form action="{{ url_for('core.upload_db') }}" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="dbFile">選擇備份檔案 (.xlsx 或 .csv)</label>
+                                <input type="file" id="dbFile" name="file" accept=".csv, .xlsx" required>
+                                <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
+                                    <strong>Excel (.xlsx) 模式：</strong> 每個 Sheet 名稱需對應資料庫 Table 名稱 (例如:
+                                    <code>users</code>, <code>skills_info</code>)。<br>
+                                    若 Sheet 名稱在資料庫中找不到，將會被自動略過。
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-warning" style="width: 100%;">
+                                <i class="bi bi-cloud-upload"></i> 開始匯入
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 清空資料庫 -->
+                    <div class="operation-item" style="border-top: 3px solid #e74c3c;">
+                        <h3><i class="bi bi-trash" style="color: #e74c3c;"></i> 重置資料庫</h3>
+                        <p>清空所有表格中的資料。<br><strong style="color: #e74c3c;">警告：此操作無法復原！</strong></p>
+                        <form action="{{ url_for('core.db_maintenance') }}" method="POST"
+                            onsubmit="event.preventDefault(); showModal('超級警告！\n\n您確定要「清空整個資料庫」的所有資料嗎？\n\n此操作將刪除所有學生資料、進度紀錄等，且「無法復原」！\n\n請務必確認您已經備份了資料庫！', this, true);">
+                            <input type="hidden" name="action" value="clear_all_data">
+                            <button type="submit" class="btn btn-danger" style="width: 100%;">
+                                <i class="bi bi-exclamation-octagon"></i> 一鍵清空 (危險)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal for Confirmation -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header-custom">
+                <h3 id="modalTitle">確認操作</h3>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage" style="color: #555; font-size: 1.1em; line-height: 1.6;"></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="btn btn-secondary">取消</button>
+                <button id="confirmBtn" class="btn btn-primary">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let formToSubmit = null;
+
+        function showModal(message, form, isDanger = false) {
+            document.getElementById('modalMessage').innerText = message;
+            formToSubmit = form;
+
+            const confirmBtn = document.getElementById('confirmBtn');
+            if (isDanger) {
+                confirmBtn.className = 'btn btn-danger';
+                confirmBtn.innerHTML = '<i class="bi bi-check-lg"></i> 確定刪除';
+            } else {
+                confirmBtn.className = 'btn btn-primary';
+                confirmBtn.innerHTML = '<i class="bi bi-check-lg"></i> 確定';
+            }
+
+            confirmBtn.onclick = function () {
+                if (formToSubmit) {
+                    formToSubmit.submit();
+                }
+                closeModal();
+            };
+
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'flex'; // Use flex for centering if we added that css, otherwise block
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            formToSubmit = null;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // 雖然這個頁面目前沒有用到以下兩個函式（因為被移除了或是在其他區塊？原檔沒有看到HTML調用它們，只有JS定義），
+        // 但為了保持相容性，予以保留。若原檔案有其他部分隱藏代碼我沒看到的話。
+        // 原檔案只有三個功能區塊。
+
+        function handleBatchUpload(event) {
+            event.preventDefault();
+            const files = document.getElementById('batch_files').files;
+            if (files.length === 0) return false;
+
+            showModal(`您確定要批次匯入 ${files.length} 個檔案到「skill_curriculum」資料庫嗎？`, event.target, false);
+            return false;
+        }
+
+        function handleBatchSkillsInfoUpload(event) {
+            event.preventDefault();
+            const files = document.getElementById('batch_skills_files').files;
+            if (files.length === 0) return false;
+
+            showModal(`您確定要批次處理 ${files.length} 個檔案來更新或新增「skills_info」資料庫嗎？`, event.target, false);
+            return false;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2424 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "數與量",
+    "l2_unit": "分數的運算",
+    "l2_unit_id": "JH_NUM_FRAC_OPS"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_NUM",
+      "level": "L1",
+      "name": "數與量",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS",
+      "level": "L2",
+      "name": "分數的運算",
+      "parent_id": "L1_JH_NUM"
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01",
+      "level": "L3",
+      "name": "因數與倍數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習因數與倍數的基本概念，包含正負整數的因數與倍數，以及1和0的特殊情況。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_a",
+      "level": "L4",
+      "name": "正因數與正倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解正整數的因數與倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_b",
+      "level": "L4",
+      "name": "負因數與負倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解負整數的因數與倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_c",
+      "level": "L4",
+      "name": "1的因數與倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解1是任何整數的因數，任何整數是1的倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_d",
+      "level": "L4",
+      "name": "0的因數與倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "理解0不是任何整數的因數，0是任何非零整數的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_01_e",
+      "level": "L4",
+      "name": "判斷因數與倍數關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_01",
+      "description": "根據a÷b=c或a=b×c判斷a、b、c之間的因數與倍數關係。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02",
+      "level": "L3",
+      "name": "2、5的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習判斷一個數是否為2或5的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_a",
+      "level": "L4",
+      "name": "2的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "根據個位數字判斷是否為2的倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_b",
+      "level": "L4",
+      "name": "5的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "根據個位數字判斷是否為5的倍數。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_02_c",
+      "level": "L4",
+      "name": "判斷數字是否為2或5的倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_02",
+      "description": "應用2和5的倍數判別法判斷給定數字是否為其倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03",
+      "level": "L3",
+      "name": "4的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習判斷一個數是否為4的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_a",
+      "level": "L4",
+      "name": "4的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "根據末兩位數字判斷是否為4的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_03_b",
+      "level": "L4",
+      "name": "判斷數字是否為4的倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_03",
+      "description": "應用4的倍數判別法判斷給定數字是否為其倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_04",
+      "level": "L3",
+      "name": "9的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習判斷一個數是否為9的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_04_a",
+      "level": "L4",
+      "name": "9的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_04",
+      "description": "根據各位數字和判斷是否為9的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_04_b",
+      "level": "L4",
+      "name": "判斷數字是否為9的倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_04",
+      "description": "應用9的倍數判別法判斷給定數字是否為其倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05",
+      "level": "L3",
+      "name": "3的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習判斷一個數是否為3的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05_a",
+      "level": "L4",
+      "name": "3的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_05",
+      "description": "根據各位數字和判斷是否為3的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_05_b",
+      "level": "L4",
+      "name": "判斷數字是否為3的倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_05",
+      "description": "應用3的倍數判別法判斷給定數字是否為其倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_06",
+      "level": "L3",
+      "name": "11的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習判斷一個數是否為11的倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_06_a",
+      "level": "L4",
+      "name": "11的倍數判別法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_06",
+      "description": "根據奇數位數字和與偶數位數字和的差判斷是否為11的倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_06_b",
+      "level": "L4",
+      "name": "判斷數字是否為11的倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_06",
+      "description": "應用11的倍數判別法判斷給定數字是否為其倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07",
+      "level": "L3",
+      "name": "質數與合數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習質數與合數的定義，並區分1的特殊性。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_a",
+      "level": "L4",
+      "name": "質數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "理解質數的定義：大於1且只有1和本身兩個因數的數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_b",
+      "level": "L4",
+      "name": "合數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "理解合數的定義：大於1且除了1和本身以外還有其他因數的數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_c",
+      "level": "L4",
+      "name": "1不是質數也不是合數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "理解1的特殊性，既非質數也非合數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_d",
+      "level": "L4",
+      "name": "最小的質數與唯一的偶質數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "認識2是最小的質數，也是唯一的偶質數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_07_e",
+      "level": "L4",
+      "name": "判斷質數與合數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_07",
+      "description": "判斷一個正整數是質數還是合數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08",
+      "level": "L3",
+      "name": "質數篩檢法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習埃拉托賽尼篩法找出一定範圍內的質數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_08_a",
+      "level": "L4",
+      "name": "篩選1到100的質數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_08",
+      "description": "應用篩法找出1到100之間的所有質數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09",
+      "level": "L3",
+      "name": "質因數與質因數分解",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習質因數的定義、質因數分解及標準分解式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_a",
+      "level": "L4",
+      "name": "質因數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "理解質因數是因數也是質數的數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_b",
+      "level": "L4",
+      "name": "質因數分解",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "將一個合數分解成質因數的連乘積。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_c",
+      "level": "L4",
+      "name": "標準分解式",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "將質因數分解寫成指數形式，並將相異質因數由小排到大。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_09_d",
+      "level": "L4",
+      "name": "將數以標準分解式表示並寫出質因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_09",
+      "description": "將給定數字進行質因數分解並寫出標準分解式，同時列出所有質因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10",
+      "level": "L3",
+      "name": "質因數分解的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用質因數分解解決實際問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10_a",
+      "level": "L4",
+      "name": "拼出不同形狀的矩形數量",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_10",
+      "description": "利用因數對判斷一個面積可拼出多少種不同形狀的矩形。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10_b",
+      "level": "L4",
+      "name": "利用質因數分解判斷生日",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_10",
+      "description": "透過質因數分解將數字拆解，解決生日判斷問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_10_c",
+      "level": "L4",
+      "name": "利用質因數分解設計密碼",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_10",
+      "description": "應用質因數分解的結果設計密碼。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11",
+      "level": "L3",
+      "name": "公因數與最大公因數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習公因數、最大公因數及互質的定義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_a",
+      "level": "L4",
+      "name": "公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "理解幾個整數共同的因數稱為公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_b",
+      "level": "L4",
+      "name": "最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "理解公因數中最大的數稱為最大公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_c",
+      "level": "L4",
+      "name": "公因數與最大公因數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "理解所有公因數都是最大公因數的因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_11_d",
+      "level": "L4",
+      "name": "互質",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_11",
+      "description": "理解最大公因數為1的兩個整數互稱為互質數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12",
+      "level": "L3",
+      "name": "短除法求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用短除法求兩個或三個整數的最大公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12_a",
+      "level": "L4",
+      "name": "求兩數的最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_12",
+      "description": "利用短除法找出兩個整數的最大公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_12_b",
+      "level": "L4",
+      "name": "求三數的最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_12",
+      "description": "利用短除法找出三個整數的最大公因數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_13",
+      "level": "L3",
+      "name": "標準分解式求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用標準分解式求最大公因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_13_a",
+      "level": "L4",
+      "name": "利用指數判別因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_13",
+      "description": "透過質因數的次方關係判斷一個數是否為另一個數的因數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_13_b",
+      "level": "L4",
+      "name": "利用標準分解式求最大公因數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_13",
+      "description": "將數寫成標準分解式後，找出共同質因數取次方最小者相乘。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14",
+      "level": "L3",
+      "name": "公倍數與最小公倍數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習公倍數與最小公倍數的定義。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14_a",
+      "level": "L4",
+      "name": "公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_14",
+      "description": "理解幾個整數共同的倍數稱為公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14_b",
+      "level": "L4",
+      "name": "最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_14",
+      "description": "理解公倍數中最小的數稱為最小公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_14_c",
+      "level": "L4",
+      "name": "公倍數與最小公倍數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_14",
+      "description": "理解所有公倍數都是最小公倍數的倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15",
+      "level": "L3",
+      "name": "短除法求最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用短除法求兩個或三個整數的最小公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15_a",
+      "level": "L4",
+      "name": "求兩數的最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_15",
+      "description": "利用短除法找出兩個整數的最小公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_15_b",
+      "level": "L4",
+      "name": "求三數的最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_15",
+      "description": "利用短除法找出三個整數的最小公倍數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16",
+      "level": "L3",
+      "name": "標準分解式求最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習利用標準分解式求最小公倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_a",
+      "level": "L4",
+      "name": "利用指數判別倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "透過質因數的次方關係判斷一個數是否為另一個數的倍數。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_16_b",
+      "level": "L4",
+      "name": "利用標準分解式求最小公倍數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_16",
+      "description": "將數寫成標準分解式後，找出所有質因數取次方最大者相乘。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_17",
+      "level": "L3",
+      "name": "最大公因數與最小公倍數的關係",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習兩個正整數的乘積與其最大公因數、最小公倍數的關係。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_17_a",
+      "level": "L4",
+      "name": "兩數乘積與其GCD、LCM的關係",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_17",
+      "description": "理解兩正整數的乘積等於其最大公因數與最小公倍數的乘積。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18",
+      "level": "L3",
+      "name": "最大公因數的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用最大公因數解決分裝、剪裁、間隔等實際問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_a",
+      "level": "L4",
+      "name": "分裝問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "解決將不同數量的物品平均分裝成最多組的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_b",
+      "level": "L4",
+      "name": "剪裁問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "解決將長方形剪裁成最大相同正方形的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_18_c",
+      "level": "L4",
+      "name": "間隔問題 (GCD)",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_18",
+      "description": "解決在長方形周圍種樹，求最大樹距及棵數的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19",
+      "level": "L3",
+      "name": "最小公倍數的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "應用最小公倍數解決週期、拼合、間隔等實際問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19_a",
+      "level": "L4",
+      "name": "週期問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_19",
+      "description": "解決不同週期事件再次同時發生的時間問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19_b",
+      "level": "L4",
+      "name": "圖形拼合問題",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_19",
+      "description": "解決將不同尺寸的長方形拼合成最小正方形的問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_19_c",
+      "level": "L4",
+      "name": "間隔問題 (LCM)",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_19",
+      "description": "解決在一定長度上設置路燈，求不需要拆除路燈的間距及數量問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_20",
+      "level": "L3",
+      "name": "負分數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習負分數的表示法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_20_a",
+      "level": "L4",
+      "name": "負分數的表示法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_20",
+      "description": "理解負分數的不同表示方式，如-a/b, a/-b, -a/-b。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21",
+      "level": "L3",
+      "name": "等值分數與最簡分數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習等值分數、擴分、約分及最簡分數的定義與化簡。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_a",
+      "level": "L4",
+      "name": "擴分與約分",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "理解分數分子分母同乘以或同除以非零整數，分數值不變。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_b",
+      "level": "L4",
+      "name": "最簡分數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "理解分子和分母互質的分數為最簡分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_21_c",
+      "level": "L4",
+      "name": "將分數化為最簡分數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_21",
+      "description": "將分數約分至最簡形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22",
+      "level": "L3",
+      "name": "分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習比較正分數和負分數的大小。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22_a",
+      "level": "L4",
+      "name": "正分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_22",
+      "description": "透過通分或通分子比較正分數的大小。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_22_b",
+      "level": "L4",
+      "name": "負分數的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_22",
+      "description": "透過絕對值比較負分數的大小，絕對值越大值越小。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23",
+      "level": "L3",
+      "name": "分數的加減運算規則",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數加減運算的基本規則，包含同分母、異分母、去括號及帶分數的運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_a",
+      "level": "L4",
+      "name": "同分母分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "執行同分母分數的加減運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_b",
+      "level": "L4",
+      "name": "異分母分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "執行異分母分數的加減運算，需先通分。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_c",
+      "level": "L4",
+      "name": "去括號規則",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "應用去括號規則簡化分數加減運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_23_d",
+      "level": "L4",
+      "name": "帶分數的加減",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_23",
+      "description": "執行帶分數的加減運算，可化為假分數或整數部分與分數部分分開運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24",
+      "level": "L3",
+      "name": "分數的乘法運算規則",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數乘法的基本規則，包含真假分數、帶分數、負分數及連乘運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_a",
+      "level": "L4",
+      "name": "真、假分數相乘",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "執行真分數與假分數的乘法運算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_b",
+      "level": "L4",
+      "name": "含帶分數相乘",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "執行帶分數的乘法運算，需先化為假分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_c",
+      "level": "L4",
+      "name": "負分數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "應用符號運算規則執行負分數的乘法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_24_d",
+      "level": "L4",
+      "name": "分數的連乘運算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_24",
+      "description": "執行多個分數的連乘運算，並應用交換律、結合律及符號規則。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25",
+      "level": "L3",
+      "name": "倒數",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習倒數的定義及求法，並理解0沒有倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25_a",
+      "level": "L4",
+      "name": "倒數的定義",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_25",
+      "description": "理解分子分母對調的數互為倒數，且乘積為1。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25_b",
+      "level": "L4",
+      "name": "求一個數的倒數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_25",
+      "description": "找出給定分數、整數或帶分數的倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_25_c",
+      "level": "L4",
+      "name": "0沒有倒數",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_25",
+      "description": "理解0不能作為分母，因此沒有倒數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_26",
+      "level": "L3",
+      "name": "分數的除法運算規則",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數除法的基本規則，包含符號運算及帶分數的除法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_26_a",
+      "level": "L4",
+      "name": "分數除法的符號運算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_26",
+      "description": "應用整數除法的符號運算規則於分數除法。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_26_b",
+      "level": "L4",
+      "name": "含帶分數的除法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_26",
+      "description": "執行帶分數的除法運算，需先化為假分數。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27",
+      "level": "L3",
+      "name": "分數的四則混合運算",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數四則混合運算的規則及應用。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27_a",
+      "level": "L4",
+      "name": "分數四則混合運算規則",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_27",
+      "description": "應用整數四則運算規則、乘法對加減法的分配律於分數運算。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_27_b",
+      "level": "L4",
+      "name": "分數四則混合運算應用",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_27",
+      "description": "應用分數四則混合運算解決實際問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_28",
+      "level": "L3",
+      "name": "分數的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習分數乘方的表示法與計算。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_28_a",
+      "level": "L4",
+      "name": "分數乘方的表示法",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_28",
+      "description": "將分數連乘記為分數的乘方形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_28_b",
+      "level": "L4",
+      "name": "分數乘方的計算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_28",
+      "description": "計算分數的乘方值。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29",
+      "level": "L3",
+      "name": "乘方的比較大小",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習比較分數乘方的大小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_a",
+      "level": "L4",
+      "name": "底數小於1的乘方比較",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "理解底數a<1時，n越大，a^n越小。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_29_b",
+      "level": "L4",
+      "name": "底數大於1的乘方比較",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_29",
+      "description": "理解底數a>1時，n越大，a^n越大。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_30",
+      "level": "L3",
+      "name": "同底數的乘法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習指數律am × an = am+n。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_30_a",
+      "level": "L4",
+      "name": "am × an = am+n",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_30",
+      "description": "應用同底數乘法規則計算分數乘方。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_31",
+      "level": "L3",
+      "name": "同底數的除法",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習指數律am ÷ an = am-n。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_31_a",
+      "level": "L4",
+      "name": "am ÷ an = am-n",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_31",
+      "description": "應用同底數除法規則計算分數乘方。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_32",
+      "level": "L3",
+      "name": "乘方的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習指數律(am)n = am×n。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_32_a",
+      "level": "L4",
+      "name": "(am)n = am×n",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_32",
+      "description": "應用乘方的乘方規則計算分數乘方。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_33",
+      "level": "L3",
+      "name": "兩數相乘的乘方",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習指數律(a×b)m = am×bm。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_33_a",
+      "level": "L4",
+      "name": "(a×b)m = am×bm",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_33",
+      "description": "應用兩數相乘的乘方規則計算分數乘方。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_34",
+      "level": "L3",
+      "name": "指數為0的意義",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "學習零指數的定義a^0=1。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_34_a",
+      "level": "L4",
+      "name": "a0 = 1",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_34",
+      "description": "理解任何非零數的零次方都等於1。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_35",
+      "level": "L3",
+      "name": "指數律的應用",
+      "parent_id": "JH_NUM_FRAC_OPS",
+      "description": "綜合應用所有指數律規則解決問題。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_NUM_FRAC_OPS_L3_35_a",
+      "level": "L4",
+      "name": "指數律混合運算",
+      "parent_id": "JH_NUM_FRAC_OPS_L3_35",
+      "description": "綜合運用同底數乘除、乘方的乘方、兩數相乘的乘方及零指數規則進行計算。",
+      "difficulty": 3
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_NUM",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_NUM",
+      "to_id": "JH_NUM_FRAC_OPS",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_06",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_06",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_08",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_08",
+      "to_id": "JH_NUM_FRAC_OPS_L3_08_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_12",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_12",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_13",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_13",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_15",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_15",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_16",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_16",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_17",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_20",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_20",
+      "to_id": "JH_NUM_FRAC_OPS_L3_20_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_22",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_22",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_27",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_27",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_29",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_29",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_30",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_30_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_31",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_31",
+      "to_id": "JH_NUM_FRAC_OPS_L3_31_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_32",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_32",
+      "to_id": "JH_NUM_FRAC_OPS_L3_32_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_33",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_33",
+      "to_id": "JH_NUM_FRAC_OPS_L3_33_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_34",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_34",
+      "to_id": "JH_NUM_FRAC_OPS_L3_34_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_35",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01_e",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_06",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_06_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_06_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07_e",
+      "to_id": "JH_NUM_FRAC_OPS_L3_08",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_08",
+      "to_id": "JH_NUM_FRAC_OPS_L3_08_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_08_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_10_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_12",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_12_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_12_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_13",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_13_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_13_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_15",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_15_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_15_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_16",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_16_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_16_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_17",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_17_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_18_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_19_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_20",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_20",
+      "to_id": "JH_NUM_FRAC_OPS_L3_20_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_20_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_22",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_22_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_22_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24_d",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25_c",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_27",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_27_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_27_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_29",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_29_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_29_b",
+      "to_id": "JH_NUM_FRAC_OPS_L3_30",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_30_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_31",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_31",
+      "to_id": "JH_NUM_FRAC_OPS_L3_31_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_31_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_32",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_32",
+      "to_id": "JH_NUM_FRAC_OPS_L3_32_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_32_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_33",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_33",
+      "to_id": "JH_NUM_FRAC_OPS_L3_33_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_33_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_34",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_34",
+      "to_id": "JH_NUM_FRAC_OPS_L3_34_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_34_a",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_35",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_01",
+      "type": "prerequisite",
+      "reason": "因數與倍數是整數的基本概念。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_02",
+      "type": "prerequisite",
+      "reason": "倍數判別法是因數與倍數的延伸應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_02",
+      "to_id": "JH_NUM_FRAC_OPS_L3_03",
+      "type": "prerequisite",
+      "reason": "延續倍數判別法的學習。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_03",
+      "to_id": "JH_NUM_FRAC_OPS_L3_04",
+      "type": "prerequisite",
+      "reason": "延續倍數判別法的學習。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_04",
+      "to_id": "JH_NUM_FRAC_OPS_L3_05",
+      "type": "prerequisite",
+      "reason": "延續倍數判別法的學習。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_05",
+      "to_id": "JH_NUM_FRAC_OPS_L3_06",
+      "type": "prerequisite",
+      "reason": "延續倍數判別法的學習。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_07",
+      "type": "prerequisite",
+      "reason": "質數與合數是因數與倍數的特殊分類。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_08",
+      "type": "prerequisite",
+      "reason": "質數篩檢法用於找出質數。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_07",
+      "to_id": "JH_NUM_FRAC_OPS_L3_09",
+      "type": "prerequisite",
+      "reason": "質因數分解基於質數概念。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_10",
+      "type": "prerequisite",
+      "reason": "質因數分解的實際應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_11",
+      "type": "prerequisite",
+      "reason": "公因數與最大公因數是因數概念的延伸。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_12",
+      "type": "prerequisite",
+      "reason": "短除法是求最大公因數的常用方法。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_13",
+      "type": "prerequisite",
+      "reason": "標準分解式是求最大公因數的另一種方法。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_01",
+      "to_id": "JH_NUM_FRAC_OPS_L3_14",
+      "type": "prerequisite",
+      "reason": "公倍數與最小公倍數是倍數概念的延伸。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_15",
+      "type": "prerequisite",
+      "reason": "短除法是求最小公倍數的常用方法。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_09",
+      "to_id": "JH_NUM_FRAC_OPS_L3_16",
+      "type": "prerequisite",
+      "reason": "標準分解式是求最小公倍數的另一種方法。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17",
+      "type": "prerequisite",
+      "reason": "探討最大公因數與最小公倍數之間的關係。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_17",
+      "type": "prerequisite",
+      "reason": "探討最大公因數與最小公倍數之間的關係。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_11",
+      "to_id": "JH_NUM_FRAC_OPS_L3_18",
+      "type": "prerequisite",
+      "reason": "最大公因數的實際應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_14",
+      "to_id": "JH_NUM_FRAC_OPS_L3_19",
+      "type": "prerequisite",
+      "reason": "最小公倍數的實際應用。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_20",
+      "type": "prerequisite",
+      "reason": "負分數概念建立在整數運算基礎上。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_20",
+      "to_id": "JH_NUM_FRAC_OPS_L3_21",
+      "type": "prerequisite",
+      "reason": "負分數也需要化為最簡分數。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_22",
+      "type": "prerequisite",
+      "reason": "比較分數大小需要等值分數和最簡分數的概念。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23",
+      "type": "prerequisite",
+      "reason": "分數加減運算需要整數運算和等值分數概念。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_23",
+      "type": "prerequisite",
+      "reason": "分數加減運算需要整數運算和等值分數概念。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24",
+      "type": "prerequisite",
+      "reason": "分數乘法運算需要整數運算和等值分數概念。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_21",
+      "to_id": "JH_NUM_FRAC_OPS_L3_24",
+      "type": "prerequisite",
+      "reason": "分數乘法運算需要整數運算和等值分數概念。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_25",
+      "type": "prerequisite",
+      "reason": "倒數概念與分數乘法緊密相關。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26",
+      "type": "prerequisite",
+      "reason": "分數除法定義為乘以倒數。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_25",
+      "to_id": "JH_NUM_FRAC_OPS_L3_26",
+      "type": "prerequisite",
+      "reason": "分數除法定義為乘以倒數。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_23",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27",
+      "type": "prerequisite",
+      "reason": "四則混合運算整合了加減乘除。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27",
+      "type": "prerequisite",
+      "reason": "四則混合運算整合了加減乘除。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_26",
+      "to_id": "JH_NUM_FRAC_OPS_L3_27",
+      "type": "prerequisite",
+      "reason": "四則混合運算整合了加減乘除。"
+    },
+    {
+      "from_id": "JH_ALG_EXP_BASIC",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28",
+      "type": "prerequisite",
+      "reason": "分數的乘方是指數律在分數上的應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_24",
+      "to_id": "JH_NUM_FRAC_OPS_L3_28",
+      "type": "prerequisite",
+      "reason": "分數的乘方是分數乘法的延伸。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28",
+      "to_id": "JH_NUM_FRAC_OPS_L3_29",
+      "type": "prerequisite",
+      "reason": "比較乘方大小是乘方概念的延伸。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_28",
+      "to_id": "JH_NUM_FRAC_OPS_L3_30",
+      "type": "prerequisite",
+      "reason": "指數律的第一個規則。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_31",
+      "type": "prerequisite",
+      "reason": "指數律的第二個規則，通常在乘法之後學習。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_32",
+      "type": "prerequisite",
+      "reason": "指數律的第三個規則。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_33",
+      "type": "prerequisite",
+      "reason": "指數律的第四個規則。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_31",
+      "to_id": "JH_NUM_FRAC_OPS_L3_34",
+      "type": "prerequisite",
+      "reason": "零指數的定義源於同底數除法中指數相減為零的情況。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_30",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "prerequisite",
+      "reason": "整合所有指數律規則進行應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_31",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "prerequisite",
+      "reason": "整合所有指數律規則進行應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_32",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "prerequisite",
+      "reason": "整合所有指數律規則進行應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_33",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "prerequisite",
+      "reason": "整合所有指數律規則進行應用。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS_L3_34",
+      "to_id": "JH_NUM_FRAC_OPS_L3_35",
+      "type": "prerequisite",
+      "reason": "整合所有指數律規則進行應用。"
+    }
+  ],
+  "warnings": [
+    "⚠️ L3 sequence 不完整：預期 34 條，實際 0 條。"
+  ],
+  "stats": {
+    "total_nodes": 120,
+    "total_edges": 281
+  }
+}

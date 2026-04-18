@@ -1,0 +1,191 @@
+# 知識圖譜視覺化功能實作計畫
+
+## 目標描述
+
+在自適應學習系統中新增知識圖譜視覺化功能，以樹狀圖形式展示知識點之間的前置關係（prerequisite relationships），並按年級和單元進行分類。此功能將幫助學生和教師清楚了解知識點的學習順序和依賴關係。
+
+## 需要使用者確認的事項
+
+> [!IMPORTANT]
+> **圖表庫選擇**：計畫使用 **D3.js** 來實作知識圖譜的樹狀視覺化。D3.js 提供強大的樹狀圖佈局（tree layout）功能，可以實現由上而下的層級結構展示。如果您偏好其他圖表庫（如 Vis.js、Cytoscape.js 等），請告知。
+
+> [!IMPORTANT]
+> **能力值顯示方式**：節點將顯示知識點名稱和學生的能力值。能力值來自 [StudentAbility](file:///c:/Users/NICK/Mathproject/models.py#1201-1220) 表，包含：
+> - **ability_a**：綜合能力 (0-200)
+> - **concept_u**：觀念能力 (0-100)
+> - **calculation_c**：計算熟練度 (0-100)
+> 
+> 節點顏色將根據綜合能力 `ability_a` 進行編碼：
+> - 🟢 綠色：已掌握 (ability_a >= 100)
+> - 🟡 黃色：學習中 (50 <= ability_a < 100)
+> - ⚪ 灰色：未開始 (ability_a < 50 或無記錄)
+
+## 提議的變更
+
+### 後端模組
+
+#### [NEW] [core/routes/knowledge_graph.py](file:///c:/Users/NICK/Mathproject/core/routes/knowledge_graph.py)
+
+新增知識圖譜路由模組，包含以下功能：
+
+- `GET /knowledge-graph` - 渲染知識圖譜頁面
+- `GET /api/knowledge-graph/data` - 提供知識圖譜的 JSON 資料
+  - 支援按 `curriculum`（課程類型）、`grade`（年級）、`volume`（冊別）、`chapter`（章節）篩選
+  - 查詢 [SkillPrerequisites](file:///c:/Users/NICK/Mathproject/models.py#611-622) 表獲取前置關係
+  - 查詢 [SkillCurriculum](file:///c:/Users/NICK/Mathproject/models.py#553-608) 表獲取課程分類資訊
+  - 查詢 [Progress](file:///c:/Users/NICK/Mathproject/models.py#356-366) 表獲取學生的學習進度
+  - 返回樹狀結構的 JSON 資料（nodes 和 links）
+
+**資料結構設計**：
+```json
+{
+  "nodes": [
+    {
+      "id": "skill_id",
+      "name": "知識點名稱",
+      "curriculum": "junior_high",
+      "grade": 7,
+      "volume": "數學1上",
+      "chapter": "第一章",
+      "section": "1-1",
+      "level": 1,
+      "consecutive_correct": 5,
+      "mastery_status": "learning"
+    }
+  ],
+  "links": [
+    {
+      "source": "prerequisite_skill_id",
+      "target": "skill_id"
+    }
+  ]
+}
+```
+
+---
+
+#### [MODIFY] [core/routes/__init__.py](file:///c:/Users/NICK/Mathproject/core/routes/__init__.py)
+
+在第 17 行的 import 語句中加入新的 `knowledge_graph` 模組：
+
+```python
+from . import auth, admin, practice, classroom, analysis, exam, knowledge_graph
+```
+
+---
+
+### 前端模組
+
+#### [NEW] [templates/knowledge_graph.html](file:///c:/Users/NICK/Mathproject/templates/knowledge_graph.html)
+
+新增知識圖譜視覺化頁面，包含：
+
+- **頁面結構**：繼承現有的 navbar 和樣式風格（參考 [student_diagnosis.html](file:///c:/Users/NICK/Mathproject/templates/student_diagnosis.html)）
+- **篩選控制區**：提供課程類型、年級、冊別、章節的下拉選單
+- **圖表容器**：使用 SVG 元素展示 D3.js 樹狀圖
+- **圖例說明**：顯示節點顏色代表的意義（已掌握/學習中/未開始）
+- **互動功能**：
+  - 節點點擊：顯示詳細資訊（前置知識點、後續知識點）
+  - 縮放和拖曳：支援圖表的縮放和平移
+  - 節點摺疊：點擊節點可摺疊/展開子節點
+
+**D3.js 樹狀圖實作要點**：
+- 使用 `d3.tree()` 建立由上而下的樹狀佈局
+- 使用 `d3.hierarchy()` 將資料轉換為層級結構
+- 使用 `d3.linkVertical()` 繪製連接線
+- 節點樣式根據 `mastery_status` 動態設定顏色
+
+---
+
+#### [MODIFY] [templates/dashboard.html](file:///c:/Users/NICK/Mathproject/templates/dashboard.html)
+
+在導航欄（第 344-349 行附近）新增知識圖譜按鈕，與「考卷診斷」、「錯題本」、「學習診斷」並列：
+
+```html
+<a href="{{ url_for('core.knowledge_graph') }}"
+   style="background: #16a085; padding: 8px 15px; border-radius: 4px;">🌳 知識圖譜</a>
+```
+
+位置：放在「學習診斷」按鈕之後。
+
+---
+
+### 輔助功能
+
+#### [NEW] [static/js/knowledge_graph.js](file:///c:/Users/NICK/Mathproject/static/js/knowledge_graph.js)
+
+獨立的 JavaScript 檔案，包含：
+
+- `loadGraphData(filters)` - 從 API 載入圖譜資料
+- `renderTree(data)` - 使用 D3.js 渲染樹狀圖
+- `updateFilters()` - 處理篩選條件變更
+- `showNodeDetails(node)` - 顯示節點詳細資訊
+- `toggleNode(node)` - 摺疊/展開節點
+
+---
+
+## 驗證計畫
+
+### 自動化測試
+
+由於此功能主要是視覺化展示，不適合單元測試，將採用手動驗證。
+
+### 手動驗證
+
+1. **啟動應用程式**
+   ```bash
+   cd c:\Users\NICK\Mathproject
+   python app.py
+   ```
+
+2. **登入系統**
+   - 使用測試帳號登入（學生或教師身份）
+
+3. **訪問知識圖譜頁面**
+   - 點擊 dashboard 上的「🌳 知識圖譜」按鈕
+   - 確認頁面正常載入，顯示篩選控制區和圖表容器
+
+4. **測試篩選功能**
+   - 選擇「國中」→「七年級」→「數學1上」→「第一章」
+   - 確認圖表更新，顯示該章節的知識點樹狀圖
+   - 測試其他課程類型（普高、技高）
+
+5. **測試圖表互動**
+   - 確認樹狀圖由上而下展示
+   - 點擊節點，確認顯示詳細資訊（前置知識點、能力值）
+   - 測試縮放和拖曳功能
+   - 測試節點摺疊/展開功能
+
+6. **測試能力值顯示**
+   - 確認節點顏色正確反映學生的掌握程度
+   - 綠色：已掌握（consecutive_correct >= required）
+   - 黃色：學習中（0 < consecutive_correct < required）
+   - 灰色：未開始（consecutive_correct = 0）
+
+7. **測試前置關係**
+   - 選擇有明確前置關係的知識點（如「因式分解」需要先學「整數運算」）
+   - 確認箭頭方向正確（從前置知識點指向目標知識點）
+   - 確認層級關係清晰
+
+8. **跨瀏覽器測試**
+   - 在 Chrome、Firefox、Edge 上測試
+   - 確認 D3.js 圖表在不同瀏覽器上正常顯示
+
+9. **響應式測試**
+   - 調整瀏覽器視窗大小
+   - 確認圖表自適應調整
+
+### 資料驗證
+
+使用 Python 腳本驗證資料庫中的前置關係：
+
+```python
+# 在 Python console 中執行
+from models import db, SkillPrerequisites, SkillInfo
+prereqs = db.session.query(SkillPrerequisites).all()
+print(f"總共有 {len(prereqs)} 個前置關係")
+for p in prereqs[:5]:
+    skill = db.session.get(SkillInfo, p.skill_id)
+    prereq = db.session.get(SkillInfo, p.prerequisite_id)
+    print(f"{skill.skill_ch_name} 需要先學 {prereq.skill_ch_name}")
+```

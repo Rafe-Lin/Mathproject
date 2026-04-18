@@ -1,0 +1,560 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/admin_examples.html
+功能說明 (Description): 後台例題管理
+後端呼叫 (Backend Call): core/routes/admin.py -> admin_examples
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>課本例題管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- Master Styles (V2.0 Standard) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar 樣式改由 _admin_navbar.html 提供，避免頁面覆寫 */
+
+        /* Container & Header */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2980b9;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        /* Cards & Tables */
+        .card,
+        .data-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        thead {
+            background: #34495e;
+            color: white;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .pagination .current {
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 0 5px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        /* Modal & Form */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        /* Filter override for pixel perfection */
+        .filter-select {
+            padding: 6px 10px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .filter-sidebar-label {
+            font-size: 0.85rem !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* Icon adjustment */
+        .card-header .bi {
+            margin-right: 8px;
+            color: #e67e22;
+        }
+    </style>
+</head>
+
+<body>
+    {% include '_admin_navbar.html' %}
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="bi bi-book-half" style="color: #e67e22;"></i> 例題管理中心</h1>
+            <button class="btn-add" onclick="openAddModal()">
+                <i class="bi bi-plus-lg"></i> 新增例題</button>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% include '_filter_sidebar.html' %}
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th style="width: 25%;">技能</th>
+                        <th>內容</th>
+                        <th>來源</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for example in pagination.items %}
+                    <tr>
+                        <td>{{ example.id }}</td>
+                        <td>
+                            <strong>{{ example.skill_info.skill_ch_name if example.skill_info else 'N/A' }}</strong>
+                            <br><small style="color: #6c757d;">{{ example.skill_id }}</small>
+                        </td>
+                        <td>
+                            <div style="max-height: 100px; overflow-y: auto;">{{ example.problem_text }}</div>
+                        </td>
+                        <td>
+                            <small>{{ example.source_description }}</small>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-edit" onclick='openEditModal({
+                                    "id": {{ example.id }},
+                                    "skill_id": "{{ example.skill_id }}",
+                                    "problem_text": {{ example.problem_text | tojson }},
+                                    "correct_answer": {{ example.correct_answer | tojson }},
+                                    "detailed_solution": {{ example.detailed_solution | tojson }},
+                                    "source_description": {{ example.source_description | tojson }}
+                                })'><i class="bi bi-pencil-fill"></i> 編輯</a>
+                                <button type="button" class="btn btn-delete" onclick="deleteExample({{ example.id }})">
+                                    <i class="bi bi-trash-fill"></i> 刪除
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">沒有找到符合條件的例題。</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination and pagination.pages > 1 %}
+        <div class="pagination">
+            <a href="{{ url_for('core.admin_examples', **dict(request.args.to_dict(), page=1)) }}">&laquo;</a>
+
+            {% for page_num in pagination.iter_pages() %}
+            {% if page_num %}
+            {% if page_num != pagination.page %}
+            <a href="{{ url_for('core.admin_examples', **dict(request.args.to_dict(), page=page_num)) }}">{{ page_num
+                }}</a>
+            {% else %}
+            <strong class="current">{{ page_num }}</strong>
+            {% endif %}
+            {% else %}
+            <span class="ellipsis">…</span>
+            {% endif %}
+            {% endfor %}
+
+            <a
+                href="{{ url_for('core.admin_examples', **dict(request.args.to_dict(), page=pagination.pages)) }}">&raquo;</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Modal handling
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            if (window.MathJax) {
+                MathJax.typeset();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openAddModal() {
+            openModal('addExampleModal');
+        }
+
+        function openEditModal(example) {
+            const form = document.getElementById('editExampleForm');
+            // 【修復】確保路徑正確，移除多餘的 /admin 前綴
+            form.action = `/examples/edit/${example.id}`;
+            document.getElementById('edit_example_id').value = example.id;
+            document.getElementById('edit_skill_id').value = example.skill_id;
+            document.getElementById('edit_problem_text').value = example.problem_text;
+            document.getElementById('edit_correct_answer').value = example.correct_answer;
+            document.getElementById('edit_detailed_solution').value = example.detailed_solution;
+            document.getElementById('edit_source_description').value = example.source_description;
+            openModal('editExampleModal');
+        }
+
+        function deleteExample(exampleId) {
+            if (confirm('確定要刪除這個例題嗎？')) {
+                // 【修復】確保路徑正確，移除多餘的 /admin 前綴
+                const url = `/examples/delete/${exampleId}`;
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        // 如果您的後端需要 CSRF token，可以在這裡加入
+                        'X-CSRF-TOKEN': '{{ csrf_token() if csrf_token else "" }}'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('刪除失敗，請稍後再試。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('刪除過程中發生錯誤。');
+                    });
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 處理編輯表單的 AJAX 提交
+            const editForm = document.getElementById('editExampleForm');
+            editForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(editForm);
+                fetch(editForm.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('編輯失敗，請檢查您的輸入。');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('編輯過程中發生錯誤。');
+                    });
+            });
+
+
+        });
+    </script>
+
+    <!-- Modal CSS (Basic) -->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 25px 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .modal-form-group {
+            margin-bottom: 15px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .modal-form-group input,
+        .modal-form-group select,
+        .modal-form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .modal-form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-footer {
+            text-align: right;
+            margin-top: 25px;
+        }
+    </style>
+
+    <!-- Add Example Modal -->
+    <div id="addExampleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addExampleModal')">&times;</span>
+            <h2>新增例題</h2>
+            <form action="{{ url_for('core.admin_add_example') }}" method="POST">
+                <div class="modal-form-group">
+                    <label for="add_skill_id">關聯技能</label>
+                    <select id="add_skill_id" name="skill_id" required>
+                        <option value="">請選擇技能</option>
+                        {% for skill in skills %}
+                        <option value="{{ skill.skill_id }}">{{ skill.skill_ch_name }} ({{ skill.skill_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label for="add_problem_text">題目內容</label>
+                    <textarea id="add_problem_text" name="problem_text" required></textarea>
+                </div>
+                <div class="modal-form-group">
+                    <label for="add_correct_answer">正確答案</label>
+                    <input type="text" id="add_correct_answer" name="correct_answer">
+                </div>
+                <div class="modal-form-group">
+                    <label for="add_detailed_solution">詳解</label>
+                    <textarea id="add_detailed_solution" name="detailed_solution"></textarea>
+                </div>
+                <div class="modal-form-group">
+                    <label for="add_source_description">來源描述</label>
+                    <input type="text" id="add_source_description" name="source_description">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-add">確認新增</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Example Modal -->
+    <div id="editExampleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editExampleModal')">&times;</span>
+            <h2>編輯例題</h2>
+            <!-- 【修復】在這裡加上 id="editExampleForm" 並設定 method="POST" -->
+            <form id="editExampleForm" method="POST">
+                <input type="hidden" id="edit_example_id" name="example_id">
+                <div class="modal-form-group">
+                    <label for="edit_skill_id">關聯技能</label>
+                    <select id="edit_skill_id" name="skill_id" required>
+                        {% for skill in skills %}
+                        <option value="{{ skill.skill_id }}">{{ skill.skill_ch_name }} ({{ skill.skill_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label for="edit_problem_text">題目內容</label>
+                    <textarea id="edit_problem_text" name="problem_text" required></textarea>
+                </div>
+                <div class="modal-form-group">
+                    <label for="edit_correct_answer">正確答案</label>
+                    <input type="text" id="edit_correct_answer" name="correct_answer">
+                </div>
+                <div class="modal-form-group">
+                    <label for="edit_detailed_solution">詳解</label>
+                    <textarea id="edit_detailed_solution" name="detailed_solution"></textarea>
+                </div>
+                <div class="modal-form-group">
+                    <label for="edit_source_description">來源描述</label>
+                    <input type="text" id="edit_source_description" name="source_description">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn-edit">儲存變更</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>

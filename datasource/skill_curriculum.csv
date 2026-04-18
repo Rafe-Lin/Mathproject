@@ -1,0 +1,132 @@
+curriculum,grade,volume,chapter,section,paragraph,skill_id,display_order,diffcult_level
+vocational,10,B1,第一章 坐標系與函數圖形,1-1數線與絕對值,1,num_line_basic,10,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-1數線與絕對值,2,dist_formula_1d,20,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-1數線與絕對值,3,abs_val_eq,30,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-1數線與絕對值,4,abs_val_ineq_lt,40,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-1數線與絕對值,5,abs_val_ineq_gt,50,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,1,quadrant_points,60,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,2,dist_formula_2d,70,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,3,midpoint_formula,80,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,4,section_formula,90,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,5,centroid_formula,100,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,6,function_def,110,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-2平面坐標系與線型函數,7,linear_func_type,120,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-3二次函數,1,quad_func_prop,130,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-3二次函數,2,completing_square,140,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-3二次函數,3,vertex_max_min,150,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-4一元二次不等式,1,cross_multiplication,160,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-4一元二次不等式,2,quad_ineq_factorable,170,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-4一元二次不等式,3,quad_ineq_discriminant,180,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-4一元二次不等式,4,always_positive_cond,190,1
+vocational,10,B1,第一章 坐標系與函數圖形,1-4一元二次不等式,5,always_negative_cond,200,1
+vocational,10,B1,第二章 直線方程式,2-1斜率,1,slope_definition,210,1
+vocational,10,B1,第二章 直線方程式,2-1斜率,2,slope_general_form,220,1
+vocational,10,B1,第二章 直線方程式,2-1斜率,3,parallel_lines_slope,230,1
+vocational,10,B1,第二章 直線方程式,2-1斜率,4,perpendicular_lines_slope,240,1
+vocational,10,B1,第二章 直線方程式,2-2直線方程式,1,point_slope_form,250,1
+vocational,10,B1,第二章 直線方程式,2-2直線方程式,2,horiz_vert_lines,260,1
+vocational,10,B1,第二章 直線方程式,2-2直線方程式,3,slope_intercept_form,270,1
+vocational,10,B1,第二章 直線方程式,2-2直線方程式,4,intercept_form,280,1
+vocational,10,B1,第二章 直線方程式,2-3直線的一般式與點到直線的距離,1,eq_of_parallel_line,290,1
+vocational,10,B1,第二章 直線方程式,2-3直線的一般式與點到直線的距離,2,eq_of_perpendicular_line,300,1
+vocational,10,B1,第二章 直線方程式,2-3直線的一般式與點到直線的距離,3,distance_point_line,310,1
+vocational,10,B1,第二章 直線方程式,2-3直線的一般式與點到直線的距離,4,distance_parallel_lines,320,1
+vocational,10,B1,第三章 式的運算,3-1多項式的基本概念與四則運算,1,polynomial_def,330,1
+vocational,10,B1,第三章 式的運算,3-1多項式的基本概念與四則運算,2,poly_op_add_sub_mult,340,1
+vocational,10,B1,第三章 式的運算,3-1多項式的基本概念與四則運算,3,synthetic_division,350,1
+vocational,10,B2,第一章 三角函數,1-1 角度的基本性質,1,radian_deg_conv,360,1
+vocational,10,B2,第一章 三角函數,1-1 角度的基本性質,2,arc_len_area,370,1
+vocational,10,B2,第一章 三角函數,1-1 角度的基本性質,3,coterminal_angles,380,1
+vocational,10,B2,第一章 三角函數,1-2 銳角三角函數,1,right_tri_trig,390,1
+vocational,10,B2,第一章 三角函數,1-2 銳角三角函數,2,trig_basic_id,400,1
+vocational,10,B2,第一章 三角函數,1-3 任意角的三角函數,1,quadrant_trig,410,1
+vocational,10,B2,第一章 三角函數,1-4 正弦、餘弦函數的圖形,1,periodicity_trig,420,1
+vocational,10,B2,第二章 三角函數的應用,2-1 正弦定理與餘弦定理,1,area_formula_sas,430,1
+vocational,10,B2,第二章 三角函數的應用,2-1 正弦定理與餘弦定理,2,sine_law,440,1
+vocational,10,B2,第二章 三角函數的應用,2-1 正弦定理與餘弦定理,3,cosine_law,450,1
+vocational,10,B2,第二章 三角函數的應用,2-2 三角測量,1,trig_survey,460,1
+vocational,10,B2,第三章 向量,3-1 向量的作圖,1,vector_def_add,470,1
+vocational,10,B2,第三章 向量,3-2 向量的坐標表示法,1,vector_coord_len,480,1
+vocational,10,B2,第三章 向量,3-2 向量的坐標表示法,2,vector_scalar_mult,490,1
+vocational,10,B2,第三章 向量,3-3 向量的內積,1,dot_product,500,1
+vocational,10,B2,第四章 圓與直線,4-1 圓方程式,1,circle_std_eq,510,1
+vocational,10,B2,第四章 圓與直線,4-1 圓方程式,2,circle_general_eq,520,1
+vocational,10,B2,第四章 圓與直線,4-2 圓與直線的關係,1,point_circle_rel,530,1
+vocational,10,B2,第四章 圓與直線,4-2 圓與直線的關係,2,line_circle_rel,540,1
+vocational,10,B2,第四章 圓與直線,4-2 圓與直線的關係,3,tangent_line_on,550,1
+vocational,10,B1,第三章 式的運算,3-2除法原理與餘式定理,1,division_algorithm,560,1
+vocational,10,B1,第三章 式的運算,3-2除法原理與餘式定理,2,remainder_theorem,570,1
+vocational,10,B1,第三章 式的運算,3-2除法原理與餘式定理,3,factor_theorem,580,1
+vocational,10,B1,第三章 式的運算,3-3因式分解與分式,1,factoring_cubes,590,1
+vocational,10,B1,第三章 式的運算,3-3因式分解與分式,2,rational_expr_def,600,1
+vocational,10,B1,第三章 式的運算,3-3因式分解與分式,3,rational_expr_op,610,1
+vocational,10,B1,第三章 式的運算,3-3因式分解與分式,4,rational_eq_solve,620,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,1,arith_seq_def_common_diff,630,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,2,arith_seq_nth_term_basic,640,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,3,arith_seq_nth_term_adv,650,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,4,arith_mean,660,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,5,arith_series_sum_form1,670,1
+vocational,11,B3,第一章 數列與級數,1-1 等差數列與等差級數,6,arith_series_sum_form2,680,1
+vocational,11,B3,第一章 數列與級數,1-2 等比數列與等比級數,1,geom_seq_def_common_ratio,690,1
+vocational,11,B3,第一章 數列與級數,1-2 等比數列與等比級數,2,geom_seq_nth_term,700,1
+vocational,11,B3,第一章 數列與級數,1-2 等比數列與等比級數,3,geom_series_sum,710,1
+vocational,11,B3,第一章 數列與級數,1-2 等比數列與等比級數,4,recur_relation_basic,720,1
+vocational,11,B3,第二章 方程式,2-1 一元一次方程式,1,linear_eq_solve_basic,730,1
+vocational,11,B3,第二章 方程式,2-1 一元一次方程式,2,linear_eq_solve_frac_dec,740,1
+vocational,11,B3,第二章 方程式,2-1 一元一次方程式,3,linear_eq_word_problem,750,1
+vocational,11,B3,第二章 方程式,2-1 一元一次不等式,4,linear_ineq_solve_pos,760,1
+vocational,11,B3,第二章 方程式,2-1 一元一次不等式,5,linear_ineq_solve_neg,770,1
+vocational,11,B3,第二章 方程式,2-1 一元一次不等式,6,linear_ineq_graph_1d,780,1
+vocational,11,B3,第二章 方程式,2-2 一元二次方程式,1,quad_eq_factor_method,790,1
+vocational,11,B3,第二章 方程式,2-2 一元二次方程式,2,quad_eq_formula_method,800,1
+vocational,11,B3,第二章 方程式,2-2 一元二次方程式,3,quad_eq_root_relation,810,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-1 二元一次聯立方程組,1,sys_linear_eq_solve,820,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-1 二元一次聯立方程組,2,sys_linear_eq_geometry,830,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-2 二元一次不等式,1,linear_ineq_graph_2d,840,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-3 線性規劃,1,linear_programming_const,850,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-3 線性規劃,2,linear_programming_feasible,860,1
+vocational,11,B3,第三章 二元一次不等式及其應用,3-3 線性規劃,3,linear_programming_opt,870,1
+vocational,11,B3,第四章 指數與對數,4-1 指數,1,pos_int_index_rule,880,1
+vocational,11,B3,第四章 指數與對數,4-1 指數,2,zero_neg_index,890,1
+vocational,11,B3,第四章 指數與對數,4-1 指數,3,rational_index_root,900,1
+vocational,11,B3,第四章 指數與對數,4-1 指數,4,rational_index_calc,910,1
+vocational,11,B3,第四章 指數與對數,4-2 指數函數及其圖形,1,exp_func_graph_basic,920,1
+vocational,11,B3,第四章 指數與對數,4-2 指數函數及其圖形,2,exp_eq_solve_basic,930,1
+vocational,11,B3,第四章 指數與對數,4-3 對數,1,log_def_convert,940,1
+vocational,11,B3,第四章 指數與對數,4-3 對數,2,log_basic_prop,950,1
+vocational,11,B3,第四章 指數與對數,4-3 對數,3,log_op_prop_sum_diff,960,1
+vocational,11,B3,第四章 指數與對數,4-3 對數,4,log_op_prop_power,970,1
+vocational,11,B3,第四章 指數與對數,4-4 對數函數及其圖形,1,log_func_graph_basic,980,1
+vocational,11,B3,第四章 指數與對數,4-4 對數函數及其圖形,2,log_eq_solve_basic,990,1
+vocational,11,B4,第一章 排列組合,1-1 加法原理與乘法原理,1,add_mult_principle,1000,1
+vocational,11,B4,第一章 排列組合,1-2 直線排列,1,factorial_basic,1010,1
+vocational,11,B4,第一章 排列組合,1-2 直線排列,2,linear_perm_distinct,1020,1
+vocational,11,B4,第一章 排列組合,1-2 直線排列,3,linear_perm_identical,1030,1
+vocational,11,B4,第一章 排列組合,1-2 直線排列,4,linear_perm_restricted,1040,1
+vocational,11,B4,第一章 排列組合,1-3 重複排列,1,perm_with_repetition,1050,1
+vocational,11,B4,第一章 排列組合,1-4 組合,1,basic_combination,1060,1
+vocational,11,B4,第一章 排列組合,1-4 組合,2,comb_restricted_select,1070,1
+vocational,11,B4,第一章 排列組合,1-4 組合,3,comb_restricted_at_least,1080,1
+vocational,11,B4,第一章 排列組合,1-5 二項式定理,1,pascal_triangle,1090,1
+vocational,11,B4,第一章 排列組合,1-5 二項式定理,2,binomial_exp_basic,1100,1
+vocational,11,B4,第一章 排列組合,1-5 二項式定理,3,binomial_term_coefficient,1110,1
+vocational,11,B4,第二章 機率,2-1 樣本空間與事件,1,set_operation_basic,1120,1
+vocational,11,B4,第二章 機率,2-1 樣本空間與事件,2,sample_space_events,1130,1
+vocational,11,B4,第二章 機率,2-2 機率的運算,1,classical_probability,1140,1
+vocational,11,B4,第二章 機率,2-2 機率的運算,2,prob_mutually_exclusive,1150,1
+vocational,11,B4,第二章 機率,2-2 機率的運算,3,prob_general_addition,1160,1
+vocational,11,B4,第二章 機率,2-2 機率的運算,4,conditional_probability,1170,1
+vocational,11,B4,第二章 機率,2-2 機率的運算,5,independent_events,1180,1
+vocational,11,B4,第二章 機率,2-3 數學期望值,1,math_expectation_basic,1190,1
+vocational,11,B4,第二章 機率,2-3 數學期望值,2,math_expectation_app,1200,1
+vocational,11,B4,第三章 統計,3-1 統計的基本概念,1,population_sample_concept,1210,1
+vocational,11,B4,第三章 統計,3-1 統計的基本概念,2,sampling_methods,1220,1
+vocational,11,B4,第三章 統計,3-2 統計資料整理,1,freq_table_grouping,1230,1
+vocational,11,B4,第三章 統計,3-2 統計資料整理,2,freq_graph_plot,1240,1
+vocational,11,B4,第三章 統計,3-2 統計資料整理,3,cumulative_freq,1250,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,1,mean_calculation,1260,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,2,median_mode_concept,1270,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,3,measures_of_dispersion,1280,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,4,std_dev_variance,1290,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,5,linear_transformation,1300,1
+vocational,11,B4,第三章 統計,3-3 統計量分析,6,normal_distribution,1310,1

@@ -1,0 +1,725 @@
+[
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I1",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I1__int_numberline_add_sub.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "add_sub"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I2",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I2__int_flat_add_sub.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "add_sub"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I3",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I3__int_flat_mul_div_exact.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "mul_div",
+      "exact_divisibility"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I4",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I4__int_flat_mixed_four_ops.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "add_sub",
+      "mul_div",
+      "order_of_operations"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I5",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I5__int_bracket_mixed.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "bracket_scope",
+      "order_of_operations"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I6",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I6__int_abs_value.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "absolute_value"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I7",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I7__int_division_exact_nested.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "mul_div",
+      "bracket_scope",
+      "absolute_value",
+      "exact_divisibility"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfIntegers",
+    "family_id": "I8",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfIntegers__I8__int_composite_structure.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_handling",
+      "add_sub",
+      "mul_div",
+      "order_of_operations",
+      "bracket_scope",
+      "absolute_value",
+      "exact_divisibility",
+      "isomorphic_structure"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F1",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F1__Fraction_Simplification.py",
+    "version": 1,
+    "subskill_nodes": [
+      "proper_improper_fraction",
+      "mixed_numbers",
+      "sign_normalization",
+      "simplest_form_reduction"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F2",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F2__Equivalent_Fraction_Fill-Blank.py",
+    "version": 1,
+    "subskill_nodes": [
+      "equivalent_fraction_scaling",
+      "sign_normalization"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F3",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F3__Preserve-Value_Fraction_Invariance.py",
+    "version": 1,
+    "subskill_nodes": [
+      "preserve_value_invariance",
+      "equivalent_fraction_scaling"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F4",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F4__Fraction_Comparison.py",
+    "version": 1,
+    "subskill_nodes": [
+      "positive_fraction_comparison",
+      "negative_fraction_comparison",
+      "mixed_number_comparison"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F5",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F5__Fraction_Add_Subtract.py",
+    "version": 1,
+    "subskill_nodes": [
+      "add_sub",
+      "nested_parentheses",
+      "mixed_numbers"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F6",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F6__Fraction_Multiply.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply",
+      "mixed_numbers",
+      "telescoping_products"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F7",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F7__Fraction_Divide.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide",
+      "mixed_numbers",
+      "decimal_fraction_mixed_arithmetic"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F8",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F8__Reciprocal.py",
+    "version": 1,
+    "subskill_nodes": [
+      "reciprocal_transform"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F9",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F9__Decimal-Fraction_Mixed_Evaluation.py",
+    "version": 1,
+    "subskill_nodes": [
+      "decimal_to_fraction_exact_conversion",
+      "add_sub",
+      "multiply",
+      "divide",
+      "nested_parentheses"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學1上_FourArithmeticOperationsOfNumbers",
+    "family_id": "F10",
+    "script_path": "skills/adaptive/jh_數學1上_FourArithmeticOperationsOfNumbers__F10__Fraction_Word_Problems.py",
+    "version": 1,
+    "subskill_nodes": [
+      "remaining_amount",
+      "container_weight",
+      "before_after_ratio",
+      "share_comparison"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F1",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F1__poly_add_sub_flat.py",
+    "version": 1,
+    "subskill_nodes": [
+      "normalize_terms",
+      "combine_like_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F2",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F2__poly_add_sub_nested.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_distribution",
+      "combine_like_terms",
+      "family_isomorphism"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F3",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F3__poly_add_sub_unknown.py",
+    "version": 1,
+    "subskill_nodes": [
+      "sign_distribution",
+      "unknown_target_preservation"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F4",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F4__poly_mul_monomial.py",
+    "version": 1,
+    "subskill_nodes": [
+      "expand_monomial"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F5",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F5__poly_mul_poly.py",
+    "version": 1,
+    "subskill_nodes": [
+      "expand_binomial",
+      "combine_like_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F6",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F6__poly_mul_special_identity.py",
+    "version": 1,
+    "subskill_nodes": [
+      "special_identity"
+    ],
+    "generated_at": "2026-03-25T04:56:02",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F7",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F7__poly_div_monomial_eval.py",
+    "version": 1,
+    "subskill_nodes": [
+      "normalize_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F8",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F8__poly_div_monomial_qr.py",
+    "version": 1,
+    "subskill_nodes": [
+      "long_division",
+      "quotient_remainder_format"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F9",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F9__poly_div_poly_qr.py",
+    "version": 1,
+    "subskill_nodes": [
+      "long_division",
+      "quotient_remainder_format"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F10",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F10__poly_div_reverse.py",
+    "version": 1,
+    "subskill_nodes": [
+      "reverse_division_reconstruction"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F11",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F11__poly_mixed_simplify.py",
+    "version": 1,
+    "subskill_nodes": [
+      "expand_binomial",
+      "special_identity",
+      "combine_like_terms",
+      "family_isomorphism"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F12",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F12__poly_geom_formula_direct.py",
+    "version": 1,
+    "subskill_nodes": [
+      "geometry_formula"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourArithmeticOperationsOfPolynomial",
+    "family_id": "F13",
+    "script_path": "skills/adaptive/jh_數學2上_FourArithmeticOperationsOfPolynomial__F13__poly_geom_region_composite.py",
+    "version": 1,
+    "subskill_nodes": [
+      "geometry_formula",
+      "composite_region_modeling"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p0",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p0__p0_simplify.py",
+    "version": 1,
+    "subskill_nodes": [
+      "simplify"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p1",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p1__p1_add_sub.py",
+    "version": 1,
+    "subskill_nodes": [
+      "combine_like_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p1b",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p1b__p1b_add_sub_bracket.py",
+    "version": 1,
+    "subskill_nodes": [
+      "combine_like_terms",
+      "bracket_scope"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p1c",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p1c__p1c_mixed_frac_rad_add_sub.py",
+    "version": 1,
+    "subskill_nodes": [
+      "combine_like_terms",
+      "fractional_radical"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2a",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2a__p2a_mult_direct.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2b",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2b__p2b_mult_distrib.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "distribute"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2c",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2c__p2c_mult_binomial.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "distribute",
+      "binomial_expand"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2d",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2d__p2d_perfect_square.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "binomial_expand"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2e",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2e__p2e_diff_of_squares.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "binomial_expand"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2f",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2f__p2f_int_mult_rad.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2g",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2g__p2g_rad_mult_frac.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "fractional_radical"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p2h",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p2h__p2h_frac_mult_rad.py",
+    "version": 1,
+    "subskill_nodes": [
+      "multiply_terms",
+      "fractional_radical"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p3a",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p3a__p3a_div_expr.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "bracket_scope"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p3b",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p3b__p3b_div_simple.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "conjugate_rationalize"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p3c",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p3c__p3c_div_direct.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p4",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p4__p4_frac_mult.py",
+    "version": 1,
+    "subskill_nodes": [
+      "fractional_radical",
+      "structure_isomorphism"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p4b",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p4b__p4b_frac_rad_div.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "conjugate_rationalize"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p4c",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p4c__p4c_nested_frac_chain.py",
+    "version": 1,
+    "subskill_nodes": [
+      "fractional_radical",
+      "structure_isomorphism"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p4d",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p4d__p4d_frac_rad_div_mixed.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "conjugate_rationalize",
+      "fractional_radical"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p5a",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p5a__p5a_conjugate_int.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "conjugate_rationalize"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p5b",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p5b__p5b_conjugate_rad.py",
+    "version": 1,
+    "subskill_nodes": [
+      "divide_terms",
+      "conjugate_rationalize"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p6",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p6__p6_combo.py",
+    "version": 1,
+    "subskill_nodes": [
+      "simplify",
+      "combine_like_terms",
+      "multiply_terms",
+      "divide_terms",
+      "structure_isomorphism"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  },
+  {
+    "skill_id": "jh_數學2上_FourOperationsOfRadicals",
+    "family_id": "p7",
+    "script_path": "skills/adaptive/jh_數學2上_FourOperationsOfRadicals__p7__p7_mixed_rad_add.py",
+    "version": 1,
+    "subskill_nodes": [
+      "mixed_number_radical",
+      "combine_like_terms"
+    ],
+    "generated_at": "2026-03-25T04:56:03",
+    "model_name": "micro-skill-factory-stub",
+    "healer_applied": false
+  }
+]

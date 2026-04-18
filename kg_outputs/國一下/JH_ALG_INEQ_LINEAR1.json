@@ -1,0 +1,580 @@
+{
+  "unit_info": {
+    "l0_grade": "國中",
+    "l1_domain": "代數與函數",
+    "l2_unit": "一元一次不等式",
+    "l2_unit_id": "JH_ALG_INEQ_LINEAR1"
+  },
+  "nodes": [
+    {
+      "id": "L0_JH",
+      "level": "L0",
+      "name": "國中",
+      "parent_id": null
+    },
+    {
+      "id": "L1_JH_ALG",
+      "level": "L1",
+      "name": "代數與函數",
+      "parent_id": "L0_JH"
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1",
+      "level": "L2",
+      "name": "一元一次不等式",
+      "parent_id": "L1_JH_ALG"
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "level": "L3",
+      "name": "認識不等式與不等號",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習不等式的基本概念，包括不等式的意義、如何將文字敘述轉換為不等式，以及含有兩個不等號的表示方式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_01_a",
+      "level": "L4",
+      "name": "不等式的意義",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "description": "理解不等式的定義，即表示兩個數量之間不相等關係的數學式子。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_01_b",
+      "level": "L4",
+      "name": "具體情境中列出一元一次不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "description": "根據實際生活情境，將文字敘述轉換為單一不等號的一元一次不等式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_01_c",
+      "level": "L4",
+      "name": "習慣用語與不等號的對應",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "description": "學習將「大於」、「小於」、「不小於」、「不大於」等習慣用語與對應的不等號符號（>、<、≥、≤）建立正確的對應關係。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_01_d",
+      "level": "L4",
+      "name": "含有兩個不等號的一元一次不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "description": "理解並能列出表示範圍的複合不等式，例如「x大於a且小於等於b」的形式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "level": "L3",
+      "name": "判斷一元一次不等式的解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習如何判斷一個給定的數是否為一元一次不等式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_02_a",
+      "level": "L4",
+      "name": "判斷某數是否為不等式的解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "description": "將特定的數值代入不等式中，檢驗不等式是否成立，從而判斷該數是否為不等式的解。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "level": "L3",
+      "name": "圖示一元一次不等式的解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習在數線上表示一元一次不等式的解的範圍。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_03_a",
+      "level": "L4",
+      "name": "在數線上圖示單一不等號的解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "description": "在數線上標示如 x > a 或 x ≤ b 等單一不等號的解的範圍。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_03_b",
+      "level": "L4",
+      "name": "空心圓圈與實心圓圈的差異",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "description": "理解在數線圖示中，空心圓圈表示不包含端點，實心圓圈表示包含端點。",
+      "difficulty": 1
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_03_c",
+      "level": "L4",
+      "name": "在數線上圖示兩個不等號的解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "description": "在數線上標示如 a < x ≤ b 等含有兩個不等號的解的範圍。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "level": "L3",
+      "name": "不等式的加、減、乘、除運算法則",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習不等式在進行加、減、乘、除運算時，不等號方向的變化規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_04_a",
+      "level": "L4",
+      "name": "不等式的加減運算規則",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "description": "理解不等號兩邊同加或同減一個數時，不等號方向不變的規則。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_04_b",
+      "level": "L4",
+      "name": "不等式乘除「正數」的運算規則",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "description": "理解不等號兩邊同乘或同除以一個正數時，不等號方向不變的規則。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_04_c",
+      "level": "L4",
+      "name": "不等式乘除「負數」的運算規則",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "description": "理解不等號兩邊同乘或同除以一個負數時，不等號方向必須改變的規則。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "level": "L3",
+      "name": "解一元一次不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習利用運算規則和移項法則解一元一次不等式，包括含有括號和分數的形式，並能圖示其解。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_a",
+      "level": "L4",
+      "name": "利用加減運算規則解不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "運用不等式的加減運算規則，解形如 x + a < b 或 x - a ≥ b 的不等式。",
+      "difficulty": 2
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_b",
+      "level": "L4",
+      "name": "利用乘除運算規則解不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "運用不等式的乘除運算規則，解形如 ax < b 或 ax ≥ b 的不等式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_c",
+      "level": "L4",
+      "name": "移項法則",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "學習將不等式中的項從一邊移到另一邊時，改變其符號的法則，以簡化不等式。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_d",
+      "level": "L4",
+      "name": "解含未知數在兩邊的不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "解形如 ax + b < cx + d 的不等式，將未知數項和常數項分別移到不等號兩邊。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_e",
+      "level": "L4",
+      "name": "解含括號的不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "解含有括號的一元一次不等式，需先利用分配律展開括號。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_f",
+      "level": "L4",
+      "name": "解含分數的不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "解含有分數係數或常數項的一元一次不等式，通常會先乘以公倍數以消除分數。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_05_g",
+      "level": "L4",
+      "name": "解不等式並圖示其解",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "description": "綜合運用解不等式的方法，並在數線上正確圖示其解的範圍。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "level": "L3",
+      "name": "不等式的應用問題",
+      "parent_id": "JH_ALG_INEQ_LINEAR1",
+      "description": "學習將實際生活問題轉換為一元一次不等式，並解出答案，同時判斷答案的合理性。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_06_a",
+      "level": "L4",
+      "name": "依題意列出一元一次不等式",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "description": "從文字敘述的應用問題中，正確地建立一元一次不等式模型。",
+      "difficulty": 3
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_06_b",
+      "level": "L4",
+      "name": "判斷答案的合理性",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "description": "在解出不等式後，根據實際情境（例如數量必須為整數、正數等）判斷解的合理性。",
+      "difficulty": 4
+    },
+    {
+      "id": "JH_ALG_INEQ_LINEAR1_L3_06_c",
+      "level": "L4",
+      "name": "解決生活情境中的不等式問題",
+      "parent_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "description": "應用一元一次不等式解決各種實際生活問題，如存款、購物折扣等。",
+      "difficulty": 4
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "L0_JH",
+      "to_id": "L1_JH_ALG",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "L1_JH_ALG",
+      "to_id": "JH_ALG_INEQ_LINEAR1",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_02_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_d",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_e",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_f",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_g",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_a",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_b",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_c",
+      "type": "parent-child"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01_a",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01_b",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01_c",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_02_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03_a",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03_b",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04_a",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04_b",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_a",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_b",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_c",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_d",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_d",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_e",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_e",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_f",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05_f",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05_g",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_a",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06_a",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_b",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_06_b",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06_c",
+      "type": "sequence"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_01",
+      "type": "prerequisite",
+      "reason": "學習不等式前需要理解文字符號列式和一元一次方程式的基本概念。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_02",
+      "type": "prerequisite",
+      "reason": "判斷不等式的解需要先理解方程式解的概念。"
+    },
+    {
+      "from_id": "JH_ALG_COORD",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_03",
+      "type": "prerequisite",
+      "reason": "在數線上圖示不等式的解需要具備數線和直角坐標平面的基礎知識。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "type": "prerequisite",
+      "reason": "不等式的運算法則建立在等量公理和移項法則的基礎上。"
+    },
+    {
+      "from_id": "JH_NUM_INT_OPS",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "type": "prerequisite",
+      "reason": "不等式的運算涉及整數的加減乘除。"
+    },
+    {
+      "from_id": "JH_NUM_FRAC_OPS",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "type": "prerequisite",
+      "reason": "不等式的運算可能涉及分數的加減乘除。"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_04",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "type": "prerequisite",
+      "reason": "解一元一次不等式需要應用不等式的運算法則。"
+    },
+    {
+      "from_id": "JH_ALG_INEQ_LINEAR1_L3_05",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "type": "prerequisite",
+      "reason": "解決應用問題需要先學會解一元一次不等式。"
+    },
+    {
+      "from_id": "JH_ALG_LINEAR1",
+      "to_id": "JH_ALG_INEQ_LINEAR1_L3_06",
+      "type": "prerequisite",
+      "reason": "列出應用問題的不等式需要具備列一元一次方程式的能力。"
+    }
+  ],
+  "warnings": [],
+  "stats": {
+    "total_nodes": 30,
+    "total_edges": 64
+  }
+}

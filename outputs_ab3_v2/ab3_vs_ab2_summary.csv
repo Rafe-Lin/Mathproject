@@ -1,0 +1,4 @@
+prototype,ab2_success_rate,ab2_avg_total_steps,ab2_avg_max_polynomial_fail_streak,ab2_avg_polynomial_gain,ab3_success_rate,ab3_avg_total_steps,ab3_avg_max_polynomial_fail_streak,ab3_avg_polynomial_gain,ab3_minus_ab2_success_rate,ab3_minus_ab2_avg_total_steps,ab3_minus_ab2_avg_max_polynomial_fail_streak,ab3_minus_ab2_avg_polynomial_gain
+A,1.0,9.19,1.63,0.4106972667071175,1.0,10.39,1.69,0.4262436241449521,0.0,1.200000000000001,0.06000000000000005,0.015546357437834613
+B,1.0,14.5,1.92,0.4414633325004897,1.0,15.35,1.91,0.45334760932167,0.0,0.8499999999999996,-0.010000000000000009,0.011884276821180317
+C,1.0,11.11,1.85,0.4282420338156704,1.0,12.25,1.83,0.4368333613390765,0.0,1.1400000000000006,-0.020000000000000018,0.008591327523406134

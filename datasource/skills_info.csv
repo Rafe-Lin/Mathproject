@@ -1,0 +1,132 @@
+skill_id,skill_en_name,skill_ch_name,description,input_type,gemini_prompt,consecutive_correct_required,is_active,order_index
+num_line_basic,Number Line & Coordinates,數線基礎與坐標,複習數線的概念，認識相反數，並標定有理數坐標。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生在數線上標示點的正確方法。,3,TRUE,10
+dist_formula_1d,1D Distance Formula,數線上的距離公式,熟練使用數線上的距離公式 $\overline{AB}=,text,a-b,3,TRUE,20
+abs_val_eq,Absolute Value Equations,絕對值方程式,熟練解 $,text,x,3,TRUE,30
+abs_val_ineq_lt,Abs. Value Inequality (Less Than),絕對值不等式 (<),熟練解 $,x,3,TRUE,40
+abs_val_ineq_gt,Abs. Value Inequality (Greater Than),絕對值不等式 (?),熟練解 $,x,3,TRUE,50
+quadrant_points,Quadrants and Coordinates,象限與點坐標,"識別直角坐標平面上的四個象限，並判斷點 (a,b) 所在的象限。",handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生座標軸上的點不屬於任一象限。,3,TRUE,60
+dist_formula_2d,2D Distance Formula,平面上的距離公式,熟練計算平面上兩點間距離 AB=(x2??x1?)2+(y2??y1?)2?。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，引導學生利用畢氏定理記憶並使用平面距離公式。,3,TRUE,70
+midpoint_formula,Midpoint Formula,中點坐標公式,"熟練使用中點坐標公式 P(2x1?+x2??,2y1?+y2??)。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒中點坐標是兩點坐標的平均值。,3,TRUE,80
+section_formula,Section Formula,內分點坐標公式,"熟練使用內分點坐標公式 P(m+nnx1?+mx2??,m+nny1?+my2??)。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導內分點公式的交叉相乘和除以比例和的規律。,3,TRUE,90
+centroid_formula,Triangle Centroid Formula,三角形重心坐標,"熟練計算三角形重心坐標 G(3x1?+x2?+x3??,3y1?+y2?+y3??)。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明重心坐標是三個頂點坐標的平均值。,3,TRUE,100
+function_def,Function Definition,函數的定義,理解函數的定義：「對於每一個 x 值，都恰有一個 y 值與之對應」，並認識自變數 x 和應變數 y。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導函數的定義，並強調「恰有一個」的單一對應性。,3,TRUE,110
+linear_func_type,Linear Function Types,線型函數分類與圖形,區分常數函數 y=b (a=0) 和一次函數 y=ax+b (a=0)，並判斷其圖形為水平線或斜直線。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明線型函數 y=ax+b 的圖形為一直線。,3,TRUE,120
+quad_func_prop,Quadratic Function Properties,二次函數圖形特性,根據 y=ax2+bx+c 的 a 值判斷開口方向，並識別對稱軸 (x=?b/2a) 與頂點坐標。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒 a>0 開口向上 (有最小值)， a<0 開口向下 (有最大值)。,3,TRUE,130
+completing_square,Completing the Square,二次函數配方法,熟練使用配方法，將二次函數一般式 y=ax2+bx+c 轉為頂點式 y=a(x?h)2+k。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導配方法的標準步驟，特別是提出 a 和加減 (b/2a)2 項的技巧。,3,TRUE,140
+vertex_max_min,Vertex Form & Max/Min Value,頂點式與極值計算,根據頂點式，判斷並求出函數的最大值或最小值 k。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明極值發生在 x=h 處，極值大小為 k。,3,TRUE,150
+cross_multiplication,Cross-Multiplication Factoring,十字交乘法,複習十字交乘法，熟練將一元二次多項式分解為兩個一次因式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導使用十字交乘法檢查並分解二次式。,3,TRUE,160
+quad_ineq_factorable,Factorable Quadratic Inequality,可因式分解之二次不等式,針對 ax2+bx+c>0 或 <0 且可因式分解的情況，搭配圖形找出解集。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生在 D>0 時，「大於取兩邊、小於取中間」的解題原則。,3,TRUE,170
+quad_ineq_discriminant,Quadratic Inequality by Discriminant,判別式與二次不等式解,針對判別式 D?0 的情況，根據圖形判斷不等式的解集。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明當 D?0 且 a>0 時，不等式 ax2+bx+c?0 的解通常為所有實數。,3,TRUE,180
+always_positive_cond,Always Positive Condition,二次函數恆正條件,熟練判斷 f(x)>0 恆成立的條件：a>0 且 b2?4ac<0。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒恆正需滿足「開口向上」 (a>0) 和「圖形不與 x 軸相交」 (D<0) 兩個條件。,3,TRUE,190
+always_negative_cond,Always Negative Condition,二次函數恆負條件,熟練判斷 f(x)<0 恆成立的條件：a<0 且 b2?4ac<0。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒恆負需滿足「開口向下」 (a<0) 和「圖形不與 x 軸相交」 (D<0) 兩個條件。,3,TRUE,200
+slope_definition,Slope Definition (Two-Point),斜率定義 (兩點式),"熟練使用兩點 A(x1?,y1?)、B(x2?,y2?) 計算直線斜率 m=x2??x1?y2??y1??。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生利用兩點坐標 m=x2??x1?y2??y1?? 求斜率。,3,TRUE,210
+slope_general_form,Slope from General Form,一般式求斜率,熟練從直線一般式 L:ax+by+c=0 判斷其斜率 m=?ba?。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生直線一般式 ax+by+c=0 的斜率為 m=?ba?。,3,TRUE,220
+parallel_lines_slope,Parallel Lines Condition,平行線斜率條件,熟練判斷兩直線 L1?//L2? 的條件為斜率相等 m1?=m2?。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導平行線 L1?//L2? 的條件為斜率相等 m1?=m2?。,3,TRUE,230
+perpendicular_lines_slope,Perpendicular Lines Condition,垂直線斜率條件,熟練判斷兩直線 L1?⊥L2? 的條件為斜率乘積為 ?1 (m1?×m2?=?1)(不含鉛直線與水平線之特例)。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導垂直線 L1?⊥L2? 的條件為斜率乘積為 ?1 (m1?×m2?=?1)(不含鉛直線與水平線之特例)。,3,TRUE,240
+point_slope_form,Point-Slope Form,點斜式,熟練使用點斜式 y?y1?=m(x?x1?) 寫出直線方程式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生使用點斜式 y?y1?=m(x?x1?) 寫出直線方程式。,3,TRUE,250
+horiz_vert_lines,Horizontal & Vertical Lines,水平線與鉛垂線,熟練判斷並寫出水平線 (y=y1?) 與鉛垂線 (x=x1?) 的方程式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導水平線為 y=k (斜率為0)，鉛垂線為 x=h (斜率不存在)。,3,TRUE,260
+slope_intercept_form,Slope-Intercept Form,斜截式,熟練使用斜截式 y=mx+b 寫出直線方程式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生使用斜截式 y=mx+b 寫出直線方程式。,3,TRUE,270
+intercept_form,Intercept Form,截距式,熟練使用截距式 ax?+by?=1 寫出直線方程式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生使用截距式 ax?+by?=1 寫出直線方程式。,3,TRUE,280
+eq_of_parallel_line,Equation of Parallel Line,平行線方程式,熟練求與 L:ax+by+c=0 平行之直線 L1?:ax+by+k1?=0。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導與直線 ax+by+c=0 平行之直線形式為 ax+by+k=0。,3,TRUE,290
+eq_of_perpendicular_line,Equation of Perpendicular Line,垂直線方程式,熟練求與 L:ax+by+c=0 垂直之直線 L2?:bx?ay+k2?=0。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導與直線 ax+by+c=0 垂直之直線形式為 bx?ay+k=0。,3,TRUE,300
+distance_point_line,Distance from Point to Line,點到直線距離公式,"熟練使用點 P(x0?,y0?) 至直線 L:ax+by+c=0 的距離公式 $d=\frac{",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導點到直線距離公式 $d=\frac{,3,TRUE,310
+distance_parallel_lines,Distance between Parallel Lines,兩平行線距離公式,熟練使用兩平行線 L1?:ax+by+c1?=0 與 L2?:ax+by+c2?=0 的距離公式 $d=\frac{,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導兩平行線距離公式 $d=\frac{,3,TRUE,320
+polynomial_def,Polynomial Basic Concepts,多項式的基本概念,理解多項式定義、次數、係數、常數項等基本概念。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導多項式中變數的次方須為非負整數。,3,TRUE,330
+poly_op_add_sub_mult,"Polynomial Addition, Subtraction, Multiplication",多項式的四則運算 (加減乘),熟練多項式的加、減、乘法運算。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導多項式四則運算時需注意同類項合併和分配律。,3,TRUE,340
+synthetic_division,Polynomial Synthetic Division,多項式綜合除法,熟練使用綜合除法進行多項式除以 $x\mp a$ 形式的運算。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導綜合除法步驟，並提醒缺項補零。,3,TRUE,350
+division_algorithm,Polynomial Division Algorithm,多項式除法原理,熟練應用除法原理 $f(x)=g(x)q(x)+r(x)$ 於多項式運算。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導除法原理的定義與餘式次數的判斷 $(deg~r(x) < deg~g(x))$。,3,TRUE,360
+remainder_theorem,Remainder Theorem,餘式定理,熟練使用餘式定理快速求得多項式 $f(x)$ 除以一次式 $ax+b$ 的餘式 $f(-\frac{b}{a})$。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導餘式定理 $f(x)$ 除以 $ax+b$ 的餘式為 $f(-b/a)$。,3,TRUE,370
+factor_theorem,Factor Theorem,因式定理,熟練使用因式定理判斷 $ax-b$ 是否為多項式 $f(x)$ 的因式 (即 $f(\frac{b}{a})=0$ 時)。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導因式定理，當 $f(b/a)=0$ 時， $ax-b$ 為 $f(x)$ 的因式。,3,TRUE,380
+factoring_cubes,Factoring (Sum/Difference of Cubes),三次式因式分解 (立方公式),熟練利用立方差 $a^3-b^3=(a-b)(a^2+ab+b^2)$ 與立方和 $a^3+b^3=(a+b)(a^2-ab+b^2)$ 公式進行因式分解。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導三次式立方和/差的分解公式。,3,TRUE,390
+rational_expr_def,Rational Expression Definition,分式的基本概念,理解分式的定義 $\frac{f(x)}{g(x)}$，以及分母 $g(x)\ne 0$ 的限制。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導分式定義及分母不為零的限制。,3,TRUE,400
+rational_expr_op,Rational Expression Operations,分式的四則運算,熟練分式的加、減（通分）、乘、除（約分）運算。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導分式加減需通分，乘除需化簡約分。,3,TRUE,410
+rational_eq_solve,Rational Equation Solving,分式方程式,熟練解分式方程式，並檢查是否產生使分母為零的增根。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒解分式方程式後需驗根，排除增根。,3,TRUE,420
+arith_seq_def_common_diff,Arith Seq Def & Common Diff,等差數列定義與公差,判斷數列是否為等差數列，並熟練計算公差 $d$。,handwriting,你是功文數學 AI 批改分析師。請分析學生手寫過程，判斷數列 $\{a_n\}$ 是否為等差，並說明公差 $d$ 是否計算正確。若錯誤，請溫和地提示他們檢查相鄰兩項的差值是否固定。,3,TRUE,3105
+arith_seq_nth_term_basic,Arith Seq Nth Term Basic,等差數列一般項基礎,熟練應用 $a_n = a_1 + (n-1)d$ 求解基礎問題。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確套用等差數列公式 $a_n = a_1 + (n-1)d$。若手寫過程中公式應用錯誤，請提醒他們 $n$ 減 1 的重要性。,3,TRUE,3110
+arith_seq_nth_term_adv,Arith Seq Nth Term Advanced,等差數列一般項應用,"熟練給定兩項 $a_m, a_n$ 求公差 $d$ 或其他項。",text,你是功文數學 AI 批改分析師。請分析學生是否正確利用 $a_n - a_m = (n-m)d$ 來求公差 $d$，並檢查計算細節。若錯誤，提醒他們利用兩項差值計算公差。,3,TRUE,3115
+arith_mean,Arithmetic Mean,等差中項,熟練應用等差中項公式 $b = \frac{a+c}{2}$ 求解。,text,你是功文數學 AI 批改分析師。請檢查學生手寫過程中是否將等差中項公式 $b = (a+c)/2$ 正確列式。若錯誤，強調中項是兩端點的算術平均。,3,TRUE,3120
+arith_series_sum_form1,Arith Series Sum (Formula 1),等差級數和 (S1),熟練應用 $S_n = \frac{n(a_1+a_n)}{2}$ 求解。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用級數求和公式 $S_n = n(a_1+a_n)/2$，並確認項數 $n$ 的計算是否正確。若錯誤，提醒他們確認首項、末項與項數。,3,TRUE,3125
+arith_series_sum_form2,Arith Series Sum (Formula 2),等差級數和 (S2),熟練應用 $S_n = \frac{n(2a_1+(n-1)d)}{2}$ 求解。,text,你是功文數學 AI 批改分析師。請檢查學生是否將 $a_n$ 代換成 $a_1+(n-1)d$ 的過程中代數運算正確。若計算過程出現錯誤，指出錯誤的代數步驟。,3,TRUE,3130
+geom_seq_def_common_ratio,Geom Seq Def & Common Ratio,等比數列定義與公比,判斷數列是否為等比數列，並熟練計算公比 $r$。,handwriting,你是功文數學 AI 批改分析師。請分析學生手寫過程，判斷數列是否為等比，並說明公比 $r$ 是否計算正確。若錯誤，請溫和地提示他們檢查相鄰兩項的比值是否固定。,3,TRUE,3135
+geom_seq_nth_term,Geometric Sequence Nth Term,等比數列一般項,熟練應用 $a_n = a_1 r^{n-1}$ 求解。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確套用等比數列公式 $a_n = a_1 r^{n-1}$。若指數或乘法運算錯誤，提醒他們冪次的運算規則。,3,TRUE,3140
+geom_series_sum,Geometric Series Sum,等比級數求和,熟練應用 $S_n = \frac{a_1(r^n-1)}{r-1}$ 求解。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用等比級數求和公式 $S_n = a_1(r^n-1)/(r-1)$。若錯誤，請提醒他們確認公比 $r$ 是否為 1，並檢查分母的計算。,3,TRUE,3145
+recur_relation_basic,Sequence Recurrence Relation,數列遞迴關係式基礎,根據遞迴關係式，計算數列的前幾項或一般項。,text,"你是功文數學 AI 批改分析師。請依據給定的遞迴關係式 $a_n=f(a_{n-1},...)$ 檢查學生是否正確進行疊代計算。若錯誤，指出第一個計算錯誤的項。",3,TRUE,3150
+linear_eq_solve_basic,Linear Eq Solve Basic,一元一次方程基礎解,熟練運用移項法則解基礎一元一次方程式。,text,你是功文數學 AI 批改分析師。請檢查學生在移項時，是否有正確將加變減、乘變除。若錯誤，提醒他們移項法則的運算細節。,3,TRUE,3205
+linear_eq_solve_frac_dec,Linear Eq Solve Fraction/Decimal,一元一次方程分數/小數,熟練解係數為分數或小數的一元一次方程式。,text,你是功文數學 AI 批改分析師。請檢查學生是否嘗試先同乘公倍數或同乘 10 的冪次，以消除分數或小數。若計算錯誤，提醒他們化簡係數的技巧。,3,TRUE,3210
+linear_eq_word_problem,Linear Eq Word Problem,一元一次方程應用題,熟練從文字情境中列式並解出一元一次方程。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確將文字情境轉換為數學方程式。若列式錯誤，引導他們重新定義未知數 $x$ 所代表的量。,3,TRUE,3215
+linear_ineq_solve_pos,Linear Ineq Solve (Pos Multiplier),一元一次不等式正數運算,解不等式，不涉及同乘/除負數。,text,你是功文數學 AI 批改分析師。請檢查學生在不等式移項和計算中是否有代數錯誤。若錯誤，提醒他們不等式解法與方程式解法的主要區別。,3,TRUE,3220
+linear_ineq_solve_neg,Linear Ineq Solve (Neg Multiplier),一元一次不等式負數運算,熟練同乘/除負數時，不等號變向的應用。,text,你是功文數學 AI 批改分析師。請專注檢查學生是否在同乘或同除一個負數時，忘記改變不等號方向。這是此技能最重要的錯誤點。,3,TRUE,3225
+linear_ineq_graph_1d,Linear Ineq Graph (1D),一元一次不等式數線圖解,熟練在數線上標示一元一次不等式的解區域。,handwriting,"你是功文數學 AI 批改分析師。請檢查學生是否正確標示不等式的解區域，特別注意使用實心點（$\ge, \le$）或空心點（$>, <$）。",3,TRUE,3230
+quad_eq_factor_method,Quadratic Eq Factor Method,一元二次方程因式分解法,熟練使用因式分解 (含十字交乘法) 求解一元二次方程。,text,你是功文數學 AI 批改分析師。請檢查學生是否成功將 $ax^2+bx+c=0$ 進行因式分解。若分解錯誤，提示他們重新檢查十字交乘法的係數組合。,3,TRUE,3235
+quad_eq_formula_method,Quadratic Eq Formula Method,一元二次方程公式解,熟練使用公式 $x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$ 求解。,text,"你是功文數學 AI 批改分析師。請檢查學生在代入公式 $x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$ 時，係數 $a, b, c$ 是否代入正確，以及判別式 $b^2-4ac$ 的計算是否正確。",3,TRUE,3240
+quad_eq_root_relation,Quadratic Eq Root Relation,一元二次方程根與係數,"熟練應用根與係數關係 ($\alpha+\beta, \alpha\beta$) 求解。",text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用 $\alpha+\beta=-b/a$ 和 $\alpha\beta=c/a$ 的關係。若錯誤，提示他們根與係數的關係式。,3,TRUE,3245
+sys_linear_eq_solve,Solving 2-Variable Linear Systems,二元聯立方程組解法,熟練使用代入/加減消去法解二元一次聯立方程組。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用代入消去法或加減消去法來消除其中一個變數。若消去錯誤，提示他們確認係數是否乘對。,3,TRUE,3305
+sys_linear_eq_geometry,System Geometry & Solutions,聯立方程組幾何意義,熟練判斷聯立方程組的解的個數 (唯一解、無解、無限多組解) 與幾何關係。,text,"你是功文數學 AI 批改分析師。請檢查學生是否正確比較係數比 $\frac{a_1}{a_2}, \frac{b_1}{b_2}, \frac{c_1}{c_2}$ 來判斷解的個數。",3,TRUE,3310
+linear_ineq_graph_2d,Graphing 2-Variable Linear Inequality,二元一次不等式圖解,熟練繪製二元一次不等式的解區域 (判斷邊界線與半平面)。,handwriting,你是功文數學 AI 批改分析師。請專注分析手寫圖形，檢查 (1) 邊界線（實線或虛線）是否正確；(2) 是否正確選取測試點 (如原點) 來判斷解區域（上半平面或下半平面）。,3,TRUE,3315
+linear_programming_const,Formulating LP Constraints,線性規劃限制式列式,熟練從文字敘述中列出線性規劃的限制式與目標函數。,text,"你是功文數學 AI 批改分析師。請檢查學生是否能將文字敘述 (例如：原料限制、人力限制) 正確轉換成二元一次不等式組和目標函數 $f(x,y)$。",3,TRUE,3320
+linear_programming_feasible,LP Feasible Region,線性規劃可行解區域,熟練繪製多個限制式下的可行解區域。,handwriting,你是功文數學 AI 批改分析師。請分析手寫圖形，檢查學生是否正確繪製所有限制線，並正確找到所有不等式交集所形成的可行解區域 (圖形)。,3,TRUE,3325
+linear_programming_opt,Finding Optimal LP Solution,線性規劃最佳解,熟練利用頂點法求目標函數在可行解區域上的最佳解。,handwriting,"你是功文數學 AI 批改分析師。請檢查學生是否 (1) 正確求出可行解區域的所有頂點坐標；(2) 正確將頂點代入目標函數 $f(x,y)$ 進行比較。若頂點坐標計算錯誤，請提示他們回去檢查聯立方程組的解。",3,TRUE,3330
+pos_int_index_rule,Positive Integer Index Rule,正整數指數律,"熟練 $a^m a^n=a^{m+n}$, $(a^m)^n=a^{mn}$ 等正整數指數運算。",text,你是功文數學 AI 批改分析師。請檢查學生是否正確運用指數律 $a^m a^n=a^{m+n}$、$(a^m)^n=a^{mn}$。若錯誤，提醒他們同底數相乘時指數要相加。,3,TRUE,3405
+zero_neg_index,Zero & Negative Index,零指數與負整數指數,熟練 $a^0=1$ 和 $a^{-n}=\frac{1}{a^n}$ 的運算與計算。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確處理零指數 ($a^0=1$) 和負指數 ($a^{-n}=1/a^n$) 的轉換。若錯誤，提醒他們負指數代表倒數。,3,TRUE,3410
+rational_index_root,Rational Index & Root Conversion,有理數指數與根式互換,熟練 $\sqrt[n]{a} \Leftrightarrow a^{1/n}$ 的互換與計算。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確將根式 $\sqrt[n]{a^m}$ 轉換為有理數指數 $a^{m/n}$。若錯誤，提醒他們「分母是根號的次數，分子是底數的次方」。,3,TRUE,3415
+rational_index_calc,Rational Index Calculation,有理數指數運算,綜合應用指數律進行有理數指數的計算。,text,你是功文數學 AI 批改分析師。請檢查學生是否綜合應用各項指數律時出現運算錯誤。若錯誤，指出他們在哪個指數律環節出錯。,3,TRUE,3420
+exp_func_graph_basic,Exp Func Graph Basic,指數函數圖形基礎,"認識 $y=a^x$ 的圖形性質 (過(0,1)、漸近線、單調性)。",handwriting,"你是功文數學 AI 批改分析師。請檢查學生繪製的指數函數圖形是否正確：(1) 恆過點 (0, 1)；(2) 漸近線是否為 $x$ 軸；(3) 判斷 $a>1$ 或 $0<a<1$ 的遞增/遞減性質是否正確。",3,TRUE,3425
+exp_eq_solve_basic,Exponential Equation Basic,指數方程式基礎解,熟練同底數 $a^x=a^y$ 則 $x=y$ 的解法。,text,你是功文數學 AI 批改分析師。請檢查學生是否嘗試將方程式兩邊化為同底數，以及後續的代數運算是否正確。若化底數錯誤，提示他們如何找到共同底數。,3,TRUE,3430
+log_def_convert,Logarithm Definition & Convert,對數定義與轉換,熟練指數與對數的互換 $a^x=b \Leftrightarrow x=\log_a b$，並判斷對數有意義條件。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確進行 $a^x=b$ 與 $x=\log_a b$ 的轉換。若錯誤，提醒他們「底數不會跑」 (對數的底數等於指數的底數)。,3,TRUE,3435
+log_basic_prop,Logarithm Basic Properties,對數基本性質,"熟練 $\log_a 1=0, \log_a a=1, a^{\log_a M}=M$ 的計算。",text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用對數的恆等式性質，例如 $\log_a 1=0$ 和 $\log_a a=1$。若錯誤，提示他們應用這些特殊值的性質。,3,TRUE,3440
+log_op_prop_sum_diff,Logarithm Sum/Diff Rule,對數運算性質 (和差),熟練 $\log(xy)=\log x + \log y$ 和 $\log(x/y)=\log x - \log y$ 的運算。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確將對數的加減法轉換為真數的乘除法。若錯誤，提醒他們「真數相乘 (除) 等於對數相加 (減)」。,3,TRUE,3445
+log_op_prop_power,Logarithm Power Rule,對數運算性質 (冪次),熟練 $\log_a x^n = n \log_a x$ 和換底公式的應用。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確運用真數的冪次可以提到對數前面 ($n\log_a x$)，或正確使用換底公式 $\log_a x = \frac{\log_c x}{\log_c a}$。,3,TRUE,3450
+log_func_graph_basic,Log Func Graph Basic,對數函數圖形基礎,"認識 $y=\log_a x$ 的圖形性質 (過(1,0)、漸近線、單調性)。",handwriting,"你是功文數學 AI 批改分析師。請檢查學生繪製的對數函數圖形是否正確：(1) 恆過點 (1, 0)；(2) 漸近線是否為 $y$ 軸；(3) 判斷 $a>1$ 或 $0<a<1$ 的遞增/遞減性質是否正確。",3,TRUE,3455
+log_eq_solve_basic,Logarithm Equation Basic,對數方程式基礎解,熟練 $\log_a x = \log_a y$ 則 $x=y$ 的解法，並檢驗真數條件。,text,你是功文數學 AI 批改分析師。請專注檢查學生是否在解出 $x$ 後，有檢驗真數條件 ($M>0$)。若沒有檢驗或真數條件錯誤，提示他們「對數的真數必須嚴格大於零」。,3,TRUE,3460
+add_mult_principle,Addition & Multiplication Principle,加法原理與乘法原理,熟練區分並應用加法原理 (分類) 與乘法原理 (分步驟)。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確區分並應用加法原理（用於分類）和乘法原理（用於分步驟）。若錯誤，提醒他們檢查事件是「或」的關係還是「且」的關係。,3,TRUE,4105
+factorial_basic,Factorial Basic,階乘與基礎計算 ($n!$),熟練階乘 ($n!$) 的定義與基礎計算。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確計算 $n!$ 及涉及 $0!$ 的計算。若錯誤，提醒 $n!$ 是 $1$ 到 $n$ 的乘積，且 $0!=1$。,3,TRUE,4108
+linear_perm_distinct,Linear Permutation ($P_m^n$),相異物直線排列,熟練 $P_m^n$ 公式計算相異物的排列數。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用 $P_m^n$ 公式計算部分選取的排列數。若錯誤，提醒他們 $P_m^n = \frac{n!}{(n-m)!}$。,3,TRUE,4110
+linear_perm_identical,Linear Permutation (Identical),不盡相異物直線排列,熟練 $\frac{n!}{n_1!n_2!...}$ 公式計算不盡相異物的排列數。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用 $\frac{n!}{n_1!n_2!...}$ 公式處理相同物的排列。若錯誤，提醒他們「要除掉相同物的排列數」。,3,TRUE,4115
+linear_perm_restricted,Linear Permutation (Restricted),限制條件直線排列,熟練處理「相鄰」、「不相鄰」、「定位」等限制條件的排列問題。,text,你是功文數學 AI 批改分析師。請檢查學生在處理「相鄰」(綁一起)、「不相鄰」(先排空位/反面扣除) 或「定位」等限制條件時的邏輯。,3,TRUE,4120
+perm_with_repetition,Permutation with Repetition,重複排列,熟練應用重複排列公式 $n^m$ 求解 (如密碼、顏色塗法)。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確識別問題為「重複排列」並套用 $n^m$ 公式。,3,TRUE,4125
+basic_combination,Basic Combination,基礎組合,熟練 $C_m^n$ 公式計算組合數及 $C_m^n = C_{n-m}^n$ 性質。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用 $C_m^n$ 計算組合數，並確認其與排列數 $P_m^n$ 的區別（組合不計順序）。,3,TRUE,4130
+comb_restricted_select,Comb. (Must/Must Not Select),組合限制條件 (必選/不選),熟練處理「必選」或「不選」的單一條件組合問題。,text,你是功文數學 AI 批改分析師。請檢查學生在處理「必選」或「不選」條件時，是否正確減少總數 $n$ 和選取數 $m$。,3,TRUE,4133
+comb_restricted_at_least,Comb. (At Least/At Most),組合限制條件 (至少/至多),熟練處理「至少」或「至多」的反面扣除法組合問題。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確識別並應用「至少/至多」問題的反面扣除法 (總數-不合)。,3,TRUE,4136
+pascal_triangle,Pascal's Triangle,巴斯卡三角形,認識巴斯卡三角形及 $C_m^n = C_{m-1}^{n-1} + C_{m}^{n-1}$ 性質。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確理解並應用巴斯卡恆等式。,3,TRUE,4140
+binomial_exp_basic,Binomial Expansion,二項式展開式,熟練寫出 $(a+b)^n$ 的二項式展開式。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確寫出二項式展開式的每一項，確保係數是 $C_k^n$ 且指數總和為 $n$。,3,TRUE,4143
+binomial_term_coefficient,Binomial Specific Term,二項式特定項係數,熟練應用二項式定理求展開式的特定項係數。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確使用二項式定理的通項公式 $T_{k+1}=C_k^n a^{n-k} b^k$ 來求特定項。,3,TRUE,4145
+set_operation_basic,Basic Set Operations,"集合的基本運算 ($\cap, \cup, '$)",熟練集合的交集、聯集、補集運算及文氏圖表示。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確執行集合的交集 $\cap$、聯集 $\cup$ 或補集 ' 運算。若錯誤，提醒他們集合運算的定義。,3,TRUE,4203
+sample_space_events,Sample Space & Events,樣本空間與事件,熟練樣本空間 $S$、事件 $A$ 的表示，並理解子集關係。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確列出樣本空間 $S$ 和事件 $A$，並判斷事件之間的子集關係。,3,TRUE,4205
+classical_probability,Classical Probability,古典機率,熟練應用 $P(A) = \frac{n(A)}{n(S)}$ 計算古典機率。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確計算樣本空間 $n(S)$ 和事件數 $n(A)$。,3,TRUE,4210
+prob_mutually_exclusive,Probability (Mutually Exclusive),互斥事件機率,熟練判斷互斥事件並應用 $P(A \cup B) = P(A) + P(B)$ 應用。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確識別事件是否互斥。若為互斥事件，提醒他們 $P(A \cup B) = P(A) + P(B)$。,3,TRUE,4215
+prob_general_addition,Probability (General Addition),一般加法定理,熟練 $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ 應用。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用一般加法定理，特別是減去 $P(A \cap B)$ 的部分。,3,TRUE,4220
+conditional_probability,Conditional Probability,條件機率,熟練 $P(BA) = \frac{P(A \cap B)}{P(A)}$ 應用。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確列出條件機率公式 $P(B,3,TRUE,4225
+independent_events,Independent Events,獨立事件,熟練判斷獨立事件並應用 $P(A \cap B) = P(A) P(B)$。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用獨立事件的乘法公式 $P(A \cap B) = P(A) P(B)$。,3,TRUE,4230
+math_expectation_basic,Mathematical Expectation (Basic),數學期望值基礎,熟練 $E(X) = \sum x_i P(x_i)$ 計算基礎期望值。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確列出期望值公式 $E(X) = \sum x_i P(x_i)$，並確認 $x_i$ (結果) 和 $P(x_i)$ (機率) 的對應及計算總和是否正確。,3,TRUE,4235
+math_expectation_app,Mathematical Expectation (App),數學期望值應用,熟練解決中獎、保險等應用題。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確將應用情境轉換為機率與價值乘積的和。若錯誤，提醒他們檢查所有可能的結果及其對應的「淨值」。,3,TRUE,4240
+population_sample_concept,Population/Sample Concept,母群體與樣本概念,認識母群體、樣本、參數、統計量等統計基本名詞。,text,你是功文數學 AI 批改分析師。請檢查學生對母群體、樣本、參數或統計量等基本概念的定義是否正確。若錯誤，提醒他們母群體是整體，樣本是部分。,3,TRUE,4303
+sampling_methods,Sampling Methods,抽樣方法,認識簡單隨機抽樣、分層抽樣等抽樣方法。,text,你是功文數學 AI 批改分析師。請檢查學生對各種抽樣方法（如簡單隨機、分層、系統）的敘述是否符合定義。,3,TRUE,4305
+freq_table_grouping,Frequency Table Grouping,次數分配表的編製,熟練計算全距、定組數、組距，並編製次數分配表。,text,你是功文數學 AI 批改分析師。請檢查學生在編製次數分配表時，全距、組數、組距的計算是否正確。,3,TRUE,4308
+freq_graph_plot,Frequency Graph Plot,次數分配圖的繪製與解讀,熟練繪製次數分配直方圖、折線圖，並從圖中解讀資訊。,handwriting,你是功文數學 AI 批改分析師。請檢查學生繪製的次數分配圖形（直方圖/折線圖）是否正確標示組界、組中點、次數，並正確解讀數據。,3,TRUE,4310
+cumulative_freq,Cumulative Frequency,累積次數表與圖,熟練編製與繪製累積次數分配表與圖。,handwriting,你是功文數學 AI 批改分析師。請檢查學生繪製的累積次數圖或表是否正確，特別是「以下」與「以上」累積次數的計算。,3,TRUE,4310
+mean_calculation,Mean Calculation,算術平均數計算,熟練計算末分組資料與分組資料的算術平均數。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確計算算術平均數 $\bar{x}$。若為分組資料，提醒他們使用組中點乘以次數來計算。,3,TRUE,4310
+median_mode_concept,Median & Mode Concept,中位數與眾數判斷,熟練判斷中位數與眾數。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確找出中位數（中間值）和眾數（最常出現的值/組）。若錯誤，提醒他們計算中位數前需要先排序數據。,3,TRUE,4310
+measures_of_dispersion,"Measures of Dispersion (Range, QD)","離散趨勢量數 (全距, 四分位距)",熟練計算全距和四分位距。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確計算全距（最大值-最小值）或四分位距（$Q_3 - Q_1$）。,3,TRUE,4310
+std_dev_variance,Standard Deviation & Variance,標準差與變異數,"熟練計算母體/樣本的標準差 $\sigma, S$ 和變異數 $\sigma^2, S^2$。",text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用標準差或變異數的公式，並注意母體($N$)與樣本($n-1$)分母的差異。,3,TRUE,4310
+linear_transformation,Linear Transformation of Data,資料的線性變換,熟練 $y=ax+b$ 對平均數、標準差、變異數的影響。,text,你是功文數學 AI 批改分析師。請檢查學生是否正確應用線性變換的性質：平均數 $\bar{y}=a\bar{x}+b$，標準差 $S_y=S_x$，變異數 $S_y^2=a^2 S_x^2$。**,3,TRUE,4310
+normal_distribution,Normal Distribution (68-95-99.7),常態分佈 (68-95-99.7),認識常態分佈，並應用 68-95-99.7 法則。,handwriting,你是功文數學 AI 批改分析師。請檢查學生是否正確應用 68-95-99.7 法則來估計數據落點。,3,TRUE,4310
+radian_deg_conv,Radian/Degree Conversion,弧度與度的換算,熟練度與弧度（弳）的轉換公式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生弧度與度的換算公式 $180^\circ = \pi$ 弧度。,3,TRUE,1000
+arc_len_area,Arc Length and Area,扇形弧長與面積,熟練扇形的弧長 $S=r\theta$ 與面積 $A=\frac{1}{2}r^2\theta$ 公式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生扇形公式中的 $\theta$ 必須使用弧度。,3,TRUE,1010
+coterminal_angles,Coterminal Angles,同界角,判斷並計算同界角，理解 $\theta_1 - \theta_2 = n \times 360^\circ$ 的關係。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生同界角及一般角的表示方法。,3,TRUE,1020
+right_tri_trig,Right Triangle Trig,銳角三角函數定義,"熟練直角三角形中 $\sin$, $\cos$, $\tan$ 的銳角三角函數定義。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生 $\sin$ 為對邊/斜邊，$\cos$ 為鄰邊/斜邊。,3,TRUE,1030
+trig_basic_id,Basic Trig Identities,三角函數基本關係式,熟練 $\tan\theta = \frac{\sin\theta}{\cos\theta}$ 和 $\sin^2\theta + \cos^2\theta = 1$ 等基本關係式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生平方和關係式 $\sin^2\theta + \cos^2\theta = 1$。,3,TRUE,1040
+quadrant_trig,Quadrant Trig Values,任意角三角函數值,"判斷標準位置角所在的象限，並計算其 $\sin$, $\cos$, $\tan$ 值。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生利用參考角或象限正負號計算任意角三角函數值。,3,TRUE,1050
+periodicity_trig,Periodicity of Trig,正/餘弦函數週期,判斷正弦、餘弦函數圖形的定義域、值域與週期。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明 $y=\sin x$ 和 $y=\cos x$ 的基本週期均為 $2\pi$。,3,TRUE,1060
+area_formula_sas,Triangle Area (SAS),SAS三角形面積公式,熟練使用 $\triangle = \frac{1}{2}ab\sin C$ 計算三角形面積。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒學生 $\frac{1}{2}$ 乘以兩邊及夾角的正弦值。,3,TRUE,1070
+sine_law,Law of Sines,正弦定理,熟練使用 $\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R$ 求解三角形。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，強調正弦定理用於「對邊與對角」的關係。,3,TRUE,1080
+cosine_law,Law of Cosines,餘弦定理,熟練使用 $c^2 = a^2+b^2-2ab\cos C$ 求解三角形邊長或角度。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒餘弦定理用於 SSS 或 SAS 類型。,3,TRUE,1090
+trig_survey,Trigonometric Survey,三角測量,應用正弦定理與餘弦定理解決平面三角測量問題。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，引導學生繪製測量圖形並找出已知條件。,3,TRUE,1100
+vector_def_add,Vector Definition and Addition,向量定義與加法,理解向量定義（大小與方向），並進行向量加法 $\vec{AB}+\vec{BC}=\vec{AC}$ 作圖。,handwriting,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明向量加法的三角形法則或平行四邊形法則。,3,TRUE,1110
+vector_coord_len,Vector Coordinates and Length,向量坐標與長度,"熟練計算 $\vec{AB}=(x_2-x_1, y_2-y_1)$ 及向量長度 $\vec{AB}",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒向量坐標是終點減起點。,3,TRUE,1120
+vector_scalar_mult,Vector Scalar Multiplication,向量實數積,熟練進行向量與實數的乘積運算，並判斷向量平行關係。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明實數積改變向量長度（可能改變方向）。,3,TRUE,1130
+dot_product,Vector Dot Product,向量內積,熟練計算向量內積 $\vec{a}\cdot\vec{b} =\vec{a}\vec{b}\cos\theta$ 或 $\vec{a}\cdot\vec{b} = a_1b_1+a_2b_2$。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明向量與實數的乘積運算，並判斷向量平行關係。,3,TRUE,1140
+circle_std_eq,Circle Standard Equation,圓的標準式,熟練圓的標準式 $(x-h)^2+(y-k)^2=r^2$ 的應用。,text,"分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，提醒圓心座標 $(h, k)$ 的符號。",3,TRUE,1150
+circle_general_eq,Circle General Equation,圓的一般式,熟練圓的一般式 $x^2+y^2+dx+ey+f=0$ 與判別式 $D=d^2+e^2-4f$。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，說明 $D>0$ 為圓、 $D=0$ 為點。,3,TRUE,1160
+point_circle_rel,Point-Circle Relation,點與圓的位置關係,"判斷點 $P(x_0, y_0)$ 相對於圓 $C$ 的位置（內部、圓上、外部）。",text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生比較點到圓心的距離與半徑 $r$。,3,TRUE,1170
+line_circle_rel,Line-Circle Relation,圓與直線的關係,判斷直線 $L$ 與圓 $C$ 的交點個數（不相交、相切、交於兩點）。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，如果錯誤，教導學生比較圓心到直線的距離 $d$ 與半徑 $r$。,3,TRUE,1180
+tangent_line_on,Tangent Line on Circle,圓上的切線方程式,求解圓上一點的切線方程式。,text,分析學生答案：{user_answer}，正確答案：{correct_answer}，提醒圓心與切點連線會垂直切線。,3,TRUE,1190

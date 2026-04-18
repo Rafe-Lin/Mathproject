@@ -1,0 +1,133 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/_filter_sidebar.html
+功能說明 (Description): 共用課程篩選器組件 (Include)
+後端呼叫 (Backend Call): core/utils.py -> handle_curriculum_filters
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<style>
+    /* 課程篩選器專用精細化樣式 */
+    .filter-sidebar-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 0.85rem;
+        /* 關鍵：縮小標籤字體 */
+    }
+
+    .filter-select {
+        width: 100%;
+        padding: 6px 10px;
+        /* 關鍵：縮減高度感 */
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        /* 關鍵：下拉選單文字比正文略小 */
+        color: #333;
+    }
+</style>
+<div class="card mb-3 filter-card"
+    style="margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); border: none;">
+    <div class="card-header"
+        style="background: white; border-bottom: none; font-weight: 600; font-size: 0.95rem; color: #2c3e50; padding: 20px 20px 0 20px; text-align: left;">
+        <i class="bi bi-filter"></i> 課程篩選器
+    </div>
+    <div class="card-body" style="padding: 20px;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+            <div class="form-group" style="flex: 1; min-width: 150px;">
+                <label for="f_curriculum" class="filter-sidebar-label">課綱</label>
+                <select id="f_curriculum" name="curriculum" class="form-select filter-select">
+                    <option value="all">-- 請選擇 --</option>
+                    {% for c in filters.curriculums %}
+                    <option value="{{ c }}" {% if selected_filters.f_curriculum==c %}selected{% endif %}>{{
+                        curriculum_map.get(c, c) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 150px;">
+                <label for="f_grade" class="filter-sidebar-label">年級</label>
+                <select id="f_grade" name="grade" class="form-select filter-select" {% if not
+                    selected_filters.f_curriculum %}disabled{% endif %}>
+                    <option value="all">-- 請選擇 --</option>
+                    {% if filters.grades %}
+                    {% for g in filters.grades %}
+                    <option value="{{ g }}" {% if selected_filters.f_grade==g|string %}selected{% endif %}>
+                        {{ grade_map.get(g|string, g) }}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 180px;">
+                <label for="f_volume" class="filter-sidebar-label">冊別</label>
+                <select id="f_volume" name="volume" class="form-select filter-select" {% if not selected_filters.f_grade
+                    %}disabled{% endif %}>
+                    <option value="all">-- 請選擇 --</option>
+                    {% if filters.volumes %}
+                    {% for v in filters.volumes %}
+                    <option value="{{ v }}" {% if selected_filters.f_volume==v %}selected{% endif %}>{{ v }}
+                    </option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <!-- 章節 -->
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+                <label for="f_chapter" class="filter-sidebar-label">章</label>
+                <select id="f_chapter" name="chapter" class="form-select filter-select" {% if not
+                    selected_filters.f_volume %}disabled{% endif %}>
+                    <option value="all">-- 請選擇 --</option>
+                    {% if filters.chapters %}
+                    {% for ch in filters.chapters %}
+                    <option value="{{ ch }}" {% if selected_filters.f_chapter==ch %}selected{% endif %}>{{ ch }}
+                    </option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <!-- 節 -->
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+                <label for="f_section" class="filter-sidebar-label">節</label>
+                <select id="f_section" name="section" class="form-select filter-select" {% if not
+                    selected_filters.f_chapter %}disabled{% endif %}>
+                    <option value="all">-- 請選擇 --</option>
+                    {% if filters.sections %}
+                    {% for s in filters.sections %}
+                    <option value="{{ s }}" {% if selected_filters.f_section==s %}selected{% endif %}>{{ s }}
+                    </option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group" style="flex: 0 0 auto;">
+                <input type="hidden" id="curriculum_changed" name="curriculum_changed" value="false">
+                <a href="{{ request.path }}" class="btn"
+                    style="padding: 8px 20px; background: #7f8c8d; color: white;"><i class="bi bi-x-circle"></i>
+                    清除</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // 當任何篩選選單改變時
+        $('.filter-select').on('change', function () {
+            // 判斷是哪一層改變，如果是上層改變，下層通常要重設
+            const changedId = $(this).attr('id');
+
+            const params = new URLSearchParams();
+            params.append('f_curriculum', $('#f_curriculum').val());
+            params.append('f_grade', (changedId === 'f_curriculum') ? 'all' : $('#f_grade').val());
+            params.append('f_volume', (changedId === 'f_curriculum' || changedId === 'f_grade') ? 'all' : $('#f_volume').val());
+            params.append('f_chapter', (changedId.includes('curriculum') || changedId.includes('grade') || changedId.includes('volume')) ? 'all' : $('#f_chapter').val());
+            params.append('f_section', (changedId !== 'f_section') ? 'all' : $('#f_section').val());
+
+            // 觸發 Postback (頁面跳轉)
+            window.location.href = `${window.location.pathname}?${params.toString()}`;
+        });
+    });
+</script>

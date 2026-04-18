@@ -1,0 +1,129 @@
+-- table: class_students
+CREATE TABLE class_students (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            class_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (class_id) REFERENCES classes (id) ON DELETE CASCADE,
+            FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE,
+            UNIQUE(class_id, student_id)
+        );
+
+-- table: classes
+CREATE TABLE classes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            teacher_id INTEGER NOT NULL,
+            class_code TEXT UNIQUE NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (teacher_id) REFERENCES users (id)
+        );
+
+-- table: exam_analysis
+CREATE TABLE exam_analysis (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            skill_id TEXT NOT NULL,
+            curriculum TEXT,
+            grade INTEGER,
+            volume TEXT,
+            chapter TEXT,
+            section TEXT,
+            is_correct BOOLEAN NOT NULL,
+            error_type TEXT,
+            confidence FLOAT,
+            student_answer_latex TEXT,
+            feedback TEXT,
+            image_path TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            FOREIGN KEY (skill_id) REFERENCES skills_info (skill_id)
+        );
+
+-- table: learning_diagnosis
+CREATE TABLE learning_diagnosis (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            radar_chart_data TEXT NOT NULL,
+            ai_comment TEXT,
+            recommended_unit TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (student_id) REFERENCES users (id)
+        );
+
+-- table: mistake_logs
+CREATE TABLE mistake_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            skill_id TEXT NOT NULL,
+            question_content TEXT NOT NULL,
+            user_answer TEXT NOT NULL,
+            correct_answer TEXT NOT NULL,
+            error_type TEXT,
+            error_description TEXT,
+            improvement_suggestion TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        );
+
+-- table: progress
+CREATE TABLE progress (
+            user_id INTEGER,
+            skill_id TEXT,
+            consecutive_correct INTEGER DEFAULT 0,
+            consecutive_wrong INTEGER DEFAULT 0, 
+            current_level INTEGER DEFAULT 1, 
+            questions_solved INTEGER DEFAULT 0,
+            last_practiced DATETIME DEFAULT CURRENT_TIMESTAMP, 
+            PRIMARY KEY (user_id, skill_id),
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        );
+
+-- table: skill_curriculum
+CREATE TABLE skill_curriculum (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            skill_id TEXT NOT NULL,
+            curriculum TEXT NOT NULL,
+            grade INTEGER NOT NULL, 
+            volume TEXT NOT NULL, 
+            chapter TEXT NOT NULL, 
+            section TEXT NOT NULL, 
+            paragraph TEXT, 
+            display_order INTEGER DEFAULT 0,
+            difficulty_level INTEGER DEFAULT 1, 
+            FOREIGN KEY (skill_id) REFERENCES skills_info (skill_id) ON DELETE CASCADE,
+            UNIQUE(curriculum, grade, volume, chapter, section, paragraph, skill_id, difficulty_level)
+        );
+
+-- table: skill_prerequisites
+CREATE TABLE skill_prerequisites (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            skill_id TEXT NOT NULL,
+            prerequisite_id TEXT NOT NULL,
+            FOREIGN KEY (skill_id) REFERENCES skills_info (skill_id) ON DELETE CASCADE,
+            FOREIGN KEY (prerequisite_id) REFERENCES skills_info (skill_id) ON DELETE CASCADE,
+            UNIQUE (skill_id, prerequisite_id)
+        );
+
+-- table: skills_info
+CREATE TABLE skills_info (
+            skill_id TEXT PRIMARY KEY,
+            skill_en_name TEXT NOT NULL,
+            skill_ch_name TEXT NOT NULL,
+            category TEXT,
+            description TEXT NOT NULL,
+            input_type TEXT DEFAULT 'text',
+            gemini_prompt TEXT NOT NULL,
+            consecutive_correct_required INTEGER DEFAULT 10,
+            is_active BOOLEAN DEFAULT TRUE,
+            order_index INTEGER DEFAULT 0
+        );
+
+-- table: users
+CREATE TABLE users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            email TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        , role TEXT DEFAULT "student");

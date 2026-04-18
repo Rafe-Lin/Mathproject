@@ -1,0 +1,4 @@
+﻿student_group,student_group_zh,max_steps,total_episodes,success_rate,avg_steps,avg_final_mastery,mainline_steps_mean,remediation_steps_mean,mainline_ratio,remediation_ratio,avg_reached_mastery_step,avg_mastery_gain,interpretation
+careless,拔尖組,40,100,0.94,16.82,0.8006,11.57,5.25,0.6879,0.3121,15.5054,0.1493,Mostly stayed on mainline with minimal remediation; already near mastery.
+average,固本組,40,100,0.91,29.18,0.7993,21.4,7.78,0.7334,0.2666,28.1099,0.2744,Received balanced mainline and remediation support; achieved the largest overall improvement.
+weak,減C組,40,100,0.01,39.96,0.4753,19.94,20.02,0.499,0.501,36.0,0.1773,Spent significant time in remediation; improved but rarely reached stable A-level within 40 steps.

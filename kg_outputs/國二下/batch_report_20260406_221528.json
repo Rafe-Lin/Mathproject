@@ -1,0 +1,51 @@
+{
+  "total": 4,
+  "success": 4,
+  "failed": 0,
+  "units": [
+    {
+      "name": "第1章_數列與級數",
+      "status": "success",
+      "stats": {
+        "total_nodes": 60,
+        "total_edges": 115,
+        "l3_count": 9,
+        "l4_count": 48,
+        "l4_avg_per_l3": 5.333333333333333
+      }
+    },
+    {
+      "name": "第2章_函數與圖形",
+      "status": "success",
+      "stats": {
+        "total_nodes": 23,
+        "total_edges": 24,
+        "l3_count": 3,
+        "l4_count": 17,
+        "l4_avg_per_l3": 5.666666666666667
+      }
+    },
+    {
+      "name": "第3章_三角形與多邊形",
+      "status": "success",
+      "stats": {
+        "total_nodes": 45,
+        "total_edges": 129,
+        "l3_count": 6,
+        "l4_count": 36,
+        "l4_avg_per_l3": 6.0
+      }
+    },
+    {
+      "name": "第4章_平行與四邊形",
+      "status": "success",
+      "stats": {
+        "total_nodes": 78,
+        "total_edges": 100,
+        "l3_count": 12,
+        "l4_count": 63,
+        "l4_avg_per_l3": 5.25
+      }
+    }
+  ]
+}

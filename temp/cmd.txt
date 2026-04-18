@@ -1,0 +1,78 @@
+math_practice/
+├── app.py
+├── config.py
+├── requirements.txt
+├── templates/
+│   ├── login.html          ← 登入頁面
+│   ├── register.html       ← 註冊頁面
+│   ├── dashboard.html      ← 個人學習狀況
+│   └── index.html          ← HTML + JS + CSS
+├── users.db                 ← 資料庫
+├── core/
+│   ├── __init__.py
+│   ├── routes.py              # 共用 3 個 API
+│   ├── session.py             # 題目狀態管理
+│   └── ai_analyzer.py         # 共用 AI 分析
+└── skills/
+    ├── __init__.py
+    ├── remainder.py           # 餘式定理
+    ├── factor.py              # 因式定理
+    ├── linear_sub.py          # 帶入消去法
+    ├── linear_add.py          # 加減消去法
+    ├── inequality_graph.py    # 圖解區域（手寫）
+    └── inequality_judge.py    # 判斷解
+
+
+
+第一次安裝(沒有用Github)
+===========================
+# 切換到專案目錄
+cd Python\math-master
+
+# 建立資料夾
+mkdir core, skills, templates, static
+
+# 建立檔案（Windows 版 touch）
+New-Item app.py, config.py, requirements.txt
+New-Item core/__init__.py, core/routes.py, core/session.py, core/ai_analyzer.py
+New-Item skills/__init__.py, skills/remainder.py
+New-Item templates/index.html
+New-Item static/style.css
+
+
+第一次安裝(從Github下載)
+===========================
+# 1. 進入專案資料夾
+cd D:\Python\Mathproject
+cd E:\Python\math-master
+cd C:\Python\Mathproject
+# 2. 建立虛擬環境
+python -m venv venv
+
+# 3. 啟動虛擬環境
+venv\Scripts\activate
+$env:GEMINI_API_KEY = "AIzaSyCCvlrh5-3Y_Ck15cZDJ-R0C3yYN9WTBpw"
+python app.py
+http://127.0.0.1:5000
+
+# 4. 安裝套件
+pip install Flask google-generativeai
+pip install flask-login
+pip install python-dotenv
+pip install pandas
+pip install openpyxl
+
+
+set GEMINI_API_KEY=AIzaSyAHdn-IImFJwyVMqRt5TdqBFOdnw_bgbbY
+$env:GEMINI_API_KEY = "AIzaSyAHdn-IImFJwyVMqRt5TdqBFOdnw_bgbbY"
+
+cd D:\Python\math-master
+venv\Scripts\activate
+$env:GEMINI_API_KEY = "AIzaSyAHdn-IImFJwyVMqRt5TdqBFOdnw_bgbbY"
+python app.py
+http://127.0.0.1:5000
+
+
+python models.py
+python import_data.py
+

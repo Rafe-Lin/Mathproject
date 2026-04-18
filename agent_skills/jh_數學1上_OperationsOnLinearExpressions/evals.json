@@ -1,0 +1,64 @@
+{
+  "schema_version": "2.0",
+  "skill_name": "jh_數學1上_OperationsOnLinearExpressions",
+  "architecture": "edge_ai_orchestrator",
+  "description": "線性代數式 skill benchmark",
+  "evals": [
+    {
+      "eval_id": "linear_l2_like_terms_ab2",
+      "skill_name": "jh_數學1上_OperationsOnLinearExpressions",
+      "ablation_target": "Ab2",
+      "description": "L2 同類項合併",
+      "family_id": "linear_combine_like_terms",
+      "difficulty": "easy",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 1,
+        "family_id": "L2",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "eval_id": "linear_l4_outer_minus_ab2",
+      "skill_name": "jh_數學1上_OperationsOnLinearExpressions",
+      "ablation_target": "Ab2",
+      "description": "L4 外層負號整包變號",
+      "family_id": "linear_outer_minus_scope",
+      "difficulty": "mid",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "L4",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "linear_l5_distribution_ab2",
+      "skill_name": "jh_數學1上_OperationsOnLinearExpressions",
+      "ablation_target": "Ab2",
+      "description": "L5 單項分配律",
+      "family_id": "linear_monomial_distribution",
+      "difficulty": "mid",
+      "timeout_seconds": 180,
+      "generation_kwargs": {
+        "level": 2,
+        "family_id": "L5",
+        "difficulty": "mid"
+      }
+    },
+    {
+      "eval_id": "linear_l6_nested_ab2",
+      "skill_name": "jh_數學1上_OperationsOnLinearExpressions",
+      "ablation_target": "Ab2",
+      "description": "L6 巢狀括號化簡",
+      "family_id": "linear_nested_simplify",
+      "difficulty": "hard",
+      "timeout_seconds": 240,
+      "generation_kwargs": {
+        "level": 3,
+        "family_id": "L6",
+        "difficulty": "hard"
+      }
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/_admin_navbar.html
+功能說明 (Description): 教師端共用導覽列 (Include)
+後端呼叫 (Backend Call): Include File
+版本資訊 (Version): V3.0
+更新日期 (Date): 2026-04-16
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+{% set _ep = request.endpoint %}
+{% set _path = request.path or '' %}
+
+{% set admin_active_home = (_ep == 'teacher_dashboard') or ('/teacher_dashboard' in _path) %}
+{% set admin_active_curriculum = (_ep == 'core.admin_curriculum') %}
+{% set admin_active_skills = (_ep == 'core.admin_skills') %}
+{% set admin_active_prereq = (_ep == 'core.admin_prerequisites') %}
+{% set admin_active_examples = (_ep == 'core.admin_examples') %}
+{% set admin_active_importer = (_ep == 'core.admin_textbook_importer') or ('/importer' in _path) %}
+{% set admin_active_db = (_ep == 'core.db_maintenance') %}
+{% set admin_active_ai = (_ep == 'core.ai_prompt_settings_page') %}
+{% set admin_active_analysis = (_ep == 'teacher_analysis') or ('/teacher_analysis' in _path) %}
+
+<style>
+.admin-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    background: #2c3e50;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.admin-navbar__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+.admin-navbar__brand {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.98rem;
+    letter-spacing: 0.02em;
+    line-height: 1.35;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+.admin-navbar__brand:hover { color: #fff; }
+.admin-navbar__menu {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+}
+.admin-navbar__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.admin-navbar__pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+.admin-navbar__pill--home { background: #3498db; color: #fff; }
+.admin-navbar__pill--curriculum { background: #16a085; color: #fff; }
+.admin-navbar__pill--skills { background: #9b59b6; color: #fff; }
+.admin-navbar__pill--prereq { background: #1abc9c; color: #fff; }
+.admin-navbar__pill--examples { background: #e67e22; color: #fff; }
+.admin-navbar__pill--importer { background: #2ecc71; color: #fff; }
+.admin-navbar__pill--db { background: #f1c40f; color: #2c3e50; }
+.admin-navbar__pill--ai { background: #e74c3c; color: #fff; }
+.admin-navbar__pill--analysis { background: #c039b4; color: #fff; }
+.admin-navbar__pill--student { background: #f39c12; color: #fff; }
+.admin-navbar__pill--home,
+.admin-navbar__pill--student {
+    padding: 0 13px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 2px 8px rgba(93, 173, 226, 0.22);
+}
+.admin-navbar__pill--logout {
+    background: transparent;
+    color: #aaa;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 500;
+}
+.admin-navbar__pill--logout:hover {
+    color: #ecf0f1;
+    background: rgba(255, 255, 255, 0.06);
+}
+.admin-navbar__pill--active {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.55),
+        0 6px 14px rgba(0,0,0,0.28);
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+.admin-navbar__pill--active:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.2);
+}
+.admin-navbar__pill--curriculum:hover { background: #117a65; }
+.admin-navbar__pill--examples:hover { background: #ca6f1e; }
+.admin-navbar__pill--student:hover { background: #d68910; }
+@media (max-width: 1280px) {
+    .admin-navbar__inner {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .admin-navbar__menu {
+        flex-wrap: wrap;
+    }
+}
+</style>
+
+<div class="admin-navbar" role="navigation" aria-label="教師端主選單">
+  <div class="admin-navbar__inner">
+    <a href="{{ url_for('teacher_dashboard') }}" class="admin-navbar__brand">
+      自適應性教學系統 ( <strong>{{ username or current_user.username }}</strong> )
+    </a>
+    <div class="admin-navbar__menu">
+      <a href="{{ url_for('teacher_dashboard') }}"
+         class="admin-navbar__pill admin-navbar__pill--home{% if admin_active_home %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_home %}aria-current="page"{% endif %}>👨‍🏫 教師主頁</a>
+      {% if current_user.is_admin or current_user.role == 'teacher' %}
+      <a href="{{ url_for('teacher_analysis') }}"
+         class="admin-navbar__pill admin-navbar__pill--analysis{% if admin_active_analysis %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_analysis %}aria-current="page"{% endif %}>📊 學生分析</a>
+      <a href="{{ url_for('core.admin_curriculum') }}"
+         class="admin-navbar__pill admin-navbar__pill--curriculum{% if admin_active_curriculum %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_curriculum %}aria-current="page"{% endif %}>📚 課程分類</a>
+      <a href="{{ url_for('core.admin_skills') }}"
+         class="admin-navbar__pill admin-navbar__pill--skills{% if admin_active_skills %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_skills %}aria-current="page"{% endif %}>⚙️ 單元管理</a>
+      <a href="{{ url_for('core.admin_prerequisites') }}"
+         class="admin-navbar__pill admin-navbar__pill--prereq{% if admin_active_prereq %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_prereq %}aria-current="page"{% endif %}>🔗 技能關聯</a>
+      <a href="{{ url_for('core.admin_examples') }}"
+         class="admin-navbar__pill admin-navbar__pill--examples{% if admin_active_examples %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_examples %}aria-current="page"{% endif %}>📖 例題管理</a>
+      <a href="{{ url_for('core.admin_textbook_importer') }}"
+         class="admin-navbar__pill admin-navbar__pill--importer{% if admin_active_importer %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_importer %}aria-current="page"{% endif %}>🤖 教材匯入</a>
+      <a href="{{ url_for('core.db_maintenance') }}"
+         class="admin-navbar__pill admin-navbar__pill--db{% if admin_active_db %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_db %}aria-current="page"{% endif %}>🗃️ 資料庫管理</a>
+      <a href="{{ url_for('core.ai_prompt_settings_page') }}"
+         class="admin-navbar__pill admin-navbar__pill--ai{% if admin_active_ai %} admin-navbar__pill--active{% endif %}"
+         {% if admin_active_ai %}aria-current="page"{% endif %}>🤖 AI設定</a>
+      {% endif %}
+      <a href="{{ url_for('dashboard') }}" class="admin-navbar__pill admin-navbar__pill--student">👀 學生模式</a>
+      <a href="{{ url_for('logout') }}" class="admin-navbar__pill admin-navbar__pill--logout">登出</a>
+    </div>
+  </div>
+</div>
+

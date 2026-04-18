@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/mistake_notebook.html
+功能說明 (Description): 學生錯題本
+後端呼叫 (Backend Call): core/routes/analysis.py -> mistake_notebook
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+
+{% block title %}我的錯題本{% endblock %}
+
+{% block styles %}
+<style>
+    .container {
+        margin-top: 2rem;
+    }
+    .mistake-card {
+        margin-bottom: 1.5rem;
+        border: 1px solid #e9ecef;
+        border-left-width: 5px;
+    }
+    .mistake-card-header {
+        background-color: #f8f9fa;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .mistake-card-body {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.25rem;
+    }
+    .mistake-image-container {
+        flex: 1;
+        min-width: 200px;
+    }
+    .mistake-image {
+        max-width: 100%;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .mistake-details {
+        flex: 2;
+    }
+    .notes-section {
+        background-color: #fffbef;
+        border-left: 3px solid #ffc107;
+        padding: 10px;
+        border-radius: 4px;
+        white-space: pre-wrap; /* Preserve whitespace and newlines */
+    }
+    #loading, #no-entries {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+    }
+    .filter-controls {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📝 我的錯題本</h2>
+        <a href="{{ url_for('core.add_mistake_page') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> 手動新增錯題
+        </a>
+    </div>
+    
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+        <label for="skill-filter" class="form-label">篩選知識點：</label>
+        <select id="skill-filter" class="form-select w-auto d-inline-block">
+            <option value="all">全部</option>
+        </select>
+    </div>
+
+    <!-- Entries Container -->
+    <div id="mistake-entries-container">
+        <!-- JS will populate this -->
+    </div>
+
+    <!-- Loading and Empty State -->
+    <div id="loading" class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>載入中...</p>
+    </div>
+    <div id="no-entries" style="display: none;">
+        <p>您的錯題本目前是空的，快去新增第一題吧！</p>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">查看圖片</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img src="" class="img-fluid" id="modalImage" alt="錯題圖片">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('mistake-entries-container');
+    const loadingDiv = document.getElementById('loading');
+    const noEntriesDiv = document.getElementById('no-entries');
+    const skillFilter = document.getElementById('skill-filter');
+    let allEntries = [];
+
+    function renderEntries(entries) {
+        container.innerHTML = '';
+        if (entries.length === 0) {
+            noEntriesDiv.style.display = 'block';
+            return;
+        }
+        noEntriesDiv.style.display = 'none';
+
+        entries.forEach(entry => {
+            const card = document.createElement('div');
+            card.className = 'card mistake-card';
+            card.style.borderLeftColor = entry.skill ? colorFromString(entry.skill_id) : '#6c757d';
+
+            const imageUrl = entry.exam_image_path ? `{{ url_for('static', filename='') }}${entry.exam_image_path}` : '';
+            
+            card.innerHTML = `
+                <div class="mistake-card-header">
+                    <strong>${entry.skill_name || '未分類'}</strong>
+                    <small class="text-muted">記錄於：${entry.created_at}</small>
+                </div>
+                <div class="mistake-card-body">
+                    ${imageUrl ? `
+                    <div class="mistake-image-container">
+                        <img src="${imageUrl}" alt="錯題圖片" class="mistake-image" data-bs-toggle="modal" data-bs-target="#imageModal" data-img-src="${imageUrl}">
+                    </div>` : ''}
+                    <div class="mistake-details">
+                        <h6>筆記與心得：</h6>
+                        <p class="notes-section">${entry.notes || '沒有新增筆記。'}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function populateFilter(entries) {
+        const skills = new Map();
+        entries.forEach(entry => {
+            if (entry.skill_id && !skills.has(entry.skill_id)) {
+                skills.set(entry.skill_id, entry.skill_name);
+            }
+        });
+
+        const sortedSkills = [...skills.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+
+        sortedSkills.forEach(([id, name]) => {
+            const option = document.createElement('option');
+            option.value = id;
+            option.textContent = name;
+            skillFilter.appendChild(option);
+        });
+    }
+
+    skillFilter.addEventListener('change', function() {
+        const selectedSkill = this.value;
+        if (selectedSkill === 'all') {
+            renderEntries(allEntries);
+        } else {
+            const filteredEntries = allEntries.filter(entry => entry.skill_id === selectedSkill);
+            renderEntries(filteredEntries);
+        }
+    });
+
+    fetch('/api/mistake-notebook')
+        .then(response => response.json())
+        .then(data => {
+            allEntries = data;
+            loadingDiv.style.display = 'none';
+            populateFilter(allEntries);
+            renderEntries(allEntries);
+        })
+        .catch(error => {
+            console.error('Error fetching mistake notebook entries:', error);
+            loadingDiv.innerHTML = '<p class="text-danger">載入失敗，請稍後再試。</p>';
+        });
+
+    // Image modal handler
+    const imageModal = document.getElementById('imageModal');
+    imageModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const imgSrc = button.getAttribute('data-img-src');
+        const modalImage = imageModal.querySelector('#modalImage');
+        modalImage.src = imgSrc;
+    });
+
+    // Helper to generate a color from a string
+    function colorFromString(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let color = '#';
+        for (let i = 0; i < 3; i++) {
+            let value = (hash >> (i * 8)) & 0xFF;
+            // Make colors darker and less saturated
+            value = Math.floor(value * 0.6 + 80); 
+            color += ('00' + value.toString(16)).substr(-2);
+        }
+        return color;
+    }
+});
+</script>
+{% endblock %}

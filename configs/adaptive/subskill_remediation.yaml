@@ -1,0 +1,243 @@
+﻿subskills:
+  int.sign_handling:
+    domain: integer
+    display_name: Sign Handling
+
+  int.add_sub:
+    domain: integer
+    display_name: Integer Add and Subtract
+
+  int.mul_div:
+    domain: integer
+    display_name: Integer Multiplication and Division
+
+  int.order_of_operations:
+    domain: integer
+    display_name: Order of Operations
+
+  int.bracket_scope:
+    domain: integer
+    display_name: Bracket Scope
+
+  int.power_notation_basics:
+    domain: integer
+    display_name: Power Notation Basics
+
+  int.signed_power_interpretation:
+    domain: integer
+    display_name: Signed Power Interpretation
+
+  int.parenthesized_negative_base:
+    domain: integer
+    display_name: Parenthesized Negative Base
+
+  int.minus_outside_power:
+    domain: integer
+    display_name: Minus Outside Power
+
+  int.power_precedence_in_mixed_ops:
+    domain: integer
+    display_name: Power Precedence In Mixed Ops
+
+  int.signed_power_evaluation:
+    domain: integer
+    display_name: Signed Power Evaluation
+
+  int.mixed_power_arithmetic:
+    domain: integer
+    display_name: Mixed Power Arithmetic
+
+  frac.add_sub:
+    domain: fraction
+    display_name: Fraction Addition and Subtraction
+
+  frac.divide:
+    domain: fraction
+    display_name: Fraction Division
+
+  frac.same_base_multiplication_rule:
+    domain: fraction
+    display_name: Same Base Multiplication Rule
+
+  frac.power_building_from_repetition:
+    domain: fraction
+    display_name: Power Building From Repetition
+
+  frac.power_of_power_rule:
+    domain: fraction
+    display_name: Power Of Power Rule
+
+  frac.product_power_distribution:
+    domain: fraction
+    display_name: Product Power Distribution
+
+  frac.fraction_power_distribution:
+    domain: fraction
+    display_name: Fraction Power Distribution
+
+  lin.coefficient_sign_handling:
+    domain: linear_expression
+    display_name: Coefficient Sign Handling
+
+  lin.like_term_combination:
+    domain: linear_expression
+    display_name: Like Term Combination
+
+  lin.term_collection_with_constants:
+    domain: linear_expression
+    display_name: Term Collection With Constants
+
+  lin.outer_minus_scope:
+    domain: linear_expression
+    display_name: Outer Minus Scope
+
+  lin.monomial_distribution:
+    domain: linear_expression
+    display_name: Monomial Distribution
+
+  lin.nested_bracket_scope:
+    domain: linear_expression
+    display_name: Nested Bracket Scope
+
+  lin.structure_isomorphism:
+    domain: linear_expression
+    display_name: Structure Isomorphism
+
+  lin.fractional_expression_simplification:
+    domain: linear_expression
+    display_name: Fractional Expression Simplification
+
+  poly.combine_like_terms:
+    domain: polynomial
+    display_name: Combine Like Terms
+    depends_on:
+      - int.sign_handling
+
+  poly.sign_distribution:
+    domain: polynomial
+    display_name: Sign Distribution
+    depends_on:
+      - int.sign_handling
+      - int.bracket_scope
+      - int.order_of_operations
+
+  poly.expand_monomial:
+    domain: polynomial
+    display_name: Expand Monomial
+    depends_on:
+      - int.power_notation_basics
+      - int.power_precedence_in_mixed_ops
+
+  poly.expand_binomial:
+    domain: polynomial
+    display_name: Expand Binomial
+    depends_on:
+      - int.mul_div
+      - int.order_of_operations
+      - frac.same_base_multiplication_rule
+
+  poly.special_identity:
+    domain: polynomial
+    display_name: Special Identity
+    depends_on:
+      - frac.power_of_power_rule
+      - frac.product_power_distribution
+
+  poly.outer_minus_scope:
+    domain: polynomial
+    display_name: Outer Minus Scope
+    depends_on:
+      - int.bracket_scope
+      - int.sign_handling
+
+  poly.combine_after_distribution:
+    domain: polynomial
+    display_name: Combine After Distribution
+    depends_on:
+      - int.add_sub
+      - int.order_of_operations
+
+  poly.mixed_simplify_transition:
+    domain: polynomial
+    display_name: Mixed Simplify Transition
+    depends_on:
+      - int.order_of_operations
+      - int.bracket_scope
+      - int.sign_handling
+
+diagnosis_map:
+  outer_minus_scope: poly.outer_minus_scope
+  bracket_scope_error: poly.outer_minus_scope
+  polynomial_sign_error: poly.sign_distribution
+  polynomial_outer_minus_scope_error: lin.outer_minus_scope
+  polynomial_bracket_scope_error: lin.outer_minus_scope
+  polynomial_sign_flip_after_distribution: lin.outer_minus_scope
+  polynomial_expand_error: poly.expand_binomial
+  polynomial_binomial_expansion_structure_error: poly.expand_binomial
+  polynomial_like_terms_error: poly.combine_like_terms
+  polynomial_combine_like_terms_after_distribution: lin.like_term_combination
+  polynomial_coefficient_arithmetic_error: lin.coefficient_sign_handling
+  polynomial_mixed_simplify_transition_error: lin.nested_bracket_scope
+  polynomial_family_isomorphism_confusion: lin.structure_isomorphism
+  power_sign_parentheses_confusion: int.signed_power_interpretation
+  power_precedence_confusion: int.power_precedence_in_mixed_ops
+  same_base_power_rule_error: frac.same_base_multiplication_rule
+  power_of_power_rule_error: frac.power_of_power_rule
+  product_power_distribution_error: frac.product_power_distribution
+
+remediation_map:
+  lin.coefficient_sign_handling:
+    domain: linear_expression
+    display_name: Coefficient Sign Handling
+
+  lin.like_term_combination:
+    domain: linear_expression
+    display_name: Like Term Combination
+
+  lin.term_collection_with_constants:
+    domain: linear_expression
+    display_name: Term Collection With Constants
+
+  lin.outer_minus_scope:
+    domain: linear_expression
+    display_name: Outer Minus Scope
+
+  lin.monomial_distribution:
+    domain: linear_expression
+    display_name: Monomial Distribution
+
+  lin.nested_bracket_scope:
+    domain: linear_expression
+    display_name: Nested Bracket Scope
+
+  lin.structure_isomorphism:
+    domain: linear_expression
+    display_name: Structure Isomorphism
+
+  lin.fractional_expression_simplification:
+    domain: linear_expression
+    display_name: Fractional Expression Simplification
+
+  poly.combine_like_terms:
+    target: int.add_sub
+
+  poly.sign_distribution:
+    target: lin.monomial_distribution
+
+  poly.expand_monomial:
+    target: int.power_precedence_in_mixed_ops
+
+  poly.expand_binomial:
+    target: frac.same_base_multiplication_rule
+
+  poly.special_identity:
+    target: frac.power_of_power_rule
+
+  poly.outer_minus_scope:
+    target: lin.outer_minus_scope
+
+  poly.combine_after_distribution:
+    target: lin.like_term_combination
+
+  poly.mixed_simplify_transition:
+    target: lin.nested_bracket_scope

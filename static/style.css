@@ -1,0 +1,16 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial; background: #f4f4f4; }
+.container { display: flex; height: 100vh; }
+.practice-area { flex: 2; display: flex; flex-direction: column; }
+.practice-top { padding: 20px; background: white; border-bottom: 1px solid #ddd; }
+.practice-bottom { flex: 1; padding: 20px; background: #f8f9fa; }
+.input-group { display: flex; gap: 10px; margin: 15px 0; }
+input, button { padding: 10px; font-size: 1.1em; }
+#result-display { margin-top: 10px; font-weight: bold; }
+.canvas-container { border: 1px solid #ccc; background: white; height: 100%; }
+.chat-area { flex: 1; padding: 20px; background: #f8f9fa; display: flex; flex-direction: column; }
+#chat-history { flex: 1; overflow-y: auto; padding: 10px; background: white; border: 1px solid #ddd; margin-bottom: 10px; }
+.chat-message { max-width: 80%; margin: 5px 0; padding: 10px; border-radius: 10px; }
+.user-message { background: #007bff; color: white; margin-left: auto; }
+.bot-message { background: #e9ecef; color: #333; }
+#streak-counter { float: right; color: #d63384; font-weight: bold; }

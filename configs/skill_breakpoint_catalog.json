@@ -1,0 +1,1304 @@
+{
+  "skills": {
+    "jh_數學1上_FourArithmeticOperationsOfIntegers": {
+      "label": "整數四則運算",
+      "families": {
+        "I1": {
+          "family_id": "I1",
+          "family_name_en": "int_numberline_add_sub",
+          "label": "整數加減",
+          "subskills": [
+            "sign_handling",
+            "add_sub"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "加減運算（先整理再算）"
+          ]
+        },
+        "I2": {
+          "family_id": "I2",
+          "family_name_en": "int_flat_add_sub",
+          "label": "整數加減",
+          "subskills": [
+            "sign_handling",
+            "add_sub"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "加減運算（先整理再算）"
+          ]
+        },
+        "I3": {
+          "family_id": "I3",
+          "family_name_en": "int_flat_mul_div_exact",
+          "label": "整數乘除",
+          "subskills": [
+            "sign_handling",
+            "mul_div",
+            "exact_divisibility"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "整數乘除（正負號規則）",
+            "整除判斷（要除得盡）"
+          ]
+        },
+        "I4": {
+          "family_id": "I4",
+          "family_name_en": "int_flat_mixed_four_ops",
+          "label": "整數四則混合",
+          "subskills": [
+            "sign_handling",
+            "add_sub",
+            "mul_div",
+            "order_of_operations"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "加減運算（先整理再算）",
+            "整數乘除（正負號規則）",
+            "運算順序（先乘除後加減）"
+          ]
+        },
+        "I5": {
+          "family_id": "I5",
+          "family_name_en": "int_bracket_mixed",
+          "label": "括號整數四則",
+          "subskills": [
+            "sign_handling",
+            "bracket_scope",
+            "order_of_operations"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "括號範圍（整組一起看）",
+            "運算順序（先乘除後加減）"
+          ]
+        },
+        "I6": {
+          "family_id": "I6",
+          "family_name_en": "int_abs_value",
+          "label": "絕對值整數四則",
+          "subskills": [
+            "sign_handling",
+            "absolute_value"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "絕對值概念（看離 0 多遠）"
+          ]
+        },
+        "I7": {
+          "family_id": "I7",
+          "family_name_en": "int_division_exact_nested",
+          "label": "巢狀整除結構",
+          "subskills": [
+            "sign_handling",
+            "mul_div",
+            "bracket_scope",
+            "absolute_value",
+            "exact_divisibility"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "整數乘除（正負號規則）",
+            "括號範圍（整組一起看）",
+            "絕對值概念（看離 0 多遠）",
+            "整除判斷（要除得盡）"
+          ]
+        },
+        "I8": {
+          "family_id": "I8",
+          "family_name_en": "int_composite_structure",
+          "label": "綜合結構題",
+          "subskills": [
+            "sign_handling",
+            "add_sub",
+            "mul_div",
+            "order_of_operations",
+            "bracket_scope",
+            "absolute_value",
+            "exact_divisibility",
+            "isomorphic_structure"
+          ],
+          "subskill_labels": [
+            "正負號規則（先分清正負）",
+            "加減運算（先整理再算）",
+            "整數乘除（正負號規則）",
+            "運算順序（先乘除後加減）",
+            "括號範圍（整組一起看）",
+            "絕對值概念（看離 0 多遠）",
+            "整除判斷（要除得盡）",
+            "結構辨識（換個樣子也一樣）"
+          ]
+        },
+        "I9": {
+          "family_id": "I9",
+          "family_name_en": "int_power_sign_parentheses",
+          "label": "乘方、負號與括號",
+          "subskills": [
+            "power_notation_basics",
+            "signed_power_interpretation",
+            "parenthesized_negative_base",
+            "minus_outside_power"
+          ],
+          "subskill_labels": [
+            "乘方記法（底數與次方）",
+            "負數乘方判讀（括號內外）",
+            "負底數乘方（含括號）",
+            "外層負號與次方"
+          ]
+        },
+        "I10": {
+          "family_id": "I10",
+          "family_name_en": "int_power_mixed_evaluation",
+          "label": "乘方混合運算",
+          "subskills": [
+            "power_precedence_in_mixed_ops",
+            "signed_power_evaluation",
+            "mixed_power_arithmetic"
+          ],
+          "subskill_labels": [
+            "乘方優先順序",
+            "正負乘方值計算",
+            "乘方混合運算"
+          ]
+        }
+      },
+      "subskills": {
+        "sign_handling": {
+          "label": "正負號規則（先分清正負）",
+          "hint": "負號先看清，再決定往哪邊算",
+          "display_text": "偵測學習斷點：正負號規則（先分清正負）｜提示：負號先看清，再決定往哪邊算"
+        },
+        "add_sub": {
+          "label": "加減運算（先整理再算）",
+          "hint": "先把式子整理好，再做加減",
+          "display_text": "偵測學習斷點：加減運算（先整理再算）｜提示：先把式子整理好，再做加減"
+        },
+        "mul_div": {
+          "label": "整數乘除（正負號規則）",
+          "hint": "先判斷正負，再算乘除大小",
+          "display_text": "偵測學習斷點：整數乘除（正負號規則）｜提示：先判斷正負，再算乘除大小"
+        },
+        "exact_divisibility": {
+          "label": "整除判斷（要除得盡）",
+          "hint": "除之前先看能不能整除",
+          "display_text": "偵測學習斷點：整除判斷（要除得盡）｜提示：除之前先看能不能整除"
+        },
+        "order_of_operations": {
+          "label": "運算順序（先乘除後加減）",
+          "hint": "先做乘除，再回來算加減",
+          "display_text": "偵測學習斷點：運算順序（先乘除後加減）｜提示：先做乘除，再回來算加減"
+        },
+        "bracket_scope": {
+          "label": "括號範圍（整組一起看）",
+          "hint": "去括號前先看整組受誰影響",
+          "display_text": "偵測學習斷點：括號範圍（整組一起看）｜提示：去括號前先看整組受誰影響"
+        },
+        "absolute_value": {
+          "label": "絕對值概念（看離 0 多遠）",
+          "hint": "絕對值只看大小，不看正負號",
+          "display_text": "偵測學習斷點：絕對值概念（看離 0 多遠）｜提示：絕對值只看大小，不看正負號"
+        },
+        "isomorphic_structure": {
+          "label": "結構辨識（換個樣子也一樣）",
+          "hint": "先看題型骨架，再套用同樣做法",
+          "display_text": "偵測學習斷點：結構辨識（換個樣子也一樣）｜提示：先看題型骨架，再套用同樣做法"
+        },
+        "power_notation_basics": {
+          "label": "乘方記法（底數與次方）",
+          "hint": "先看底數是誰，再看幾次方。",
+          "display_text": "偵測學習斷點：乘方記法（底數與次方）｜提示：先看底數是誰，再看幾次方。"
+        },
+        "signed_power_interpretation": {
+          "label": "負數乘方判讀（括號內外）",
+          "hint": "(-a)^n 與 -a^n 意義不同。",
+          "display_text": "偵測學習斷點：負數乘方判讀（括號內外）｜提示：(-a)^n 與 -a^n 意義不同。"
+        },
+        "parenthesized_negative_base": {
+          "label": "負底數乘方（含括號）",
+          "hint": "負號在括號內，整體一起做次方。",
+          "display_text": "偵測學習斷點：負底數乘方（含括號）｜提示：負號在括號內，整體一起做次方。"
+        },
+        "minus_outside_power": {
+          "label": "外層負號與次方",
+          "hint": "先做次方，再處理外面的負號。",
+          "display_text": "偵測學習斷點：外層負號與次方｜提示：先做次方，再處理外面的負號。"
+        },
+        "power_precedence_in_mixed_ops": {
+          "label": "乘方優先順序",
+          "hint": "先次方，再乘除，最後加減。",
+          "display_text": "偵測學習斷點：乘方優先順序｜提示：先次方，再乘除，最後加減。"
+        },
+        "signed_power_evaluation": {
+          "label": "正負乘方值計算",
+          "hint": "先判斷符號位置，再算數值。",
+          "display_text": "偵測學習斷點：正負乘方值計算｜提示：先判斷符號位置，再算數值。"
+        },
+        "mixed_power_arithmetic": {
+          "label": "乘方混合運算",
+          "hint": "每一步都依運算順序完成。",
+          "display_text": "偵測學習斷點：乘方混合運算｜提示：每一步都依運算順序完成。"
+        }
+      }
+    },
+    "jh_數學1上_FourArithmeticOperationsOfNumbers": {
+      "label": "分數四則運算",
+      "families": {
+        "F1": {
+          "family_id": "F1",
+          "family_name_en": "Fraction Simplification",
+          "label": "分數化簡",
+          "subskills": [
+            "proper_improper_fraction",
+            "mixed_numbers",
+            "sign_normalization",
+            "simplest_form_reduction"
+          ],
+          "subskill_labels": [
+            "真分數與假分數（先看分子分母）",
+            "帶分數換算（整數和分數分開看）",
+            "分數正負號整理（符號放前面）",
+            "約成最簡（分子分母一起約）"
+          ]
+        },
+        "F2": {
+          "family_id": "F2",
+          "family_name_en": "Equivalent Fraction Fill-Blank",
+          "label": "等值分數填空",
+          "subskills": [
+            "equivalent_fraction_scaling",
+            "sign_normalization"
+          ],
+          "subskill_labels": [
+            "等值分數（分子分母同乘除）",
+            "分數正負號整理（符號放前面）"
+          ]
+        },
+        "F3": {
+          "family_id": "F3",
+          "family_name_en": "Preserve-Value Fraction Invariance",
+          "label": "分數值不變",
+          "subskills": [
+            "preserve_value_invariance",
+            "equivalent_fraction_scaling"
+          ],
+          "subskill_labels": [
+            "分數值不變（一起放大縮小）",
+            "等值分數（分子分母同乘除）"
+          ]
+        },
+        "F4": {
+          "family_id": "F4",
+          "family_name_en": "Fraction Comparison",
+          "label": "分數大小比較",
+          "subskills": [
+            "positive_fraction_comparison",
+            "negative_fraction_comparison",
+            "mixed_number_comparison"
+          ],
+          "subskill_labels": [
+            "正分數比較（先通分再比）",
+            "負分數比較（越負越小）",
+            "帶分數比較（先比整數部分）"
+          ]
+        },
+        "F5": {
+          "family_id": "F5",
+          "family_name_en": "Fraction Add/Subtract",
+          "label": "分數加減",
+          "subskills": [
+            "add_sub",
+            "nested_parentheses",
+            "mixed_numbers"
+          ],
+          "subskill_labels": [
+            "加減運算（先整理再算）",
+            "括號分數運算（先算括號內）",
+            "帶分數換算（整數和分數分開看）"
+          ]
+        },
+        "F6": {
+          "family_id": "F6",
+          "family_name_en": "Fraction Multiply",
+          "label": "分數乘法",
+          "subskills": [
+            "multiply",
+            "mixed_numbers",
+            "telescoping_products"
+          ],
+          "subskill_labels": [
+            "分數乘法（先約分再乘）",
+            "帶分數換算（整數和分數分開看）",
+            "連鎖約分（前後交叉看）"
+          ]
+        },
+        "F7": {
+          "family_id": "F7",
+          "family_name_en": "Fraction Divide",
+          "label": "分數除法",
+          "subskills": [
+            "divide",
+            "mixed_numbers",
+            "decimal_fraction_mixed_arithmetic"
+          ],
+          "subskill_labels": [
+            "分數除法（改乘倒數）",
+            "帶分數換算（整數和分數分開看）",
+            "小數分數混合算（先統一形式）"
+          ]
+        },
+        "F8": {
+          "family_id": "F8",
+          "family_name_en": "Reciprocal",
+          "label": "倒數",
+          "subskills": [
+            "reciprocal_transform"
+          ],
+          "subskill_labels": [
+            "倒數概念（上下對調）"
+          ]
+        },
+        "F9": {
+          "family_id": "F9",
+          "family_name_en": "Decimal-Fraction Mixed Evaluation",
+          "label": "分數小數混合四則",
+          "subskills": [
+            "decimal_to_fraction_exact_conversion",
+            "add_sub",
+            "multiply",
+            "divide",
+            "nested_parentheses"
+          ],
+          "subskill_labels": [
+            "小數換分數（先寫成幾分之幾）",
+            "加減運算（先整理再算）",
+            "分數乘法（先約分再乘）",
+            "分數除法（改乘倒數）",
+            "括號分數運算（先算括號內）"
+          ]
+        },
+        "F10": {
+          "family_id": "F10",
+          "family_name_en": "Fraction Word Problems",
+          "label": "分數應用題",
+          "subskills": [
+            "remaining_amount",
+            "container_weight",
+            "before_after_ratio",
+            "share_comparison"
+          ],
+          "subskill_labels": [
+            "剩餘量理解（先看用了多少）",
+            "容器重量差（總量和空瓶分開）",
+            "前後變化比較（先釐清基準）",
+            "分配比較（同一份量再比較）"
+          ]
+        },
+        "F11": {
+          "family_id": "F11",
+          "family_name_en": "power_same_base_multiply",
+          "label": "同底數相乘與指數相加",
+          "subskills": [
+            "same_base_multiplication_rule",
+            "power_building_from_repetition"
+          ],
+          "subskill_labels": [
+            "同底數相乘（指數相加）",
+            "重複乘法轉次方"
+          ]
+        },
+        "F12": {
+          "family_id": "F12",
+          "family_name_en": "power_of_power",
+          "label": "冪的冪",
+          "subskills": [
+            "power_of_power_rule"
+          ],
+          "subskill_labels": [
+            "冪的冪（指數相乘）"
+          ]
+        },
+        "F13": {
+          "family_id": "F13",
+          "family_name_en": "product_power_distribution",
+          "label": "積的冪",
+          "subskills": [
+            "product_power_distribution",
+            "fraction_power_distribution"
+          ],
+          "subskill_labels": [
+            "積的冪分配",
+            "分數積的冪分配"
+          ]
+        }
+      },
+      "subskills": {
+        "proper_improper_fraction": {
+          "label": "真分數與假分數（先看分子分母）",
+          "hint": "分子和分母誰大，先分清楚",
+          "display_text": "偵測學習斷點：真分數與假分數（先看分子分母）｜提示：分子和分母誰大，先分清楚"
+        },
+        "mixed_numbers": {
+          "label": "帶分數換算（整數和分數分開看）",
+          "hint": "帶分數先換好，再做後面運算",
+          "display_text": "偵測學習斷點：帶分數換算（整數和分數分開看）｜提示：帶分數先換好，再做後面運算"
+        },
+        "sign_normalization": {
+          "label": "分數正負號整理（符號放前面）",
+          "hint": "正負號先統一位置，比較不會亂",
+          "display_text": "偵測學習斷點：分數正負號整理（符號放前面）｜提示：正負號先統一位置，比較不會亂"
+        },
+        "simplest_form_reduction": {
+          "label": "約成最簡（分子分母一起約）",
+          "hint": "最後再檢查一次，能不能再約分",
+          "display_text": "偵測學習斷點：約成最簡（分子分母一起約）｜提示：最後再檢查一次，能不能再約分"
+        },
+        "equivalent_fraction_scaling": {
+          "label": "等值分數（分子分母同乘除）",
+          "hint": "分子分母要一起變，值才不變",
+          "display_text": "偵測學習斷點：等值分數（分子分母同乘除）｜提示：分子分母要一起變，值才不變"
+        },
+        "preserve_value_invariance": {
+          "label": "分數值不變（一起放大縮小）",
+          "hint": "只要同乘同除，分數值不會變",
+          "display_text": "偵測學習斷點：分數值不變（一起放大縮小）｜提示：只要同乘同除，分數值不會變"
+        },
+        "positive_fraction_comparison": {
+          "label": "正分數比較（先通分再比）",
+          "hint": "分母不同時，先通分再比較",
+          "display_text": "偵測學習斷點：正分數比較（先通分再比）｜提示：分母不同時，先通分再比較"
+        },
+        "negative_fraction_comparison": {
+          "label": "負分數比較（越負越小）",
+          "hint": "負分數比較時，要注意方向相反",
+          "display_text": "偵測學習斷點：負分數比較（越負越小）｜提示：負分數比較時，要注意方向相反"
+        },
+        "mixed_number_comparison": {
+          "label": "帶分數比較（先比整數部分）",
+          "hint": "先比整數部分，再比分數部分",
+          "display_text": "偵測學習斷點：帶分數比較（先比整數部分）｜提示：先比整數部分，再比分數部分"
+        },
+        "add_sub": {
+          "label": "加減運算（先整理再算）",
+          "hint": "先把式子整理好，再做加減",
+          "display_text": "偵測學習斷點：加減運算（先整理再算）｜提示：先把式子整理好，再做加減"
+        },
+        "nested_parentheses": {
+          "label": "括號分數運算（先算括號內）",
+          "hint": "先算括號裡，再處理外面",
+          "display_text": "偵測學習斷點：括號分數運算（先算括號內）｜提示：先算括號裡，再處理外面"
+        },
+        "multiply": {
+          "label": "分數乘法（先約分再乘）",
+          "hint": "能先約分就先約，再相乘",
+          "display_text": "偵測學習斷點：分數乘法（先約分再乘）｜提示：能先約分就先約，再相乘"
+        },
+        "telescoping_products": {
+          "label": "連鎖約分（前後交叉看）",
+          "hint": "前後能約的先找出來",
+          "display_text": "偵測學習斷點：連鎖約分（前後交叉看）｜提示：前後能約的先找出來"
+        },
+        "divide": {
+          "label": "分數除法（改乘倒數）",
+          "hint": "除法先改成乘倒數，再計算",
+          "display_text": "偵測學習斷點：分數除法（改乘倒數）｜提示：除法先改成乘倒數，再計算"
+        },
+        "decimal_fraction_mixed_arithmetic": {
+          "label": "小數分數混合算（先統一形式）",
+          "hint": "小數和分數先統一，再運算",
+          "display_text": "偵測學習斷點：小數分數混合算（先統一形式）｜提示：小數和分數先統一，再運算"
+        },
+        "reciprocal_transform": {
+          "label": "倒數概念（上下對調）",
+          "hint": "除以分數時，先想到倒數",
+          "display_text": "偵測學習斷點：倒數概念（上下對調）｜提示：除以分數時，先想到倒數"
+        },
+        "decimal_to_fraction_exact_conversion": {
+          "label": "小數換分數（先寫成幾分之幾）",
+          "hint": "先看小數位數，再改寫成分數",
+          "display_text": "偵測學習斷點：小數換分數（先寫成幾分之幾）｜提示：先看小數位數，再改寫成分數"
+        },
+        "remaining_amount": {
+          "label": "剩餘量理解（先看用了多少）",
+          "hint": "先分清楚剩下和用掉的是哪一部分",
+          "display_text": "偵測學習斷點：剩餘量理解（先看用了多少）｜提示：先分清楚剩下和用掉的是哪一部分"
+        },
+        "container_weight": {
+          "label": "容器重量差（總量和空瓶分開）",
+          "hint": "先分出內容物和容器，再比較",
+          "display_text": "偵測學習斷點：容器重量差（總量和空瓶分開）｜提示：先分出內容物和容器，再比較"
+        },
+        "before_after_ratio": {
+          "label": "前後變化比較（先釐清基準）",
+          "hint": "先看前後各是幾分之幾",
+          "display_text": "偵測學習斷點：前後變化比較（先釐清基準）｜提示：先看前後各是幾分之幾"
+        },
+        "share_comparison": {
+          "label": "分配比較（同一份量再比較）",
+          "hint": "先確認比較的是不是同一份量",
+          "display_text": "偵測學習斷點：分配比較（同一份量再比較）｜提示：先確認比較的是不是同一份量"
+        },
+        "same_base_multiplication_rule": {
+          "label": "同底數相乘（指數相加）",
+          "hint": "同底數相乘，指數直接相加。",
+          "display_text": "偵測學習斷點：同底數相乘（指數相加）｜提示：同底數相乘，指數直接相加。"
+        },
+        "power_building_from_repetition": {
+          "label": "重複乘法轉次方",
+          "hint": "觀察相同因數重複幾次。",
+          "display_text": "偵測學習斷點：重複乘法轉次方｜提示：觀察相同因數重複幾次。"
+        },
+        "power_of_power_rule": {
+          "label": "冪的冪（指數相乘）",
+          "hint": "外次方乘上內次方。",
+          "display_text": "偵測學習斷點：冪的冪（指數相乘）｜提示：外次方乘上內次方。"
+        },
+        "product_power_distribution": {
+          "label": "積的冪分配",
+          "hint": "把次方分配到每個因數。",
+          "display_text": "偵測學習斷點：積的冪分配｜提示：把次方分配到每個因數。"
+        },
+        "fraction_power_distribution": {
+          "label": "分數積的冪分配",
+          "hint": "分子分母都要同次方。",
+          "display_text": "偵測學習斷點：分數積的冪分配｜提示：分子分母都要同次方。"
+        }
+      }
+    },
+    "jh_數學2上_FourArithmeticOperationsOfPolynomial": {
+      "label": "多項式四則運算",
+      "families": {
+        "F1": {
+          "family_id": "F1",
+          "family_name_en": "poly_add_sub_flat",
+          "label": "多項式加減",
+          "subskills": [
+            "normalize_terms",
+            "combine_like_terms"
+          ],
+          "subskill_labels": [
+            "項的整理（先排整齊）",
+            "同類項合併（長得一樣才能加減）"
+          ]
+        },
+        "F2": {
+          "family_id": "F2",
+          "family_name_en": "poly_add_sub_nested",
+          "label": "巢狀多項式加減",
+          "subskills": [
+            "sign_distribution",
+            "combine_like_terms",
+            "family_isomorphism"
+          ],
+          "subskill_labels": [
+            "符號分配（每一項都要顧到）",
+            "同類項合併（長得一樣才能加減）",
+            "題型結構辨識（換題皮不換做法）"
+          ]
+        },
+        "F3": {
+          "family_id": "F3",
+          "family_name_en": "poly_add_sub_unknown",
+          "label": "未知多項式求解",
+          "subskills": [
+            "sign_distribution",
+            "unknown_target_preservation"
+          ],
+          "subskill_labels": [
+            "符號分配（每一項都要顧到）",
+            "未知式保留（先把未知量留乾淨）"
+          ]
+        },
+        "F4": {
+          "family_id": "F4",
+          "family_name_en": "poly_mul_monomial",
+          "label": "單項式乘法",
+          "subskills": [
+            "expand_monomial"
+          ],
+          "subskill_labels": [
+            "單項式乘法（係數字母都要乘）"
+          ]
+        },
+        "F5": {
+          "family_id": "F5",
+          "family_name_en": "poly_mul_poly",
+          "label": "多項式乘法展開",
+          "subskills": [
+            "expand_binomial",
+            "combine_like_terms"
+          ],
+          "subskill_labels": [
+            "多項式展開（每項都要乘到）",
+            "同類項合併（長得一樣才能加減）"
+          ]
+        },
+        "F6": {
+          "family_id": "F6",
+          "family_name_en": "poly_mul_special_identity",
+          "label": "乘法公式",
+          "subskills": [
+            "special_identity"
+          ],
+          "subskill_labels": [
+            "乘法公式（套公式也要看符號）"
+          ]
+        },
+        "F7": {
+          "family_id": "F7",
+          "family_name_en": "poly_div_monomial_eval",
+          "label": "單項式除法直接化簡",
+          "subskills": [
+            "normalize_terms"
+          ],
+          "subskill_labels": [
+            "項的整理（先排整齊）"
+          ]
+        },
+        "F8": {
+          "family_id": "F8",
+          "family_name_en": "poly_div_monomial_qr",
+          "label": "單項式除法商餘",
+          "subskills": [
+            "long_division",
+            "quotient_remainder_format"
+          ],
+          "subskill_labels": [
+            "長除法步驟（對齊次方）",
+            "商與餘式表示（寫完整）"
+          ]
+        },
+        "F9": {
+          "family_id": "F9",
+          "family_name_en": "poly_div_poly_qr",
+          "label": "多項式長除法",
+          "subskills": [
+            "long_division",
+            "quotient_remainder_format"
+          ],
+          "subskill_labels": [
+            "長除法步驟（對齊次方）",
+            "商與餘式表示（寫完整）"
+          ]
+        },
+        "F10": {
+          "family_id": "F10",
+          "family_name_en": "poly_div_reverse",
+          "label": "反推除法",
+          "subskills": [
+            "reverse_division_reconstruction"
+          ],
+          "subskill_labels": [
+            "反推除法（用商和餘式還原）"
+          ]
+        },
+        "F11": {
+          "family_id": "F11",
+          "family_name_en": "poly_mixed_simplify",
+          "label": "綜合化簡",
+          "subskills": [
+            "expand_binomial",
+            "special_identity",
+            "combine_like_terms",
+            "family_isomorphism"
+          ],
+          "subskill_labels": [
+            "多項式展開（每項都要乘到）",
+            "乘法公式（套公式也要看符號）",
+            "同類項合併（長得一樣才能加減）",
+            "題型結構辨識（換題皮不換做法）"
+          ]
+        },
+        "F12": {
+          "family_id": "F12",
+          "family_name_en": "poly_geom_formula_direct",
+          "label": "幾何公式應用",
+          "subskills": [
+            "geometry_formula"
+          ],
+          "subskill_labels": [
+            "幾何公式應用（看清長寬關係）"
+          ]
+        },
+        "F13": {
+          "family_id": "F13",
+          "family_name_en": "poly_geom_region_composite",
+          "label": "複合圖形應用",
+          "subskills": [
+            "geometry_formula",
+            "composite_region_modeling"
+          ],
+          "subskill_labels": [
+            "幾何公式應用（看清長寬關係）",
+            "複合圖形拆解（分塊再合併）"
+          ]
+        }
+      },
+      "subskills": {
+        "normalize_terms": {
+          "label": "項的整理（先排整齊）",
+          "hint": "先把同類項排好，計算比較穩",
+          "display_text": "偵測學習斷點：項的整理（先排整齊）｜提示：先把同類項排好，計算比較穩"
+        },
+        "combine_like_terms": {
+          "label": "同類項合併（長得一樣才能加減）",
+          "hint": "只有同類的項，才能直接合併",
+          "display_text": "偵測學習斷點：同類項合併（長得一樣才能加減）｜提示：只有同類的項，才能直接合併"
+        },
+        "sign_distribution": {
+          "label": "符號分配（每一項都要顧到）",
+          "hint": "負號乘進去，每一項都要變號",
+          "display_text": "偵測學習斷點：符號分配（每一項都要顧到）｜提示：負號乘進去，每一項都要變號"
+        },
+        "family_isomorphism": {
+          "label": "題型結構辨識（換題皮不換做法）",
+          "hint": "題目變樣子，做法骨架可能一樣",
+          "display_text": "偵測學習斷點：題型結構辨識（換題皮不換做法）｜提示：題目變樣子，做法骨架可能一樣"
+        },
+        "unknown_target_preservation": {
+          "label": "未知式保留（先把未知量留乾淨）",
+          "hint": "移項整理時，先把未知多項式留完整",
+          "display_text": "偵測學習斷點：未知式保留（先把未知量留乾淨）｜提示：移項整理時，先把未知多項式留完整"
+        },
+        "expand_monomial": {
+          "label": "單項式乘法（係數字母都要乘）",
+          "hint": "每一項都要乘到，次方也要顧",
+          "display_text": "偵測學習斷點：單項式乘法（係數字母都要乘）｜提示：每一項都要乘到，次方也要顧"
+        },
+        "expand_binomial": {
+          "label": "多項式展開（每項都要乘到）",
+          "hint": "展開時不要漏乘任何一項",
+          "display_text": "偵測學習斷點：多項式展開（每項都要乘到）｜提示：展開時不要漏乘任何一項"
+        },
+        "special_identity": {
+          "label": "乘法公式（套公式也要看符號）",
+          "hint": "套公式前，先看是不是標準型",
+          "display_text": "偵測學習斷點：乘法公式（套公式也要看符號）｜提示：套公式前，先看是不是標準型"
+        },
+        "long_division": {
+          "label": "長除法步驟（對齊次方）",
+          "hint": "每一步都要對齊最高次項",
+          "display_text": "偵測學習斷點：長除法步驟（對齊次方）｜提示：每一步都要對齊最高次項"
+        },
+        "quotient_remainder_format": {
+          "label": "商與餘式表示（寫完整）",
+          "hint": "有餘數時，商和餘式都要寫清楚",
+          "display_text": "偵測學習斷點：商與餘式表示（寫完整）｜提示：有餘數時，商和餘式都要寫清楚"
+        },
+        "reverse_division_reconstruction": {
+          "label": "反推除法（用商和餘式還原）",
+          "hint": "先用除式乘商，再把餘式加回來",
+          "display_text": "偵測學習斷點：反推除法（用商和餘式還原）｜提示：先用除式乘商，再把餘式加回來"
+        },
+        "geometry_formula": {
+          "label": "幾何公式應用（看清長寬關係）",
+          "hint": "先找出公式裡每一段代表什麼",
+          "display_text": "偵測學習斷點：幾何公式應用（看清長寬關係）｜提示：先找出公式裡每一段代表什麼"
+        },
+        "composite_region_modeling": {
+          "label": "複合圖形拆解（分塊再合併）",
+          "hint": "先拆成簡單圖形，再組回答案",
+          "display_text": "偵測學習斷點：複合圖形拆解（分塊再合併）｜提示：先拆成簡單圖形，再組回答案"
+        }
+      }
+    },
+    "jh_數學2上_FourOperationsOfRadicals": {
+      "label": "根式四則運算",
+      "families": {
+        "p0": {
+          "family_id": "p0",
+          "family_name_en": "p0_simplify",
+          "label": "單根式化簡",
+          "subskills": [
+            "simplify"
+          ],
+          "subskill_labels": [
+            "根式化簡（先找完全平方）"
+          ]
+        },
+        "p1": {
+          "family_id": "p1",
+          "family_name_en": "p1_add_sub",
+          "label": "純根式加減",
+          "subskills": [
+            "combine_like_terms"
+          ],
+          "subskill_labels": [
+            "同類項合併（長得一樣才能加減）"
+          ]
+        },
+        "p1b": {
+          "family_id": "p1b",
+          "family_name_en": "p1b_add_sub_bracket",
+          "label": "括號根式加減",
+          "subskills": [
+            "combine_like_terms",
+            "bracket_scope"
+          ],
+          "subskill_labels": [
+            "同類項合併（長得一樣才能加減）",
+            "括號範圍（整組一起看）"
+          ]
+        },
+        "p1c": {
+          "family_id": "p1c",
+          "family_name_en": "p1c_mixed_frac_rad_add_sub",
+          "label": "分數根式加減",
+          "subskills": [
+            "combine_like_terms",
+            "fractional_radical"
+          ],
+          "subskill_labels": [
+            "同類項合併（長得一樣才能加減）",
+            "分式根式（分子分母分開看）"
+          ]
+        },
+        "p2a": {
+          "family_id": "p2a",
+          "family_name_en": "p2a_mult_direct",
+          "label": "根式直接相乘",
+          "subskills": [
+            "multiply_terms"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）"
+          ]
+        },
+        "p2b": {
+          "family_id": "p2b",
+          "family_name_en": "p2b_mult_distrib",
+          "label": "根式分配律乘法",
+          "subskills": [
+            "multiply_terms",
+            "distribute"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "分配律（每一項都要乘）"
+          ]
+        },
+        "p2c": {
+          "family_id": "p2c",
+          "family_name_en": "p2c_mult_binomial",
+          "label": "根式雙括號展開",
+          "subskills": [
+            "multiply_terms",
+            "distribute",
+            "binomial_expand"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "分配律（每一項都要乘）",
+            "雙括號展開（內外都要算）"
+          ]
+        },
+        "p2d": {
+          "family_id": "p2d",
+          "family_name_en": "p2d_perfect_square",
+          "label": "根式完全平方",
+          "subskills": [
+            "multiply_terms",
+            "binomial_expand"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "雙括號展開（內外都要算）"
+          ]
+        },
+        "p2e": {
+          "family_id": "p2e",
+          "family_name_en": "p2e_diff_of_squares",
+          "label": "根式平方差",
+          "subskills": [
+            "multiply_terms",
+            "binomial_expand"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "雙括號展開（內外都要算）"
+          ]
+        },
+        "p2f": {
+          "family_id": "p2f",
+          "family_name_en": "p2f_int_mult_rad",
+          "label": "整數乘根式",
+          "subskills": [
+            "multiply_terms"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）"
+          ]
+        },
+        "p2g": {
+          "family_id": "p2g",
+          "family_name_en": "p2g_rad_mult_frac",
+          "label": "根式乘分數",
+          "subskills": [
+            "multiply_terms",
+            "fractional_radical"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "分式根式（分子分母分開看）"
+          ]
+        },
+        "p2h": {
+          "family_id": "p2h",
+          "family_name_en": "p2h_frac_mult_rad",
+          "label": "分數乘根式",
+          "subskills": [
+            "multiply_terms",
+            "fractional_radical"
+          ],
+          "subskill_labels": [
+            "根式乘法（根號內外分清楚）",
+            "分式根式（分子分母分開看）"
+          ]
+        },
+        "p3a": {
+          "family_id": "p3a",
+          "family_name_en": "p3a_div_expr",
+          "label": "表達式除以根式",
+          "subskills": [
+            "divide_terms",
+            "bracket_scope"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "括號範圍（整組一起看）"
+          ]
+        },
+        "p3b": {
+          "family_id": "p3b",
+          "family_name_en": "p3b_div_simple",
+          "label": "a_over_sqrt_b_rationalize",
+          "subskills": [
+            "divide_terms",
+            "conjugate_rationalize"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "共軛有理化（配對消根號）"
+          ]
+        },
+        "p3c": {
+          "family_id": "p3c",
+          "family_name_en": "p3c_div_direct",
+          "label": "根式直接相除",
+          "subskills": [
+            "divide_terms"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）"
+          ]
+        },
+        "p4": {
+          "family_id": "p4",
+          "family_name_en": "p4_frac_mult",
+          "label": "分式根式乘法",
+          "subskills": [
+            "fractional_radical",
+            "structure_isomorphism"
+          ],
+          "subskill_labels": [
+            "分式根式（分子分母分開看）",
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
+          ]
+        },
+        "p4b": {
+          "family_id": "p4b",
+          "family_name_en": "p4b_frac_rad_div",
+          "label": "根式分式相除",
+          "subskills": [
+            "divide_terms",
+            "conjugate_rationalize"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "共軛有理化（配對消根號）"
+          ]
+        },
+        "p4c": {
+          "family_id": "p4c",
+          "family_name_en": "p4c_nested_frac_chain",
+          "label": "根號內分數連算",
+          "subskills": [
+            "fractional_radical",
+            "structure_isomorphism"
+          ],
+          "subskill_labels": [
+            "分式根式（分子分母分開看）",
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
+          ]
+        },
+        "p4d": {
+          "family_id": "p4d",
+          "family_name_en": "p4d_frac_rad_div_mixed",
+          "label": "混合根式分式除法",
+          "subskills": [
+            "divide_terms",
+            "conjugate_rationalize",
+            "fractional_radical"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "共軛有理化（配對消根號）",
+            "分式根式（分子分母分開看）"
+          ]
+        },
+        "p5a": {
+          "family_id": "p5a",
+          "family_name_en": "p5a_conjugate_int",
+          "label": "整數分子共軛有理化",
+          "subskills": [
+            "divide_terms",
+            "conjugate_rationalize"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "共軛有理化（配對消根號）"
+          ]
+        },
+        "p5b": {
+          "family_id": "p5b",
+          "family_name_en": "p5b_conjugate_rad",
+          "label": "根式分子共軛有理化",
+          "subskills": [
+            "divide_terms",
+            "conjugate_rationalize"
+          ],
+          "subskill_labels": [
+            "根式除法（先約再除）",
+            "共軛有理化（配對消根號）"
+          ]
+        },
+        "p6": {
+          "family_id": "p6",
+          "family_name_en": "p6_combo",
+          "label": "多步驟綜合題",
+          "subskills": [
+            "simplify",
+            "combine_like_terms",
+            "multiply_terms",
+            "divide_terms",
+            "structure_isomorphism"
+          ],
+          "subskill_labels": [
+            "根式化簡（先找完全平方）",
+            "同類項合併（長得一樣才能加減）",
+            "根式乘法（根號內外分清楚）",
+            "根式除法（先約再除）",
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09"
+          ]
+        },
+        "p7": {
+          "family_id": "p7",
+          "family_name_en": "p7_mixed_rad_add",
+          "label": "帶分數根式加減",
+          "subskills": [
+            "mixed_number_radical",
+            "combine_like_terms"
+          ],
+          "subskill_labels": [
+            "帶分數根式（整數部分別漏掉）",
+            "同類項合併（長得一樣才能加減）"
+          ]
+        }
+      },
+      "subskills": {
+        "simplify": {
+          "label": "根式化簡（先找完全平方）",
+          "hint": "根號內先找能開出來的因數",
+          "display_text": "偵測學習斷點：根式化簡（先找完全平方）｜提示：根號內先找能開出來的因數"
+        },
+        "combine_like_terms": {
+          "label": "同類項合併（長得一樣才能加減）",
+          "hint": "只有同類的項，才能直接合併",
+          "display_text": "偵測學習斷點：同類項合併（長得一樣才能加減）｜提示：只有同類的項，才能直接合併"
+        },
+        "bracket_scope": {
+          "label": "括號範圍（整組一起看）",
+          "hint": "去括號前先看整組受誰影響",
+          "display_text": "偵測學習斷點：括號範圍（整組一起看）｜提示：去括號前先看整組受誰影響"
+        },
+        "fractional_radical": {
+          "label": "分式根式（分子分母分開看）",
+          "hint": "分式和根號一起出現時，先分層看",
+          "display_text": "偵測學習斷點：分式根式（分子分母分開看）｜提示：分式和根號一起出現時，先分層看"
+        },
+        "multiply_terms": {
+          "label": "根式乘法（根號內外分清楚）",
+          "hint": "先分清楚根號外和根號內再相乘",
+          "display_text": "偵測學習斷點：根式乘法（根號內外分清楚）｜提示：先分清楚根號外和根號內再相乘"
+        },
+        "distribute": {
+          "label": "分配律（每一項都要乘）",
+          "hint": "乘進括號時，每一項都不能漏",
+          "display_text": "偵測學習斷點：分配律（每一項都要乘）｜提示：乘進括號時，每一項都不能漏"
+        },
+        "binomial_expand": {
+          "label": "雙括號展開（內外都要算）",
+          "hint": "展開雙括號時，四個乘積都要顧到",
+          "display_text": "偵測學習斷點：雙括號展開（內外都要算）｜提示：展開雙括號時，四個乘積都要顧到"
+        },
+        "divide_terms": {
+          "label": "根式除法（先約再除）",
+          "hint": "能先約的先約，再看要不要有理化",
+          "display_text": "偵測學習斷點：根式除法（先約再除）｜提示：能先約的先約，再看要不要有理化"
+        },
+        "conjugate_rationalize": {
+          "label": "共軛有理化（配對消根號）",
+          "hint": "看清共軛式，分母才能順利有理化",
+          "display_text": "偵測學習斷點：共軛有理化（配對消根號）｜提示：看清共軛式，分母才能順利有理化"
+        },
+        "structure_isomorphism": {
+          "label": "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+          "hint": "\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a",
+          "display_text": "偵測學習斷點：\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09｜提示：\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a"
+        },
+        "mixed_number_radical": {
+          "label": "帶分數根式（整數部分別漏掉）",
+          "hint": "帶分數根式要把整數部分一起算",
+          "display_text": "偵測學習斷點：帶分數根式（整數部分別漏掉）｜提示：帶分數根式要把整數部分一起算"
+        }
+      }
+    },
+    "jh_數學1上_OperationsOnLinearExpressions": {
+      "label": "一元一次式化簡",
+      "families": {
+        "L1": {
+          "family_id": "L1",
+          "family_name_en": "linear_flat_mul_div",
+          "label": "單項乘除轉寫",
+          "subskills": [
+            "coefficient_sign_handling"
+          ],
+          "subskill_labels": [
+            "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09"
+          ]
+        },
+        "L2": {
+          "family_id": "L2",
+          "family_name_en": "linear_combine_like_terms",
+          "label": "同類項合併",
+          "subskills": [
+            "like_term_combination"
+          ],
+          "subskill_labels": [
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
+          ]
+        },
+        "L3": {
+          "family_id": "L3",
+          "family_name_en": "linear_flat_simplify_with_constants",
+          "label": "平面化簡（含常數）",
+          "subskills": [
+            "term_collection_with_constants",
+            "like_term_combination"
+          ],
+          "subskill_labels": [
+            "\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09",
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
+          ]
+        },
+        "L4": {
+          "family_id": "L4",
+          "family_name_en": "linear_outer_minus_scope",
+          "label": "外層負號整包變號",
+          "subskills": [
+            "outer_minus_scope"
+          ],
+          "subskill_labels": [
+            "\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09"
+          ]
+        },
+        "L5": {
+          "family_id": "L5",
+          "family_name_en": "linear_monomial_distribution",
+          "label": "單項分配到括號",
+          "subskills": [
+            "monomial_distribution",
+            "coefficient_sign_handling"
+          ],
+          "subskill_labels": [
+            "\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09",
+            "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09"
+          ]
+        },
+        "L6": {
+          "family_id": "L6",
+          "family_name_en": "linear_nested_simplify",
+          "label": "多括號綜合化簡",
+          "subskills": [
+            "nested_bracket_scope",
+            "structure_isomorphism",
+            "like_term_combination"
+          ],
+          "subskill_labels": [
+            "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09",
+            "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+            "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09"
+          ]
+        },
+        "L7": {
+          "family_id": "L7",
+          "family_name_en": "linear_fraction_expression_simplify",
+          "label": "分式代數式化簡",
+          "subskills": [
+            "fractional_expression_simplification",
+            "nested_bracket_scope"
+          ],
+          "subskill_labels": [
+            "\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09",
+            "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09"
+          ]
+        }
+      },
+      "subskills": {
+        "coefficient_sign_handling": {
+          "label": "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09",
+          "hint": "\\u5148\\u5224\\u65b7\\u4fc2\\u6578\\u6b63\\u8ca0\\uff0c\\u518d\\u505a\\u4e58\\u9664\\u6216\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09｜提示：\\u5148\\u5224\\u65b7\\u4fc2\\u6578\\u6b63\\u8ca0\\uff0c\\u518d\\u505a\\u4e58\\u9664\\u6216\\u5408\\u4f75"
+        },
+        "like_term_combination": {
+          "label": "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09",
+          "hint": "\\u78ba\\u8a8d\\u8b8a\\u6578\\u8207\\u6b21\\u65b9\\u76f8\\u540c\\u518d\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09｜提示：\\u78ba\\u8a8d\\u8b8a\\u6578\\u8207\\u6b21\\u65b9\\u76f8\\u540c\\u518d\\u5408\\u4f75"
+        },
+        "term_collection_with_constants": {
+          "label": "\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09",
+          "hint": "\\u5148\\u5206\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u9805\\uff0c\\u518d\\u5404\\u81ea\\u5408\\u4f75",
+          "display_text": "偵測學習斷點：\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09｜提示：\\u5148\\u5206\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u9805\\uff0c\\u518d\\u5404\\u81ea\\u5408\\u4f75"
+        },
+        "outer_minus_scope": {
+          "label": "\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09",
+          "hint": "\\u8ca0\\u865f\\u5728\\u62ec\\u865f\\u524d\\uff0c\\u62ec\\u865f\\u5167\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u8b8a\\u865f",
+          "display_text": "偵測學習斷點：\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09｜提示：\\u8ca0\\u865f\\u5728\\u62ec\\u865f\\u524d\\uff0c\\u62ec\\u865f\\u5167\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u8b8a\\u865f"
+        },
+        "monomial_distribution": {
+          "label": "\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09",
+          "hint": "\\u5206\\u914d\\u6642\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u4e58\\u4e0a\\u4fc2\\u6578",
+          "display_text": "偵測學習斷點：\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09｜提示：\\u5206\\u914d\\u6642\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u4e58\\u4e0a\\u4fc2\\u6578"
+        },
+        "nested_bracket_scope": {
+          "label": "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09",
+          "hint": "\\u5148\\u7b97\\u6700\\u5167\\u5c64\\u62ec\\u865f\\uff0c\\u518d\\u9010\\u5c64\\u5c55\\u958b",
+          "display_text": "偵測學習斷點：\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09｜提示：\\u5148\\u7b97\\u6700\\u5167\\u5c64\\u62ec\\u865f\\uff0c\\u518d\\u9010\\u5c64\\u5c55\\u958b"
+        },
+        "structure_isomorphism": {
+          "label": "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+          "hint": "\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a",
+          "display_text": "偵測學習斷點：\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09｜提示：\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a"
+        },
+        "fractional_expression_simplification": {
+          "label": "\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09",
+          "hint": "\\u5148\\u8655\\u7406\\u5206\\u6bcd\\uff0c\\u518d\\u5408\\u4f75\\u540c\\u985e\\u9805",
+          "display_text": "偵測學習斷點：\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09｜提示：\\u5148\\u8655\\u7406\\u5206\\u6bcd\\uff0c\\u518d\\u5408\\u4f75\\u540c\\u985e\\u9805"
+        }
+      }
+    }
+  }
+}

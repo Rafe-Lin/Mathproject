@@ -1,0 +1,656 @@
+<!--
+=============================================================================
+模組名稱 (Module Name): templates/exam_upload.html
+功能說明 (Description): 考卷上傳與分析
+後端呼叫 (Backend Call): core/routes/exam.py -> exam_upload_page
+版本資訊 (Version): V2.0
+更新日期 (Date): 2026-01-13
+維護團隊 (Maintainer): Math AI Project Team
+=============================================================================
+-->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考卷診斷 - 自適應性教學系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* 繼承 admin_prerequisites.html 的風格 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* Navbar 樣式改由 _student_navbar.html 提供，避免頁面覆寫 */
+
+        /* Container & Layout */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #3498db;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .upload-area:hover {
+            background: #e8f4fc;
+            border-color: #2980b9;
+        }
+
+        .upload-area.dragover {
+            background: #d6eaf8;
+            border-color: #2980b9;
+        }
+
+        .upload-icon {
+            font-size: 60px;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .upload-hint {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Preview */
+        .preview-container {
+            margin-top: 25px;
+            display: none;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Styles */
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-submit {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Result Styles */
+        .result-section {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .result-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .result-section p {
+            color: #555;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .result-correct {
+            border-left-color: #27ae60;
+        }
+
+        .result-incorrect {
+            border-left-color: #e74c3c;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fadbd8;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid #e74c3c;
+        }
+
+        /* [Phase 6] 前置單元推薦卡片 */
+        .prerequisite-suggestion {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .prerequisite-suggestion-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .prerequisite-suggestion-header i {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        .prerequisite-reason {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .prerequisite-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .prerequisite-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .go-prerequisite-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .go-prerequisite-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div style="color: #555; font-weight: 500;">AI 正在分析您的考卷...</div>
+    </div>
+
+    {% include '_student_navbar.html' %}
+
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-file-earmark-text" style="color: #e74c3c;"></i> 考卷診斷系統
+            </h1>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-upload"></i> 上傳考卷圖片
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="gradeSelect">選擇年級</label>
+                    <select id="gradeSelect" class="form-select">
+                        <option value="">-- 請選擇年級 --</option>
+                        <option value="7">國一</option>
+                        <option value="8">國二</option>
+                        <option value="9">國三</option>
+                        <option value="10">高一</option>
+                        <option value="11">高二</option>
+                        <option value="12">高三</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="curriculumSelect">選擇課程類型</label>
+                    <select id="curriculumSelect" class="form-select">
+                        <option value="general">普通高中</option>
+                        <option value="vocational">技術型高中</option>
+                        <option value="junior_high">國民中學</option>
+                    </select>
+                </div>
+
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon"><i class="bi bi-cloud-upload"></i></div>
+                    <div class="upload-text">點擊或拖放圖片到這裡</div>
+                    <div class="upload-hint">支援 JPG, PNG, GIF 格式,檔案大小限制 5MB,可一次上傳多張圖片</div>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </div>
+
+                <div class="preview-container" id="previewContainer"></div>
+
+                <button class="btn btn-submit" id="submitBtn" disabled>開始分析</button>
+
+                <div class="error-message" id="errorMessage"></div>
+            </div>
+        </div>
+
+        <div class="card" id="resultCard" style="display: none;">
+            <div class="card-header">
+                <i class="bi bi-clipboard-check"></i> 分析結果
+            </div>
+            <div class="card-body" id="resultContent">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const gradeSelect = document.getElementById('gradeSelect');
+        const curriculumSelect = document.getElementById('curriculumSelect');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const resultCard = document.getElementById('resultCard');
+        const resultContent = document.getElementById('resultContent');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let selectedFiles = [];
+
+        // 點擊上傳區域
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // 檔案選擇
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(Array.from(e.target.files));
+        });
+
+        // 拖放功能
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(Array.from(e.dataTransfer.files));
+        });
+
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+
+            selectedFiles = [];
+            previewContainer.innerHTML = '';
+
+            let validFiles = 0;
+
+            files.forEach(file => {
+                // 驗證檔案類型
+                if (!file.type.startsWith('image/')) {
+                    showError(`${file.name} 不是圖片檔案`);
+                    return;
+                }
+
+                // 驗證檔案大小 (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showError(`${file.name} 檔案大小超過 5MB`);
+                    return;
+                }
+
+                selectedFiles.push(file);
+                validFiles++;
+
+                // 顯示預覽
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.cssText = 'display: inline-block; margin: 10px; position: relative;';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview-image';
+                    img.style.cssText = 'max-width: 200px; max-height: 200px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);';
+
+                    const fileName = document.createElement('div');
+                    fileName.textContent = file.name;
+                    fileName.style.cssText = 'text-align: center; margin-top: 5px; font-size: 12px; color: #7f8c8d;';
+
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(fileName);
+                    previewContainer.appendChild(imgWrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            if (validFiles > 0) {
+                previewContainer.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = `開始分析 (${validFiles} 張圖片)`;
+                hideError();
+            }
+        }
+
+        // 提交分析
+        submitBtn.addEventListener('click', async () => {
+            const grade = gradeSelect.value;
+            const curriculum = curriculumSelect.value;
+
+            if (!grade) {
+                showError('請選擇年級');
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                showError('請選擇圖片');
+                return;
+            }
+
+            // 顯示載入中
+            loadingOverlay.style.display = 'flex';
+            resultCard.style.display = 'none';
+            submitBtn.disabled = true;
+            hideError();
+
+            const results = [];
+            let successCount = 0;
+            let failCount = 0;
+
+            // 依序上傳每個檔案
+            for (let i = 0; i < selectedFiles.length; i++) {
+                const file = selectedFiles[i];
+                loadingOverlay.querySelector('div:last-child').textContent = `正在分析第 ${i + 1}/${selectedFiles.length} 張圖片...`;
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('grade', grade);
+                    formData.append('curriculum', curriculum);
+
+                    const response = await fetch("{{ url_for('core.upload_exam') }}", {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        results.push({
+                            fileName: file.name,
+                            success: true,
+                            data: data.data
+                        });
+                        successCount++;
+                    } else {
+                        results.push({
+                            fileName: file.name,
+                            success: false,
+                            error: data.message || '分析失敗'
+                        });
+                        failCount++;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    results.push({
+                        fileName: file.name,
+                        success: false,
+                        error: '發生錯誤'
+                    });
+                    failCount++;
+                }
+            }
+
+            // 顯示所有結果
+            displayBatchResults(results, successCount, failCount);
+            loadingOverlay.style.display = 'none';
+            submitBtn.disabled = false;
+        });
+
+        function displayBatchResults(results, successCount, failCount) {
+            resultContent.innerHTML = '';
+
+            // 統計資訊
+            const summarySection = document.createElement('div');
+            summarySection.className = 'result-section';
+            summarySection.innerHTML = `
+                <h3><i class="bi bi-bar-chart"></i> 分析統計</h3>
+                <p>總共分析: ${results.length} 張圖片</p>
+                <p style="color: #27ae60;">✅ 成功: ${successCount} 張</p>
+                <p style="color: #e74c3c;">❌ 失敗: ${failCount} 張</p>
+            `;
+            resultContent.appendChild(summarySection);
+
+            // 顯示每個結果
+            results.forEach((result, index) => {
+                const resultSection = document.createElement('div');
+                resultSection.className = 'result-section ' + (result.success ? 'result-correct' : 'result-incorrect');
+
+                if (result.success) {
+                    const data = result.data;
+                    const isCorrect = data.is_correct;
+                    const matchedUnit = data.matched_unit;
+                    const errorAnalysis = data.error_analysis;
+
+                    const errorTypeMap = {
+                        'CALCULATION': '計算錯誤',
+                        'CONCEPTUAL': '觀念錯誤',
+                        'LOGIC': '邏輯推演錯誤',
+                        'COMPREHENSION': '題意理解錯誤',
+                        'UNATTEMPTED': '未作答'
+                    };
+
+                    resultSection.innerHTML = `
+                        <h3>${index + 1}. ${result.fileName} ${isCorrect ? '✅' : '❌'}</h3>
+                        <p><strong>對應單元:</strong> ${matchedUnit.path_name} (${matchedUnit.unit_id})</p>
+                        ${!isCorrect ? `<p><strong>錯誤類型:</strong> ${errorTypeMap[errorAnalysis.error_type] || errorAnalysis.error_type}</p>` : ''}
+                        <p><strong>AI 建議:</strong> ${errorAnalysis.feedback}</p>
+                        <p><strong>信心分數:</strong> ${(matchedUnit.confidence * 100).toFixed(0)}%</p>
+                    `;
+
+                    // [Phase 6] 為答錯的題目添加前置單元推薦
+                    if (!isCorrect && data.suggested_prerequisite) {
+                        const prereqDiv = document.createElement('div');
+                        prereqDiv.className = 'prerequisite-suggestion';
+                        prereqDiv.style.display = 'block';
+                        prereqDiv.innerHTML = `
+                            <div class="prerequisite-suggestion-header">
+                                <i class="bi bi-lightbulb"></i>
+                                建議複習前置單元
+                            </div>
+                            <div class="prerequisite-reason">${data.suggested_prerequisite.reason}</div>
+                            <div class="prerequisite-action">
+                                <span class="prerequisite-name">${data.suggested_prerequisite.name}</span>
+                                <button class="go-prerequisite-btn" onclick="window.location.href='/practice/${data.suggested_prerequisite.id}'">
+                                    前往練習 →
+                                </button>
+                            </div>
+                        `;
+                        resultSection.appendChild(prereqDiv);
+                    }
+                } else {
+                    resultSection.innerHTML = `
+                        <h3>${index + 1}. ${result.fileName} ❌</h3>
+                        <p style="color: #e74c3c;"><strong>錯誤:</strong> ${result.error}</p>
+                    `;
+                }
+
+                resultContent.appendChild(resultSection);
+            });
+
+            resultCard.style.display = 'block';
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

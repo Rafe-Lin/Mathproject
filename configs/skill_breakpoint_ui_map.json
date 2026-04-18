@@ -1,0 +1,278 @@
+{
+  "sign_handling": {
+    "label": "正負號規則（先分清正負）",
+    "hint": "負號先看清，再決定往哪邊算"
+  },
+  "add_sub": {
+    "label": "加減運算（先整理再算）",
+    "hint": "先把式子整理好，再做加減"
+  },
+  "mul_div": {
+    "label": "整數乘除（正負號規則）",
+    "hint": "先判斷正負，再算乘除大小"
+  },
+  "exact_divisibility": {
+    "label": "整除判斷（要除得盡）",
+    "hint": "除之前先看能不能整除"
+  },
+  "order_of_operations": {
+    "label": "運算順序（先乘除後加減）",
+    "hint": "先做乘除，再回來算加減"
+  },
+  "bracket_scope": {
+    "label": "括號範圍（整組一起看）",
+    "hint": "去括號前先看整組受誰影響"
+  },
+  "absolute_value": {
+    "label": "絕對值概念（看離 0 多遠）",
+    "hint": "絕對值只看大小，不看正負號"
+  },
+  "isomorphic_structure": {
+    "label": "結構辨識（換個樣子也一樣）",
+    "hint": "先看題型骨架，再套用同樣做法"
+  },
+  "power_notation_basics": {
+    "label": "乘方記法（底數與次方）",
+    "hint": "先看底數是誰，再看幾次方。"
+  },
+  "signed_power_interpretation": {
+    "label": "負數乘方判讀（括號內外）",
+    "hint": "(-a)^n 與 -a^n 意義不同。"
+  },
+  "parenthesized_negative_base": {
+    "label": "負底數乘方（含括號）",
+    "hint": "負號在括號內，整體一起做次方。"
+  },
+  "minus_outside_power": {
+    "label": "外層負號與次方",
+    "hint": "先做次方，再處理外面的負號。"
+  },
+  "power_precedence_in_mixed_ops": {
+    "label": "乘方優先順序",
+    "hint": "先次方，再乘除，最後加減。"
+  },
+  "signed_power_evaluation": {
+    "label": "正負乘方值計算",
+    "hint": "先判斷符號位置，再算數值。"
+  },
+  "mixed_power_arithmetic": {
+    "label": "乘方混合運算",
+    "hint": "每一步都依運算順序完成。"
+  },
+  "proper_improper_fraction": {
+    "label": "真分數與假分數（先看分子分母）",
+    "hint": "分子和分母誰大，先分清楚"
+  },
+  "mixed_numbers": {
+    "label": "帶分數換算（整數和分數分開看）",
+    "hint": "帶分數先換好，再做後面運算"
+  },
+  "sign_normalization": {
+    "label": "分數正負號整理（符號放前面）",
+    "hint": "正負號先統一位置，比較不會亂"
+  },
+  "simplest_form_reduction": {
+    "label": "約成最簡（分子分母一起約）",
+    "hint": "最後再檢查一次，能不能再約分"
+  },
+  "equivalent_fraction_scaling": {
+    "label": "等值分數（分子分母同乘除）",
+    "hint": "分子分母要一起變，值才不變"
+  },
+  "preserve_value_invariance": {
+    "label": "分數值不變（一起放大縮小）",
+    "hint": "只要同乘同除，分數值不會變"
+  },
+  "positive_fraction_comparison": {
+    "label": "正分數比較（先通分再比）",
+    "hint": "分母不同時，先通分再比較"
+  },
+  "negative_fraction_comparison": {
+    "label": "負分數比較（越負越小）",
+    "hint": "負分數比較時，要注意方向相反"
+  },
+  "mixed_number_comparison": {
+    "label": "帶分數比較（先比整數部分）",
+    "hint": "先比整數部分，再比分數部分"
+  },
+  "nested_parentheses": {
+    "label": "括號分數運算（先算括號內）",
+    "hint": "先算括號裡，再處理外面"
+  },
+  "multiply": {
+    "label": "分數乘法（先約分再乘）",
+    "hint": "能先約分就先約，再相乘"
+  },
+  "telescoping_products": {
+    "label": "連鎖約分（前後交叉看）",
+    "hint": "前後能約的先找出來"
+  },
+  "divide": {
+    "label": "分數除法（改乘倒數）",
+    "hint": "除法先改成乘倒數，再計算"
+  },
+  "decimal_fraction_mixed_arithmetic": {
+    "label": "小數分數混合算（先統一形式）",
+    "hint": "小數和分數先統一，再運算"
+  },
+  "reciprocal_transform": {
+    "label": "倒數概念（上下對調）",
+    "hint": "除以分數時，先想到倒數"
+  },
+  "decimal_to_fraction_exact_conversion": {
+    "label": "小數換分數（先寫成幾分之幾）",
+    "hint": "先看小數位數，再改寫成分數"
+  },
+  "remaining_amount": {
+    "label": "剩餘量理解（先看用了多少）",
+    "hint": "先分清楚剩下和用掉的是哪一部分"
+  },
+  "container_weight": {
+    "label": "容器重量差（總量和空瓶分開）",
+    "hint": "先分出內容物和容器，再比較"
+  },
+  "before_after_ratio": {
+    "label": "前後變化比較（先釐清基準）",
+    "hint": "先看前後各是幾分之幾"
+  },
+  "share_comparison": {
+    "label": "分配比較（同一份量再比較）",
+    "hint": "先確認比較的是不是同一份量"
+  },
+  "same_base_multiplication_rule": {
+    "label": "同底數相乘（指數相加）",
+    "hint": "同底數相乘，指數直接相加。"
+  },
+  "power_building_from_repetition": {
+    "label": "重複乘法轉次方",
+    "hint": "觀察相同因數重複幾次。"
+  },
+  "power_of_power_rule": {
+    "label": "冪的冪（指數相乘）",
+    "hint": "外次方乘上內次方。"
+  },
+  "product_power_distribution": {
+    "label": "積的冪分配",
+    "hint": "把次方分配到每個因數。"
+  },
+  "fraction_power_distribution": {
+    "label": "分數積的冪分配",
+    "hint": "分子分母都要同次方。"
+  },
+  "normalize_terms": {
+    "label": "項的整理（先排整齊）",
+    "hint": "先把同類項排好，計算比較穩"
+  },
+  "combine_like_terms": {
+    "label": "同類項合併（長得一樣才能加減）",
+    "hint": "只有同類的項，才能直接合併"
+  },
+  "sign_distribution": {
+    "label": "符號分配（每一項都要顧到）",
+    "hint": "負號乘進去，每一項都要變號"
+  },
+  "family_isomorphism": {
+    "label": "題型結構辨識（換題皮不換做法）",
+    "hint": "題目變樣子，做法骨架可能一樣"
+  },
+  "unknown_target_preservation": {
+    "label": "未知式保留（先把未知量留乾淨）",
+    "hint": "移項整理時，先把未知多項式留完整"
+  },
+  "expand_monomial": {
+    "label": "單項式乘法（係數字母都要乘）",
+    "hint": "每一項都要乘到，次方也要顧"
+  },
+  "expand_binomial": {
+    "label": "多項式展開（每項都要乘到）",
+    "hint": "展開時不要漏乘任何一項"
+  },
+  "special_identity": {
+    "label": "乘法公式（套公式也要看符號）",
+    "hint": "套公式前，先看是不是標準型"
+  },
+  "long_division": {
+    "label": "長除法步驟（對齊次方）",
+    "hint": "每一步都要對齊最高次項"
+  },
+  "quotient_remainder_format": {
+    "label": "商與餘式表示（寫完整）",
+    "hint": "有餘數時，商和餘式都要寫清楚"
+  },
+  "reverse_division_reconstruction": {
+    "label": "反推除法（用商和餘式還原）",
+    "hint": "先用除式乘商，再把餘式加回來"
+  },
+  "geometry_formula": {
+    "label": "幾何公式應用（看清長寬關係）",
+    "hint": "先找出公式裡每一段代表什麼"
+  },
+  "composite_region_modeling": {
+    "label": "複合圖形拆解（分塊再合併）",
+    "hint": "先拆成簡單圖形，再組回答案"
+  },
+  "simplify": {
+    "label": "根式化簡（先找完全平方）",
+    "hint": "根號內先找能開出來的因數"
+  },
+  "fractional_radical": {
+    "label": "分式根式（分子分母分開看）",
+    "hint": "分式和根號一起出現時，先分層看"
+  },
+  "multiply_terms": {
+    "label": "根式乘法（根號內外分清楚）",
+    "hint": "先分清楚根號外和根號內再相乘"
+  },
+  "distribute": {
+    "label": "分配律（每一項都要乘）",
+    "hint": "乘進括號時，每一項都不能漏"
+  },
+  "binomial_expand": {
+    "label": "雙括號展開（內外都要算）",
+    "hint": "展開雙括號時，四個乘積都要顧到"
+  },
+  "divide_terms": {
+    "label": "根式除法（先約再除）",
+    "hint": "能先約的先約，再看要不要有理化"
+  },
+  "conjugate_rationalize": {
+    "label": "共軛有理化（配對消根號）",
+    "hint": "看清共軛式，分母才能順利有理化"
+  },
+  "structure_isomorphism": {
+    "label": "\\u7d50\\u69cb\\u8fa8\\u8b58\\uff08\\u5148\\u770b\\u9577\\u76f8\\u518d\\u4e0b\\u624b\\uff09",
+    "hint": "\\u984c\\u76ee\\u8b8a\\u5f62\\u4e86\\uff0c\\u898f\\u5247\\u901a\\u5e38\\u6c92\\u8b8a"
+  },
+  "mixed_number_radical": {
+    "label": "帶分數根式（整數部分別漏掉）",
+    "hint": "帶分數根式要把整數部分一起算"
+  },
+  "coefficient_sign_handling": {
+    "label": "\\u4fc2\\u6578\\u8207\\u7b26\\u865f\\u8655\\u7406\\uff08\\u5148\\u5224\\u65b7\\u6b63\\u8ca0\\uff09",
+    "hint": "\\u5148\\u5224\\u65b7\\u4fc2\\u6578\\u6b63\\u8ca0\\uff0c\\u518d\\u505a\\u4e58\\u9664\\u6216\\u5408\\u4f75"
+  },
+  "like_term_combination": {
+    "label": "\\u540c\\u985e\\u9805\\u5408\\u4f75\\uff08\\u8b8a\\u6578\\u76f8\\u540c\\u624d\\u80fd\\u4f75\\uff09",
+    "hint": "\\u78ba\\u8a8d\\u8b8a\\u6578\\u8207\\u6b21\\u65b9\\u76f8\\u540c\\u518d\\u5408\\u4f75"
+  },
+  "term_collection_with_constants": {
+    "label": "\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u5206\\u7d44\\uff08\\u5206\\u958b\\u6574\\u7406\\uff09",
+    "hint": "\\u5148\\u5206\\u4ee3\\u6578\\u9805\\u8207\\u5e38\\u6578\\u9805\\uff0c\\u518d\\u5404\\u81ea\\u5408\\u4f75"
+  },
+  "outer_minus_scope": {
+    "label": "\\u5916\\u5c64\\u8ca0\\u865f\\u4f5c\\u7528\\u7bc4\\u570d\\uff08\\u6574\\u5305\\u8b8a\\u865f\\uff09",
+    "hint": "\\u8ca0\\u865f\\u5728\\u62ec\\u865f\\u524d\\uff0c\\u62ec\\u865f\\u5167\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u8b8a\\u865f"
+  },
+  "monomial_distribution": {
+    "label": "\\u55ae\\u9805\\u5206\\u914d\\u5230\\u62ec\\u865f\\uff08\\u6bcf\\u9805\\u90fd\\u4e58\\u5230\\uff09",
+    "hint": "\\u5206\\u914d\\u6642\\u6bcf\\u4e00\\u9805\\u90fd\\u8981\\u4e58\\u4e0a\\u4fc2\\u6578"
+  },
+  "nested_bracket_scope": {
+    "label": "\\u5de2\\u72c0\\u62ec\\u865f\\u7bc4\\u570d\\uff08\\u7531\\u5167\\u5f80\\u5916\\uff09",
+    "hint": "\\u5148\\u7b97\\u6700\\u5167\\u5c64\\u62ec\\u865f\\uff0c\\u518d\\u9010\\u5c64\\u5c55\\u958b"
+  },
+  "fractional_expression_simplification": {
+    "label": "\\u5206\\u5f0f\\u4ee3\\u6578\\u5f0f\\u5316\\u7c21\\uff08\\u5148\\u7d71\\u4e00\\u5206\\u6bcd\\uff09",
+    "hint": "\\u5148\\u8655\\u7406\\u5206\\u6bcd\\uff0c\\u518d\\u5408\\u4f75\\u540c\\u985e\\u9805"
+  }
+}
