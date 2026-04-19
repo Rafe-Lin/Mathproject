@@ -1,0 +1,15 @@
+﻿Skill ID,Total Score,Robustness,Compliance,Syntax,Performance,Latency (ms),Errors
+jh_數學1上_ComparingNumbers,100.0,100.0,100.0,100.0,100,0.0,
+jh_數學1上_DistanceBetweenTwoPointsOnNumberLine,100.0,100.0,100.0,100.0,100,0.0,
+jh_數學1上_FourArithmeticOperationsOfIntegers,48.4,96.0,0.0,0.0,100,0.01,"Invalid Type: <class 'tuple'>; ValueError: empty range in randrange(2, 2)"
+jh_數學1上_IntegerAdditionOperation,50.0,100.0,0.0,0.0,100,0.0,Invalid Type: <class 'tuple'>
+jh_數學1上_IntegerDivision,0.0,0.0,0,0,0,10000.0,AttributeError: module 'skills.jh_數學1上_IntegerDivision' has no attribute 'generate'
+jh_數學1上_IntegerExponentiation,50.0,100.0,0.0,0.0,100,0.0,Invalid Type: <class 'tuple'>
+jh_數學1上_IntegerMultiplication,100.0,100.0,100.0,100.0,100,0.03,
+jh_數學1上_IntegerSubtractionOperation,100.0,100.0,100.0,100.0,100,0.0,
+jh_數學1上_MixedIntegerAdditionAndSubtraction,46.0,90.0,0.0,0.0,100,0.0,Invalid Type: <class 'tuple'>; TypeError: generate_problem() missing 1 required positional argument: 'problem_type'
+jh_數學1上_NumberLine,100.0,100.0,100.0,100.0,100,0.01,
+jh_數學1上_OppositesAndAbsoluteValue,50.0,100.0,0.0,0.0,100,0.0,Missing Keys
+jh_數學1上_PositiveAndNegativeNumbers,0.0,0.0,0,0,0,10000.0,AttributeError: module 'skills.jh_數學1上_PositiveAndNegativeNumbers' has no attribute 'generate'
+jh_數學1上_PowersOfTen,100.0,100.0,100.0,100.0,100,0.0,
+jh_數學1上_ScientificNotation,50.0,100.0,0.0,0.0,100,0.0,Invalid Type: <class 'tuple'>
