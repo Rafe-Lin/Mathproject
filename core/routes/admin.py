@@ -1180,7 +1180,19 @@ def list_prompt_templates():
             PromptTemplate.query.order_by(PromptTemplate.prompt_key.asc()).all()
         )
         rows = []
+        from datetime import timezone, timedelta
+        tw_tz = timezone(timedelta(hours=8))
+        
         for item in templates:
+            updated_str = None
+            if item.updated_at:
+                try:
+                    utc_dt = item.updated_at.replace(tzinfo=timezone.utc)
+                    tw_dt = utc_dt.astimezone(tw_tz)
+                    updated_str = tw_dt.strftime('%Y-%m-%d %H:%M:%S')
+                except Exception:
+                    updated_str = item.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+
             rows.append({
                 'prompt_key': item.prompt_key,
                 'title': item.title,
@@ -1193,7 +1205,7 @@ def list_prompt_templates():
                 'default_content': item.default_content,
                 'required_variables': item.required_variables or '',
                 'is_active': bool(item.is_active),
-                'updated_at': item.updated_at.strftime('%Y-%m-%d %H:%M:%S') if item.updated_at else None,
+                'updated_at': updated_str,
             })
         return jsonify({'success': True, 'prompts': rows, 'items': rows})
     except Exception as e:
@@ -1206,32 +1218,54 @@ def update_prompt_template_content():
     if not (current_user.is_admin or current_user.role == 'teacher'):
         return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
-        data = request.get_json(silent=True) or {}
+        import logging
+        logger = logging.getLogger(__name__)
+
+        data = request.get_json(silent=True)
+        if not data:
+            data = request.form.to_dict()
+            if not data:
+                logger.error("[admin debug] /prompt/update 400: Payload is completely missing or unparseable")
+                return jsonify({'success': False, 'message': 'Payload is missing or unparseable. Did you forget application/json?'}), 400
+
         prompt_key = str(data.get('prompt_key', '')).strip()
         content = str(data.get('content', '')).strip()
+        
+        logger.info(f"[admin debug] /prompt/update received: key='{prompt_key}', content length={len(content)}")
+
         if not prompt_key:
+            logger.error("[admin debug] /prompt/update 400: prompt_key is missing")
             return jsonify({'success': False, 'message': 'prompt_key is required'}), 400
         if not content:
+            logger.error("[admin debug] /prompt/update 400: content is empty")
             return jsonify({'success': False, 'message': 'content cannot be empty'}), 400
 
         template = PromptTemplate.query.filter_by(prompt_key=prompt_key).first()
+        is_new = False
         if not template:
-            return jsonify({'success': False, 'message': f'Prompt not found: {prompt_key}'}), 404
+            logger.warning(f"[admin debug] /prompt/update: '{prompt_key}' not found in DB. Creating new entry.")
+            template = PromptTemplate(prompt_key=prompt_key, is_active=True, title=prompt_key)
+            db.session.add(template)
+            is_new = True
 
-        required_vars = _parse_required_variables(template.required_variables)
-        missing = [var_name for var_name in required_vars if f'{{{var_name}}}' not in content]
-        if missing:
-            return jsonify({
-                'success': False,
-                'message': f"Missing required variables: {', '.join(missing)}",
-            }), 400
+        if template.required_variables:
+            required_vars = _parse_required_variables(template.required_variables)
+            missing = [var_name for var_name in required_vars if f'{{{var_name}}}' not in content]
+            if missing:
+                err_msg = f"Missing required variables in prompt: {', '.join(missing)}"
+                logger.error(f"[admin debug] /prompt/update 400: {err_msg}")
+                return jsonify({'success': False, 'message': err_msg}), 400
 
         template.content = content
         template.updated_at = datetime.utcnow()
         db.session.commit()
-        return jsonify({'success': True, 'message': 'Prompt template updated'})
+        logger.info(f"[admin debug] /prompt/update success: {'Created' if is_new else 'Updated'} key='{prompt_key}', category='{template.category}', commit success")
+        return jsonify({'success': True, 'message': f'Prompt template {"created" if is_new else "updated"}'})
     except Exception as e:
         db.session.rollback()
+        import traceback
+        import logging
+        logging.getLogger(__name__).error(f"[admin debug] /prompt/update 500: {e}\n{traceback.format_exc()}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 
@@ -1270,18 +1304,13 @@ def get_ai_prompt_setting():
     if not (current_user.is_admin or current_user.role == 'teacher'):
         return jsonify({'success': False, 'message': 'Permission denied'}), 403
     try:
-        from models import SystemSetting
-
+        from core.prompts.registry import get_prompt_with_source
         apply_ai_runtime_settings()
-        setting = SystemSetting.query.filter_by(key='ai_analyzer_prompt').first()
-        if setting:
-            return jsonify(_build_ai_settings_payload(
-                prompt=setting.value,
-                updated_at=setting.updated_at.strftime('%Y-%m-%d %H:%M:%S') if setting.updated_at else None,
-            ))
-
-        from core.ai_analyzer import get_ai_prompt
-        return jsonify(_build_ai_settings_payload(prompt=get_ai_prompt(), updated_at=None))
+        content, source = get_prompt_with_source("handwriting_feedback_prompt", "ai_analyzer_prompt")
+        return jsonify(_build_ai_settings_payload(
+            prompt=content, 
+            updated_at=None
+        ))
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 

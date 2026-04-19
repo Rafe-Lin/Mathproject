@@ -622,36 +622,80 @@
             "base_prompt": {
                 title: "全域教學人格 Prompt",
                 description: "定義 AI 助教的整體人格、語氣與安全規範",
-                usage_context: "所有學生可見教學 prompt 的底層規則",
+                used_page: "與教學相關的所有介面",
+                front_html: "不綁定單一前端",
                 used_in: "core/prompts/registry.py",
                 example_trigger: "任何學生可見教學回覆生成前",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "chat_tutor_prompt": {
+                title: "AI 助教主引導 Prompt",
+                description: "一般對話、題目求解的情境。",
+                used_page: "一般練習 (/practice), 自適應頁面 (/adaptive_practice_v2)",
+                front_html: "templates/practice.html, templates/adaptive_practice_v2.html",
+                used_in: "core/ai_analyzer.py -> build_chat_prompt",
+                example_trigger: "學生於畫面側邊欄輸入文字提問",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "chat_guardrail_prompt": {
+                title: "助教防護底線",
+                description: "它只控制教學底線與回答邊界 (JSON schema 與前端解析契約仍由程式碼保護)",
+                used_page: "一般練習 (/practice), 自適應頁面 (/adaptive_practice_v2)",
+                front_html: "templates/practice.html, templates/adaptive_practice_v2.html",
+                used_in: "core/prompts/composer.py -> compose_prompt",
+                example_trigger: "所有聊天提問皆會自動附加於最前方",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "rag_tutor_prompt": {
+                title: "知識庫助教 Prompt",
+                description: "RAG 單元知識檢索後的教學式回覆引導",
+                used_page: "主題測驗 (API: /api/rag_chat)",
+                front_html: "templates/practice.html 等",
+                used_in: "core/rag_engine.py -> rag_chat",
+                example_trigger: "學生點擊技能標題的「觀念解說」觸發",
+                status: "已接管",
+                status_class: "badge-success"
+            },
+            "handwriting_feedback_prompt": {
+                title: "手寫白板批改 Prompt",
+                description: "這是手寫分析的第二階段回饋 prompt (不等同 OCR / recognition prompt)",
+                used_page: "白板批改視窗 (API: /analyze_work)",
+                front_html: "templates/practice.html (白板 Modal 等)",
+                used_in: "core/ai_analyzer.py -> analyze",
+                example_trigger: "學生上傳白板圖片並送出批改",
                 status: "已接管",
                 status_class: "badge-success"
             },
             "tutor_hint_prompt": {
                 title: "提示下一步 Prompt",
                 description: "學生卡住時只提供下一步提示，不直接給答案",
-                usage_context: "Adaptive 教學頁、AI 助教、RAG 對話",
-                used_in: "core/advanced_rag_engine.py → adv_rag_chat\ncore/ai_analyzer.py → hint path",
-                example_trigger: "學生問「這題怎麼做？」、「下一步是什麼？」",
+                used_page: "自適應頁面 (/adaptive_practice_v2)",
+                front_html: "templates/adaptive_practice_v2.html",
+                used_in: "core/advanced_rag_engine.py -> adv_rag_chat",
+                example_trigger: "學生問「這題怎麼做？」或點擊提示按鈕",
                 status: "已接管",
                 status_class: "badge-success"
             },
             "concept_prompt": {
                 title: "核心觀念講解 Prompt",
-                description: "解釋某個數學概念或名詞",
-                usage_context: "點「看核心觀念」或概念型詢問",
-                used_in: "core/ai_analyzer.py → ask_ai_text",
-                example_trigger: "學生想知道概念是什麼",
+                description: "解釋單一數學概念或名詞",
+                used_page: "一般練習 (/practice)",
+                front_html: "templates/practice.html",
+                used_in: "core/ai_analyzer.py -> ask_ai_text",
+                example_trigger: "點擊「看核心觀念」按鈕",
                 status: "已接管",
                 status_class: "badge-success"
             },
             "mistake_prompt": {
                 title: "錯誤診斷 Prompt",
                 description: "分析學生錯誤原因並給修正方向",
-                usage_context: "點「提醒易錯點」或學生答錯後",
-                used_in: "core/ai_analyzer.py → ask_ai_text_with_context (error path)",
-                example_trigger: "學生答錯、請求錯誤分析",
+                used_page: "一般練習 (/practice)",
+                front_html: "templates/practice.html",
+                used_in: "core/ai_analyzer.py -> ask_ai_text_with_context",
+                example_trigger: "學生答錯並點擊「提醒易錯點」",
                 status: "已接管",
                 status_class: "badge-success"
             }
@@ -685,7 +729,8 @@
                 
                 const title = mapping.title || item.title || item.prompt_key;
                 const description = mapping.description || item.description || "未提供";
-                const usage = mapping.usage_context || item.usage_context || "未提供";
+                const usedPage = mapping.used_page || "未提供";
+                const frontHtml = mapping.front_html || "未提供";
                 const usedIn = mapping.used_in || item.used_in || "未提供";
                 const trigger = mapping.example_trigger || item.example_trigger || "未提供";
                 
@@ -694,10 +739,7 @@
                 
                 const usedInHtml = escapeHtml(usedIn).replace(/\n/g, '<br>');
 
-                const required = escapeHtml(item.required_variables || "");
-                const requiredView = required
-                    ? `<div class="prompt-meta"><strong>required_variables:</strong> <code>${required}</code></div>`
-                    : "";
+                const required = escapeHtml(item.required_variables || "無");
                 const activeBadge = item.is_active
                     ? '<span class="badge badge-success">啟用中</span>'
                     : '<span class="badge badge-neutral">已停用</span>';
@@ -719,11 +761,12 @@
                         <div class="prompt-template-body">
                             <div class="prompt-detail-group">
                                 <div class="prompt-detail-item"><strong>🧠 用途：</strong>${escapeHtml(description)}</div>
-                                <div class="prompt-detail-item"><strong>📍 使用時機：</strong>${escapeHtml(usage)}</div>
+                                <div class="prompt-detail-item"><strong>🌐 使用頁面：</strong>${escapeHtml(usedPage)}</div>
+                                <div class="prompt-detail-item"><strong>🖥 前端 HTML：</strong>${escapeHtml(frontHtml)}</div>
                                 <div class="prompt-detail-item"><strong>⚙️ 使用程式：</strong><br>${usedInHtml}</div>
                                 <div class="prompt-detail-item"><strong>🎯 觸發情境：</strong>${escapeHtml(trigger)}</div>
+                                <div class="prompt-detail-item"><strong>🧩 required_variables：</strong><code>${required}</code></div>
                             </div>
-                            ${requiredView}
                             <div class="prompt-meta"><strong>updated_at:</strong> ${escapeHtml(item.updated_at || "")}</div>
                             <textarea class="prompt-template-editor" id="prompt-content-${safeKey}">${escapeHtml(item.content || "")}</textarea>
                             <div class="prompt-template-actions">
@@ -738,17 +781,17 @@
             const emptyHTML = '<div class="prompt-meta">目前無資料</div>';
 
             if (mainContainer) {
-                const mainItems = sourceItems.filter(i => i.prompt_key === "tutor_hint_prompt");
+                const mainItems = sourceItems.filter(i => ["chat_tutor_prompt", "chat_guardrail_prompt", "tutor_hint_prompt"].includes(i.prompt_key));
                 mainContainer.innerHTML = mainItems.length > 0 ? mainItems.map(createCardHTML).join("") : emptyHTML;
             }
 
             if (advContainer) {
-                const advItems = sourceItems.filter(i => i.prompt_key === "concept_prompt" || i.prompt_key === "mistake_prompt");
+                const advItems = sourceItems.filter(i => ["concept_prompt", "mistake_prompt", "rag_tutor_prompt", "handwriting_feedback_prompt"].includes(i.prompt_key));
                 advContainer.innerHTML = advItems.length > 0 ? advItems.map(createCardHTML).join("") : emptyHTML;
             }
 
             if (sysContainer) {
-                const sysItems = sourceItems.filter(i => i.prompt_key !== "tutor_hint_prompt" && i.prompt_key !== "concept_prompt" && i.prompt_key !== "mistake_prompt");
+                const sysItems = sourceItems.filter(i => !["chat_tutor_prompt", "chat_guardrail_prompt", "tutor_hint_prompt", "concept_prompt", "mistake_prompt", "rag_tutor_prompt", "handwriting_feedback_prompt"].includes(i.prompt_key));
                 sysContainer.innerHTML = sysItems.length > 0 ? sysItems.map(createCardHTML).join("") : emptyHTML;
             }
         }

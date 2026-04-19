@@ -1815,6 +1815,7 @@
             question_context: state.currentContext,
             family_id: state.currentFamilyId,
             subskill_nodes: state.currentSubskills,
+            expected_answer: state.expectedAnswer,
           })
         });
         const rawText = await response.text();
@@ -1877,6 +1878,7 @@
       state.familyNameEn = String((response.new_question_data || {}).family_name || "");
       state.currentQuestionText = q.question_text || q.question || "";
       state.currentContext = q.context_string || "";
+      state.expectedAnswer = String(q.correct_answer || q.answer || q.expected_answer || response.correct_answer || "");
       state.currentSubskills = response.target_subskills || [];
       state.currentMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");
       state.postMode = normalizeLearningMode(response?.post_mode || response?.current_mode || "");

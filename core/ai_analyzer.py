@@ -619,40 +619,14 @@ def get_model():
     return gemini_model
 
 def get_ai_prompt():
-    """
-    從資料庫讀取 AI Prompt，若不存在則使用預設值並寫入資料庫
-    """
-    from models import SystemSetting, db
-    
-    """
-    從資料庫讀取 AI Prompt，若不存在則使用預設值並寫入資料庫
-    """
-    from models import SystemSetting, db
-    
-    # DEFAULT_PROMPT 已定義在全域
-    
-    try:
-        # 嘗試從資料庫讀取
-        setting = SystemSetting.query.filter_by(key='ai_analyzer_prompt').first()
-        
-        if setting:
-            return setting.value
-        else:
-            # 資料庫中沒有，寫入預設值
-            new_setting = SystemSetting(
-                key='ai_analyzer_prompt',
-                value=DEFAULT_PROMPT,
-                description='AI 分析學生手寫答案時使用的 Prompt 模板。必須保留 {context} 和 {prereq_text} 變數。回傳 JSON 須包含 follow_up_prompts。'
-            )
-            db.session.add(new_setting)
-            db.session.commit()
-            return DEFAULT_PROMPT
-    except Exception as e:
-        # 如果資料庫操作失敗，使用預設值
-        print(f"Warning: Failed to read AI prompt from database: {e}")
-        return DEFAULT_PROMPT
+    from core.prompts.registry import get_prompt_template
+    return get_prompt_template("handwriting_feedback_prompt", "ai_analyzer_prompt")
 
-def analyze(image_data_url, context, api_key, prerequisite_skills=None):
+def get_ai_prompt_with_source():
+    from core.prompts.registry import get_prompt_with_source
+    return get_prompt_with_source("handwriting_feedback_prompt", "ai_analyzer_prompt")
+
+def analyze(image_data_url, context, api_key, prerequisite_skills=None, correct_answer=""):
     """
     強制 Gemini 回傳純 JSON，失敗時自動重試一次
     """
@@ -674,10 +648,17 @@ def analyze(image_data_url, context, api_key, prerequisite_skills=None):
             file = genai.upload_file(path=temp_path)
 
             # 從資料庫讀取 Prompt 模板
-            prompt_template = get_ai_prompt()
+            prompt_template, source = get_ai_prompt_with_source()
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"[Prompt Trace] route='/analyze_work' task_type='handwriting_feedback' prompt_key='handwriting_feedback_prompt' source='{source}' model_role='vision_analyzer'")
+            logger.info(f"[analyze] handwriting prompt has_correct_answer={bool(correct_answer)}")
             
             # 使用 str.replace() 替換變數（避免 JSON 大括號衝突）
-            prompt = prompt_template.replace("{context}", context).replace("{prereq_text}", prereq_text)
+            prompt = (prompt_template
+                      .replace("{context}", context)
+                      .replace("{prereq_text}", prereq_text)
+                      .replace("{correct_answer}", correct_answer or ""))
 
             model = get_model()
             resp = model.generate_content(
@@ -836,7 +817,7 @@ def ask_ai_text(user_question):
         return f"AI 錯誤：{str(e)}"
     
 # core/ai_analyzer.py
-def ask_ai_text_with_context(user_question, context=""):
+def ask_ai_text_with_context(user_question, context="", correct_answer=""):
     """
     聊天專用 AI：帶入當前題目 context
     """
@@ -849,6 +830,10 @@ def ask_ai_text_with_context(user_question, context=""):
     elif any(token in context_lower for token in ["concept", "definition", "formula", "\u89c0\u5ff5", "\u5b9a\u7fa9", "\u516c\u5f0f"]):
         prompt_key = "concept_prompt"
 
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"[ask_ai_text_with_context] prompt_key={prompt_key} has_correct_answer={bool(correct_answer)}")
+
     system_prompt = _render_student_visible_prompt(
         prompt_key,
         question=user_question,
@@ -856,7 +841,7 @@ def ask_ai_text_with_context(user_question, context=""):
         concept=user_question,
         grade="junior_high",
         student_answer=user_question,
-        correct_answer="",
+        correct_answer=correct_answer or "",
         prereq_text=context_text,
     )
     try:
@@ -965,65 +950,14 @@ def generate_quiz_from_image(image_file, description):
         return []
 
 
-def build_chat_prompt(skill_id, user_question, full_question_context, context, prereq_skills):
+def build_chat_prompt(skill_id, user_question, full_question_context, context, prereq_skills, correct_answer=""):
     """
     Constructs the full system prompt for the chat AI.
-    1. Tries to load specific prompt from SkillInfo.
-    2. Falls back to SystemSetting or DEFAULT_CHAT_PROMPT.
-    3. Handles variable replacement and strict JSON instruction appending.
     """
-    from models import SkillInfo, SystemSetting
-    
-    from models import SkillInfo, SystemSetting
-    
-    # DEFAULT_CHAT_PROMPT 已定義在全域
+    import logging
+    logger = logging.getLogger(__name__)
 
-    prompt_template = None
-
-    # [SYSTEM OVERRIDE] 改為「引導式學習助教」，不做評分、不聊天。
-    base_instruction = """
-[SYSTEM OVERRIDE - GUIDED LEARNING TUTOR]
-角色：你是「引導式學習助教」，不是評分器、不是聊天機器人。
-語言：一律繁體中文。
-任務：只做一件事——引導學生做下一步思考。
-
-禁止：
-1) 禁止直接判斷對錯（不可說：你錯了、你對了、有道理、不對）。
-2) 禁止認同學生答案的正確性（除非系統已明示正確；本路徑一律視為未知，不做認定）。
-3) 禁止提供最終答案或完整解題步驟。
-4) 禁止閒聊、鼓勵語堆疊、長篇解說。
-
-輸出風格（固定三段）：
-這題的關鍵是：{一個核心概念}
-
-想一下：
-{一個引導問題}
-
-👉 試著從這一步開始。
-
-要求：
-- 每次只提示一個概念 + 一個問題。
-- 內容短、準、可操作；總長盡量精簡。
-- 不可出現「你這樣對/錯」、「這部分有道理」等評價語。
-"""
-    
-    # 強制忽略 DB，直接使用 Override 指令
-    prompt_template = base_instruction
-
-    # 2. If no skill prompt, try SystemSetting
-    if not prompt_template:
-        try:
-            setting = SystemSetting.query.filter_by(key='chat_ai_prompt').first()
-            if setting:
-                prompt_template = setting.value
-        except Exception:
-            pass
-
-    # 3. Use Default if still None
-    if not prompt_template:
-        prompt_template = DEFAULT_CHAT_PROMPT
-
-    # 4. Construct Context Strings
+    # 1. Construct Context Strings
     prereq_text = ", ".join([f"{p['name']} ({p['id']})" for p in prereq_skills]) if prereq_skills else "無"
     
     enhanced_context = f"當前題目：{full_question_context}"
@@ -1031,47 +965,16 @@ def build_chat_prompt(skill_id, user_question, full_question_context, context, p
         enhanced_context += f"\n詳細資訊：{context}"
     enhanced_context += f"\n\n此單元的前置基礎技能有：{prereq_text}。"
 
-    # 5. Format the template
-    try:
-        # Check if template expects 'context' or strict format
-        # For safety, we try to inject values if placeholders exist, 
-        # or just append if it's a simple string.
-        # But assuming our templates use {context} and {user_answer}
-        full_prompt = prompt_template.format(
-            user_answer=user_question,
-            correct_answer="（待批改）",
-            context=enhanced_context,
-            prereq_text=prereq_text
-        )
-    except Exception:
-        # Fallback formatting if template keys mismatch
-        full_prompt = f"{prompt_template}\n\n[系統補完]\n題目：{enhanced_context}\n學生問題：{user_question}"
-
-    # 關鍵：無論 template 是否有 placeholders，都強制附上本輪學生問題，避免每輪輸入看起來一樣。
-    full_prompt += f"\n\n【本輪學生提問】\n{user_question or '（學生未提供）'}"
-
-    # 6. Prepend Title (Optional, specific to requirement)
-    if "【學生當前正在練習的題目】" not in full_prompt:
-        full_prompt = f"【學生當前正在練習的題目】\n{full_question_context}\n\n" + full_prompt
-
-    # 7. Priority System Instruction (hard guardrail for edge model)
-    ultra_short_prompt = """
-[CRITICAL RULES]
-1. 你是引導式學習助教，只能引導，不可評價對錯。
-2. 不可說「你錯了／你對了／有道理／不對」。
-3. 不可提供最終答案或完整解題步驟。
-4. 回覆限 2~3 行，且只包含：一個概念提示 + 一個引導問題 + 行動句。
-5. 語氣像老師提示，不聊天。
-6. JSON 必須含 reply 與 follow_up_prompts。
-"""
+    # 2. Prepare Extra Blocks
+    extra_blocks = []
     
-    # Prepend this to ensure it's the first thing logic sees or append heavily
-    full_prompt = ultra_short_prompt + "\n\n" + full_prompt
+    current_question_block = f"【學生當前正在練習的題目】\n{full_question_context}"
+    extra_blocks.append(current_question_block)
+    
+    turn_block = f"【本輪學生提問】\n{user_question or '（學生未提供）'}"
+    extra_blocks.append(turn_block)
 
-    # 8. Append Rigid JSON Instructions
-    full_prompt += """
-
-請嚴格輸出 JSON（不可 Markdown、不可多餘文字）：
+    json_guardrail = """請嚴格輸出 JSON（不可 Markdown、不可多餘文字）：
 {
   "hint_focus": "...",
   "guided_question": "...",
@@ -1083,14 +986,24 @@ def build_chat_prompt(skill_id, user_question, full_question_context, context, p
 - hint_focus：只指出一個核心概念，不超過 18 個中文字。
 - guided_question：只能問一個引導問題，不超過 28 個中文字。
 - micro_step：只能給一個下一步動作，不超過 22 個中文字。
-- forbidden：若你輸出了任何違規內容請設為 true，否則 false。
+- forbidden：若你輸出了任何違規內容請設為 true，否則 false。"""
+    extra_blocks.append(json_guardrail)
 
-違規內容（禁止）：
-- 你錯了 / 你對了 / 有道理 / 不對 / 很棒 / 沒關係 / 再試試
-- 答案是...
-- 直接給最後結果或完整解法
-- 聊天語氣或陪伴式語氣
-"""
+    # 3. Build Prompt via Composer
+    from core.prompts.composer import compose_prompt
+    logger.info(f"[build_chat_prompt] has_correct_answer={bool(correct_answer)}")
+    
+    full_prompt, source = compose_prompt(
+        base_key='chat_guardrail_prompt',
+        task_key='chat_tutor_prompt',
+        extra_blocks=extra_blocks,
+        user_answer=user_question,
+        context=enhanced_context,
+        prereq_text=prereq_text,
+        correct_answer=correct_answer or ""
+    )
+
+    logger.info(f"[Prompt Trace] route='/chat_ai' task_type='build_chat_prompt' prompt_key='chat_tutor_prompt' source='{source}' model_role='tutor'")
     
     return full_prompt
 

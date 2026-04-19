@@ -260,10 +260,13 @@ def load_phase2_policy_model(model_path: str | None = None) -> Any:
         last_exc: Exception | None = None
         last_tb: str | None = None
 
-        for strategy in ("torch.jit.load", "torch.load", "joblib.load", "pickle.load"):
+        for strategy in ("stable_baselines3", "torch.jit.load", "torch.load", "joblib.load", "pickle.load"):
             _info(f"[adaptive_phase2_policy] load_strategy={strategy}")
             try:
-                if strategy == "torch.jit.load":
+                if strategy == "stable_baselines3":
+                    from stable_baselines3 import PPO
+                    model = PPO.load(str(candidate), device="cpu")
+                elif strategy == "torch.jit.load":
                     import torch  # type: ignore
 
                     model = torch.jit.load(str(candidate), map_location="cpu")

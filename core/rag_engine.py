@@ -415,41 +415,73 @@ def rag_chat(query, top_skill_id):
     family_name = top_row.get("family_name") or ""
     subskills = _parse_subskill_nodes(top_row.get("subskill_nodes"))
     subskill_text = "、".join(_label_node(node) for node in subskills) if subskills else "核心概念"
-
-    prompt = f"""
-你是一位台灣國中數學助教。
-請用繁體中文回答，語氣簡短，讓國中生看得懂。
-只能提示，不要直接給完整答案。
-
-學生問題：
-{query}
-
-目前對應技能：
-{ch_name}
-{f'（{family_name}）' if family_name else ''}
-
-重點子技能：
-{subskill_text}
-
-請輸出：
-1. 先提醒一個最重要的觀念
-2. 再給一個小提示
-3. 最後給一個下一步方向
-""".strip()
+    
+    # [Task B] Format family_name_block to be instructional
+    if family_name and "_" in family_name and not any('\u4e00' <= char <= '\u9fff' for char in family_name):
+        # Minimal fallback formatter if it's just an internal code like poly_div_poly_qr
+        formatted_list = [f"- {p.capitalize()}" for p in family_name.replace("_", " ").split()]
+        family_name_block = "相關單元型態：\n" + "\n".join(formatted_list)
+    else:
+        family_name_block = f"（{family_name}）" if family_name else ""
 
     try:
-        from core.ai_analyzer import gemini_model
-        if not gemini_model:
-            return {"reply": "目前 AI 助教尚未啟用。"}
+        import os
+        import logging
+        from core.prompts.composer import compose_prompt
+        from core.ai_settings import get_effective_model_config
 
-        response = gemini_model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
-                temperature=0.3,
-                max_output_tokens=1024,
-            ),
+        logger = logging.getLogger(__name__)
+
+        cfg = get_effective_model_config(role="tutor")
+        mode = cfg.get("mode", "edge")
+        provider = str(cfg.get("provider", "local")).strip().lower()
+        model_name = cfg.get("model", "")
+
+        logger.info(f"[AI CONFIG RESOLVE] role=tutor mode={mode} provider={provider} model={model_name}")
+
+        task_key = 'rag_tutor_prompt'
+        is_fallback_local = False
+        
+        # [Task A] Set route_label
+        route_label = "Naive-Path" # Default for basic rag_chat
+        
+        if provider in ("google", "gemini") and not os.environ.get("GOOGLE_API_KEY"):
+            logger.error("[RAG Chat] Missing GOOGLE_API_KEY for cloud provider, fallback to tutor_hint_prompt")
+            task_key = 'tutor_hint_prompt'
+            is_fallback_local = True
+
+        if provider == "local" or is_fallback_local:
+            logger.info("[RAG MODE] using local model (skip API key)")
+        else:
+            logger.info("[RAG MODE] using cloud model (require API key)")
+
+        prompt, source = compose_prompt(
+            task_key=task_key,
+            query=query,
+            ch_name=ch_name,
+            family_name_block=family_name_block,
+            subskill_text=subskill_text,
+            route_label=route_label
         )
-        return {"reply": response.text}
+        logger.info(f"[Prompt Trace] route='/api/rag_chat' task_type='rag_chat' prompt_key='{task_key}' source='{source}' model_role='tutor'")
+        
     except Exception as e:
-        print(f"[RAG Chat] Error: {e}")
+        import logging
+        logging.getLogger(__name__).warning(f"Composer fallback: {e}")
+        prompt = f"你是一位國中數學助教。學生問題：{query}\n目前對應技能：{ch_name}\n只能提示，不要直接給完整答案。"
+        is_fallback_local = True
+
+    try:
+        if not is_fallback_local:
+            from core.ai_client import call_ai
+            response = call_ai(role="tutor", prompt=prompt)
+        else:
+            from core.ai_client import call_local_model
+            fallback_cfg = {"model": "qwen3-vl:8b-instruct-q4_k_m", "temperature": 0.3}
+            response = call_local_model(fallback_cfg, prompt=prompt)
+            
+        return {"reply": getattr(response, "text", str(response)).strip()}
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"[RAG Chat] Error: {e}")
         return {"reply": f"AI 回覆發生錯誤：{str(e)}"}

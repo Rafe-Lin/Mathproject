@@ -6,14 +6,15 @@ from typing import Any, List, Dict
 from config import Config
 from core.prompts.registry import render_prompt
 
-try:
-    import chromadb
-    from sentence_transformers import SentenceTransformer
-    from rank_bm25 import BM25Okapi
-    import jieba
-    HAS_ADV_LIBS = True
-except ImportError:
-    HAS_ADV_LIBS = False
+HAS_ADV_LIBS = True
+try: import chromadb
+except ImportError: HAS_ADV_LIBS = False
+try: from sentence_transformers import SentenceTransformer
+except ImportError: HAS_ADV_LIBS = False
+try: from rank_bm25 import BM25Okapi
+except ImportError: HAS_ADV_LIBS = False
+try: import jieba
+except ImportError: HAS_ADV_LIBS = False
 
 from core.rag_engine import _load_bridge_rows, _build_document_text, _parse_subskill_nodes, rag_search, _label_node
 
@@ -44,9 +45,23 @@ def init_adv_rag(app):
     global _adv_chroma_client, _adv_collection, _bm25, _embedding_model
     global _documents, _ids, _metadatas, _skill_map, _bridge_rows
 
-    if not HAS_ADV_LIBS:
-        logger.warning("[Advanced RAG] Missing dependencies (jieba, rank_bm25, sentence-transformers, or chromadb). Disabled.")
+    missing = []
+    try: import chromadb
+    except ImportError: missing.append("chromadb")
+    try: from sentence_transformers import SentenceTransformer
+    except ImportError: missing.append("sentence_transformers")
+    try: from rank_bm25 import BM25Okapi
+    except ImportError: missing.append("rank_bm25")
+    try: import jieba
+    except ImportError: missing.append("jieba")
+
+    if missing:
+        global HAS_ADV_LIBS
+        HAS_ADV_LIBS = False
+        logger.warning(f"[Advanced RAG] Missing dependencies: {', '.join(missing)}. Advanced mode disabled. Fallback to Naive RAG.")
         return
+    else:
+        logger.info("[Advanced RAG] All dependencies met. Initializing Advanced RAG Engine.")
 
     try:
         from core.ai_analyzer import gemini_model
@@ -348,12 +363,15 @@ def _render_adv_rag_prompt_via_registry(
     context_text = "\n".join(context_lines)
 
     # Primary path: DB-configurable tutor prompt.
-    return render_prompt(
-        "tutor_hint_prompt",
+    from core.prompts.registry import get_prompt_with_source
+    prompt_template, source = get_prompt_with_source("tutor_hint_prompt")
+    
+    prompt = prompt_template.format(
         context=context_text,
         question=query,
         prereq_text="\n".join(units),
     )
+    return prompt, source
 
 
 def adv_rag_chat(
@@ -372,12 +390,15 @@ def adv_rag_chat(
 
     provider = (provider or "local").strip().lower()
     try:
-        prompt = _render_adv_rag_prompt_via_registry(
+        prompt, source = _render_adv_rag_prompt_via_registry(
             query,
             retrieved_skills,
             question_text=question_text,
             family_id=family_id,
         )
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[Prompt Trace] route='/api/adaptive/adv_rag_chat' task_type='adv_rag_chat' prompt_key='tutor_hint_prompt' source='{source}' model_role='tutor'")
     except Exception:
         # Keep legacy builder as fallback to avoid runtime interruption.
         prompt = _build_adv_rag_prompt(

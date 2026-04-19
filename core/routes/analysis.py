@@ -1004,11 +1004,22 @@ def _refine_polynomial_unknown_mechanism(
     return None
 
 
+def _clean_math_expr(expr: str) -> str:
+    """清理常見格式干擾：空白、全半形、乘號替換"""
+    if not expr: return ""
+    import unicodedata
+    # 轉半形
+    cleaned = unicodedata.normalize('NFKC', str(expr))
+    # 移除空白與轉換 x 的小寫和乘號
+    cleaned = cleaned.replace(" ", "").replace("\t", "").replace("．", ".").replace("X", "x")
+    return cleaned
+
 def _handwriting_structured_analysis(recognized_expression, expected_answer, question_text, family_id):
     exp = (expected_answer or "").strip()
     qt = (question_text or "").strip()
     skill_focus = _handwriting_skill_focus(family_id)
     family_label_zh, family_description_zh = _handwriting_family_meta(family_id)
+    
     final_expr = _handwriting_pick_final_expression(recognized_expression)
     base = {
         "recognized_expression": recognized_expression,
@@ -1026,6 +1037,12 @@ def _handwriting_structured_analysis(recognized_expression, expected_answer, que
         "step_focus": "",
         "analysis_source": "generic_handwriting_analysis",
     }
+    
+    if not recognized_expression or str(recognized_expression).strip() == "":
+        base["main_issue"] = "系統未能辨識出您的手寫內容，請檢查筆跡是否清晰，或重新書寫一次。"
+        base["status"] = "ocr_failed"
+        return base
+        
     if not exp:
         base["main_issue"] = "目前缺少可對照的標準答案，無法完成穩定批改。"
         base["skill_focus"] = skill_focus or "依題目重點進行化簡與整理"
@@ -1037,6 +1054,21 @@ def _handwriting_structured_analysis(recognized_expression, expected_answer, que
         candidates = _handwriting_final_answer_candidates(recognized_expression)
     if not candidates:
         candidates = [str(recognized_expression).strip()]
+
+    # 在進入複雜邏輯前，先進行穩定格式比較 (字串去白/全半形正規化)
+    exp_clean = _clean_math_expr(exp)
+    for cand in candidates:
+        cand_clean = _clean_math_expr(cand)
+        if cand_clean and cand_clean == exp_clean:
+            base.update({
+                "is_correct": True,
+                "status": "correct",
+                "main_issue": "",
+                "skill_focus": skill_focus or "你已掌握本題重點",
+                "issue_tag": "format_matched",
+                "analysis_source": "generic_handwriting_analysis",
+            })
+            return base
 
     for cand in candidates:
         judged = judge_answer_with_feedback(
@@ -1136,7 +1168,7 @@ def _handwriting_family_meta(family_id):
         "F9": ("多項式長除法（商餘）", "長除法對齊、乘回與相減"),
         "F11": ("多項式綜合化簡", "包含展開、乘法公式與同類項合併的混合型化簡"),
     }
-    return mapping.get(fid, ("多項式題", "依題意完成整理、化簡與等值轉換"))
+    return mapping.get(fid, ("一般題型", "請根據題目內容判斷關鍵步驟與常見錯誤"))
 
 
 def _handwriting_sentence_count(reply):
@@ -1201,41 +1233,69 @@ def _handwriting_feedback_second_prompt(
     family_description_zh = (analysis_result or {}).get("family_description_zh") or (prereq_text or "")
     main_issue = (analysis_result or {}).get("main_issue") or ""
     error_mechanism = (analysis_result or {}).get("error_mechanism") or ""
-    return (
-        "你是國中數學評量系統的批改回饋模組，不是解題老師。\n\n"
-        "你只根據以下資訊，產生非常短的批改回饋：\n\n"
-        f"題目：{question}\n"
-        f"學生手寫結果：{student_expression}\n"
-        f"正確答案：{expected_answer}\n"
-        f"判定狀態：{status}\n"
-        f"本題重點：{family_description_zh}\n"
-        f"錯誤機制：{error_mechanism}\n"
-        f"已知錯誤重點：{main_issue}\n\n"
-        "請嚴格遵守：\n"
-        "1. 如果 status = correct：\n"
-        "- 第一行一定要說「答案正確」\n"
-        "- 最後一行一定要說「進入下一題」\n"
-        "- 不要解題\n"
-        "- 不要長篇說明\n"
-        "2. 如果 status = partially_correct：\n"
-        "- 第一行說「方向正確，但有一個關鍵小錯」\n"
-        "- 只指出一個最重要的錯誤\n"
-        "- 最後一行說「請再檢查一次」\n"
-        "3. 如果 status = incorrect：\n"
-        "- 第一行直接說「這題有錯」\n"
-        "- 只指出一個最核心錯誤\n"
-        "- 優先使用提供的「已知錯誤重點」\n"
-        "- 禁止說：請檢查、再看看、計算方向大致正確、檢查運算順序、檢查係數與符號\n"
-        "- 最後一行說「想一下再試一次」\n"
-        "4. 回答最多 3 行\n"
-        "5. 不要解完整題目\n"
-        "6. 不要聊天\n"
-        "7. 語氣像老師批改，不像聊天機器人\n\n"
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    json_format_str = (
         "只輸出 JSON（不要 markdown、不要多餘文字），格式固定為："
-        "{\"reply\":\"...\",\"is_process_correct\":true/false,\"correct\":true/false,"
+        "{\"reply\":\"...您的教學回饋放入這裡...\",\"is_process_correct\":true/false,\"correct\":true/false,"
         "\"next_question\":\"\",\"follow_up_prompts\":[],"
         "\"error_type\":\"handwriting_ok|handwriting_partial|handwriting_wrong|handwriting_unknown\"}。"
     )
+    
+    try:
+        from core.prompts.composer import compose_prompt
+        full_prompt, source = compose_prompt(
+            base_key=None,
+            task_key="handwriting_feedback_prompt",
+            extra_blocks=[json_format_str],
+            question=question,
+            student_expression=student_expression,
+            expected_answer=expected_answer,
+            status=status,
+            family_description_zh=family_description_zh,
+            error_mechanism=error_mechanism,
+            main_issue=main_issue
+        )
+        
+        logger.info(f"[handwriting second stage] prompt_key=handwriting_feedback_prompt source={source} has_expected_answer={bool(expected_answer)} fallback_to_hardcoded=False")
+        return full_prompt
+    except Exception as e:
+        logger.warning(f"[handwriting second stage] render failed, fallback to hardcoded: {e}")
+        logger.info(f"[handwriting second stage] prompt_key=handwriting_feedback_prompt source=fallback has_expected_answer={bool(expected_answer)} fallback_to_hardcoded=True")
+        
+        return (
+            "你是國中數學評量系統的批改回饋模組，不是解題老師。\n\n"
+            "你只根據以下資訊，產生非常短的批改回饋：\n\n"
+            f"題目：{question}\n"
+            f"學生手寫結果：{student_expression}\n"
+            f"正確答案：{expected_answer}\n"
+            f"判定狀態：{status}\n"
+            f"本題重點：{family_description_zh}\n"
+            f"錯誤機制：{error_mechanism}\n"
+            f"已知錯誤重點：{main_issue}\n\n"
+            "請嚴格遵守：\n"
+            "1. 如果 status = correct：\n"
+            "- 第一行一定要說「答案正確」\n"
+            "- 最後一行一定要說「進入下一題」\n"
+            "- 不要解題\n"
+            "- 不要長篇說明\n"
+            "2. 如果 status = partially_correct：\n"
+            "- 第一行說「方向正確，但有一個關鍵小錯」\n"
+            "- 只指出一個最重要的錯誤\n"
+            "- 最後一行說「請再檢查一次」\n"
+            "3. 如果 status = incorrect：\n"
+            "- 第一行直接說「這題有錯」\n"
+            "- 只指出一個最核心錯誤\n"
+            "- 優先使用提供的「已知錯誤重點」\n"
+            "- 禁止說：請檢查、再看看、計算方向大致正確、檢查運算順序、檢查係數與符號\n"
+            "- 最後一行說「想一下再試一次」\n"
+            "4. 回答最多 3 行\n"
+            "5. 不要解完整題目\n"
+            "6. 不要聊天\n"
+            "7. 語氣像老師批改，不像聊天機器人\n\n"
+            + json_format_str
+        )
 
 
 def _handwriting_rule_based_reply(analysis_result):
@@ -1517,6 +1577,7 @@ def chat_ai():
 
 
     question_text = data.get('question_text', '')
+    correct_answer = data.get('correct_answer', '').strip()
 
 
 
@@ -1756,23 +1817,9 @@ def chat_ai():
 
 
         context=context,
-
-
-
-
-
-
-
-        prereq_skills=prereq_skills
-
-
-
-
-
-
-
+        prereq_skills=prereq_skills,
+        correct_answer=correct_answer
     )
-
 
 
 
@@ -2593,10 +2640,15 @@ def analyze_handwriting():
             return _handwriting_not_recognized_response()
 
         expected_answer = _handwriting_expected_answer(data, state, question_text, question_context)
-        print("[HW DEBUG] payload keys:", list(data.keys()))
-        print("[HW DEBUG] session current_question:", state.get("question_text"))
-        print("[HW DEBUG] session expected_answer:", state.get("correct_answer"))
-        print("[HW DEBUG] final expected_answer:", expected_answer)
+        
+        current_app.logger.info(
+            f"[Handwriting Grade Debug] \n"
+            f" - current_question: {question_text}\n"
+            f" - expected_answer: {expected_answer}\n"
+            f" - recognized_expression: {expr}\n"
+            f" - final grading input: (expr='{expr}', expected_answer='{expected_answer}', question_text='{question_text}', family_id='{family_id}')"
+        )
+        
         analysis_result = _handwriting_structured_analysis(
             expr, expected_answer, question_text, family_id
         )
@@ -2629,22 +2681,8 @@ def analyze_handwriting():
                 "handwriting_status": hw_status,
             }
             print("analyzer result:", result)
-        elif _handwriting_issue_is_clear(analysis_result):
-            reply_text = _handwriting_rule_based_reply(analysis_result)
-            result = {
-                "reply": enforce_strict_mode(reply_text),
-                "is_process_correct": hw_status == "partially_correct",
-                "correct": False,
-                "next_question": "",
-                "follow_up_prompts": [],
-                "error_type": _hw_err.get(hw_status, "handwriting_unknown"),
-                "success": True,
-                "auto_next": False,
-                "handwriting_analysis": analysis_result,
-                "handwriting_status": hw_status,
-            }
-            print("analyzer result:", result)
         else:
+            current_app.logger.info(f"[analyze_handwriting] routing_to_second_stage status={hw_status}")
             prompt = _handwriting_feedback_second_prompt(
                 analysis_result, question_text, question_context, prereq_text, family_id
             )
@@ -4028,14 +4066,30 @@ def api_rag_chat():
 
 
 
+    try:
+        from core.advanced_rag_engine import HAS_ADV_LIBS
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        if HAS_ADV_LIBS:
+            logger.info("[API RAG CHAT] Routing to Advanced RAG Engine.")
+            from core.advanced_rag_engine import adv_rag_search, adv_rag_chat
+            from core.ai_settings import get_effective_model_config
+            
+            cfg = get_effective_model_config(role="tutor")
+            provider = cfg.get("provider", "local")
+            
+            skills = adv_rag_search(query, top_k=3)
+            result = adv_rag_chat(query, retrieved_skills=skills, provider=provider, family_id=top_skill_id)
+            return jsonify(result)
+        else:
+            logger.info("[API RAG CHAT] HAS_ADV_LIBS is False. Routing to Naive RAG.")
+    except Exception as e:
+        import traceback
+        import logging
+        logging.getLogger(__name__).warning(f"Error checking advanced RAG, fallback directly to naive: {e}\n{traceback.format_exc()}")
+
     result = rag_chat(query, top_skill_id)
-
-
-
-
-
-
-
     return jsonify(result)
 
 
