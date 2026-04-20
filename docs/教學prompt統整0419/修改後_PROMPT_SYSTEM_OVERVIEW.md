@@ -279,3 +279,134 @@
   2. **Policy Layer**：合規與安全規則，保留在 code（例如：compliance flags、regex、錯誤機制判定、禁止直接給答案規則）。  
   3. **Fallback Layer**：例外與失敗保底，保留在 code，僅在 prompt render 失敗 / LLM 不合規 / Edge 回覆異常時啟動。  
   維護警語：未來若要重構 Prompt 系統，應優先搬移 Prompt Layer，而不是把 Policy / Fallback 混入 Prompt Registry。
+
+## 🔄 Prompt YAML 版本對齊與管理機制（Version Control System）
+
+### 【一、設計動機（Why）】
+
+本系統導入 Prompt YAML 版本對齊機制，主要為解決 AI 教學系統在持續演進過程中的一致性與可追溯性問題：
+
+- 避免 DB 與 YAML prompt 長期分歧，導致線上行為與版控內容不一致。
+- 支援多人協作開發與審查流程，讓 prompt 能透過 Git 進行同步、檢視與回溯。
+- 支援 prompt 演進管理，明確標示每次發布來源與時間，建立可追蹤的版本歷程。
+- 解決傳統 hardcode prompt 或「僅存在資料庫、缺乏版控」所造成的維護斷層與風險。
+
+### 【二、系統架構（Architecture）】
+
+本機制由三個核心元件組成，各自職責明確且互補：
+
+1️⃣ **DB（Runtime Prompt）**
+- 用途：作為系統執行時（Runtime）實際讀取的 prompt 來源。
+- 特性：可透過後台 UI 直接編輯與即時調整。
+- 定位：屬於「工作版本（Working Version）」。
+
+2️⃣ **YAML（Prompt Registry）**
+- 路徑：`configs/prompts/prompt_registry.yaml`
+- 用途：作為版本控制、公版發布與跨環境同步基準。
+- 特性：可納入 Git，支援審查、比對與歷程管理。
+- 定位：屬於「發布版本（Release Version）」。
+
+3️⃣ **Admin UI（ai_prompt_settings）**
+- 功能：提供單支 prompt 的編輯、發布、同步與版本比對。
+- 特性：可直接視覺化顯示版本狀態，降低人工判讀成本。
+- 定位：作為 DB 與 YAML 間的操作介面與管理中樞。
+
+### 【三、YAML 結構設計】
+
+每一支 prompt 採用一致且可擴充的標準格式：
+
+```yaml
+prompts:
+  xxx_prompt:
+    role: tutor
+    required_variables: [...]
+    content: |
+      ...
+    metadata:
+      version: 1
+      updated_at: "ISO8601"
+      updated_by: "ui_publish"
+```
+
+欄位定義如下：
+
+- `metadata.version`：版本號，於發布動作時自動累加。
+- `metadata.updated_at`：發布時間，採 UTC ISO 格式記錄。
+- `metadata.updated_by`：發布來源，現階段統一為 `ui_publish`。
+
+### 【四、版本對齊機制（Core Mechanism）】
+
+機制核心分為三個流程，形成完整閉環：
+
+① **publish_to_yaml（發布）**
+- 資料流向：DB → YAML
+- 行為：以目前編輯中的單支 prompt 覆寫 YAML 對應 key。
+- 版本處理：`version + 1`、`updated_at` 更新，形成新的公版發布點。
+
+② **sync_from_yaml（同步）**
+- 資料流向：YAML → DB
+- 行為：以 YAML 公版內容覆蓋 DB 目前該筆 prompt。
+- 版本定位：此動作屬於「版本對齊」，不代表新版本創建。
+
+③ **version_check（比對）**
+- 比對目標：單支 prompt 的 DB 與 YAML 狀態。
+- 先決條件：先進行 normalize（`role` / `required_variables` / `content`）。
+- 判斷原則：若內容一致直接判定 `synced`；僅在內容不同時才比較版本新舊。
+
+### 【五、Normalize 比對策略（關鍵設計）】
+
+由於 prompt 內容可能受格式差異影響（而非語意差異），系統採用正規化策略避免誤判：
+
+- 統一換行格式（`\r\n` 轉為 `\n`）。
+- 去除每行尾端空白與尾端多餘換行。
+- `required_variables` 正規化為乾淨且可比較的 `list[str]`。
+- `role` 進行 `strip()` 清理前後空白。
+
+關鍵原則如下：
+
+👉 **內容一致優先於時間判定。**
+
+亦即，只要正規化後內容一致，即使 DB 或 YAML 顯示時間不同，仍視為已同步。
+
+### 【六、版本狀態判定（Status）】
+
+本系統採用四種狀態描述 prompt 對齊情形：
+
+- `synced`（已同步）
+- `db_newer`（DB 較新）
+- `yaml_newer`（YAML 較新）
+- `different`（內容不同但無法判定版本新舊）
+
+判斷邏輯如下：
+
+- 先比對 normalize 後內容（`role`、`required_variables`、`content`）。
+- 若內容一致：直接回傳 `synced`，且 `has_yaml_update=false`、`has_db_update=false`。
+- 若內容不同且雙方皆有可比較時間：
+  - YAML 時間較晚：`yaml_newer`
+  - DB 時間較晚：`db_newer`
+- 若內容不同但缺少可比較時間資訊：`different`。
+
+### 【七、關鍵修正（Bug Fix / Design Insight）】
+
+本次版本機制的關鍵修正如下：
+
+❗ **過去問題：**
+- 系統過度依賴 DB `updated_at` 作為版本新舊判斷依據。
+- 在執行 `sync_from_yaml` 後，ORM 仍會更新 DB row 的 `updated_at`，導致狀態長期誤判為 DB 較新。
+
+✅ **修正後：**
+- 先以 normalize 後內容一致性作為第一判斷。
+- 內容一致時，一律判定為 `synced`。
+- 僅在內容不同時，才進一步比較版本新舊與時間資訊。
+
+👉 此修正為本系統穩定性的核心，能有效避免「假版本漂移」造成的管理混亂。
+
+### 【八、系統價值（Contribution）】
+
+本機制已形成可擴充的 Prompt Configuration Management System，具備以下價值：
+
+- 建立 prompt 的版本控制、發布同步與回溯能力。
+- 提升多人協作情境下的治理品質與變更透明度。
+- 降低環境差異與手動調整造成的行為漂移風險。
+- 強化 AI 教學系統長期可維護性與可審核性。
+- 可延伸應用至多模型、多 prompt、多場景的 AI 系統管理架構。
