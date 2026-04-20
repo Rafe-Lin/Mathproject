@@ -67,6 +67,8 @@
         .prompt-detail-item strong { color: #0f172a; margin-right: 4px; }
         .prompt-template-editor { min-height: 160px; margin-top: 8px; margin-bottom: 12px; }
         .prompt-template-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .prompt-version-panel { border: 1px dashed #cbd5e1; border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; background: #f8fafc; }
+        .prompt-version-row { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.9em; color: #334155; }
     </style>
 </head>
 <body>
@@ -768,8 +770,17 @@
                                 <div class="prompt-detail-item"><strong>🧩 required_variables：</strong><code>${required}</code></div>
                             </div>
                             <div class="prompt-meta"><strong>updated_at:</strong> ${escapeHtml(item.updated_at || "")}</div>
+                            <div class="prompt-version-panel">
+                                <div class="prompt-version-row">
+                                    <span>DB 版本：<strong id="db-updated-${safeKey}">-</strong></span>
+                                    <span>YAML 公版：<strong id="yaml-updated-${safeKey}">-</strong></span>
+                                    <span id="yaml-update-badge-${safeKey}" class="badge badge-neutral">版本比對中</span>
+                                </div>
+                            </div>
                             <textarea class="prompt-template-editor" id="prompt-content-${safeKey}">${escapeHtml(item.content || "")}</textarea>
                             <div class="prompt-template-actions">
+                                <button class="btn btn-primary" onclick="publishPromptToYaml('${safeKey}')"><i class="bi bi-cloud-arrow-up"></i> 發布到 YAML</button>
+                                <button class="btn btn-warning" onclick="syncPromptFromYaml('${safeKey}')"><i class="bi bi-cloud-arrow-down"></i> 從 YAML 載入最新版</button>
                                 <button class="btn btn-warning" onclick="resetPromptTemplate('${safeKey}')"><i class="bi bi-arrow-counterclockwise"></i> 重設</button>
                                 <button class="btn btn-primary" onclick="savePromptTemplate('${safeKey}')"><i class="bi bi-save"></i> 儲存</button>
                             </div>
@@ -811,6 +822,7 @@
                     : (Array.isArray(data.items) ? data.items : []);
                 promptTemplatesCache = prompts;
                 renderPromptTemplateList(promptTemplatesCache);
+                runPromptVersionChecks();
             } catch (e) {
                 showAlert("Prompt 清單讀取失敗", false);
             }
@@ -857,6 +869,95 @@
                 loadPromptTemplateList();
             } catch (e) {
                 showAlert("Prompt 重設失敗", false);
+            }
+        }
+
+        function updatePromptVersionUi(promptKey, payload) {
+            const dbEl = document.getElementById(`db-updated-${promptKey}`);
+            const yamlEl = document.getElementById(`yaml-updated-${promptKey}`);
+            const badgeEl = document.getElementById(`yaml-update-badge-${promptKey}`);
+            if (dbEl) dbEl.textContent = payload.db_updated_at || "-";
+            if (yamlEl) yamlEl.textContent = payload.yaml_updated_at || "-";
+            if (!badgeEl) return;
+            if (!payload.yaml_exists) {
+                badgeEl.className = "badge badge-warning";
+                badgeEl.textContent = "YAML 尚無此 prompt";
+                return;
+            }
+            if (payload.has_yaml_update) {
+                badgeEl.className = "badge badge-danger";
+                badgeEl.textContent = "有新版公版 prompt 可同步";
+                return;
+            }
+            if (payload.has_db_update) {
+                badgeEl.className = "badge badge-primary";
+                badgeEl.textContent = "目前 DB 版本較新，尚未發布到 YAML";
+                return;
+            }
+            if (payload.is_different) {
+                badgeEl.className = "badge badge-warning";
+                badgeEl.textContent = "DB 與 YAML 內容不同";
+                return;
+            }
+            badgeEl.className = "badge badge-success";
+            badgeEl.textContent = "DB 與 YAML 已同步";
+        }
+
+        async function checkPromptVersion(promptKey) {
+            try {
+                const res = await fetch(`/admin/ai_prompt_settings/version_check?prompt_key=${encodeURIComponent(promptKey)}`);
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || "版本檢查失敗");
+                }
+                updatePromptVersionUi(promptKey, data);
+            } catch (e) {
+                const badgeEl = document.getElementById(`yaml-update-badge-${promptKey}`);
+                if (badgeEl) {
+                    badgeEl.className = "badge badge-warning";
+                    badgeEl.textContent = "版本檢查失敗";
+                }
+            }
+        }
+
+        function runPromptVersionChecks() {
+            const keys = (promptTemplatesCache || []).map(p => p.prompt_key).filter(Boolean);
+            keys.forEach(checkPromptVersion);
+        }
+
+        async function publishPromptToYaml(promptKey) {
+            try {
+                const res = await fetch("/admin/ai_prompt_settings/publish_to_yaml", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt_key: promptKey })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || "發布失敗");
+                }
+                showAlert("已將目前 prompt 發布為 YAML 公版", true);
+                await checkPromptVersion(promptKey);
+            } catch (e) {
+                showAlert(e.message || "發布到 YAML 失敗", false);
+            }
+        }
+
+        async function syncPromptFromYaml(promptKey) {
+            try {
+                const res = await fetch("/admin/ai_prompt_settings/sync_from_yaml", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt_key: promptKey })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || "同步失敗");
+                }
+                showAlert("已用 YAML 公版覆蓋資料庫版本", true);
+                await loadPromptTemplateList();
+            } catch (e) {
+                showAlert(e.message || "從 YAML 載入最新版失敗", false);
             }
         }
     </script>
