@@ -98,6 +98,8 @@
             flex: 1;
             display: flex;
             overflow: hidden;
+            min-width: 0;
+            min-height: 0;
         }
 
         /* === 練習區 === */
@@ -108,6 +110,8 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            min-width: 0;
+            min-height: 0;
         }
 
         .practice-top {
@@ -349,6 +353,7 @@
             flex-direction: column;
             min-height: 0;
             /* 允許縮小 */
+            min-width: 0;
         }
 
         .canvas-toolbar {
@@ -409,8 +414,8 @@
         }
 
         .color-button {
-            width: 28px;
-            height: 28px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid #ddd;
@@ -967,6 +972,52 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        #scratchpad-controls .tool-btn {
+            flex: 0 0 auto;
+            height: 30px;
+            min-height: 30px;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+
+        #scratchpad-controls .tool-btn svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        #scratchpad-controls .tool-btn.eraser-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        #scratchpad-controls .scratchpad-divider {
+            flex: 0 0 auto;
+            width: 1px;
+            height: 18px;
+            background: #d7dee8;
+            margin: 0 2px;
+        }
+
+        #scratchpad-controls .pen-width-control {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 6px;
+            white-space: nowrap;
+        }
+
+        #scratchpad-controls #pen-width {
+            width: 92px !important;
+            min-width: 92px;
+            height: 24px;
+        }
+
+        #scratchpad-controls #pen-width-label {
+            min-width: 14px;
+            font-size: 0.78rem;
+        }
+
         /* 4. 畫布本體：確保夠高 */
         canvas {
             background-color: #ffffff;
@@ -1072,7 +1123,7 @@
     </style>
 
 
-<style id="responsive-layout-upgrade">
+    <style id="responsive-layout-upgrade">
         /* =========================================================
            Responsive Layout Upgrade (PC / Tablet / Surface Pro)
            ========================================================= */
@@ -1484,7 +1535,7 @@
                 padding: 12px 14px;
             }
         }
-    
+    </style>
 
 </head>
 
@@ -1619,7 +1670,7 @@
                         </svg>
                     </button>
 
-                    <div style="width: 1px; height: 20px; background: #ddd; margin: 0 5px;"></div>
+                    <div class="scratchpad-divider"></div>
 
                     <button class="tool-btn eraser-btn" onclick="setTool('eraser')" title="橡皮擦" style="color: #666;">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -1638,9 +1689,9 @@
                     </button>
 
                     <!-- 筆畫粗細滑桿 -->
-                    <div style="margin-left: 10px; display: flex; align-items: center; gap: 5px;">
+                    <div class="pen-width-control">
                         <span style="font-size: 0.8em; color: #666;">粗細</span>
-                        <input type="range" id="pen-width" min="1" max="10" value="2" style="width: 60px;">
+                        <input type="range" id="pen-width" min="1" max="10" value="2">
                         <span id="pen-width-label" style="font-size: 0.8em; min-width: 15px;">2</span>
                     </div>
 
@@ -3880,6 +3931,7 @@
             }
         });
     </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9afcd8958a218457',t:'MTc2NjA0MTg4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
     <script>
         // [MathJax 強制渲染補丁]
         document.addEventListener('DOMContentLoaded', function () {
