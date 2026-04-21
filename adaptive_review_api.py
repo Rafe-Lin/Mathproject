@@ -32,6 +32,23 @@ import logging
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
+from core.ai_wrapper import get_ai_client, call_ai_with_retry
+
+LLM_GUIDE_PROMPT = """你是一個耐心、鼓勵學生的數學 AI 家教。
+這是一道關於【{skill}】的算式題：
+{question}
+
+學生目前的疑問或是回答是：
+{query}
+
+⚠️ 請注意以下嚴格規定：
+1. **絕對不可直接給出最終答案！**
+2. 請一步步引導學生思考，給予提示或引導方向。
+3. 語氣要溫和、正面且富有教育意義。
+4. 解釋要簡潔，避免在一則對話中包含過多步驟。
+5. **盡可能控制字數在 50 字以內，極度精簡，一語中的。**
+"""
+
 from adaptive_review_mode import (
     AdaptiveReviewEngine,
     analyze_weak_skills,
@@ -379,6 +396,29 @@ def submit_feedback():
             use_rl=True
         )
         
+        # [新增] 同步 NodeCompetency 以連動知識圖譜
+        try:
+            from models import db, NodeCompetency
+            
+            # 使用 skill_name 作為 node_id (例如: "_數學1上_PolynomialOperations")
+            skill_name = "unknown"
+            if hasattr(engine.akt_inference, 'skills_list') and skill_id < len(engine.akt_inference.skills_list):
+                skill_name = engine.akt_inference.skills_list[skill_id]
+                
+            if skill_name != "unknown" and student_id != "unknown" and student_id != "guest":
+                comp_score = float(apr_after * 100.0) # 轉換 0-1 到 0-100 分數
+                nc = db.session.query(NodeCompetency).filter_by(user_id=int(student_id), node_id=skill_name).first()
+                if nc:
+                    nc.competency_score = comp_score
+                    nc.competency_theta = apr_after
+                else:
+                    nc = NodeCompetency(user_id=int(student_id), node_id=skill_name, competency_score=comp_score, competency_theta=apr_after)
+                    db.session.add(nc)
+                db.session.commit()
+                logger.info(f"Updated NodeCompetency for user {student_id}, node {skill_name} to {comp_score}")
+        except Exception as db_err:
+            logger.warning(f"Failed to update NodeCompetency: {db_err}")
+            
         # 生成反饋訊息
         feedback_msg = "✓ 回答已記錄" if correct else "✗ 本題未掌握"
         
@@ -571,6 +611,47 @@ def get_question(item_id: int):
             'status': 'error',
             'message': f'無法獲取題目: {str(e)}'
         }), 500
+
+
+@adaptive_review_bp.route('/chat', methods=['POST'])
+def chat_with_tutor():
+    """
+    提供 LLM 引導式提示服務
+    Request JSON:
+    {
+        "question_text": "題目內容...",
+        "skill_name": "技能名稱...",
+        "query": "學生的發言"
+    }
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'status': 'error', 'message': '無效的 JSON'}), 400
+        
+    question_text = data.get('question_text', '未提供題目')
+    skill_name = data.get('skill_name', '一般數學觀念')
+    user_query = data.get('query', '請給我一個提示')
+    
+    # 填充 Prompt
+    prompt = LLM_GUIDE_PROMPT.format(
+        skill=skill_name,
+        question=question_text,
+        query=user_query
+    )
+    
+    try:
+        client = get_ai_client('default')
+        response = call_ai_with_retry(client, prompt)
+        
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'reply': response.text
+            }
+        }), 200
+    except Exception as e:
+        logger.error(f"❌ LLM 提示產生失敗: {e}", exc_info=True)
+        return jsonify({'status': 'error', 'message': '無法獲取提示，請檢查或重設 AI 管理功能的 API Key。'}), 500
 
 
 if __name__ == "__main__":

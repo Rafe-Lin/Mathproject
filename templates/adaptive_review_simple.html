@@ -496,7 +496,7 @@
         <div class="badge">
           <span style="display: flex; align-items: center; gap: 8px;">
             <strong id="aprDisplay">準備中...</strong>
-            <span style="color: var(--muted); font-size: 12px;">當前掌握度</span>
+            <span style="color: var(--muted); font-size: 12px;">當前熟練度 / 分數</span>
           </span>
         </div>
       </div>
@@ -510,9 +510,14 @@
           <h1>👋 歡迎來到自適應複習！</h1>
           <p>這是一個智能學習系統，會根據你的表現動態推薦最適合的題目。<br>
           無論是否有過之前的學習記錄，你都可以立即開始！</p>
-          <button class="btn btn-primary" id="startBtn" onclick="startReview()" style="margin-top: 20px; padding: 12px 32px; font-size: 16px;">
-            開始複習 →
-          </button>
+          <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn btn-primary" id="startBtn" onclick="startReview()" style="padding: 12px 32px; font-size: 16px;">
+              開始複習 →
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('dashboard') }}'" style="padding: 12px 32px; font-size: 16px;">
+              ← 返回儀表板
+            </button>
+          </div>
         </div>
       </div>
 
@@ -523,7 +528,7 @@
           <div class="panel nav-panel">
             <h2>進度</h2>
             <div class="nav-progress-box">
-              <strong>當前掌握度</strong><br>
+              <strong>當前熟練度 / 分數</strong><br>
               <span id="navAPR">-</span>
             </div>
             <div class="nav-progress-box">
@@ -622,6 +627,11 @@
             <div class="chat-history" id="chatHistory">
               <div class="empty-state">準備就緒，開始提問吧！</div>
             </div>
+            <div class="suggested-prompts" style="display: flex; gap: 6px; padding-bottom: 8px; flex-wrap: wrap;">
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('這題考查什麼概念？')">這題考查什麼概念？</button>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('請給我一點起頭的提示')">請給我一點起頭的提示</button>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('幫我檢查目前的計算對不對')">幫我檢查目前的計算對不對</button>
+            </div>
             <div class="assistant-input">
               <input type="text" id="chatInput" placeholder="提問..." onkeypress="handleChatKeypress(event)" />
               <button class="btn btn-primary" onclick="sendChatMessage()">發送</button>
@@ -631,9 +641,17 @@
       </div>
     </div>
   </div>
-
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es2015"></script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     // ════════════════════════════════════════════════════════════════════
     // 全局變數
@@ -999,7 +1017,7 @@
 
     function requestHint() {
       if (!currentQuestion) return;
-      addChatMessage('bot', `💡 提示：這道題考查的是 ${currentQuestion.skill_name}。試試分步驟思考。`);
+      sendSpecificMessage('請給我一點起頭的提示');
     }
 
     function skipQuestion() {
@@ -1049,9 +1067,36 @@
       
       const msgDiv = document.createElement('div');
       msgDiv.className = `msg ${role}`;
-      msgDiv.textContent = message;
+      if (typeof marked !== 'undefined') {
+        let mathBlocks = [];
+        let counter = 0;
+        let text = message.replace(/\$\$([\s\S]*?)\$\$/g, function(match) {
+          mathBlocks.push(match);
+          return '%%MATH' + (counter++) + '%%';
+        }).replace(/\$(.*?)\$/g, function(match) {
+          mathBlocks.push(match);
+          return '%%MATH' + (counter++) + '%%';
+        });
+        
+        let html = marked.parse(text);
+        for(let i=0; i<counter; i++) {
+          html = html.replace('%%MATH' + i + '%%', mathBlocks[i]);
+        }
+        msgDiv.innerHTML = html;
+      } else {
+        msgDiv.textContent = message;
+      }
       chatHistory.appendChild(msgDiv);
       chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      if (window.MathJax) {
+        MathJax.typesetPromise([msgDiv])
+          .then(() => {
+             // 確保滾動到底部
+             chatHistory.scrollTop = chatHistory.scrollHeight;
+          })
+          .catch((err) => console.log('MathJax error:', err.message));
+      }
     }
 
     function handleChatKeypress(event) {
@@ -1061,7 +1106,13 @@
       }
     }
 
-    function sendChatMessage() {
+    function sendSpecificMessage(message) {
+      const input = document.getElementById('chatInput');
+      input.value = message;
+      sendChatMessage();
+    }
+
+    async function sendChatMessage() {
       const input = document.getElementById('chatInput');
       const message = input.value.trim();
       
@@ -1070,17 +1121,34 @@
       addChatMessage('user', message);
       input.value = '';
       
-      setTimeout(() => {
-        const responses = [
-          '這是一個很好的問題！讓我幫你分析一下。',
-          '你可以試試從基本定義開始思考。',
-          '這道題的關鍵是理解概念的含義。',
-          '記住公式的前提條件很重要。',
-          '你在正確的方向上！繼續加油。'
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addChatMessage('bot', randomResponse);
-      }, 500);
+      if (!currentQuestion) {
+        addChatMessage('bot', '請先開始複習會話，獲得推薦題目後再進行提問哦。');
+        return;
+      }
+      
+      const questionText = document.getElementById('questionText').textContent || '';
+      
+      try {
+        const response = await fetch('/api/adaptive-review/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question_text: questionText,
+            skill_name: currentQuestion.skill_name,
+            query: message
+          })
+        });
+
+        const data = await response.json();
+        if (data.status === 'success') {
+          addChatMessage('bot', data.data.reply);
+        } else {
+          addChatMessage('bot', `❌ 錯誤: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('API 錯誤:', error);
+        addChatMessage('bot', '❌ 網路發生錯誤，無法取得回覆。');
+      }
     }
   </script>
 </body>
