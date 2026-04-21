@@ -286,13 +286,47 @@
     .chat-history::-webkit-scrollbar-track { background:transparent; }
     .msg { max-width:94%; padding:10px 12px; border-radius:12px; line-height:1.65; font-size:14px; white-space:pre-wrap; }
     .msg.user { align-self:flex-end; background:#e7f2ff; color:#17447a; }
-    .msg.bot { align-self:flex-start; background:#ffffff; color:#2c3e50; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .msg.bot {
+      align-self:flex-start;
+      background:linear-gradient(180deg, #fcf8ff 0%, #f6effd 100%);
+      color:#9b59b6;
+      border:1px solid #e5d6f2;
+      border-left:4px solid #9b59b6;
+      box-shadow:0 2px 8px rgba(79, 33, 122, .08);
+    }
     .guide-buttons { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
     .guide-buttons::-webkit-scrollbar { display:none; }
     .guide-buttons button { background:#eef4fb; color:#274472; padding:8px 12px; font-size:13px; font-weight:600; white-space:nowrap; border-radius:999px; }
     .assistant-input { display:grid; grid-template-columns:1fr 110px; gap:8px; }
     .assistant-input input { min-height:44px; }
     #assistantSendBtn { background:#16a34a; }
+    .center-msgbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 26vh;
+      z-index: 9999;
+    }
+    .center-msgbox-overlay.show { display: flex; }
+    .center-msgbox {
+      width: min(420px, calc(100vw - 32px));
+      background: #ffffff;
+      border: 1px solid #d8e1ef;
+      border-radius: 14px;
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.25);
+      padding: 16px 16px 14px;
+    }
+    .center-msgbox-text {
+      margin: 0 0 14px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #1f2a44;
+      white-space: pre-wrap;
+    }
+    .center-msgbox-actions { display: flex; justify-content: flex-end; }
 
     .nav-panel { display:flex; flex-direction:column; justify-content:flex-start; }
     .nav-status-row { display:flex; gap:10px; margin-top:8px; }
@@ -651,7 +685,7 @@
                 <div class="assistant-summary-title">系統診斷說明</div>
                 <div class="assistant-summary-text" id="assistantSummaryText">目前先練這一題，助教會在你卡住時提供提示。</div>
               </div>
-              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。我會用國中生聽得懂的方式提醒你重點，但不會直接把最後答案講出來。</div></div>
+              <div class="chat-history" id="chatHistory"><div class="msg bot">你好，我是這一題的 AI 助教。你先自己做題，我會在旁邊提醒你重點，但不會直接把答案講出來。</div></div>
               <div style="height:10px;"></div>
               <div class="guide-buttons">
                 <button type="button" data-guide="請用國中生能懂的方式提醒我這題先看哪一個觀念。">看核心觀念</button>
@@ -688,6 +722,15 @@
 
     </div>
 </div>
+
+  <div class="center-msgbox-overlay" id="centerMsgboxOverlay" aria-hidden="true">
+    <div class="center-msgbox" role="dialog" aria-modal="true" aria-labelledby="centerMsgboxText">
+      <p class="center-msgbox-text" id="centerMsgboxText"></p>
+      <div class="center-msgbox-actions">
+        <button type="button" class="primary" id="centerMsgboxOkBtn">確定</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     window.MathJax = {
@@ -754,6 +797,9 @@
       assessmentStopReason: "",
       demoRouteMsg: "系統尚未開始診斷。",
     };
+    const centerMsgboxOverlay = document.getElementById("centerMsgboxOverlay");
+    const centerMsgboxText = document.getElementById("centerMsgboxText");
+    const centerMsgboxOkBtn = document.getElementById("centerMsgboxOkBtn");
     const skillId = {{ (skill_id or '')|tojson }};
     const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
     const basePayload = {};
@@ -1606,6 +1652,68 @@
       box.innerHTML = '<div class="msg bot">你好，我是這一題的 AI 助教。你先自己做題，我會在旁邊提醒你重點，但不會直接把答案講出來。</div>';
       scrollChatToBottom();
     }
+    function showCenterMessageBox(message) {
+      return new Promise((resolve) => {
+        if (!centerMsgboxOverlay || !centerMsgboxText || !centerMsgboxOkBtn) {
+          window.alert(message);
+          resolve();
+          return;
+        }
+        centerMsgboxText.textContent = message || "";
+        centerMsgboxOverlay.classList.add("show");
+        centerMsgboxOkBtn.onclick = () => {
+          centerMsgboxOverlay.classList.remove("show");
+          resolve();
+        };
+      });
+    }
+    async function handleCorrectAnswer(onConfirm) {
+      const messages = [
+        "🎉 答對了！很棒！讓我們繼續下一題吧！",
+        "正確！保持這個節奏！",
+        "做得好！你離目標又近了一步！"
+      ];
+      const picked = messages[Math.floor(Math.random() * messages.length)];
+      await showCenterMessageBox(picked);
+      if (typeof onConfirm === "function") {
+        return onConfirm();
+      }
+    }
+    function isTextboxAnswerCorrect(data) {
+      if (!data || typeof data !== "object") return false;
+      if (data.is_correct === true) return true;
+      if (data.correct === true) return true;
+      if (data.grading_analysis && data.grading_analysis.is_correct === true) return true;
+      return false;
+    }
+    async function applyAdaptiveResponse(data) {
+      if (data.completed) {
+        state.history.push({
+          step_number: data.step_number,
+          current_apr: data.current_apr,
+          ppo_strategy: data.ppo_strategy,
+          learning_mode: normalizeLearningMode(data.summary?.learning_mode || data.learning_mode || state.learningMode || ""),
+          detected_subskill: String(data.detected_subskill_node || state.detectedSubskill || ""),
+          completed: true,
+        });
+        renderTrajectory();
+        updateOverview(data, data.new_question_data || {});
+        renderSummary(data.summary || {}, data);
+        setText("jsonBox", JSON.stringify(data.summary || {}, null, 2));
+        return;
+      }
+      renderQuestion(data);
+      if (data.answer_feedback) {
+        setStatus(String(data.answer_feedback));
+      }
+      if (data.ppo_strategy === 3) {
+        updateRagScopeBadge("review");
+        await fetchHint();
+        addMessage("bot", "我已經依照你目前卡住的微技能，整理出補救提示。先看右側說明，再試下一題。");
+      } else {
+        updateRagScopeBadge("active");
+      }
+    }
     function resetHintBox() {
       const box = document.getElementById("hintBox");
       if (!box) return;
@@ -1885,6 +1993,19 @@
         }
         setMessageContent(thinking, summarizeHandwritingResult(data));
         await typesetMath(thinking);
+        if (data && data.correct === true) {
+          await handleCorrectAnswer(async () => {
+            const nextData = await postAdaptive({
+              ...basePayload,
+              session_id: state.sessionId,
+              step_number: state.stepNumber,
+              user_answer: "[handwriting-correct]",
+              is_correct: true
+            });
+            resetChatHistory();
+            await applyAdaptiveResponse(nextData);
+          });
+        }
       } catch (err) {
         console.error("analyzeHandwriting failed:", err);
         await addMessage("bot", "目前無法分析手寫內容，你可以先看右側補救提示，再檢查你的第一步。");
@@ -2422,32 +2543,14 @@
           const answer = answerInput.value.trim();
           if (!answer) { setStatus("請先輸入答案。"); return; }
           const data = await postAdaptive({ ...basePayload, session_id: state.sessionId, step_number: state.stepNumber, user_answer: answer });
-          if (data.completed) {
-            state.history.push({
-              step_number: data.step_number,
-              current_apr: data.current_apr,
-              ppo_strategy: data.ppo_strategy,
-              learning_mode: normalizeLearningMode(data.summary?.learning_mode || data.learning_mode || state.learningMode || ""),
-              detected_subskill: String(data.detected_subskill_node || state.detectedSubskill || ""),
-              completed: true,
+          if (isTextboxAnswerCorrect(data) && !data.completed) {
+            await handleCorrectAnswer(async () => {
+              resetChatHistory();
+              await applyAdaptiveResponse(data);
             });
-            renderTrajectory();
-            updateOverview(data, data.new_question_data || {});
-            renderSummary(data.summary || {}, data);
-            setText("jsonBox", JSON.stringify(data.summary || {}, null, 2));
             return;
           }
-        renderQuestion(data);
-        if (data.answer_feedback) {
-          setStatus(String(data.answer_feedback));
-        }
-        if (data.ppo_strategy === 3) {
-          updateRagScopeBadge("review");
-          await fetchHint();
-          addMessage("bot", "我已經依照你目前卡住的微技能，整理出補救提示。先看右側說明，再試下一題。");
-        } else {
-          updateRagScopeBadge("active");
-        }
+          await applyAdaptiveResponse(data);
       } catch (err) { setStatus(`提交失敗：${err.message}`); }
     });
 
@@ -2700,15 +2803,7 @@
             if (data && data.success && data.tutor_model) {
                 const formattedMode = formatMode(data.ai_mode);
                 el.innerText = `AI 助教（${data.tutor_model}｜${formattedMode}）`;
-                
-                // 設定顏色提示
-                if (data.ai_mode === 'edge') {
-                    el.style.color = '#10b981'; // Tailwind emerald-500
-                } else if (data.ai_mode === 'cloud') {
-                    el.style.color = '#3b82f6'; // Tailwind blue-500
-                } else if (data.ai_mode === 'hybrid') {
-                    el.style.color = '#f59e0b'; // Tailwind amber-500
-                }
+                el.style.color = '#9b59b6';
             } else {
                 el.innerText = `AI 助教（無法取得狀態）`;
                 el.style.color = '#ef4444';

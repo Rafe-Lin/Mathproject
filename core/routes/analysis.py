@@ -2580,15 +2580,17 @@ def analyze_handwriting():
         hw_status = analysis_result.get("status")
         if hw_status in ("unknown", "correct"):
             reply_text = _handwriting_rule_based_reply(analysis_result)
+            is_hw_correct = hw_status == "correct"
             result = {
                 "reply": enforce_strict_mode(reply_text),
                 "is_process_correct": hw_status in ("correct", "partially_correct"),
-                "correct": hw_status == "correct",
-                "next_question": "",
+                "correct": is_hw_correct,
+                # 與 /check_answer 語意對齊：答對時為 True，供前端與 textbox 相同流程判斷
+                "next_question": is_hw_correct,
                 "follow_up_prompts": [],
                 "error_type": _hw_err.get(hw_status, "handwriting_unknown"),
                 "success": True,
-                "auto_next": hw_status == "correct",
+                "auto_next": is_hw_correct,
                 "handwriting_analysis": analysis_result,
                 "handwriting_status": hw_status,
             }
@@ -2679,7 +2681,12 @@ def analyze_handwriting():
             result["is_process_correct"] = st in ("correct", "partially_correct")
             result["error_type"] = _hw_err.get(st, "handwriting_unknown")
             result["success"] = True
-            result["auto_next"] = False
+            if result.get("correct"):
+                result["auto_next"] = True
+                result["next_question"] = True
+            else:
+                result["auto_next"] = False
+                result["next_question"] = False
             if not isinstance(result.get("follow_up_prompts"), list):
                 result["follow_up_prompts"] = []
             print("analyzer result:", result)

@@ -3581,15 +3581,20 @@
                             showDynamicSuggestions(data.follow_up_prompts);
                         }
 
-                        if (data.correct && data.next_question) {
+                        // 與 textbox 相同：後端答對即進入訊息框＋下一題（勿依賴舊版 next_question 空字串）
+                        if (data.correct) {
                             // 在題目下方顯示"正確"
                             resultDisplay.textContent = '正確';
                             resultDisplay.className = 'correct';
 
                             updateStreak(true);
 
-                            // 顯示答對訊息框，然後載入下一題
-                            showCustomAlert('🎉 答對了！圖形畫得很正確！繼續加油！', () => {
+                            const messages = [
+                                '🎉 答對了！很棒！讓我們繼續下一題吧！',
+                                '正確！保持這客節奏！',
+                                '做得好！你離目標又近了一步！'
+                            ];
+                            showCustomAlert(messages[Math.floor(Math.random() * messages.length)], () => {
                                 setTimeout(loadQuestion, 500);
                             });
                         } else if (data.correct === false) {

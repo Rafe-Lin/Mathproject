@@ -549,12 +549,10 @@
 
         /* === 聊天訊息美化 === */
         .bot-message {
-            background-color: #ffffff;
-            /* 改成白色背景比較乾淨 */
-            border: 1px solid #e0e0e0;
-            /* 加個淡淡的邊框 */
-            color: #2c3e50;
-            /* 深灰藍色字體，比較有質感 */
+            background: linear-gradient(180deg, #fcf8ff 0%, #f6effd 100%);
+            border: 1px solid #e5d6f2;
+            border-left: 4px solid #9b59b6;
+            color: #7d4a98;
             padding: 15px 18px;
             /* 增加內距，讓文字呼吸 */
             border-radius: 18px;
@@ -573,6 +571,26 @@
             white-space: pre-wrap;
             word-break: break-word;
             font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+        }
+
+        .bot-message.initial-greeting {
+            padding: 0 !important;
+            margin: 0 0 2px !important;
+            line-height: 1.1 !important;
+            min-height: auto !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+
+        .bot-message.initial-greeting .greeting-text {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-weight: 600;
+            font-size: 16px !important;
+            color: #9b59b6;
+            line-height: 1.1 !important;
         }
 
         /* 針對 MathJax 公式的微調 */
@@ -1660,8 +1678,8 @@
         <div class="chat-area">
             <h3 id="tutor-model-label" style="margin-bottom: 0; padding-bottom: 2px;">AI 助教（載入中...）</h3>
             <div id="chat-history" style="padding-top: 5px;">
-                <div class="bot-message">
-                    <div style="margin: 0; padding: 0; font-weight: bold; line-height: 1.2;">你好！有問題問我～</div>
+                <div class="bot-message initial-greeting">
+                    <div class="greeting-text">你好！有問題問我～</div>
                 </div>
             </div>
             <!-- 1. 固定建議提示區 (來自資料庫) -->
@@ -2887,6 +2905,7 @@
                     if (PRACTICE_MODE === 'similar_practice') {
                         try {
                             await loadNextSimilarQuestion();
+                            resetAIChat();
                         } catch (err) {
                             console.error('載入類題下一題失敗:', err);
                             updateSimilarStatus('下一題生成失敗', 'error');
@@ -2897,6 +2916,7 @@
                         }
                         return;
                     }
+                    resetAIChat();
                     loadQuestion();
                 });
             }
@@ -2992,6 +3012,29 @@
                     callback(); // Execute the callback function
                 }
             };
+        }
+
+        function handleCorrectAnswer() {
+            // 功文式鼓勵：強調持續練習，而非單次答對
+            const messages = [
+                '🎉 答對了！很棒！讓我們繼續下一題吧！',
+                '正確！保持這個節奏！',
+                '做得好！你離目標又近了一步！'
+            ];
+            showCustomAlert(messages[Math.floor(Math.random() * messages.length)], () => {
+                resetAIChat();
+                setTimeout(loadQuestion, 500);
+            });
+        }
+
+        function resetAIChat() {
+            const chatContainer = document.getElementById('chat-history');
+            if (!chatContainer) return;
+            chatContainer.innerHTML = `
+                <div class="bot-message initial-greeting">
+                    <div class="greeting-text">你好！有問題問我～</div>
+                </div>
+            `;
         }
 
         // === 自定義確認框 ===
@@ -3275,15 +3318,7 @@
                         }
 
                         if (data.correct) {
-                            // 功文式鼓勵：強調持續練習，而非單次答對
-                            const messages = [
-                                '🎉 答對了！很棒！讓我們繼續下一題吧！',
-                                '正確！保持這客節奏！',
-                                '做得好！你離目標又近了一步！'
-                            ];
-                            showCustomAlert(messages[Math.floor(Math.random() * messages.length)], () => {
-                                setTimeout(loadQuestion, 500);
-                            });
+                            handleCorrectAnswer();
                         } else {
                             // 如果答錯
                             consecutiveWrongs++;
@@ -3530,17 +3565,17 @@
                             showDynamicSuggestions(data.follow_up_prompts);
                         }
 
-                        if (data.correct && data.next_question) {
+                        // 手寫批改：後端在答對時會設 correct=true（並搭配 next_question / auto_next）。
+                        // 舊版曾回傳 next_question: "" 導致條件失敗，故以 correct 為準，與 /check_answer 語意一致。
+                        if (data.correct) {
                             // 在題目下方顯示"正確"
                             resultDisplay.textContent = '正確';
                             resultDisplay.className = 'correct';
 
                             updateStreak(true);
 
-                            // 顯示答對訊息框，然後載入下一題
-                            showCustomAlert('🎉 答對了！圖形畫得很正確！繼續加油！', () => {
-                                setTimeout(loadQuestion, 500);
-                            });
+                            // 手寫正確後改走和 textbox 相同成功流程
+                            handleCorrectAnswer();
                         } else if (data.correct === false) {
                             // 如果錯誤，清空 resultDisplay（AI 的建議會在聊天區顯示）
                             resultDisplay.textContent = '';
