@@ -2124,12 +2124,12 @@
       );
       if (response.switch_reason) {
         state.switchReason = String(response.switch_reason);
+      } else if (state.learningMode === "returned" || state.hasReturnedToMain || state.bridgeActive) {
+        state.switchReason = "補救達到返回條件，已回到主技能";
       } else if (state.isRemediationActive || state.learningMode === "remediation") {
         state.switchReason = previousMode === "remediation" ? (state.switchReason || "目前維持補救模式，持續加強前置子技能") : "偵測到前置技能不足，已切換補救";
       } else if (state.isRemediationCandidate) {
         state.switchReason = "偵測到補救需求，但本輪仍維持主線";
-      } else if (state.learningMode === "returned") {
-        state.switchReason = "補救達到返回條件，已回到主技能";
       } else {
         state.switchReason = "無";
       }
@@ -2166,6 +2166,8 @@
         setAssistantBanner("已偵測到本單元學習斷點，建議切換到 teaching 模式補強後再回來評量。", true, "remediation");
       } else if (state.mode === "assessment") {
         setAssistantBanner("目前先練這一題，助教會在你卡住時提供提示。", false, "neutral");
+      } else if (state.bridgeActive || state.hasReturnedToMain || deriveMilestoneStateFromState() === "remediation_returned_success" || state.learningMode === "returned") {
+        setAssistantBanner("系統已完成本輪補救，正在返回主線並重新檢核下一個題型。", false, "bridge");
       } else if (state.isRemediationActive) {
         const hasErrorConcept = Boolean(state.errorConcept) && state.errorConcept.toLowerCase() !== "none";
         const rescueRecommended = Number.isFinite(state.rescueRecommended) ? state.rescueRecommended : 0;
@@ -2179,8 +2181,6 @@
         } else {
           setAssistantBanner("系統正在根據你的表現微調學習路徑。", false, "neutral");
         }
-      } else if (state.bridgeActive || deriveMilestoneStateFromState() === "remediation_returned_success" || state.learningMode === "returned") {
-        setAssistantBanner("系統已完成本輪補救，正在返回主線並重新檢核下一個題型。", false, "bridge");
       } else if (state.isRemediationCandidate) {
         setAssistantBanner("系統正在根據你的表現微調學習路徑。", false, "neutral");
       } else {
