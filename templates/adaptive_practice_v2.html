@@ -2871,6 +2871,17 @@
         if (mode === "hybrid") return "Hybrid";
         return mode.charAt(0).toUpperCase() + mode.slice(1);
     }
+    function formatModelName(rawName) {
+        const name = String(rawName || "").trim();
+        if (!name) return "";
+        if (name.startsWith("qwen3-vl:8b")) {
+            return "qwen3-vl:8b";
+        }
+        if (name.includes("gemini-3-flash")) {
+            return "gemini-3-flash";
+        }
+        return name;
+    }
 
     async function updateTutorAIStatus() {
         const el = document.getElementById('tutor-ai-status');
@@ -2880,7 +2891,8 @@
             const data = await fetchRuntimeAIStatus();
             if (data && data.success && data.tutor_model) {
                 const formattedMode = formatMode(data.ai_mode);
-                el.innerText = `AI 助教（${data.tutor_model}｜${formattedMode}）`;
+                const formattedModel = formatModelName(data.tutor_model);
+                el.innerText = `AI 助教（${formattedModel}｜${formattedMode}）`;
                 el.style.color = '#9b59b6';
             } else {
                 el.innerText = `AI 助教（無法取得狀態）`;
