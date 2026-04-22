@@ -224,10 +224,10 @@ class AdaptiveReviewEngine:
         
         for _ in range(n_items):
             if use_rl:
-                # 使用 RL 模型選擇
+                # 使用 RL 模型選擇 (加入隨機性避免重複選擇特定題目)
                 with torch.no_grad():
                     obs = torch.tensor(s_t, dtype=torch.float32).unsqueeze(0)
-                    action, _ = self.rl_model.predict(obs, deterministic=True)
+                    action, _ = self.rl_model.predict(obs, deterministic=False)
                     item_id = int(action.item())
             else:
                 # 備選方案：Max-Fisher (最高不確定性)

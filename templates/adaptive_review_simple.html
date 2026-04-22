@@ -415,6 +415,58 @@
       color: #333;
       border: 1px solid #e0e0e0;
     }
+
+    /* RAG 結構化提示樣式 */
+    .adaptive-hint {
+      background: #fff8f0;
+      border: 1px solid #f1cc84;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .adaptive-hint .hint-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: #92400e;
+      margin-bottom: 5px;
+    }
+    .adaptive-hint .hint-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 6px 0;
+    }
+    .adaptive-hint .hint-chip {
+      background: #fde68a;
+      color: #78350f;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .adaptive-hint .hint-section {
+      margin-top: 6px;
+    }
+    .adaptive-hint .hint-section-title {
+      font-weight: 700;
+      font-size: 11.5px;
+      color: #b45309;
+      margin-bottom: 3px;
+    }
+    .adaptive-hint ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .adaptive-hint li {
+      margin-bottom: 2px;
+    }
+    .adaptive-hint .hint-source {
+      font-size: 10.5px;
+      color: #9ca3af;
+      margin-top: 6px;
+      font-style: italic;
+    }
     
     .assistant-input {
       display: flex;
@@ -625,18 +677,31 @@
           <!-- 右側：AI 助手 -->
           <div class="panel ai-assistant-panel">
             <h2>🤖 AI 助手</h2>
-            <div class="chat-history" id="chatHistory">
+            
+            <div class="chat-history" id="chatHistory" style="flex: 1; overflow-y: auto; margin-bottom: 10px;">
               <div class="empty-state">準備就緒，開始提問吧！</div>
             </div>
+            
             <div class="suggested-prompts" style="display: flex; gap: 6px; padding-bottom: 8px; flex-wrap: wrap;">
-              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('這題考查什麼概念？')">這題考查什麼概念？</button>
-              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('請給我一點起頭的提示')">請給我一點起頭的提示</button>
-              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 10px; border-radius: 16px; border: 1px solid #d8e1ef; background: #ffffff;" onclick="sendSpecificMessage('幫我檢查目前的計算對不對')">幫我檢查目前的計算對不對</button>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px; border-radius: 16px; border: none; background: #eaf1fa; color: #1e3a5f;" onclick="sendSpecificMessage('請用國中生能懂的方式提醒我這題先看哪一個觀念。')">看核心觀念</button>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px; border-radius: 16px; border: none; background: #eaf1fa; color: #1e3a5f;" onclick="sendSpecificMessage('不要直接給答案，只提示我下一步該做什麼。')">提示下一步</button>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px; border-radius: 16px; border: none; background: #eaf1fa; color: #1e3a5f;" onclick="sendSpecificMessage('提醒我這類題最容易犯的錯誤。')">提醒易錯點</button>
             </div>
-            <div class="assistant-input">
-              <input type="text" id="chatInput" placeholder="提問..." onkeypress="handleChatKeypress(event)" />
-              <button class="btn btn-primary" onclick="sendChatMessage()">發送</button>
+            
+            <div class="assistant-input" style="display: flex; gap: 8px;">
+              <input type="text" id="chatInput" placeholder="只問本題相關問題，例如：我第一步該..." onkeypress="handleChatKeypress(event)" style="flex: 1; padding: 10px; border: 1px solid #d8e1ef; border-radius: 8px;" />
+              <button class="btn btn-primary" onclick="sendChatMessage()" style="background-color: #27ae60; color: white; border: none; border-radius: 8px; padding: 0 16px; white-space: nowrap;">詢問助教</button>
             </div>
+            
+            <div style="margin-top: 8px; font-size: 13px; display: flex; align-items: center; color: #555;">
+              <label style="cursor: pointer;"><input type="checkbox" id="useRagToggle" checked style="margin-right: 4px; accent-color: #e74c3c;"> 使用 RAG 模式加強回答</label>
+            </div>
+            
+            <div id="adv-rag-results" style="display: none; margin-top: 10px; padding: 10px; background: #f0f7ff; border: 1px solid #cce1ff; border-radius: 8px;">
+              <div style="font-size: 13px; color: #1565c0; font-weight: 700; margin-bottom: 6px;">最相關 5 個知識點：</div>
+              <div id="adv-rag-results-buttons" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: #777;">找不到相關文章</div>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -660,6 +725,8 @@
     let currentStudentId = '{{ current_user.id }}' || 'guest';
     let currentQuestion = null;
     let currentSession = null;
+    // currentQuestionExtra stores RAG-relevant metadata retrieved with each question
+    let currentQuestionExtra = { skill_id: '', family_id: '', subskill_nodes: [] };
     let learningHistory = {
       item_history: [],
       skill_history: [],
@@ -926,6 +993,11 @@
     async function displayQuestion(rec) {
       currentQuestion = rec;
       
+      const qEl = document.getElementById('questionText');
+      if (qEl) {
+        qEl.innerHTML = '<span style="color:#aaa;">⏳ 正在為你準備最適合的下一題...</span>';
+      }
+
       try {
         const response = await fetch(`/api/adaptive-review/question/${rec.item_id}`);
         if (response.ok) {
@@ -934,6 +1006,12 @@
             const qData = data.data;
             // 存下正確答案（後端評分用，不顯示）
             currentQuestion.correct_answer = qData.correct_answer || '';
+            // 存下 RAG metadata 供 /chat 調用
+            currentQuestionExtra = {
+              skill_id: qData.skill_id || qData.skill_name || '',
+              family_id: qData.family_id || '',
+              subskill_nodes: qData.subskill_nodes || []
+            };
             // 顯示答案格式提示
             const hintEl = document.getElementById('answerFormatHint');
             if (hintEl && qData.answer_format_hint) {
@@ -962,6 +1040,8 @@
       document.getElementById('difficulty').textContent = `⭐ ${difficulty}`;
       document.getElementById('answerInput').value = '';
       document.getElementById('responseFeedback').classList.remove('show', 'correct', 'incorrect');
+      // Reset RAG metadata when question changes
+      currentQuestionExtra = { skill_id: '', family_id: '', subskill_nodes: [] };
       clearCanvas();
     }
     
@@ -1025,7 +1105,7 @@
               displayQuestion(feedbackData.next_recommendations[0]);
             }
             document.getElementById('submitBtn').disabled = false;
-          }, 2500);
+          }, 1500);
         } else {
           throw new Error(data.message || '提交失敗');
         }
@@ -1080,7 +1160,7 @@
     // ════════════════════════════════════════════════════════════════════
     // AI 對話
     // ════════════════════════════════════════════════════════════════════
-    function addChatMessage(role, message) {
+    function addChatMessage(role, message, isHtmlContent = false) {
       const chatHistory = document.getElementById('chatHistory');
       if (chatHistory.querySelector('.empty-state')) {
         chatHistory.innerHTML = '';
@@ -1088,7 +1168,10 @@
       
       const msgDiv = document.createElement('div');
       msgDiv.className = `msg ${role}`;
-      if (typeof marked !== 'undefined') {
+      if (isHtmlContent) {
+        // RAG 結構化 HTML 提示直接注入（已由後端產生，安全可信）
+        msgDiv.innerHTML = message;
+      } else if (typeof marked !== 'undefined') {
         let mathBlocks = [];
         let counter = 0;
         let text = message.replace(/\$\$([\s\S]*?)\$\$/g, function(match) {
@@ -1108,6 +1191,16 @@
         msgDiv.textContent = message;
       }
       chatHistory.appendChild(msgDiv);
+
+      // 維持固定對話框長度，超過 20 則訊息時刪除最早的對話（包含 user 和 bot 對話）
+      const maxMessages = 20;
+      const messages = chatHistory.querySelectorAll('.msg');
+      if (messages.length > maxMessages) {
+        for (let i = 0; i < messages.length - maxMessages; i++) {
+          messages[i].remove();
+        }
+      }
+
       chatHistory.scrollTop = chatHistory.scrollHeight;
 
       if (window.MathJax) {
@@ -1137,26 +1230,109 @@
         addChatMessage('bot', '請先開始複習會話，獲得推薦題目後再進行提問哦。');
         return;
       }
+
+      const useRagToggle = document.getElementById('useRagToggle');
+      const useRag = useRagToggle ? useRagToggle.checked : true;
+      const ragMode = useRag ? 'advanced' : 'none';
+
       const questionText = document.getElementById('questionText').textContent || '';
-      try {
-        const response = await fetch('/api/adaptive-review/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question_text: questionText,
-            skill_name: currentQuestion.skill_name,
-            query: message
-          })
-        });
-        const data = await response.json();
-        if (data.status === 'success') {
-          addChatMessage('bot', data.data.reply);
-        } else {
-          addChatMessage('bot', `❌ 錯誤: ${data.message}`);
+      const resultsContainer = document.getElementById('adv-rag-results');
+      const resultsButtons = document.getElementById('adv-rag-results-buttons');
+      
+      if (ragMode === 'advanced') {
+        try {
+          addChatMessage('bot', '正在進行 Advanced RAG 進階檢索...');
+          
+          // 1. Search Advanced RAG
+          const searchResp = await fetch('/api/adaptive/adv_rag_search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: message })
+          });
+          
+          const searchParams = await searchResp.json();
+          if (searchParams.error) throw new Error(searchParams.error);
+          
+          const results = searchParams.results || [];
+          let retrievedSkillsForChat = [];
+          
+          if (resultsContainer) resultsContainer.style.display = 'block';
+          if (resultsButtons) resultsButtons.innerHTML = '';
+          
+          if (results.length > 0) {
+            results.forEach((item, index) => {
+              const chineseName = item.chinese_name || item.skill_id;
+              const familyName = item.family_name ? ` (${item.family_name})` : '';
+              
+              const btn = document.createElement('button');
+              btn.innerText = `${index + 1}. ${chineseName}${familyName}`;
+              btn.style.cssText = 'background: #eaf1fa; color: #1565c0; border: none; border-radius: 6px; padding: 4px 8px; font-size: 1em; cursor: pointer; display: inline-block; text-align: left;';
+              if (resultsButtons) resultsButtons.appendChild(btn);
+              
+              retrievedSkillsForChat.push({
+                  skill_id: item.skill_id,
+                  chinese_name: item.chinese_name,
+                  family_name: item.family_name,
+                  subskill_nodes: item.subskill_nodes
+              });
+            });
+          } else {
+             if (resultsButtons) resultsButtons.innerHTML = '找不到相關文章';
+          }
+          
+          // 2. Query Chat AI
+          const chatResp = await fetch('/api/adaptive/adv_rag_chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query: message,
+                question_text: questionText,
+                family_id: currentQuestionExtra.family_id || '',
+                retrieved_skills: retrievedSkillsForChat
+            })
+          });
+          
+          const chatParams = await chatResp.json();
+          if (chatParams.error) throw new Error(chatParams.error);
+          if (chatParams.reply) {
+            addChatMessage('bot', chatParams.reply);
+          } else {
+            addChatMessage('bot', '抱歉，處理你的問題時發生錯誤。');
+          }
+          
+        } catch (error) {
+          console.error('Advanced RAG 錯誤:', error);
+          addChatMessage('bot', `❌ 進階檢索發生錯誤: ${error.message || '未知錯誤'}`);
         }
-      } catch (error) {
-        console.error('API 錯誤:', error);
-        addChatMessage('bot', '❌ 網路發生錯誤，無法取得回覆。');
+      } else {
+        // None (Direct chat without RAG context)
+        const payload = {
+          question_text: questionText,
+          skill_name: currentQuestion.skill_name || '',
+          skill_id: currentQuestionExtra.skill_id || '',
+          family_id: currentQuestionExtra.family_id || '',
+          subskill_nodes: [],
+          query: message,
+          rag_mode: 'none'
+        };
+        try {
+          const response = await fetch('/api/adaptive-review/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json();
+          if (data.status === 'success') {
+            const reply = data.data.reply || '';
+            const isHtml = /<[a-z][\s\S]*>/i.test(reply);
+            addChatMessage('bot', reply, isHtml);
+          } else {
+            addChatMessage('bot', `❌ 錯誤: ${data.message}`);
+          }
+        } catch (error) {
+          console.error('API 錯誤:', error);
+          addChatMessage('bot', '❌ 網路發生錯誤，無法取得回覆。');
+        }
       }
     }
 
