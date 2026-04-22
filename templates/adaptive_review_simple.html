@@ -387,6 +387,8 @@
       flex-direction: column;
       gap: 8px;
       scroll-behavior: smooth;
+      max-height: 420px;
+      min-height: 180px;
     }
     .chat-history::-webkit-scrollbar {
       width: 8px;
@@ -653,10 +655,10 @@
                 <button class="tool-btn" onclick="redoCanvas()" title="下一步">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 14 5-5-5-5"/><path d="M4 20a8 8 0 0 1 8-8h8"/></svg>
                 </button>
-                <button class="tool-btn" onclick="clearCanvas()" title="清空白板">
+                <button class="btn btn-primary" onclick="clearCanvas()" title="清空白板">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/></svg>
                 </button>
-                <button class="btn btn-primary" onclick="alert('TODO')" style="padding: 7px 12px; height: 36px; border-radius: 10px; background: #eab308; border: none; color: white; white-space: nowrap;">AI 檢查手寫</button>
+                <button class="btn btn-primary" onclick="checkHandwriting()" style="padding: 7px 12px; height: 36px; border-radius: 10px; background: #eab308; border: none; color: white; white-space: nowrap;">AI 檢查手寫</button>
               </div>
               <div class="canvas-wrap" style="flex: 1; resize: vertical; overflow: hidden; min-height: 250px;">
                 <canvas id="handwriting-canvas"></canvas>
@@ -719,6 +721,51 @@
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
+    // ════════════════════════════════════════════════════════════════════
+    // AI 檢查手寫功能
+    // ════════════════════════════════════════════════════════════════════
+    async function checkHandwriting() {
+      if (!currentQuestion) {
+        alert('請先開始測驗');
+        return;
+      }
+      
+      const canvas = document.getElementById('handwriting-canvas');
+      
+      // 檢查畫布是否為空（透過像素判斷或簡單防呆）
+      // 這裡假設如果沒有進行過繪製，或者呼叫了 clearCanvas，可以透過一個簡單的旗標判斷
+      // 為簡單起見，我們直接送出
+      const imageBase64 = canvas.toDataURL('image/png');
+      
+      const LOADING_ID = 'hw-loading-msg-' + Date.now();
+      addChatMessage('bot', '📸 正在讀取並分析你的手寫計算過程...', false, LOADING_ID);
+
+      try {
+        const response = await fetch('/api/adaptive-review/check-handwriting', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image_base64: imageBase64,
+            question_text: currentQuestionExtra.question_text || '',
+            correct_answer: currentQuestionExtra.correct_answer || ''
+          })
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || '分析失敗');
+        }
+
+        const replyPrefix = data.is_process_correct ? '✅ 過程正確：' : '💡 建議：';
+        addChatMessage('bot', `${replyPrefix}${data.reply}`, false, LOADING_ID);
+
+      } catch (error) {
+        console.error('檢查手寫失敗:', error);
+        addChatMessage('bot', `❌ 手寫分析發生錯誤: ${error.message || '未知錯誤'}`, false, LOADING_ID);
+      }
+    }
+
     // ════════════════════════════════════════════════════════════════════
     // 全局變數
     // ════════════════════════════════════════════════════════════════════
@@ -1160,14 +1207,21 @@
     // ════════════════════════════════════════════════════════════════════
     // AI 對話
     // ════════════════════════════════════════════════════════════════════
-    function addChatMessage(role, message, isHtmlContent = false) {
+    function addChatMessage(role, message, isHtmlContent = false, replaceId = null) {
       const chatHistory = document.getElementById('chatHistory');
       if (chatHistory.querySelector('.empty-state')) {
         chatHistory.innerHTML = '';
       }
+
+      // If replaceId given, remove that element first
+      if (replaceId) {
+        const existing = document.getElementById(replaceId);
+        if (existing) existing.remove();
+      }
       
       const msgDiv = document.createElement('div');
       msgDiv.className = `msg ${role}`;
+      if (replaceId) msgDiv.id = replaceId;  // reuse same ID slot
       if (isHtmlContent) {
         // RAG 結構化 HTML 提示直接注入（已由後端產生，安全可信）
         msgDiv.innerHTML = message;
@@ -1192,11 +1246,11 @@
       }
       chatHistory.appendChild(msgDiv);
 
-      // 維持固定對話框長度，超過 20 則訊息時刪除最早的對話（包含 user 和 bot 對話）
-      const maxMessages = 20;
+      // 維持固定對話框長度，超過 12 則訊息時刪除最早的
+      const MAX_MESSAGES = 12;
       const messages = chatHistory.querySelectorAll('.msg');
-      if (messages.length > maxMessages) {
-        for (let i = 0; i < messages.length - maxMessages; i++) {
+      if (messages.length > MAX_MESSAGES) {
+        for (let i = 0; i < messages.length - MAX_MESSAGES; i++) {
           messages[i].remove();
         }
       }
@@ -1206,7 +1260,6 @@
       if (window.MathJax) {
         MathJax.typesetPromise([msgDiv])
           .then(() => {
-             // 確保滾動到底部
              chatHistory.scrollTop = chatHistory.scrollHeight;
           })
           .catch((err) => console.log('MathJax error:', err.message));
@@ -1240,8 +1293,10 @@
       const resultsButtons = document.getElementById('adv-rag-results-buttons');
       
       if (ragMode === 'advanced') {
+        const LOADING_ID = 'rag-loading-msg-' + Date.now();
         try {
-          addChatMessage('bot', '正在進行 Advanced RAG 進階檢索...');
+          // 顯示暫時的 loading 氣泡（會被後面的回覆取代）
+          addChatMessage('bot', '⏳ Advanced RAG 進階檢索中...', false, LOADING_ID);
           
           // 1. Search Advanced RAG
           const searchResp = await fetch('/api/adaptive/adv_rag_search', {
@@ -1295,14 +1350,15 @@
           const chatParams = await chatResp.json();
           if (chatParams.error) throw new Error(chatParams.error);
           if (chatParams.reply) {
-            addChatMessage('bot', chatParams.reply);
+            // 用實際回覆取代 loading 氣泡
+            addChatMessage('bot', chatParams.reply, false, LOADING_ID);
           } else {
-            addChatMessage('bot', '抱歉，處理你的問題時發生錯誤。');
+            addChatMessage('bot', '抱歉，處理你的問題時發生錯誤。', false, LOADING_ID);
           }
           
         } catch (error) {
           console.error('Advanced RAG 錯誤:', error);
-          addChatMessage('bot', `❌ 進階檢索發生錯誤: ${error.message || '未知錯誤'}`);
+          addChatMessage('bot', `❌ 進階檢索發生錯誤: ${error.message || '未知錯誤'}`, false, LOADING_ID);
         }
       } else {
         // None (Direct chat without RAG context)

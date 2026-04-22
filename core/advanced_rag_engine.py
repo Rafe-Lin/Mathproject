@@ -169,52 +169,18 @@ def init_adv_rag(app):
 
 
 def get_llm_keywords(query: str) -> List[str]:
-    """Uses Local LLM or Gemini to extract key search words from the student's problem."""
+    """Extracts key search words from the student's problem using jieba (rule-based).
+    LLM keyword extraction is skipped by default to conserve API quota.
+    """
     try:
-        from core.ai_settings import get_effective_model_config
-        
-        prompt = f"""
-        請從以下學生的數學問題中，提取出最關鍵的數學單元名稱或核心概念關鍵字，
-        請只回傳一行，包含 3 到 5 個關鍵詞，以空白分隔。不要加上任何說明文字。
-        學生問題：{query}
-        """
-
-        # 1. 取得目前系統解析後的 AI 提供者
-        cfg = get_effective_model_config("tutor")
-        provider = str(cfg.get("provider", "local")).strip().lower()
-
-        # 2. 僅在 Cloud 模式時允許呼叫 Gemini
-        if provider in ("google", "cloud", "gemini"):
-            from core.ai_analyzer import gemini_model
-            if gemini_model:
-                import google.generativeai as genai
-                response = gemini_model.generate_content(
-                    prompt,
-                    generation_config=genai.types.GenerationConfig(temperature=0.1, max_output_tokens=30)
-                )
-                keywords_text = response.text.replace('\n', ' ').strip()
-                logger.info("[Advanced RAG Keyword Extraction] provider=cloud strategy=gemini")
-                return [kw for kw in keywords_text.split() if kw]
-            else:
-                logger.warning("[Advanced RAG Keyword Extraction] Provider is cloud but gemini_model is missing.")
-
-        # 3. Edge 模式 (Local) 或備援方案
-        try:
-            from core.ai_client import call_ai
-            response = call_ai("tutor", prompt)
-            keywords_text = getattr(response, "text", str(response)).replace('\n', ' ').strip()
-            logger.info("[Advanced RAG Keyword Extraction] provider=local strategy=qwen_local")
-            return [kw for kw in keywords_text.split() if kw]
-        except Exception as local_e:
-            logger.warning(f"[Advanced RAG Keyword Extraction] Local LLM failed: {local_e}, using fallback.")
-            import jieba
-            tokenized = list(jieba.cut(query))
-            logger.info("[Advanced RAG Keyword Extraction] provider=local strategy=rule_based")
-            return [w for w in tokenized if len(w) >= 2][:5]
-
+        import jieba
+        tokenized = list(jieba.cut(query))
+        keywords = [w for w in tokenized if len(w) >= 2][:5]
+        if keywords:
+            logger.info("[Advanced RAG Keyword Extraction] strategy=jieba_rule_based")
+            return keywords
     except Exception as e:
-        logger.error(f"[Advanced RAG Keyword Extraction] Failed: {e}")
-        
+        logger.warning(f"[Advanced RAG Keyword Extraction] jieba failed: {e}")
     return []
 
 def extract_advanced_rag(query: str, K_VALUE=42, top_k=5):
@@ -403,18 +369,48 @@ def _render_adv_rag_prompt_via_registry(
 def adv_rag_chat(
     query: str,
     retrieved_skills: list,
-    provider: str = "local",
+    provider: str = "auto",
     question_text: str = "",
     family_id: str = "",
 ):
     """
     Generates Answer utilizing multiple retrieved contents from Advanced RAG.
-    If no text is available, asks LLM to generate a very short textbook lesson.
+    If no skills are retrieved, falls back to a direct LLM call using the question context.
     """
-    if not retrieved_skills:
-        return {"reply": "我找不到與問題相關的單元，或許你可以換個問法？"}
+    # Auto-detect provider from ai_settings when not explicitly specified
+    if not provider or provider in ("auto", ""):
+        try:
+            from core.ai_settings import get_effective_model_config
+            cfg = get_effective_model_config("tutor")
+            provider = str(cfg.get("provider", "local")).strip().lower()
+        except Exception:
+            provider = "local"
 
-    provider = (provider or "local").strip().lower()
+    # When RAG finds no relevant skills, fall back to direct LLM call
+    if not retrieved_skills:
+        logger.warning("[Adv RAG Chat] No retrieved skills — falling back to direct LLM call.")
+        fallback_prompt = f"你是一位國中數學引導型助教。\n"
+        if question_text:
+            fallback_prompt += f"學生正在作答的題目：\n{question_text}\n\n"
+        fallback_prompt += f"學生的問題：{query}\n\n只給 1-2 句提示，不要直接給答案。"
+        try:
+            if provider in ("google", "gemini", "cloud"):
+                from core.ai_analyzer import gemini_model
+                if gemini_model:
+                    import google.generativeai as genai
+                    resp = gemini_model.generate_content(
+                        fallback_prompt,
+                        generation_config=genai.types.GenerationConfig(temperature=0.4)
+                    )
+                    return {"reply": resp.text, "provider": "google", "rag_fallback": True}
+            from core.ai_client import call_ai
+            resp = call_ai("tutor", fallback_prompt)
+            return {"reply": getattr(resp, "text", str(resp)), "provider": "local", "rag_fallback": True}
+        except Exception as e:
+            logger.error(f"[Adv RAG Chat] Fallback LLM error: {e}")
+            return {"reply": f"AI 回覆發生錯誤：{str(e)}"}
+
+    provider = (provider or "auto").strip().lower()
     try:
         prompt, source = _render_adv_rag_prompt_via_registry(
             query,
@@ -422,8 +418,6 @@ def adv_rag_chat(
             question_text=question_text,
             family_id=family_id,
         )
-        import logging
-        logger = logging.getLogger(__name__)
         logger.info(f"[Prompt Trace] route='/api/adaptive/adv_rag_chat' task_type='adv_rag_chat' prompt_key='tutor_hint_prompt' source='{source}' model_role='tutor'")
     except Exception:
         # Keep legacy builder as fallback to avoid runtime interruption.
