@@ -2707,16 +2707,23 @@
                         display: inline-block;
                         text-align: left;
                     `;
+                    btn.type = 'button';
                     btn.onclick = () => {
-                        fetch('/api/adaptive/rag_settings').then(r=>r.json()).then(data => {
-                            if (data.target_type === 'adaptive') {
-                                window.location.href = `/adaptive_summative?skill_id=${encodeURIComponent(item.skill_id)}&mode=teaching`;
-                            } else {
-                                window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
-                            }
-                        }).catch(e => {
-                            window.location.href = `/practice/${encodeURIComponent(item.skill_id)}`;
+                        const targetSkillId = String(item.skill_id || "").trim();
+                        const targetFamilyId = String(item.family_id || "").trim();
+                        const currentSkillId = String(skillId || "").trim();
+
+                        if (targetSkillId && currentSkillId && targetSkillId !== currentSkillId) {
+                            window.location.assign(`/practice/${encodeURIComponent(targetSkillId)}`);
+                            return;
+                        }
+
+                        const query = new URLSearchParams({
+                            skill_id: targetSkillId || currentSkillId,
+                            mode: 'teaching',
                         });
+                        if (targetFamilyId) query.set('family_id', targetFamilyId);
+                        window.location.assign(`/adaptive_summative?${query.toString()}`);
                     };
                     if (buttonsDiv) buttonsDiv.appendChild(btn);
 
