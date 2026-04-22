@@ -317,6 +317,17 @@
       border-radius: 14px;
       box-shadow: 0 18px 42px rgba(15, 23, 42, 0.25);
       padding: 16px 16px 14px;
+      animation: msgboxFadeIn .2s ease-out;
+    }
+    @keyframes msgboxFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .center-msgbox-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #1f2a44;
     }
     .center-msgbox-text {
       margin: 0 0 14px;
@@ -713,6 +724,7 @@
 
   <div class="center-msgbox-overlay" id="centerMsgboxOverlay" aria-hidden="true">
     <div class="center-msgbox" role="dialog" aria-modal="true" aria-labelledby="centerMsgboxText">
+      <h3 class="center-msgbox-title" id="centerMsgboxTitle">提示</h3>
       <p class="center-msgbox-text" id="centerMsgboxText"></p>
       <div class="center-msgbox-actions">
         <button type="button" class="primary" id="centerMsgboxOkBtn">確定</button>
@@ -786,8 +798,15 @@
       demoRouteMsg: "系統尚未開始診斷。",
     };
     const centerMsgboxOverlay = document.getElementById("centerMsgboxOverlay");
+    const centerMsgboxTitle = document.getElementById("centerMsgboxTitle");
     const centerMsgboxText = document.getElementById("centerMsgboxText");
     const centerMsgboxOkBtn = document.getElementById("centerMsgboxOkBtn");
+    const transitionPopupState = {
+      initialized: false,
+      wasRemediationActive: false,
+      hasShownRemediationEnter: false,
+      hasShownRemediationExit: false,
+    };
     const skillId = {{ (skill_id or '')|tojson }};
     const adaptiveEntryMode = {{ mode|default('teaching')|tojson }};
     const basePayload = {};
@@ -1632,20 +1651,51 @@
       box.innerHTML = "";
       scrollChatToBottom();
     }
-    function showCenterMessageBox(message) {
+    function showMessageModal(title, message, buttonText = "確定") {
       return new Promise((resolve) => {
-        if (!centerMsgboxOverlay || !centerMsgboxText || !centerMsgboxOkBtn) {
-          window.alert(message);
+        if (!centerMsgboxOverlay || !centerMsgboxTitle || !centerMsgboxText || !centerMsgboxOkBtn) {
+          window.alert(`${title || "提示"}\n\n${message || ""}`);
           resolve();
           return;
         }
+        centerMsgboxTitle.textContent = title || "提示";
         centerMsgboxText.textContent = message || "";
+        centerMsgboxOkBtn.textContent = buttonText || "確定";
         centerMsgboxOverlay.classList.add("show");
         centerMsgboxOkBtn.onclick = () => {
           centerMsgboxOverlay.classList.remove("show");
           resolve();
         };
       });
+    }
+    function showCenterMessageBox(message) {
+      return showMessageModal("提示", message, "確定");
+    }
+    function maybeShowRemediationTransitionModal(isRemediationActive) {
+      const current = Boolean(isRemediationActive);
+      if (!transitionPopupState.initialized) {
+        transitionPopupState.initialized = true;
+        transitionPopupState.wasRemediationActive = current;
+        return;
+      }
+      if (!transitionPopupState.wasRemediationActive && current && !transitionPopupState.hasShownRemediationEnter) {
+        transitionPopupState.hasShownRemediationEnter = true;
+        transitionPopupState.hasShownRemediationExit = false;
+        void showMessageModal(
+          "進入補救教學",
+          "系統偵測到你在此技能卡住了，將進入補救教學幫助你釐清觀念。",
+          "開始補救"
+        );
+      } else if (transitionPopupState.wasRemediationActive && !current && !transitionPopupState.hasShownRemediationExit) {
+        transitionPopupState.hasShownRemediationExit = true;
+        transitionPopupState.hasShownRemediationEnter = false;
+        void showMessageModal(
+          "🎉 回到主線學習",
+          "恭喜你已完成補救教學，現在可以回到原本的學習進度！",
+          "繼續學習"
+        );
+      }
+      transitionPopupState.wasRemediationActive = current;
     }
     async function handleCorrectAnswer(onConfirm) {
       const messages = [
@@ -2039,6 +2089,7 @@
     function renderQuestion(response) {
       const q = response.new_question_data || {};
       const previousMode = state.learningMode;
+      const wasRemediationActive = Boolean(state.isRemediationActive || normalizeLearningMode(previousMode) === "remediation");
       state.isCompleted = false;
       state.sessionId = response.session_id;
       state.stepNumber = response.step_number;
@@ -2135,6 +2186,7 @@
         }
       }
       state.isRemediationCandidate = isRemediationCandidateOnlyFromState();
+      maybeShowRemediationTransitionModal(state.isRemediationActive || (wasRemediationActive && state.learningMode === "returned" ? false : state.learningMode === "remediation"));
       state.returnReady = normalizeBoolean(response.return_ready, inferredMode === "returned");
       state.hasReturnedToMain = normalizeBoolean(response?.return_to_mainline, state.learningMode === "returned");
       state.ppoRouteActionIdx = response?.route_action_idx ?? response?.action_idx ?? null;
@@ -2351,6 +2403,7 @@
 
     function renderSummary(summary, responseMeta = {}) {
       const card = document.getElementById("summaryCard");
+      const wasRemediationActive = Boolean(state.isRemediationActive || normalizeLearningMode(state.learningMode) === "remediation");
       const passed = Boolean(summary && summary.passed);
       const finalApr = Number(summary?.final_apr ?? state.currentApr ?? 0);
       state.isCompleted = normalizeBoolean(summary?.is_completed, true);
@@ -2445,6 +2498,7 @@
           normalizeBoolean(summary?.return_to_mainline, normalizeBoolean(responseMeta?.return_to_mainline, state.hasReturnedToMain))
         );
       }
+      maybeShowRemediationTransitionModal(state.isRemediationActive || (wasRemediationActive && state.learningMode === "returned" ? false : state.learningMode === "remediation"));
       updateAdaptiveStatePanel();
       applyDemoRouteMsg(responseMeta?.demo_route_msg || summary?.demo_route_msg);
       card.classList.add("show");
