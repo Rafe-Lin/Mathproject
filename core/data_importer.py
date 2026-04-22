@@ -14,12 +14,59 @@ import pandas as pd
 import os
 import logging
 import traceback
+from sqlalchemy import UniqueConstraint
 from models import db
 from datetime import datetime, timedelta
 import numpy as np
 
 # 設定 Logger
 logger = logging.getLogger(__name__)
+
+
+def _get_primary_key_columns(model):
+    return [column.name for column in model.__mapper__.primary_key]
+
+
+def _find_existing_instance(model, data):
+    """
+    先用主鍵找，再退回唯一鍵找，避免只有自然鍵重複時被 merge() 誤判為新資料。
+    """
+    pk_columns = _get_primary_key_columns(model)
+    if pk_columns and all(data.get(column) is not None for column in pk_columns):
+        identity = tuple(data[column] for column in pk_columns)
+        existing = db.session.get(model, identity[0] if len(identity) == 1 else identity)
+        if existing is not None:
+            return existing
+
+    unique_constraints = [
+        constraint for constraint in model.__table__.constraints
+        if isinstance(constraint, UniqueConstraint)
+    ]
+
+    with db.session.no_autoflush:
+        for constraint in unique_constraints:
+            unique_columns = [column.name for column in constraint.columns]
+            if not unique_columns:
+                continue
+            if any(data.get(column) is None for column in unique_columns):
+                continue
+
+            query = db.session.query(model)
+            for column in unique_columns:
+                query = query.filter(getattr(model, column) == data[column])
+            existing = query.first()
+            if existing is not None:
+                return existing
+
+    return None
+
+
+def _apply_data_to_instance(instance, data, preserve_existing_primary_key=False):
+    pk_columns = set(_get_primary_key_columns(type(instance)))
+    for key, value in data.items():
+        if preserve_existing_primary_key and key in pk_columns and getattr(instance, key) is not None:
+            continue
+        setattr(instance, key, value)
 
 def get_model_mapping():
     """
@@ -185,6 +232,7 @@ def import_excel_to_db(filepath):
             
             # 取得該 Model 的所有欄位名稱
             model_columns = model.__table__.columns.keys()
+            pk_columns = set(_get_primary_key_columns(model))
             
             imported_count = 0
             skipped_count = 0
@@ -212,19 +260,30 @@ def import_excel_to_db(filepath):
                     # 🔥 [關鍵修改] 呼叫清洗函式，把 Excel 格式轉為 Python 格式
                     data = clean_excel_row(data)
 
-                    # 使用 merge (UPSERT): 有 Primary Key 就更新，沒有就新增
-                    instance = model(**data)
-                    db.session.merge(instance)
+                    # 先用主鍵 / 唯一鍵定位既有資料，再決定更新或新增。
+                    existing = _find_existing_instance(model, data)
+                    if existing is not None:
+                        _apply_data_to_instance(
+                            existing,
+                            data,
+                            preserve_existing_primary_key=bool(pk_columns),
+                        )
+                    else:
+                        instance = model()
+                        _apply_data_to_instance(instance, data)
+                        db.session.add(instance)
+
+                    db.session.commit()
                     imported_count += 1
                     
                 except Exception as e:
+                    db.session.rollback()
                     print(f"❌ Error inserting row {index} in {sheet_name}: {e}")
                     continue
             
             results.append(f"✅ Table '{table_name}': 成功匯入/更新 {imported_count} 筆。")
 
         # 5. 提交變更
-        db.session.commit()
         return True, "\n".join(results)
 
     except Exception as e:

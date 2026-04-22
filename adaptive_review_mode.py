@@ -72,6 +72,20 @@ from datetime import datetime
 from akt_inference import AKTInference
 from stable_baselines3 import PPO
 
+
+def _install_numpy_pickle_compat_shim():
+    """
+    相容較新 NumPy 路徑名稱，讓舊環境也能反序列化模型內的 cloudpickle 物件。
+    """
+    try:
+        import numpy.core as numpy_core
+        import numpy.core.numeric as numpy_core_numeric
+    except Exception:
+        return
+
+    sys.modules.setdefault("numpy._core", numpy_core)
+    sys.modules.setdefault("numpy._core.numeric", numpy_core_numeric)
+
 # ═══════════════════════════════════════════════════════════════════════════
 # 常數定義
 # ═══════════════════════════════════════════════════════════════════════════
@@ -124,11 +138,18 @@ class AdaptiveReviewEngine:
         self.skill_to_id = self.akt_inference.skill_to_id
         self.problem_to_id = self.akt_inference.problem_to_id
         self.skills_list = self.akt_inference.skills_list
+        self.rl_model = None
+        self.rl_available = False
         
         # 載入 RL 模型
         print(f"[Init] 載入 RL 模型 ({rl_model_path})...")
-        self.rl_model = PPO.load(rl_model_path, device=device)
-        self.rl_model.policy.eval()
+        _install_numpy_pickle_compat_shim()
+        try:
+            self.rl_model = PPO.load(rl_model_path, device=device)
+            self.rl_model.policy.eval()
+            self.rl_available = True
+        except Exception as exc:
+            print(f"[Warn] RL 模型載入失敗，改用 Max-Fisher 備援策略: {exc}")
         
         # 載入題目屬性
         self._load_item_properties(data_path)
@@ -223,7 +244,7 @@ class AdaptiveReviewEngine:
         recommended = []
         
         for _ in range(n_items):
-            if use_rl:
+            if use_rl and self.rl_available and self.rl_model is not None:
                 # 使用 RL 模型選擇 (加入隨機性避免重複選擇特定題目)
                 with torch.no_grad():
                     obs = torch.tensor(s_t, dtype=torch.float32).unsqueeze(0)
