@@ -457,7 +457,16 @@ def api_adv_rag_chat():
     question_text = (data.get('question_text') or '').strip()
     family_id = (data.get('family_id') or '').strip()
     retrieved_skills = data.get('retrieved_skills') or []
-    provider = (data.get('provider') or 'local').strip().lower()
+    # Auto-detect provider from ai_settings when frontend does not explicitly specify
+    _raw_provider = (data.get('provider') or '').strip().lower()
+    if not _raw_provider:
+        try:
+            from core.ai_settings import get_effective_model_config
+            _cfg = get_effective_model_config("tutor")
+            _raw_provider = str(_cfg.get("provider", "local")).strip().lower()
+        except Exception:
+            _raw_provider = 'local'
+    provider = _raw_provider
     use_rag = data.get('use_rag', True)
 
     if not query:

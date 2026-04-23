@@ -25,3 +25,4 @@ stable-baselines3
 python-dateutil
 rank-bm25
 jieba
+tf-keras
