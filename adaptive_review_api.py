@@ -29,24 +29,25 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
 from core.ai_wrapper import get_ai_client, call_ai_with_retry
+from core.prompts.composer import compose_prompt
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 集中式 Prompt 管理
 # ═══════════════════════════════════════════════════════════════════════════
 
 LLM_GUIDE_PROMPT = """你是一個耐心、鼓勵學生的數學 AI 家教。
-這是一道關於【{skill}】的算式題：
+這是一道關於【{skill}】的題目：
 {question}
 
-學生目前的疑問或是回答是：
+學生目前的疑問或回答：
 {query}
 
-⚠️ 請注意以下嚴格規定：
-1. **絕對不可直接給出最終答案！**
-2. 請一步步引導學生思考，給予提示或引導方向。
-3. 語氣要溫和、正面且富有教育意義。
-4. 解釋要簡潔，避免在一則對話中包含過多步驟。
-5. **盡可能控制字數在 50 字以內，極度精簡，一語中的。**
+請遵守：
+1. 不可直接給出最終答案或完整解法。
+2. 先點出一個核心觀念，再給 1 到 2 個可執行的小步驟。
+3. 若學生卡住，可補一個很短的例子，但不能直接代入本題得出答案。
+4. 最後一定要用一個引導問題收尾。
+5. 回覆比一句話更完整，但仍保持精煉，約 4 到 8 行。
 """
 
 LLM_ANSWER_FORMAT_PROMPT = """根據以下這道數學題，用少於 20 字的中文提示學生應該怎麼作答（重點說明需要填的提入內容形式，例如「填入一個整數」、「寫出一元二次方程式」）。不要告訴答案，只說明格式。
@@ -357,6 +358,64 @@ def _truncate_first_subproblem(full_text: str, correct_answer: str):
     # 清除答案中殘留的第⑴小題標記前綴（例如 "⑴ 0" → "0"）
     correct_answer = _strip_subproblem_prefix(correct_answer)
     return question_text, correct_answer
+
+
+def _build_subskill_text(subskill_nodes: List[str], rag_summary: Optional[str] = None) -> str:
+    """將 subskill nodes 與 RAG 摘要整理成 rag_tutor_prompt 可用的知識文字。"""
+    from core.rag_engine import _label_node
+
+    labels = []
+    for node in subskill_nodes or []:
+        text = str(node or "").strip()
+        if text:
+            labels.append(_label_node(text))
+
+    blocks = []
+    if labels:
+        blocks.append("重點子技能：" + "、".join(labels))
+    if rag_summary:
+        summary = str(rag_summary).strip()
+        if summary:
+            blocks.append("知識庫摘要：" + summary)
+
+    return "\n".join(blocks) if blocks else "核心概念"
+
+
+def _build_adaptive_tutor_prompt(
+    *,
+    question_text: str,
+    skill_name: str,
+    family_id: str,
+    subskill_nodes: List[str],
+    user_query: str,
+    rag_summary: Optional[str] = None,
+) -> Tuple[str, str]:
+    """優先使用後台可編輯的 rag_tutor_prompt，失敗時退回較詳細的本地 fallback。"""
+    family_name_block = f"（{family_id}）" if family_id else ""
+    prompt_query = f"[目前題目]\n{question_text}\n\n[學生提問]\n{user_query}"
+    subskill_text = _build_subskill_text(subskill_nodes, rag_summary=rag_summary)
+
+    try:
+        prompt, source = compose_prompt(
+            task_key="rag_tutor_prompt",
+            query=prompt_query,
+            ch_name=skill_name,
+            family_name_block=family_name_block,
+            subskill_text=subskill_text,
+            route_label="Adaptive-Review-RAG",
+        )
+        if prompt.strip():
+            return prompt, source
+    except Exception as e:
+        logger.warning(f"組裝 rag_tutor_prompt 失敗，改用 fallback prompt: {e}")
+
+    fallback_prompt = LLM_GUIDE_PROMPT.format(
+        skill=skill_name,
+        question=question_text,
+        query=user_query,
+    )
+    fallback_prompt += f"\n\n【技能主題】\n{family_name_block or '未提供'}\n\n【可用知識】\n{subskill_text}"
+    return fallback_prompt, "adaptive_review_fallback"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -831,15 +890,22 @@ def chat_with_tutor():
 
     # ── LLM 層：產生文字引導回覆（永遠執行，補足 RAG 無文字的部分）──────────
     llm_reply = None
-    prompt = LLM_GUIDE_PROMPT.format(
-        skill=skill_name,
-        question=question_text,
-        query=user_query
+    prompt, prompt_source = _build_adaptive_tutor_prompt(
+        question_text=question_text,
+        skill_name=skill_name,
+        family_id=family_id,
+        subskill_nodes=subskill_nodes,
+        user_query=user_query,
+        rag_summary=rag_summary,
     )
     try:
-        client = get_ai_client('default')
+        client = get_ai_client('tutor')
         response = call_ai_with_retry(client, prompt)
         llm_reply = response.text if response and hasattr(response, 'text') else None
+        logger.info(
+            f"[Adaptive Review Tutor] prompt_source={prompt_source} "
+            f"rag_used={rag_hint_html is not None} family_id={family_id or '-'}"
+        )
     except Exception as e:
         logger.warning(f"LLM 提示產生失敗（RAG 優先模式）: {e}")
 

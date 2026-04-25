@@ -497,10 +497,14 @@ def api_adv_rag_chat():
                 "教我",
             )
         )
-        prompt_key = "rag_tutor_prompt" if (is_learning_intent and retrieved_skills) else "tutor_hint_prompt"
+        has_retrieved_skills = bool(retrieved_skills)
+        # 自適應介面的 RAG 助教應與 admin/ai_prompt_settings 的知識庫助教 prompt 同步。
+        # 只要目前已有檢索結果，就優先走 rag_tutor_prompt，避免被 tutor_hint_prompt 壓成單行提示。
+        prompt_key = "rag_tutor_prompt" if has_retrieved_skills else "tutor_hint_prompt"
 
         print(
-            f"[RAG PROMPT SELECT] intent={'learning' if is_learning_intent else 'hint'} prompt={prompt_key}"
+            f"[RAG PROMPT SELECT] intent={'learning' if is_learning_intent else 'hint'} "
+            f"has_retrieved_skills={has_retrieved_skills} prompt={prompt_key}"
         )
 
         if prompt_key == "rag_tutor_prompt":
